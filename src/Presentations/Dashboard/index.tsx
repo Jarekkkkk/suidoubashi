@@ -1,6 +1,15 @@
+
+import { SuiWalletConnectButton } from '@/Components';
+
+// import * as styles from './DashboardPresentation.styles'
+
+
 const DashboardPresentation = () => {
     return (
-        <div>Dashboard</div>
+        <div>
+            <p>Dashboard</p>
+            <SuiWalletConnectButton />
+        </div>
     )
 };
 
