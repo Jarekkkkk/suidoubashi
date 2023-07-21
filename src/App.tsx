@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import './App.scss'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { generateLinks } from '@/Constants';
-import { Page, Sidebar } from '@/Components';
+import { Sidebar } from '@/Components';
 
 function App() {
   const links = useMemo(() => generateLinks(), []);

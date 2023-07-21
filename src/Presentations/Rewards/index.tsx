@@ -1,5 +1,3 @@
-import React from 'react';
-
 const RewardsPresentation = () => {
     return (
         <div>Rewards</div>

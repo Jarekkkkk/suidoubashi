@@ -1,4 +1,3 @@
-import React from 'react';
 import VestContainer from '@/Containers/Vest';
 import VestPresentation from '@/Presentations/Vest';
 

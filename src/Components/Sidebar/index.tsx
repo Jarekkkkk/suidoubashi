@@ -1,5 +1,4 @@
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import { generateSideBarLinks } from '@/Constants';
@@ -11,7 +10,7 @@ const SidebarComponent = (props: Props) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const links = useMemo(() => generateSideBarLinks(), []);
     const { isOpen } = props;
-
+    console.log(isOpen)
     return (
         <div>
             {

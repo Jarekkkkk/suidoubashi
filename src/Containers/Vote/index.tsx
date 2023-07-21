@@ -1,10 +1,8 @@
 import React, {
     useState,
-    useEffect,
     useContext,
     PropsWithChildren,
 } from 'react';
-import { useParams } from 'react-router-dom';
 
 const VoteContext = React.createContext<VoteContext>({
     data: null,

@@ -1,5 +1,3 @@
-import React from 'react';
-
 const PoolPresentation = () => {
     return (
         <div>Pool</div>

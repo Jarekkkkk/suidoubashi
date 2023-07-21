@@ -1,11 +1,8 @@
 import React, {
     useState,
-    useEffect,
     useContext,
     PropsWithChildren,
 } from 'react';
-import { useParams } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 const VestContext = React.createContext<VestContext>({
     data: null,
