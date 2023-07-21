@@ -4,7 +4,6 @@ import { AMMState } from "./pool";
 import { VotingState } from "./vote";
 import { bcs_registry } from "../bcs/iindex";
 
-
 export const vsdb_reg = import.meta.env.VITE_VSDB_REG as string
 // Options for rpc calling
 export const defaultOptions = {
@@ -16,6 +15,10 @@ export const defaultOptions = {
     showDisplay: false,
 };
 
+export type VsdbReg = {
+    id: ObjectId
+}
+
 export type Vsdb = {
     id: ObjectId,
     level: string,
@@ -24,7 +27,6 @@ export type Vsdb = {
     end: string,
     player_epoch: string,
     modules: string[],
-
     amm_state?: AMMState,
     voting_state?: VotingState
 }
@@ -46,6 +48,11 @@ export async function get_vsdb(rpc: JsonRpcProvider, address: string): Promise<(
     });
 
     if (data.length == 0) return null
+
+    // // df
+    // const entries = [AMM_ENTRY]
+    // const promises = entries.map((e) => rpc.getDynamicFieldObject({ parentId: fields.id.id, name: e }))
+
 
     return data.map((vsdb_d) => {
         const fields = getObjectFields(vsdb_d)

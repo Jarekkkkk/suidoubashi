@@ -2,6 +2,7 @@ import { JsonRpcProvider, ObjectId, SUI_CLOCK_OBJECT_ID, SUI_TYPE_ARG, Transacti
 
 import { vote_package } from "../bcs/vote";
 import { Vsdb } from "./vsdb";
+import { vsdb_package } from "../bcs/vsdb";
 
 // Options for rpc calling
 export const defaultOptions = {
@@ -161,7 +162,7 @@ export async function get_rewards(rpc: JsonRpcProvider, id: string): Promise<Rew
         }
     ]
 
-    const sdb_type = `${process.env.vsdb_pkg}::sdb::SDB`
+    const sdb_type = `${vsdb_package}::sdb::SDB`
     if (entries[0].type != sdb_type && entries[1].type != sdb_type) {
         entries.push({
             type: "0x1::type_name::TypeName",
@@ -192,15 +193,34 @@ export async function get_rewards(rpc: JsonRpcProvider, id: string): Promise<Rew
 }
 
 // Voting Actions
-export async function vote(txb: TransactionBlock, voter: Voter, vsdb: Vsdb, pools: string[], weights: string[], gauges: Gauge[], bribes: Bribe[]) {
-    let potato = txb.moveCall({
+export function voting_entry(txb: TransactionBlock, vsdb: Vsdb): any {
+    txb.moveCall({
         target: `${vote_package}::voter::voting_entry`,
         arguments: [
             txb.object(vsdb.id),
             txb.object(SUI_CLOCK_OBJECT_ID)
         ]
-    });
+    })
+}
 
+export function reset(potato: any, txb: TransactionBlock, vsdb: Vsdb, voter: Voter) {
+    if (!(vsdb?.voting_state)) throw new Error("No voting state");
+
+
+    const pool_id = vsdb.voting_state.pool_votes.map((p) => p.pool_id)
+    const members = voter.registry.filter((p) => pool_id.includes(p.pool_id))
+    potato = txb.moveCall({
+        target: `${vote_package}::voter::reset`,
+        arguments: [
+            potato,
+            txb.object(voter.id),
+            txb.pure(pools, 'vector<address>'),
+            txb.pure(weights, 'vector<u64>')
+        ]
+    })
+}
+
+export function vote(txb: TransactionBlock, potato: any, voter: Voter, vsdb: Vsdb, pools: string[], weights: string[], gauges: Gauge[], bribes: Bribe[]) {
     potato = txb.moveCall({
         target: `${vote_package}::voter::vote_entry`,
         arguments: [
@@ -211,19 +231,25 @@ export async function vote(txb: TransactionBlock, voter: Voter, vsdb: Vsdb, pool
         ]
     })
 
-    const member = voter.registry[0].members
-    potato = txb.moveCall({
-        target: `${vote_package}::voter::vote_`,
-        typeArguments: [gauges[0].type_x, gauges[0].type_y],
-        arguments: [
-            potato,
-            txb.object(voter.id),
-            txb.object(vsdb.id),
-            txb.object(member.gauge),
-            txb.object(member.bribe),
-            txb.object(SUI_CLOCK_OBJECT_ID)
-        ]
-    })
+    const members = voter.registry.filter((p) => pools.includes(p.pool_id))
+
+    for (const key in members) {
+        if (Object.prototype.hasOwnProperty.call(members, key)) {
+            const element = members[key];
+            potato = txb.moveCall({
+                target: `${vote_package}::voter::vote_`,
+                typeArguments: [gauges[0].type_x, gauges[0].type_y],
+                arguments: [
+                    potato,
+                    txb.object(voter.id),
+                    txb.object(vsdb.id),
+                    txb.object(element.members.gauge),
+                    txb.object(element.members.bribe),
+                    txb.object(SUI_CLOCK_OBJECT_ID)
+                ]
+            })
+        }
+    }
 
     txb.moveCall({
         target: `${vote_package}::voter::vote_exit`,

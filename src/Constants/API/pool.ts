@@ -1,5 +1,7 @@
-import { JsonRpcProvider, ObjectId, SUI_CLOCK_OBJECT_ID, SuiAddress, TransactionBlock, getObjectFields, getObjectType, isValidSuiAddress, isValidSuiObjectId, normalizeSuiAddress, normalizeSuiObjectId } from "@mysten/sui.js";
+import { DynamicFieldName, JsonRpcProvider, ObjectId, SUI_CLOCK_OBJECT_ID, SuiAddress, TransactionBlock, getObjectFields, getObjectType, isValidSuiAddress, isValidSuiObjectId, normalizeSuiAddress, normalizeSuiObjectId } from "@mysten/sui.js";
 import { bcs_registry } from "../bcs/iindex";
+import { Vsdb, VsdbReg } from "./vsdb";
+import { amm_package } from "../bcs/pool";
 
 // Options for rpc calling
 export const defaultOptions = {
@@ -17,14 +19,10 @@ export type poolReg = {
     pools: { name: string, id: ObjectId }[],
 }
 
-export interface AMMState {
-    last_swap: string,
-    earned_times: string
-}
-
 /// [GET] PoolReg
 export async function get_pool_reg(rpc: JsonRpcProvider, id: string): Promise<poolReg | null> {
     if (!isValidSuiObjectId(id)) return null
+
 
     const pool_gov = await rpc.getObject({ id, options: defaultOptions })
     const fields = getObjectFields(pool_gov)
@@ -327,4 +325,37 @@ export async function get_claimable_y(rpc: JsonRpcProvider, sender: SuiAddress, 
     let res = await rpc.devInspectTransactionBlock({ sender, transactionBlock: txb });
 
     return res?.results?.at(0)?.returnValues ?? 0
+}
+
+// gaming
+
+export const AMM_ENTRY: DynamicFieldName = {
+    type: `${amm_package}::pool::AMM_SDB`
+}
+export interface AMMState {
+    last_swap: string,
+    earned_times: string
+}
+
+export async function initialize_AMM(txb: TransactionBlock, vsdb_reg: VsdbReg, vsdb: Vsdb) {
+    txb.moveCall(
+        {
+            target: `${amm_package}::pool::initialize`,
+            arguments: [
+                txb.object(vsdb_reg.id),
+                txb.object(vsdb.id)
+            ]
+        }
+    );
+}
+
+export async function clear(txb: TransactionBlock, vsdb: Vsdb) {
+    txb.moveCall(
+        {
+            target: `${amm_package}::pool::clear`,
+            arguments: [
+                txb.object(vsdb.id)
+            ]
+        }
+    )
 }
