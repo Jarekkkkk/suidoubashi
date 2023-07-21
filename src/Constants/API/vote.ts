@@ -206,16 +206,31 @@ export function voting_entry(txb: TransactionBlock, vsdb: Vsdb): any {
 export function reset(potato: any, txb: TransactionBlock, vsdb: Vsdb, voter: Voter) {
     if (!(vsdb?.voting_state)) throw new Error("No voting state");
 
-
     const pool_id = vsdb.voting_state.pool_votes.map((p) => p.pool_id)
     const members = voter.registry.filter((p) => pool_id.includes(p.pool_id))
+    for (const key of members) {
+        const element = key.members;
+        potato = txb.moveCall({
+            target: `${vote_package}::voter::reset`,
+            arguments: [
+                potato,
+                txb.object(voter.id),
+                txb.object(vsdb.id),
+                txb.object(element.gauge),
+                txb.object(element.bribe),
+                txb.object(SUI_CLOCK_OBJECT_ID)
+            ]
+        })
+    }
+}
+
+export function reset_exit(txb: TransactionBlock, potato: any, voter: Voter, vsdb: Vsdb) {
     potato = txb.moveCall({
-        target: `${vote_package}::voter::reset`,
+        target: `${vote_package}::voter::vote_entry`,
         arguments: [
             potato,
             txb.object(voter.id),
-            txb.pure(pools, 'vector<address>'),
-            txb.pure(weights, 'vector<u64>')
+            txb.object(vsdb.id),
         ]
     })
 }
