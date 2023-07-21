@@ -1,10 +1,7 @@
-const DashboardScene = () => {
+const DashboardPresentation = () => {
     return (
-        <p>DashboardScene</p>
-        // <DashboardContainer>
-        //   <DashboardPresentation />
-        // </DashboardContainer>
+        <div>Dashboard</div>
     )
 };
 
-export default DashboardScene;
+export default DashboardPresentation;

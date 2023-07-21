@@ -1,9 +1,11 @@
+import DashboardContainer from '@/Containers/Dashboard';
+import DashboardPresentation from '@/Presentations/Dashboard';
+
 const DashboardScene = () => {
     return (
-        <p>DashboardScene</p>
-        // <DashboardContainer>
-        //   <DashboardPresentation />
-        // </DashboardContainer>
+        <DashboardContainer>
+            <DashboardPresentation />
+        </DashboardContainer>
     )
 };
 
