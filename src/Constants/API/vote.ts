@@ -3,6 +3,7 @@ import { JsonRpcProvider, ObjectId, SUI_CLOCK_OBJECT_ID, SUI_TYPE_ARG, Transacti
 import { vote_package } from "../bcs/vote";
 import { Vsdb } from "./vsdb";
 import { vsdb_package } from "../bcs/vsdb";
+import { LP, Pool } from "./pool";
 
 // Options for rpc calling
 export const defaultOptions = {
@@ -20,7 +21,13 @@ export type Voter = {
     balance: string,
     total_weight: string,
     pool_weights: { pooL_id: ObjectId, weight: string }[],
-    registry: { pool_id: ObjectId, members: { gauge: ObjectId, bribe: ObjectId, rewards: ObjectId } }[],
+    registry: {
+        pool: {
+            id: ObjectId,
+            type_x: string,
+            type_y: string
+        }, members: { gauge: ObjectId, bribe: ObjectId, rewards: ObjectId }
+    }[],
 }
 
 export type Gauge = {
@@ -42,6 +49,7 @@ export type Bribe = {
 }
 
 export type Rewards = {
+    id: ObjectId,
     type_x: string,
     type_y: string,
     balance_x: string,
@@ -77,9 +85,16 @@ export async function get_voter(rpc: JsonRpcProvider, id: string): Promise<Voter
 
     const registry = (await Promise.all(registry_promises)).map((pool) => {
         const data = getObjectFields(pool)
+        // not sure if have type
+        const objectType = getObjectType(pool)
+        const [X, Y] = objectType?.slice(objectType.indexOf("<") + 1, objectType.indexOf(">")).split(",").map((t) => t.trim()) ?? []
         if (!data) return null
         return {
-            pool_id: data.name, members: {
+            pool: {
+                id: data.name,
+                type_x: X,
+                type_y: Y
+            }, members: {
                 gauge: data.value.fields.contents[0],
                 bribe: data.value.fields.contents[1],
                 rewards: data.value.fields.contents[2]
@@ -207,7 +222,7 @@ export function reset(potato: any, txb: TransactionBlock, vsdb: Vsdb, voter: Vot
     if (!(vsdb?.voting_state)) throw new Error("No voting state");
 
     const pool_id = vsdb.voting_state.pool_votes.map((p) => p.pool_id)
-    const members = voter.registry.filter((p) => pool_id.includes(p.pool_id))
+    const members = voter.registry.filter((p) => pool_id.includes(p.pool.id))
     for (const key of members) {
         const element = key.members;
         potato = txb.moveCall({
@@ -235,7 +250,7 @@ export function reset_exit(txb: TransactionBlock, potato: any, voter: Voter, vsd
     })
 }
 
-export function vote(txb: TransactionBlock, potato: any, voter: Voter, vsdb: Vsdb, pools: string[], weights: string[], gauges: Gauge[], bribes: Bribe[]) {
+export function vote(txb: TransactionBlock, potato: any, voter: Voter, vsdb: Vsdb, pools: string[], weights: string[]) {
     potato = txb.moveCall({
         target: `${vote_package}::voter::vote_entry`,
         arguments: [
@@ -246,14 +261,14 @@ export function vote(txb: TransactionBlock, potato: any, voter: Voter, vsdb: Vsd
         ]
     })
 
-    const members = voter.registry.filter((p) => pools.includes(p.pool_id))
+    const members = voter.registry.filter((p) => pools.includes(p.pool.id))
 
     for (const key in members) {
         if (Object.prototype.hasOwnProperty.call(members, key)) {
             const element = members[key];
             potato = txb.moveCall({
                 target: `${vote_package}::voter::vote_`,
-                typeArguments: [gauges[0].type_x, gauges[0].type_y],
+                typeArguments: [element.pool.type_x, element.pool.type_y],
                 arguments: [
                     potato,
                     txb.object(voter.id),
@@ -272,6 +287,70 @@ export function vote(txb: TransactionBlock, potato: any, voter: Voter, vsdb: Vsd
             potato,
             txb.object(voter.id),
             txb.object(vsdb.id)
+        ]
+    })
+}
+
+// gauge
+export function claim_rewards(txb: TransactionBlock, voter: Voter, gauge: Gauge) {
+    txb.moveCall({
+        target: `${vote_package}::voter::claim_rewards`,
+        typeArguments: [gauge.type_x, gauge.type_y],
+        arguments: [
+            txb.object(voter.id),
+            txb.object(gauge.id),
+            txb.object(SUI_CLOCK_OBJECT_ID)
+        ]
+    })
+}
+
+export function stake_all(txb: TransactionBlock, gauge: Gauge, pool: Pool, lp: LP) {
+    txb.moveCall({
+        target: `${vote_package}::gauge::stake_all`,
+        typeArguments: [gauge.type_x, gauge.type_y],
+        arguments: [
+            txb.object(gauge.id),
+            txb.object(pool.id),
+            txb.object(lp.id),
+            txb.object(SUI_CLOCK_OBJECT_ID)
+        ]
+    })
+}
+
+export function unstake_all(txb: TransactionBlock, gauge: Gauge, pool: Pool, lp: LP) {
+    txb.moveCall({
+        target: `${vote_package}::gauge::unstake_all`,
+        typeArguments: [gauge.type_x, gauge.type_y],
+        arguments: [
+            txb.object(gauge.id),
+            txb.object(pool.id),
+            txb.object(lp.id),
+            txb.object(SUI_CLOCK_OBJECT_ID)
+        ]
+    })
+}
+// bribe
+export function claim_bribes(txb: TransactionBlock, voter: Voter, bribe: Bribe, rewards: Rewards, vsdb: Vsdb) {
+    txb.moveCall({
+        target: `${vote_package}::voter::claim_bribes`,
+        typeArguments: [bribe.type_x, bribe.type_y],
+        arguments: [
+            txb.object(bribe.id),
+            txb.object(rewards.id),
+            txb.object(vsdb.id),
+            txb.object(SUI_CLOCK_OBJECT_ID)
+        ]
+    })
+}
+
+export function bribe(txb: TransactionBlock, rewards: Rewards, coin: any, coin_type: string) {
+    txb.moveCall({
+        target: `${vote_package}::bribe::bribe`,
+        typeArguments: [rewards.type_x, rewards.type_y, coin_type],
+        arguments: [
+            txb.object(rewards.id),
+            txb.object(coin),
+            txb.object(SUI_CLOCK_OBJECT_ID)
         ]
     })
 }
