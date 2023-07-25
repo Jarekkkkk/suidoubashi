@@ -9,6 +9,16 @@ import {
     Bribe,
 } from '@/Scenes'
 
+export const END_POINT_OPTIONS = {
+	fullnode: "https://fullnode.devnet.vincagame.com",
+	websocket: "https://fullnode.devnet.vincagame.com",
+	faucet: "https://fullnode.devnet.vincagame.com/gas"
+}
+
+export const localnetConnection = {
+	fullnode: 'http://127.0.0.1:9000',
+	faucet: 'http://127.0.0.1:9123/gas',
+};
 
 export const generateSideBarLinks = () => [
     {
