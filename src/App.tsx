@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { WalletKitProvider } from '@mysten/wallet-kit';
 
 import { generateLinks } from '@/Constants';
-import { Sidebar } from '@/Components';
+import { Page } from '@/Components';
 
 function App() {
   const links = useMemo(() => generateLinks(), []);
@@ -12,14 +12,15 @@ function App() {
   return (
     <WalletKitProvider>
       <BrowserRouter>
-        <Sidebar isOpen={false} />
-        <Routes>
-          {
-            links.map((link) => {
-              return <Route {...link} />;
-            })
-          }
-        </Routes>
+        <Page>
+          <Routes>
+            {
+              links.map((link) => {
+                return <Route {...link} />;
+              })
+            }
+          </Routes>
+        </Page>
       </BrowserRouter>
     </WalletKitProvider>
   )

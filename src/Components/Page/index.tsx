@@ -1,24 +1,18 @@
-import { useEffect } from 'react';
-import { Route, RouteProps } from 'react-router-dom';
-
+import { Sidebar } from '@/Components';
+import * as styles from './index.styles';
 interface Props {
-    title: string
+	children: any,
 }
 const PageComponent = (props: Props) => {
-    useEffect(() => {
-        let _title = '';
+	const { children } = props;
 
-        if (props.title) {
-            _title += `${props.title} | `;
-        }
-
-        _title += 'Workbench | OEC Group';
-
-        document.title = _title;
-    }, [props.title]);
-
-    return (
-        <Route {...props as RouteProps} />
-    );
+	return (
+		<div className={styles.layoutContainer}>
+			<Sidebar isOpen={true} />
+			<div className={styles.mainContent}>
+				{children}
+			</div>
+		</div>
+	);
 };
 export default PageComponent;
