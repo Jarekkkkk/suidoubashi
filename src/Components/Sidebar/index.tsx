@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { generateSideBarLinks } from '@/Constants';
 
+import Image from '@/Assets/image';
 import * as styles from './index.styles';
 
 interface Props {
@@ -16,6 +17,7 @@ const SidebarComponent = (props: Props) => {
 	console.log(isOpen)
 	return (
 		<div className={styles.sidebarContainer}>
+			<img src={Image.logo} className={styles.logoItem} />
 			{
 				links.map((link) => (
 					<div className={styles.sidebarItem} key={link.key}>

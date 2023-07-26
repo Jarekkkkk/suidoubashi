@@ -1,7 +1,13 @@
 import { css } from '@emotion/css'
+import Image from '@/Assets/image'
 
 export const layoutContainer = css`
   position: relative;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url(${Image.background});
 `
 
 export const mainContent = css`
@@ -10,8 +16,8 @@ export const mainContent = css`
   align-items: center;
   flex-direction: column;
   top: 0px;
-  left: 240px;
-  width: calc(100vw - 240px);
+  left: 155px;
+  width: calc(100vw - 155px);
   height: 100vh;
-  overflow: auto; // for extend height from children's height, ref. https://stackoverflow.com/q/384145/2281129
+  overflow: auto;
 `
