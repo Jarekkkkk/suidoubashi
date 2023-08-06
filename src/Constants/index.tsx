@@ -1,4 +1,3 @@
-
 import {
     Dashboard,
     Swap,
@@ -8,6 +7,8 @@ import {
     Rewards,
     Bribe,
 } from '@/Scenes'
+
+import { Icon } from '@/Assets/icon';
 
 export const END_POINT_OPTIONS = {
 	fullnode: "https://fullnode.devnet.vincagame.com",
@@ -32,36 +33,35 @@ export const generateSideBarLinks = () => [
         path: '/swap/:action?',
         element: <Swap />,
         title: 'Swap',
+        icon: <Icon.SwapIcon />,
     },
     {
         key: 'Pool',
         path: '/pool/:action?',
         element: <Pool />,
         title: 'Pool',
+        icon: <Icon.PoolIcon />,
     },
     {
         key: 'Vest',
         path: '/vest/:action?',
         element: <Vest />,
         title: 'Vest',
+        icon: <Icon.VestIcon />,
     },
     {
         key: 'Vote',
         path: '/vote/:action?',
         element: <Vote />,
         title: 'Vote',
+        icon: <Icon.VoteIcon />,
     },
     {
         key: 'Rewards',
         path: '/rewards/:action?',
         element: <Rewards />,
         title: 'Rewards',
-    },
-    {
-        key: 'Bribe',
-        path: '/bribe/:action?',
-        element: <Bribe />,
-        title: 'Bribe',
+        icon: <Icon.RewardsIcon />,
     },
 ];
 
@@ -101,11 +101,5 @@ export const generateLinks = () => [
         path: '/rewards/:action?',
         element: <Rewards />,
         title: 'Rewards',
-    },
-    {
-        key: 'Bribe',
-        path: '/bribe/:action?',
-        element: <Bribe />,
-        title: 'Bribe',
     },
 ];
