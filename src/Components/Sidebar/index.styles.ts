@@ -41,13 +41,51 @@ export const sidebarButton = css`
     align-items: center;
     color: #595959;
     text-decoration-line: unset;
+    transition: 0.3s;
   }
 
   svg {
     margin-right: 12px;
     width: 24px;
     height: 24px;
+
+    path {
+      fill: #595959;
+      transition: 0.3s;
+    }
+  }
+
+  &:hover {
+    a {
+      color: #2977EC;
+    }
+
+    svg {
+      path {
+        fill: #2977EC;
+      }
+    }
   }
 `;
 
-export const sidebarButtonIcon = css``;
+export const active  = css`
+  a {
+    color: #2977EC;
+  }
+
+  svg {
+    path {
+      fill: #2977EC;
+    }
+  }
+`;
+
+export const logoContent = css`
+  margin-bottom: 46px;
+  transition: 0.3s;
+
+  &:hover {
+    opacity: 0.85;
+    transform: scale(1.05);
+  }
+`;

@@ -5,7 +5,6 @@ import {
     Vest,
     Vote,
     Rewards,
-    Bribe,
 } from '@/Scenes'
 
 import { Icon } from '@/Assets/icon';
@@ -23,42 +22,36 @@ export const localnetConnection = {
 
 export const generateSideBarLinks = () => [
     {
-        key: 'Dashboard',
-        path: '/',
-        exact: true,
-        element: <Dashboard />,
-    },
-    {
         key: 'Swap',
-        path: '/swap/:action?',
+        path: '/swap',
         element: <Swap />,
         title: 'Swap',
         icon: <Icon.SwapIcon />,
     },
     {
         key: 'Pool',
-        path: '/pool/:action?',
+        path: '/poo',
         element: <Pool />,
         title: 'Pool',
         icon: <Icon.PoolIcon />,
     },
     {
         key: 'Vest',
-        path: '/vest/:action?',
+        path: '/vest/',
         element: <Vest />,
         title: 'Vest',
         icon: <Icon.VestIcon />,
     },
     {
         key: 'Vote',
-        path: '/vote/:action?',
+        path: '/vote',
         element: <Vote />,
         title: 'Vote',
         icon: <Icon.VoteIcon />,
     },
     {
         key: 'Rewards',
-        path: '/rewards/:action?',
+        path: '/rewards',
         element: <Rewards />,
         title: 'Rewards',
         icon: <Icon.RewardsIcon />,
