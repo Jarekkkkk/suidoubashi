@@ -5,6 +5,8 @@ import { ReactComponent as VoteIcon  } from '@/Assets/icon/icon_vote.svg';
 import { ReactComponent as RewardsIcon  } from '@/Assets/icon/icon_rewards.svg';
 import { ReactComponent as BookIcon  } from '@/Assets/icon/icon_book.svg';
 import { ReactComponent as TwitterIcon  } from '@/Assets/icon/icon_twitter.svg';
+import { ReactComponent as SearchIcon  } from '@/Assets/icon/icon_search.svg';
+import { ReactComponent as CopyIcon  } from '@/Assets/icon/icon_copy.svg';
 
 export const Icon = {
   SwapIcon,
@@ -14,4 +16,6 @@ export const Icon = {
   RewardsIcon,
   TwitterIcon,
   BookIcon,
+  SearchIcon,
+  CopyIcon,
 };
