@@ -13,3 +13,42 @@ html {
 }
 
 
+div[class*='react-datepicker'] {
+    div[class*='react-datepicker__month-container'] {
+        padding: 10px 20px;
+    }
+    div[class*='react-datepicker__header'] {
+        background-color: #fff;
+    }
+
+    div[class*='react-datepicker__current-month'] {
+        color: #2977EC;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    div[class*='react-datepicker__day--selected'] {
+        color: #2977EC;
+        background-color: #fff;
+    }
+
+    button[class*='react-datepicker__navigation'] {
+        top: 15px;
+
+        span::before {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 14px 14px 0;
+            border-color: transparent #2977EC transparent transparent;
+        }
+    }
+
+    button[class*='react-datepicker__navigation--previous'] {
+        left: 32px;
+    }
+
+    button[class*='react-datepicker__navigation--next'] {
+        right: 32px;
+    }
+}
