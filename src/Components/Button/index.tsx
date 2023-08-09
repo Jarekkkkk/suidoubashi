@@ -2,7 +2,7 @@ import { cx } from '@emotion/css'
 import * as styles from './index.styles';
 
 interface Props {
-  styleType: string,
+  styleType: string, // filled | outlined | tonal
   text: string,
   onClick: () => void,
   icon?: any,
