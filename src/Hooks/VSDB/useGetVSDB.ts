@@ -36,7 +36,6 @@ export function useGetVSDB(
           MatchAll: [{ StructType: `${vsdb_package}::vsdb::Vsdb` }],
         },
         options: {
-          showType: true,
           showContent: true,
           showDisplay: true,
         },

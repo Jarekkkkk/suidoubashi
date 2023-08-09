@@ -23,7 +23,7 @@ export const queryClient = new QueryClient({
       onError: (err) => console.log(err),
     },
     mutations: {
-      onError: (err) => console.error(err),
+      onError: (error) => console.log(error),
     },
   },
 })

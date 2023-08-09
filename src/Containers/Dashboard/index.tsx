@@ -6,9 +6,13 @@ import { get_vsdb, lock, mint_sdb } from '@/Constants/API/vsdb'
 import useRpc from '@/Hooks/useRpc'
 import { formatBalance, payCoin } from '@/Utils/coin'
 import { useGetBalance } from '@/Hooks/Coin/useGetBalance'
+
+
 import { useGetCoins } from '@/Hooks/Coin/useGetCoin'
 import { useGetVSDB } from '@/Hooks/VSDB/useGetVSDB'
-import { Button } from '@/Components'
+import { Button, Coincard } from '@/Components'
+import { CoinIcon } from '@/Assets/icon'
+
 const devnet_coins = {
   BTC: '0xd60d2e85c82048a43a67fb90a5f7e0d47c466a8444ec4fa1a010da29034dfbe1::mock_btc::MOCK_BTC',
   ETH: '0xd60d2e85c82048a43a67fb90a5f7e0d47c466a8444ec4fa1a010da29034dfbe1::mock_eth::MOCK_ETH',
@@ -36,6 +40,8 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
     currentAccount?.address ??
     '0x0b3fc768f8bb3c772321e3e7781cac4a45585b4bc64043686beb634d65341798'
 
+  const btc_balance = useGetBalance(devnet_coins.BTC, walletAddress)
+
   //  console.log("--- balances ---")
   //  const balance = useGetBalance(devnet_coins.BTC, walletAddress)
   //  if(!(balance.isLoading || balance.isFetching) && balance?.data) console.log(balance.data)
@@ -47,6 +53,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
   const vsdb = useGetVSDB(walletAddress)
   if (!(vsdb.isFetching || vsdb.isLoading || vsdb.hasNextPage) && vsdb?.data)
     console.log(vsdb.data)
+  console.log(vsdb?.data?.pages.length)
 
   const mint_sdb_action = async () => {
     const txb = new TransactionBlock()
@@ -65,7 +72,12 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
   const lock_vsdb_action = async () => {
     if (sdb_coins?.data) {
       const txb = new TransactionBlock()
-      const sdb_coin = payCoin(txb, sdb_coins.data.pages[0], 1000000000000, false)
+      const sdb_coin = payCoin(
+        txb,
+        sdb_coins.data.pages[0],
+        1000000000000,
+        false,
+      )
       lock(txb, sdb_coin, '604800')
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await provider.executeTransactionBlock({
@@ -101,6 +113,13 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
         text='Lock VSDB'
         onClick={() => lock_vsdb_action()}
       />
+      {btc_balance?.data && (
+        <Coincard
+          coinIcon={<CoinIcon.USDCIcon />}
+          coinName={'BTC'}
+          coinValue={formatBalance(btc_balance.data?.totalBalance, 6)}
+        />
+      )}
       {children}
     </DashboardContext.Provider>
   )
