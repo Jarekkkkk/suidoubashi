@@ -1,8 +1,13 @@
 import { cx } from '@emotion/css'
 import * as styles from './index.styles';
 
+export enum Style  {
+  "fillewd",
+  "outlined",
+  "tonal"
+}
 interface Props {
-  styleType: string, // filled | outlined | tonal
+  styleType: Style,
   text: string,
   onClick: () => void,
   icon?: any,
