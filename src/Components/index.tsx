@@ -8,3 +8,4 @@ export { default as Tabs } from './Tabs';
 export { default as RadioGroup } from './RadioGroup';
 export { default as DatePicker } from './DatePicker';
 export { default as Coincard } from './Coincard';
+export { default as NFTCard } from './NFTCard';
