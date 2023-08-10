@@ -7,7 +7,7 @@ export const layoutContainer = css`
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-image: url(${Image.background});
+  background-image: url(${Image.Background});
 `
 
 export const mainContent = css`

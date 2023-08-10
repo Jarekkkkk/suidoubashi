@@ -20,6 +20,19 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
         return
     };
 
+    const departPool = () => {
+        try {
+            const res = get_pool_reg();
+
+        } catch (error) {
+
+        }
+
+    };
+
+    useEffect(() => {
+        departPool();
+    }, []);
     return (
         <PoolContext.Provider
             value={{

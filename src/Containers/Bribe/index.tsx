@@ -1,3 +1,4 @@
+import { useGetCoinBalance } from '@/Hooks/coin';
 import React, {
     useState,
     useContext,
@@ -18,6 +19,7 @@ export const BribeContainer = ({ children }: PropsWithChildren) => {
     const handleFetchData = () => {
         return
     };
+
 
     return (
         <BribeContext.Provider

@@ -10,18 +10,26 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@blueprintjs/core": "^5.2.0",
     "@emotion/css": "^11.11.2",
     "@mysten/bcs": "^0.7.3",
     "@mysten/sui.js": "^0.37.1",
     "@mysten/wallet-kit": "^0.4.12",
+    "@tanstack/react-query": "^4.32.6",
+    "@tanstack/react-query-devtools": "^4.32.6",
+    "bignumber": "^1.1.0",
+    "bignumber.js": "^9.1.1",
     "node-sass": "^9.0.0",
     "react": "^18.2.0",
+    "react-datepicker": "^4.16.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.14.2"
+    "react-router-dom": "^6.14.2",
+    "vite-plugin-svgr": "^3.2.0"
   },
   "devDependencies": {
     "@types/node": "^20.4.2",
     "@types/react": "^18.2.14",
+    "@types/react-datepicker": "^4.15.0",
     "@types/react-dom": "^18.2.6",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
