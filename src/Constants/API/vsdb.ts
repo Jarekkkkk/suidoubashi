@@ -10,7 +10,6 @@ import {
 import { AMMState } from './pool'
 import { VotingState } from './vote'
 import { bcs_registry } from '../bcs'
-import { BCS } from '@mysten/bcs'
 
 export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE as string
 export const vsdb_reg = import.meta.env.VITE_VSDB_REG as string
@@ -30,11 +29,12 @@ export function mint_sdb(txb: TransactionBlock, address: string) {
     typeArguments: [`${vsdb_package}::sdb::SDB`],
     arguments: [
       txb.object("0x472ec685810e4d0a5c7900a04330379685a1cceb5c9281c089f2e7d4a540438b"),
-      txb.pure(1000000000000),
+      txb.pure(100000000000),
       txb.pure(address),
     ],
   })
 }
+
 export type Vsdb = {
   id: ObjectId
   level: string
@@ -54,6 +54,7 @@ export async function get_vsdb(
   if (!address) return null
 
   if (!isValidSuiAddress(address)) return null
+
   const { data } = await rpc.getOwnedObjects({
     owner: normalizeSuiAddress(address),
     filter: {

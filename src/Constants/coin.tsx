@@ -6,11 +6,10 @@ export enum Coin {
   SDB = '0x2cbce1ca3f0a0db8ec8e920eeb4602bf88c1dbb639edcb3c7cd4c579a7be77c5::sdb::SDB',
 }
 
-import BTCIcon from '@/Assets/icon/coin/btc.png'
-import ETHIcon from '@/Assets/icon/coin/eth.png'
-import USDCIcon from '@/Assets/icon/coin/usdc.png'
-import USDTIcon from '@/Assets/icon/coin/usdt.png'
 import SDBIcon from '@/Assets/icon/coin/sdb.png'
+import { CoinIcon } from '@/Assets/icon'
+
+
 
 export interface CoinInterface {
   type: Coin,
@@ -22,22 +21,22 @@ export interface CoinInterface {
 export const Coins: CoinInterface[] = [
   {
     type: Coin.BTC,
-    logo: BTCIcon,
+    logo: <CoinIcon.BTCIcon />,
     name: "BTC"
   },
   {
     type: Coin.ETH,
-    logo: ETHIcon,
+    logo: <CoinIcon.WETHIcon />,
     name: "ETH"
   },
   {
     type: Coin.USDC,
-    logo: USDCIcon,
+    logo: <CoinIcon.USDCIcon />,
     name: "USDC"
   },
   {
     type: Coin.USDT,
-    logo: USDTIcon,
+    logo: <CoinIcon.USDTIcon />,
     name: "USDT"
   },
   {
@@ -46,4 +45,5 @@ export const Coins: CoinInterface[] = [
     name: "SDB"
   },
 ]
+
 
