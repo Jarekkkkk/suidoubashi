@@ -1,16 +1,17 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import useRpc from '../useRpc';
+import { Coin } from '@/Constants/coin';
 
 const MAX_COINS_PER_REQUEST = 10;
 
 export function useGetCoins(
-	coinType: string,
+	coinType: Coin,
 	address?: string | null,
 	maxCoinsPerRequest = MAX_COINS_PER_REQUEST,
 ) {
 	const rpc = useRpc()
 	return useInfiniteQuery(
-		['get-coins', address, coinType, maxCoinsPerRequest],
+		['get-coins', address, coinType],
 		({ pageParam }) =>
 			rpc.getCoins({
 				owner: address!,

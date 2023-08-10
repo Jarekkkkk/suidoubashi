@@ -8,12 +8,6 @@ import { ReactComponent as TwitterIcon } from '@/Assets/icon/icon_twitter.svg'
 import { ReactComponent as SearchIcon } from '@/Assets/icon/icon_search.svg'
 import { ReactComponent as CopyIcon } from '@/Assets/icon/icon_copy.svg'
 
-//Coin Icon
-import btc_icon from '@/Assets/icon/coin/btc.png'
-import ETHIcon from '@/Assets/icon/coin/eth.png'
-import USDCIcon from '@/Assets/icon/coin/usdc.png'
-import USDTIcon from '@/Assets/icon/coin/usdt.png'
-
 export const Icon = {
   SwapIcon,
   PoolIcon,

@@ -9,7 +9,8 @@ import {
 } from '@mysten/sui.js'
 import { AMMState } from './pool'
 import { VotingState } from './vote'
-import { bcs_registry } from '../bcs/iindex'
+import { bcs_registry } from '../bcs'
+import { BCS } from '@mysten/bcs'
 
 export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE as string
 export const vsdb_reg = import.meta.env.VITE_VSDB_REG as string
@@ -156,19 +157,19 @@ export interface Withdraw {
 export async function voting_weight(
   rpc: JsonRpcProvider,
   sender: string,
-  vsdb: Vsdb,
+  vsdb: string,
 ) {
   let txb = new TransactionBlock()
   txb.moveCall({
-    target: `${process.env.vsdb_pkg}::vsdb::voting_weight`,
-    arguments: [txb.object(vsdb.id), txb.object(SUI_CLOCK_OBJECT_ID)],
+    target: `${vsdb_package}::vsdb::voting_weight`,
+    arguments: [txb.object(vsdb), txb.object(SUI_CLOCK_OBJECT_ID)],
   })
   let res = await rpc.devInspectTransactionBlock({
     sender,
     transactionBlock: txb,
   })
 
-  const returnValue = res?.results?.at(0)?.returnValues?.at(0)?.at(0)
+  const returnValue = res?.results?.at(0)?.returnValues?.at(0)
   if (!returnValue) {
     return '0'
   } else {

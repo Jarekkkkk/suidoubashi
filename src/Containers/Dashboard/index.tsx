@@ -4,22 +4,17 @@ import { SUI_TYPE_ARG, TransactionBlock } from '@mysten/sui.js'
 import { get_vsdb, lock, mint_sdb } from '@/Constants/API/vsdb'
 
 import useRpc from '@/Hooks/useRpc'
-import { formatBalance, payCoin } from '@/Utils/coin'
-import { useGetBalance } from '@/Hooks/Coin/useGetBalance'
+import { formatBalance } from '@/Utils/format'
+import { payCoin } from '@/Utils/payCoin'
+import { useGetBalances } from '@/Hooks/Coin/useGetBalance'
 
-
-import { useGetCoins } from '@/Hooks/Coin/useGetCoin'
+import sdb_icon from '@/Assets/icon/coin/sdb.png'
+import { useGetCoins } from '@/Hooks/Coin/useGetCoins'
 import { useGetVSDB } from '@/Hooks/VSDB/useGetVSDB'
-import { Button, Coincard } from '@/Components'
-import { CoinIcon } from '@/Assets/icon'
+import { Button, Coincard, NFTCard } from '@/Components'
 
-const devnet_coins = {
-  BTC: '0xd60d2e85c82048a43a67fb90a5f7e0d47c466a8444ec4fa1a010da29034dfbe1::mock_btc::MOCK_BTC',
-  ETH: '0xd60d2e85c82048a43a67fb90a5f7e0d47c466a8444ec4fa1a010da29034dfbe1::mock_eth::MOCK_ETH',
-  USDC: '0xd60d2e85c82048a43a67fb90a5f7e0d47c466a8444ec4fa1a010da29034dfbe1::mock_usdc::MOCK_USDC',
-  USDT: '0xd60d2e85c82048a43a67fb90a5f7e0d47c466a8444ec4fa1a010da29034dfbe1::mock_usdt::USDT',
-  SDB: '0x2cbce1ca3f0a0db8ec8e920eeb4602bf88c1dbb639edcb3c7cd4c579a7be77c5::sdb::SDB',
-}
+import { Coin, Coins } from '@/Constants/coin'
+import { useMintSDB } from '@/Hooks/VSDB/useMintSDB'
 
 export const DashboardContext = React.createContext<DashboardContext>({
   data: null,
@@ -33,27 +28,20 @@ export const useDashboardContext = () => useContext(DashboardContext)
 export const DashboardContainer = ({ children }: PropsWithChildren) => {
   const [data, setData] = useState(null)
   const [fetching, setFetching] = useState(false)
-  const provider = useRpc()
 
+  const provider = useRpc()
   const { currentAccount, signTransactionBlock } = useWalletKit()
   const walletAddress =
     currentAccount?.address ??
     '0x0b3fc768f8bb3c772321e3e7781cac4a45585b4bc64043686beb634d65341798'
 
-  const btc_balance = useGetBalance(devnet_coins.BTC, walletAddress)
-
-  //  console.log("--- balances ---")
-  //  const balance = useGetBalance(devnet_coins.BTC, walletAddress)
-  //  if(!(balance.isLoading || balance.isFetching) && balance?.data) console.log(balance.data)
-  //  console.log("--- coins ---")
-  //  const coins = useGetCoins(devnet_coins.BTC, walletAddress)
-  //  if(!(coins.isLoading || coins.isFetching || coins.hasNextPage) && coins?.data){ console.log(coins.data.pages.flatMap((page)=>page.data))}
+  // -- Balances
+  const balances = useGetBalances(Coins, currentAccount?.address)
 
   console.log('--- vsdb ---')
   const vsdb = useGetVSDB(walletAddress)
   if (!(vsdb.isFetching || vsdb.isLoading || vsdb.hasNextPage) && vsdb?.data)
     console.log(vsdb.data)
-  console.log(vsdb?.data?.pages.length)
 
   const mint_sdb_action = async () => {
     const txb = new TransactionBlock()
@@ -68,7 +56,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
     })
     console.log(res)
   }
-  const sdb_coins = useGetCoins(devnet_coins.SDB, walletAddress)
+  const sdb_coins = useGetCoins(Coin.SDB, walletAddress)
   const lock_vsdb_action = async () => {
     if (sdb_coins?.data) {
       const txb = new TransactionBlock()
@@ -91,7 +79,11 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
     }
   }
 
-  const handleFetchData = () => {}
+  const mint_sdb = useMintSDB()
+
+  const handleFetchData = () => {
+    console.log('handle fetch data')
+  }
 
   if (!walletAddress) return <div>"No Wallet Address"</div>
   return (
@@ -106,20 +98,37 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
       <Button
         styleType='filled'
         text='Mint SDB'
-        onClick={() => mint_sdb_action()}
+        onClick={() => mint_sdb.mutate()}
       />
+      {mint_sdb.isLoading && <div>Loading</div>}
       <Button
         styleType='outlined'
         text='Lock VSDB'
         onClick={() => lock_vsdb_action()}
       />
-      {btc_balance?.data && (
+      {balances.map((balance, idx) => (
         <Coincard
-          coinIcon={<CoinIcon.USDCIcon />}
-          coinName={'BTC'}
-          coinValue={formatBalance(btc_balance.data?.totalBalance, 6)}
+          coinIcon={
+            <img
+              src={Coins[idx].logo}
+              style={{ width: '32px', height: '32px' }}
+            />
+          }
+          coinName={Coins[idx].name}
+          coinValue={formatBalance(balance?.data?.totalBalance ?? '0', 9)}
         />
-      )}
+      ))}
+      {/*vsdb?.data?.pages.length!! > 0 && (
+        <NFTCard
+          nftImg={vsdb.data?.pages[0]?.data[0].display?.['image_url'] ?? 'https://github.com/Jarekkkkk/SuiDouBashi_SC/blob/nfts/0.jpeg?raw=true'}
+          level={vsdb.data?.pages[0]?.data[0].level ?? '0'}
+          expValue={parseInt(vsdb.data?.pages[0]?.data[0].experience ?? '0')}
+          vesdbValue={parseInt(vsdb.data?.pages[0]?.data[0].vesdb ?? '0')}
+          address={vsdb.data?.pages[0]?.data[0].id ?? '0x00'}
+          onCardNextChange={handleFetchData}
+          onCardPrevChange={handleFetchData}
+        />
+      )*/}
       {children}
     </DashboardContext.Provider>
   )

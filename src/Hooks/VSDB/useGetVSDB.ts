@@ -1,9 +1,15 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
-import { DisplayFieldsResponse, getObjectDisplay, getObjectFields, ObjectId } from '@mysten/sui.js'
+import {
+  DisplayFieldsResponse,
+  getObjectDisplay,
+  getObjectFields,
+  ObjectId,
+} from '@mysten/sui.js'
 
 import { AMMState } from '@/Constants/API/pool'
 import { VotingState } from '@/Constants/API/vote'
+import { voting_weight } from '@/Constants/API/vsdb'
 
 const MAX_OBJECTS_PER_REQ = 6
 
@@ -13,13 +19,14 @@ export type Vsdb = {
   id: ObjectId
   level: string
   experience: string
+  vesdb: string
   balance: string
   end: string
   player_epoch: string
   modules: string[]
   amm_state?: AMMState
-  voting_state?: VotingState,
-  display?: DisplayFieldsResponse["data"]
+  voting_state?: VotingState
+  display: DisplayFieldsResponse['data']
 }
 
 export function useGetVSDB(
@@ -51,9 +58,13 @@ export function useGetVSDB(
           ...fields,
           id: fields!.id.id as string,
           modules: fields?.modules.fields.contents ?? [],
-          display
+          display,
         } as Vsdb
       })
+      let all_vesdb = await Promise.all(
+        data.map((vsdb) => voting_weight(rpc, address!, vsdb.id)),
+      )
+      all_vesdb.forEach((vesdb, idx) => (data[idx].vesdb = vesdb))
       return {
         ...res,
         data,
