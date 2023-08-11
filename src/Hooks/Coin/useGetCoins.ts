@@ -4,6 +4,8 @@ import { Coin } from '@/Constants/coin';
 
 const MAX_COINS_PER_REQUEST = 10;
 
+export const get_coins_key = (address: string, coinType:string)=>["get-coins", address, coinType]
+
 export function useGetCoins(
 	coinType: Coin,
 	address?: string | null,
@@ -16,8 +18,8 @@ export function useGetCoins(
 			rpc.getCoins({
 				owner: address!,
 				coinType,
-				cursor: pageParam ? pageParam.cursor : null,
-				limit: maxCoinsPerRequest,
+				//cursor: pageParam ? pageParam.cursor : null,
+				//limit: maxCoinsPerRequest,
 			}),
 		{
 			getNextPageParam: ({ hasNextPage, nextCursor }) =>

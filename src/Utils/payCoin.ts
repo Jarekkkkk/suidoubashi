@@ -2,7 +2,7 @@ import { PaginatedCoins, TransactionBlock } from '@mysten/sui.js'
 export function payCoin(
   txb: TransactionBlock,
   coins: PaginatedCoins,
-  value: number,
+  value: string,
   isSui: boolean,
 ) {
   let fundingCoin: ReturnType<TransactionBlock['splitCoins']>

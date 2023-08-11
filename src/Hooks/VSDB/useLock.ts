@@ -3,19 +3,19 @@ import useRpc from '../useRpc'
 import { useMutation } from '@tanstack/react-query'
 import {
   TransactionBlock,
-  isValidSuiObjectId,
   getExecutionStatusType,
+  getObjectChanges,
+  SuiObjectChangeCreated
 } from '@mysten/sui.js'
-import {  lock } from '@/Constants/API/vsdb'
+import { lock, vsdb_package } from '@/Constants/API/vsdb'
 import { queryClient } from '@/App'
-import { get_vsdb_key } from './useGetVSDB'
 import { Coin } from '@/Constants/coin'
-import { useGetCoins } from '../Coin/useGetCoins'
+import { get_coins_key, useGetCoins } from '../Coin/useGetCoins'
 import { payCoin } from '@/Utils/payCoin'
-import useGetBalance from '../Coin/useGetBalance'
+import useGetBalance, { get_balance_key } from '../Coin/useGetBalance'
+import { get_vsdb_key } from './useGetVSDB'
 
 type MutationProps = {
-  vsdb: string
   depositValue: string
   extended_duration: string
 }
@@ -27,18 +27,21 @@ export const useLock = () => {
   const sdb_balance = useGetBalance(Coin.SDB, currentAccount?.address)
 
   return useMutation({
-    mutationFn: async ({ vsdb, depositValue,extended_duration }: MutationProps) => {
+    mutationFn: async ({ depositValue, extended_duration }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
-      if (!isValidSuiObjectId(vsdb)) throw new Error('invalid VSDB ID')
-      if(!sdb_coins?.data?.pages || sdb_coins?.hasNextPage) throw new Error("getting Coins")
-      if(!sdb_balance?.data?.totalBalance ) throw new Error("getting balance")
-      if(BigInt(depositValue) > BigInt(sdb_balance.data.totalBalance)) throw new Error("Insufficient SDB balance")
+      console.log(!sdb_coins?.data?.pages)
+      console.log(sdb_coins?.hasNextPage)
+      if (!sdb_coins?.data?.pages || sdb_coins?.hasNextPage)
+        throw new Error('getting Coins')
+      if (!sdb_balance?.data?.totalBalance) throw new Error('getting balance')
+      if (BigInt(depositValue) > BigInt(sdb_balance.data.totalBalance))
+        throw new Error('Insufficient SDB balance')
 
       const txb = new TransactionBlock()
       const coin_sdb = payCoin(
         txb,
         sdb_coins.data.pages[0],
-        1000000000000,
+        depositValue,
         false,
       )
       lock(txb, coin_sdb, extended_duration)
@@ -46,18 +49,34 @@ export const useLock = () => {
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
+        options: {
+          showObjectChanges: true,
+        },
       })
 
       if (getExecutionStatusType(res) == 'failure') {
         throw new Error('Vesting Vsdb Tx fail')
       }
-
       console.log(res)
-      return 'success'
+
+      // get createed_objects
+      const new_vsdb = getObjectChanges(res)?.find(
+        (obj) =>
+          obj.type == 'created' &&
+          obj.objectType == `${vsdb_package}::vsdb::Vsdb`,
+      ) as  SuiObjectChangeCreated
+      return new_vsdb 
     },
-    onSuccess: (_, params) => {
+    onSuccess: (new_vsdb, params) => {
+      console.log(new_vsdb)
       queryClient.invalidateQueries({
-        queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
+        queryKey: get_vsdb_key(currentAccount!.address, new_vsdb.objectId),
+      })
+      queryClient.invalidateQueries({
+        queryKey: get_coins_key(currentAccount!.address, Coin.SDB),
+      })
+      queryClient.invalidateQueries({
+        queryKey: get_balance_key(Coin.SDB, currentAccount!.address),
       })
     },
     onError: (err: Error) => console.error(err),

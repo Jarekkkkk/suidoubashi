@@ -20,6 +20,7 @@ import { Coin, Coins } from '@/Constants/coin'
 import { useMintSDB } from '@/Hooks/VSDB/useMintSDB'
 import { useIncreaseUnlockTime } from '@/Hooks/VSDB/useIncreaseUnlockTime'
 import { useRevive } from '@/Hooks/VSDB/useRevive'
+import { useLock } from '@/Hooks/VSDB/useLock'
 export const DashboardContext = React.createContext<DashboardContext>({
   data: null,
   fetching: false,
@@ -49,7 +50,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
       const sdb_coin = payCoin(
         txb,
         sdb_coins.data.pages[0],
-        1000000000000,
+        "1000000000000",
         false,
       )
       lock(txb, sdb_coin, '604800')
@@ -74,8 +75,10 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
 
   // mutation
   const mint_sdb = useMintSDB()
+  const lock = useLock()
   const increase_unlocked_time = useIncreaseUnlockTime()
   const revive = useRevive()
+
 
   const handleFetchData = () => {
     console.log('handle fetch data')
@@ -100,7 +103,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
       <Button
         styleType='outlined'
         text='Lock VSDB'
-        onClick={() => lock_vsdb_action()}
+        onClick={() => lock.mutate({depositValue:"100000000000",extended_duration:"604800"})}
       />
       <Button
         styleType='tonal'
@@ -109,7 +112,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
           if (vsdb?.data?.id)
             increase_unlocked_time.mutate({
               vsdb: vsdb.data.id,
-              extended_duration: '1904800',
+              extended_duration: '604800',
             })
         }}
       />
@@ -133,7 +136,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
           coinValue={formatBalance(balance?.data?.totalBalance ?? '0', 9)}
         />
       ))}
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex-col' }}>
         {nft.map((nft) => {
           const vsdb = !nft?.isLoading && nft?.data ? nft.data : null
           return (

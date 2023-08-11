@@ -21,12 +21,12 @@ export const useIncreaseUnlockTime = () => {
 
   const { signTransactionBlock, currentAccount } = useWalletKit()
   return useMutation({
-    mutationFn: async ({ vsdb, extended_duration }: MutationProps) => {
+    mutationFn: async ({ vsdb, exended_duration }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       if (!isValidSuiObjectId(vsdb)) throw new Error('invalid VSDB ID')
 
       const txb = new TransactionBlock()
-      increase_unlock_time(txb, vsdb, extended_duration)
+      increase_unlock_amount(txb, vsdb, coin_sdb)
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,

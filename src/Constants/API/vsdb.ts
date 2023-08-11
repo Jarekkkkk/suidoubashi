@@ -116,7 +116,7 @@ export async function increase_unlock_time(
 export async function increase_unlock_amount(
   txb: TransactionBlock,
   vsdb: string,
-  coin_sdb:any
+  coin_sdb: any,
 ) {
   txb.moveCall({
     target: `${vsdb_package}::vsdb::increase_unlock_amount`,
@@ -141,7 +141,12 @@ export async function merge(txb: TransactionBlock, self: Vsdb, vsdb: Vsdb) {
   })
 }
 
-export async function revive(txb: TransactionBlock, vsdb: string, withdrawl: string, extended_duration: string) {
+export async function revive(
+  txb: TransactionBlock,
+  vsdb: string,
+  withdrawl: string,
+  extended_duration: string,
+) {
   txb.moveCall({
     target: `${vsdb_package}::vsdb::revive`,
     arguments: [
