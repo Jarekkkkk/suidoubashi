@@ -25,7 +25,7 @@ export default function useGetBalance(coinType: Coin, address?: string | null) {
   )
 }
 
-export function useGetBalances(coin_types: CoinInterface[], address?: string) {
+export function useGetMulBalance(coin_types: CoinInterface[], address?: string) {
   const rpc = useRpc()
   const owned_balances = useQueries({
     queries: coin_types.map(({ type: coinType }) => {

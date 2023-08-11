@@ -1,35 +1,15 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQueries, useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
-import {
-  DisplayFieldsResponse,
-  getObjectDisplay,
-  getObjectFields,
-  ObjectId,
-} from '@mysten/sui.js'
 
-import { AMMState } from '@/Constants/API/pool'
-import { VotingState } from '@/Constants/API/vote'
-import { voting_weight } from '@/Constants/API/vsdb'
+import { useMemo } from 'react'
+
+import {get_vsdb} from '@/Constants/API/vsdb'
 
 const MAX_OBJECTS_PER_REQ = 6
 
 export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE as string
 
-export type Vsdb = {
-  id: ObjectId
-  level: string
-  experience: string
-  vesdb: string
-  balance: string
-  end: string
-  player_epoch: string
-  modules: string[]
-  amm_state?: AMMState
-  voting_state?: VotingState
-  display: DisplayFieldsResponse['data']
-}
-
-export function useGetVSDB(
+export function useGetTotalVsdbID(
   address?: string | null,
   maxObjectRequests = MAX_OBJECTS_PER_REQ,
 ) {
@@ -42,29 +22,13 @@ export function useGetVSDB(
         filter: {
           MatchAll: [{ StructType: `${vsdb_package}::vsdb::Vsdb` }],
         },
-        options: {
-          showContent: true,
-          showDisplay: true,
-        },
         limit: maxObjectRequests,
         cursor: pageParam,
       })
+
       if (res.data.length == 0) return null
 
-      const data = res.data.map((vsdb_d) => {
-        const fields = getObjectFields(vsdb_d)
-        const display = getObjectDisplay(vsdb_d).data
-        return {
-          ...fields,
-          id: fields!.id.id as string,
-          modules: fields?.modules.fields.contents ?? [],
-          display,
-        } as Vsdb
-      })
-      let all_vesdb = await Promise.all(
-        data.map((vsdb) => voting_weight(rpc, address!, vsdb.id)),
-      )
-      all_vesdb.forEach((vesdb, idx) => (data[idx].vesdb = vesdb))
+      const data = res.data.map((vsdb_d) => vsdb_d.data?.objectId)
       return {
         ...res,
         data,
@@ -76,5 +40,44 @@ export function useGetVSDB(
       getNextPageParam: (lastPage) =>
         lastPage?.hasNextPage ? lastPage.nextCursor : null,
     },
+  )
+}
+
+export const get_vsdb_key = (address: string, vsdb: string) => [
+  'vsdb',
+  address,
+  vsdb,
+]
+export const useGetVsdb= (address: string, vsdb?: string) => {
+  const rpc = useRpc()
+  return useQuery(
+    ['vsdb', address, vsdb],
+    () => get_vsdb(rpc, address, vsdb!),
+    {
+      enabled: !!address && !!vsdb,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    },
+  )
+}
+
+export const useGetMulVsdb = (
+  address: string,
+  owned_vsdb?: (string | undefined)[],
+) => {
+  const rpc = useRpc()
+  const mul_vsdb = useQueries({
+    queries:
+      owned_vsdb?.map((id) => {
+        return {
+          queryKey: ['vsdb', address, id],
+          queryFn: () => get_vsdb(rpc, address, id!),
+          enabled: !!address && !!id,
+        }
+      }) ?? [],
+  })
+  return useMemo(
+    () => (!mul_vsdb.length ? [] : mul_vsdb.map((data) => data)),
+    [mul_vsdb],
   )
 }
