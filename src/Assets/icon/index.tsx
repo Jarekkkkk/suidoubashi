@@ -26,11 +26,13 @@ import { ReactComponent as BTCIcon} from '@/Assets/icon/coin/btc.svg'
 import { ReactComponent as WETHIcon} from '@/Assets/icon/coin/weth.svg'
 import { ReactComponent as USDCIcon} from '@/Assets/icon/coin/usdc.svg'
 import { ReactComponent as USDTIcon} from '@/Assets/icon/coin/usdt.svg'
+import { ReactComponent as SDBIcon} from '@/Assets/icon/coin/sdb.svg'
 
 
 export const CoinIcon = {
   BTCIcon,
   WETHIcon,
   USDCIcon,
-  USDTIcon
+  USDTIcon,
+  SDBIcon
 }
