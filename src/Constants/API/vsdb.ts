@@ -4,8 +4,9 @@ import {
   SUI_CLOCK_OBJECT_ID,
   TransactionBlock,
   getObjectFields,
-  isValidSuiAddress,
-  normalizeSuiAddress,
+  getObjectDisplay,
+  DisplayFieldsResponse,
+  getObjectId,
 } from '@mysten/sui.js'
 import { AMMState } from './pool'
 import { VotingState } from './vote'
@@ -28,7 +29,9 @@ export function mint_sdb(txb: TransactionBlock, address: string) {
     target: '0x2::coin::mint_and_transfer',
     typeArguments: [`${vsdb_package}::sdb::SDB`],
     arguments: [
-      txb.object("0x472ec685810e4d0a5c7900a04330379685a1cceb5c9281c089f2e7d4a540438b"),
+      txb.object(
+        '0x472ec685810e4d0a5c7900a04330379685a1cceb5c9281c089f2e7d4a540438b',
+      ),
       txb.pure(100000000000),
       txb.pure(address),
     ],
@@ -39,42 +42,43 @@ export type Vsdb = {
   id: ObjectId
   level: string
   experience: string
+  vesdb: string
   balance: string
   end: string
-  player_epoch: string
   modules: string[]
   amm_state?: AMMState
   voting_state?: VotingState
+  display: DisplayFieldsResponse['data']
 }
 
 export async function get_vsdb(
   rpc: JsonRpcProvider,
   address: string,
-): Promise<Vsdb[] | null> {
-  if (!address) return null
-
-  if (!isValidSuiAddress(address)) return null
-
-  const { data } = await rpc.getOwnedObjects({
-    owner: normalizeSuiAddress(address),
-    filter: {
-      MatchAll: [{ StructType: `${vsdb_package}::vsdb::Vsdb` }],
-    },
+  id: string,
+): Promise<Vsdb> {
+  const res = await rpc.getObject({
+    id,
     options: {
       showContent: true,
       showDisplay: true,
     },
   })
 
-  if (data.length == 0) return null
-
-  return data.map((vsdb_d) => {
-    const fields = getObjectFields(vsdb_d)
-    return {
-      ...fields,
-      id: fields!.id.id as string,
-    } as Vsdb
-  })
+  //@ts-ignore
+  const { balance, level, end, experience, modules } = getObjectFields(res)
+  id = getObjectId(res)
+  const display = getObjectDisplay(res).data
+  const vesdb = await voting_weight(rpc, address, id)
+  return {
+    id,
+    level,
+    balance,
+    end,
+    experience,
+    vesdb,
+    modules: modules.fields.contents,
+    display,
+  } as Vsdb
 }
 
 export async function lock(
@@ -95,15 +99,31 @@ export async function lock(
 
 export async function increase_unlock_time(
   txb: TransactionBlock,
-  vsdb: Vsdb,
+  vsdb: string,
   extended_duration: string,
 ) {
   txb.moveCall({
     target: `${vsdb_package}::vsdb::increase_unlock_time`,
     arguments: [
       txb.object(vsdb_reg),
-      txb.object(vsdb.id),
+      txb.object(vsdb),
       txb.pure(extended_duration),
+      txb.object(SUI_CLOCK_OBJECT_ID),
+    ],
+  })
+}
+
+export async function increase_unlock_amount(
+  txb: TransactionBlock,
+  vsdb: string,
+  coin_sdb:any
+) {
+  txb.moveCall({
+    target: `${vsdb_package}::vsdb::increase_unlock_amount`,
+    arguments: [
+      txb.object(vsdb_reg),
+      txb.object(vsdb),
+      coin_sdb,
       txb.object(SUI_CLOCK_OBJECT_ID),
     ],
   })
@@ -121,12 +141,14 @@ export async function merge(txb: TransactionBlock, self: Vsdb, vsdb: Vsdb) {
   })
 }
 
-export async function revive(txb: TransactionBlock, vsdb: Vsdb) {
+export async function revive(txb: TransactionBlock, vsdb: string, withdrawl: string, extended_duration: string) {
   txb.moveCall({
     target: `${vsdb_package}::vsdb::revive`,
     arguments: [
       txb.object(vsdb_reg),
-      txb.object(vsdb.id),
+      txb.object(vsdb),
+      txb.pure(withdrawl),
+      txb.pure(extended_duration),
       txb.object(SUI_CLOCK_OBJECT_ID),
     ],
   })

@@ -41,8 +41,9 @@ export const Coins: CoinInterface[] = [
   },
   {
     type: Coin.SDB,
-    logo: SDBIcon,
+    logo: <CoinIcon.SDBIcon />,
     name: "SDB"
+
   },
 ]
 

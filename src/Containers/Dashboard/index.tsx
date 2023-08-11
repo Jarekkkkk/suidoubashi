@@ -6,14 +6,20 @@ import { lock } from '@/Constants/API/vsdb'
 import useRpc from '@/Hooks/useRpc'
 import { formatBalance } from '@/Utils/format'
 import { payCoin } from '@/Utils/payCoin'
-import { useGetBalances } from '@/Hooks/Coin/useGetBalance'
+import { useGetMulBalance } from '@/Hooks/Coin/useGetBalance'
 
 import { useGetCoins } from '@/Hooks/Coin/useGetCoins'
-import { useGetVSDB } from '@/Hooks/VSDB/useGetVSDB'
+import {
+  useGetMulVsdb,
+  useGetTotalVsdbID,
+  useGetVsdb,
+} from '@/Hooks/VSDB/useGetVSDB'
 import { Button, Coincard, NFTCard } from '@/Components'
 
 import { Coin, Coins } from '@/Constants/coin'
 import { useMintSDB } from '@/Hooks/VSDB/useMintSDB'
+import { useIncreaseUnlockTime } from '@/Hooks/VSDB/useIncreaseUnlockTime'
+import { useRevive } from '@/Hooks/VSDB/useRevive'
 export const DashboardContext = React.createContext<DashboardContext>({
   data: null,
   fetching: false,
@@ -34,12 +40,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
     '0x0b3fc768f8bb3c772321e3e7781cac4a45585b4bc64043686beb634d65341798'
 
   // -- Balances
-  const balances = useGetBalances(Coins, currentAccount?.address)
-
-  console.log('--- vsdb ---')
-  const vsdb = useGetVSDB(walletAddress)
-  if (!(vsdb.isFetching || vsdb.isLoading || vsdb.hasNextPage) && vsdb?.data)
-    console.log(vsdb.data)
+  const balances = useGetMulBalance(Coins, currentAccount?.address)
 
   const sdb_coins = useGetCoins(Coin.SDB, walletAddress)
   const lock_vsdb_action = async () => {
@@ -64,7 +65,17 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
     }
   }
 
+  const vsdb_ids = useGetTotalVsdbID(walletAddress)
+
+  // multiple VSDB fetching
+  const nft = useGetMulVsdb(walletAddress, vsdb_ids.data?.pages[0]?.data)
+  // singel Vsdb fetching
+  const vsdb = useGetVsdb(walletAddress, nft[0]?.data?.id)
+
+  // mutation
   const mint_sdb = useMintSDB()
+  const increase_unlocked_time = useIncreaseUnlockTime()
+  const revive = useRevive()
 
   const handleFetchData = () => {
     console.log('handle fetch data')
@@ -91,28 +102,59 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
         text='Lock VSDB'
         onClick={() => lock_vsdb_action()}
       />
+      <Button
+        styleType='tonal'
+        text='Increase Unlocked Time'
+        onClick={() => {
+          if (vsdb?.data?.id)
+            increase_unlocked_time.mutate({
+              vsdb: vsdb.data.id,
+              extended_duration: '1904800',
+            })
+        }}
+      />
+      <Button
+        styleType='filled'
+        text='revive'
+        onClick={() => {
+          if (vsdb?.data?.id)
+            revive.mutate({
+              vsdb: vsdb.data.id,
+              withdrawl: '0',
+              extended_duration: '604800',
+            })
+        }}
+      />
       {balances.map((balance, idx) => (
         <Coincard
-          key = {idx}
-          coinIcon={Coins[idx].logo} 
+          key={idx}
+          coinIcon={Coins[idx].logo}
           coinName={Coins[idx].name}
           coinValue={formatBalance(balance?.data?.totalBalance ?? '0', 9)}
         />
       ))}
-      {vsdb?.data?.pages.length!! > 0 && (
-        <NFTCard
-          nftImg={
-            vsdb.data?.pages[0]?.data[0].display?.['image_url'] ??
-            'https://github.com/Jarekkkkk/SuiDouBashi_SC/blob/nfts/0.jpeg?raw=true'
-          }
-          level={vsdb.data?.pages[0]?.data[0].level ?? '0'}
-          expValue={parseInt(vsdb.data?.pages[0]?.data[0].experience ?? '0')}
-          vesdbValue={parseInt(vsdb.data?.pages[0]?.data[0].vesdb ?? '0')}
-          address={vsdb.data?.pages[0]?.data[0].id ?? '0x00'}
-          onCardNextChange={handleFetchData}
-          onCardPrevChange={handleFetchData}
-        />
-      )}
+      <div style={{ display: 'flex' }}>
+        {nft.map((nft) => {
+          const vsdb = !nft?.isLoading && nft?.data ? nft.data : null
+          return (
+            vsdb && (
+              <NFTCard
+                key={vsdb.id}
+                nftImg={
+                  'https://cdn.dribbble.com/userupload/9136133/file/original-d341189818151d42d21356b6ffca165a.jpg?resize=2273x1720'
+                }
+                level={vsdb?.level ?? '0'}
+                expValue={parseInt(vsdb?.experience ?? '0')}
+                sdbValue = {parseInt(vsdb?.balance ?? "0")}
+                vesdbValue={parseInt(vsdb?.vesdb ?? '0')}
+                address={vsdb?.id ?? '0x00'}
+                onCardNextChange={handleFetchData}
+                onCardPrevChange={handleFetchData}
+              />
+            )
+          )
+        })}
+      </div>
       {children}
     </DashboardContext.Provider>
   )
