@@ -1,31 +1,38 @@
-import { ProgressBar } from '@blueprintjs/core';
+import { ProgressBar } from '@blueprintjs/core'
 
-import "@blueprintjs/core/lib/css/blueprint.css";
+import '@blueprintjs/core/lib/css/blueprint.css'
 
-import { Icon } from '@/Assets/icon';
-import * as styles from './index.styles';
-import { cx } from '@emotion/css';
+import { Icon } from '@/Assets/icon'
+import * as styles from './index.styles'
+import { cx } from '@emotion/css'
+import { required_exp } from '@/Utils/game'
 
 interface Props {
-  nftImg: any,
-  level: string,
-  expValue: number,
-  vesdbValue: number,
-  address: string,
-  onCardNextChange: (e: any) => void,
-  onCardPrevChange: (e: any) => void,
+  nftImg: any
+  level: string
+  expValue: number
+  sdbValue: number
+  vesdbValue: number
+  address: string
+  onCardNextChange: (e: any) => void
+  onCardPrevChange: (e: any) => void
 }
 
 const NFTCardComponent = (props: Props) => {
   const {
-    level, address, nftImg,
-    expValue, vesdbValue,
-    onCardNextChange, onCardPrevChange,
-  } = props;
+    level,
+    address,
+    nftImg,
+    expValue,
+    sdbValue,
+    vesdbValue,
+    onCardNextChange,
+    onCardPrevChange,
+  } = props
 
   const handleOnCopy = (value: string) => {
-    navigator.clipboard.writeText(value);
-  };
+    navigator.clipboard.writeText(value)
+  }
 
   return (
     <div className={styles.cardContainer}>
@@ -42,7 +49,7 @@ const NFTCardComponent = (props: Props) => {
         <div className={styles.infoContent}>
           <div className={styles.valueText}>EXP</div>
           <ProgressBar
-            value={expValue}
+            value={expValue / required_exp(parseInt(level) + 1)}
             animate={false}
             stripes={false}
             intent='primary'
@@ -51,7 +58,7 @@ const NFTCardComponent = (props: Props) => {
         <div className={styles.infoContent}>
           <div className={styles.valueText}>VeSDB</div>
           <ProgressBar
-            value={vesdbValue}
+            value={vesdbValue/ sdbValue}
             animate={false}
             stripes={false}
             intent='primary'
@@ -59,13 +66,16 @@ const NFTCardComponent = (props: Props) => {
         </div>
         <div className={styles.addressContent}>
           <span>{address}</span>
-          <div className={styles.copyIcon} onClick={() => handleOnCopy(address)}>
+          <div
+            className={styles.copyIcon}
+            onClick={() => handleOnCopy(address)}
+          >
             <Icon.CopyIcon />
           </div>
         </div>
       </div>
     </div>
   )
-};
+}
 
-export default NFTCardComponent;
+export default NFTCardComponent
