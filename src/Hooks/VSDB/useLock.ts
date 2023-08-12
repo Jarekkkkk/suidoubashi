@@ -5,7 +5,7 @@ import {
   TransactionBlock,
   getExecutionStatusType,
   getObjectChanges,
-  SuiObjectChangeCreated
+  SuiObjectChangeCreated,
 } from '@mysten/sui.js'
 import { lock, vsdb_package } from '@/Constants/API/vsdb'
 import { queryClient } from '@/App'
@@ -13,7 +13,6 @@ import { Coin } from '@/Constants/coin'
 import { get_coins_key, useGetCoins } from '../Coin/useGetCoins'
 import { payCoin } from '@/Utils/payCoin'
 import useGetBalance, { get_balance_key } from '../Coin/useGetBalance'
-import { get_vsdb_key } from './useGetVSDB'
 
 type MutationProps = {
   depositValue: string
@@ -29,8 +28,7 @@ export const useLock = () => {
   return useMutation({
     mutationFn: async ({ depositValue, extended_duration }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
-      console.log(!sdb_coins?.data?.pages)
-      console.log(sdb_coins?.hasNextPage)
+      // shoueld refatorc
       if (!sdb_coins?.data?.pages || sdb_coins?.hasNextPage)
         throw new Error('getting Coins')
       if (!sdb_balance?.data?.totalBalance) throw new Error('getting balance')
@@ -57,21 +55,18 @@ export const useLock = () => {
       if (getExecutionStatusType(res) == 'failure') {
         throw new Error('Vesting Vsdb Tx fail')
       }
-      console.log(res)
 
-      // get createed_objects
-      const new_vsdb = getObjectChanges(res)?.find(
+      return getObjectChanges(res)?.find(
         (obj) =>
           obj.type == 'created' &&
           obj.objectType == `${vsdb_package}::vsdb::Vsdb`,
-      ) as  SuiObjectChangeCreated
-      return new_vsdb 
+      ) as SuiObjectChangeCreated
     },
-    onSuccess: (new_vsdb, params) => {
-      console.log(new_vsdb)
-      queryClient.invalidateQueries({
-        queryKey: get_vsdb_key(currentAccount!.address, new_vsdb.objectId),
-      })
+    onSuccess: (new_vsdb) => {
+      queryClient.setQueryData(
+        ['get-vsdbs', currentAccount!.address],
+        (vsdb_ids?: string[]) => [...(vsdb_ids ?? []), new_vsdb.objectId],
+      )
       queryClient.invalidateQueries({
         queryKey: get_coins_key(currentAccount!.address, Coin.SDB),
       })

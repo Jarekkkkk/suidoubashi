@@ -12,13 +12,13 @@ export function useGetCoins(
 	maxCoinsPerRequest = MAX_COINS_PER_REQUEST,
 ) {
 	const rpc = useRpc()
-	return useInfiniteQuery(
+
+  return useInfiniteQuery(
 		['get-coins', address, coinType],
-		({ pageParam }) =>
+		() =>
 			rpc.getCoins({
 				owner: address!,
-				coinType,
-				//cursor: pageParam ? pageParam.cursor : null,
+				coinType				//cursor: pageParam ? pageParam.cursor : null,
 				//limit: maxCoinsPerRequest,
 			}),
 		{

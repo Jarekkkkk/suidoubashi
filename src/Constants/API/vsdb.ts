@@ -32,7 +32,7 @@ export function mint_sdb(txb: TransactionBlock, address: string) {
       txb.object(
         '0x472ec685810e4d0a5c7900a04330379685a1cceb5c9281c089f2e7d4a540438b',
       ),
-      txb.pure(100000000000),
+      txb.pure(100000000000000),
       txb.pure(address),
     ],
   })
@@ -129,13 +129,13 @@ export async function increase_unlock_amount(
   })
 }
 
-export async function merge(txb: TransactionBlock, self: Vsdb, vsdb: Vsdb) {
+export async function merge(txb: TransactionBlock, self: string, vsdb: string) {
   txb.moveCall({
     target: `${vsdb_package}::vsdb::merge`,
     arguments: [
       txb.object(vsdb_reg),
-      txb.object(self.id),
-      txb.object(vsdb.id),
+      txb.object(self),
+      txb.object(vsdb),
       txb.object(SUI_CLOCK_OBJECT_ID),
     ],
   })
@@ -165,12 +165,12 @@ export interface Deposit {
   unlock_time: string
 }
 
-export async function unlock(txb: TransactionBlock, vsdb: Vsdb) {
+export async function unlock(txb: TransactionBlock, vsdb: string) {
   txb.moveCall({
     target: `${vsdb_package}::vsdb::unlock`,
     arguments: [
       txb.object(vsdb_reg),
-      txb.object(vsdb.id),
+      txb.object(vsdb),
       txb.object(SUI_CLOCK_OBJECT_ID),
     ],
   })

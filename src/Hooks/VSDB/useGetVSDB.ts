@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 
 import {get_vsdb} from '@/Constants/API/vsdb'
 
-const MAX_OBJECTS_PER_REQ = 6
+const MAX_OBJECTS_PER_REQ = 5
 
 export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE as string
 
@@ -43,16 +43,42 @@ export function useGetTotalVsdbID(
   )
 }
 
+export function useGetVsdbIDs(
+  address?: string | null
+) {
+  const rpc = useRpc()
+  return useQuery(
+    ['get-vsdbs', address],
+    async () => {
+      const res = await rpc.getOwnedObjects({
+        owner: address!,
+        filter: {
+          MatchAll: [{ StructType: `${vsdb_package}::vsdb::Vsdb` }],
+        }
+      })
+
+      if (res.data.length == 0) return []
+
+      return res.data.map((vsdb_d) => vsdb_d.data?.objectId)
+    },
+    {
+      staleTime: 10 * 1000,
+      enabled: !!address,
+    },
+  )
+}
+
+
 export const get_vsdb_key = (address: string, vsdb: string) => [
   'vsdb',
   address,
   vsdb,
 ]
-export const useGetVsdb= (address: string, vsdb?: string) => {
+export const useGetVsdb= (address?: string, vsdb?: string) => {
   const rpc = useRpc()
   return useQuery(
     ['vsdb', address, vsdb],
-    () => get_vsdb(rpc, address, vsdb!),
+    () => get_vsdb(rpc, address!, vsdb!),
     {
       enabled: !!address && !!vsdb,
       refetchOnMount: false,
@@ -62,7 +88,7 @@ export const useGetVsdb= (address: string, vsdb?: string) => {
 }
 
 export const useGetMulVsdb = (
-  address: string,
+  address?: string,
   owned_vsdb?: (string | undefined)[],
 ) => {
   const rpc = useRpc()
@@ -71,7 +97,7 @@ export const useGetMulVsdb = (
       owned_vsdb?.map((id) => {
         return {
           queryKey: ['vsdb', address, id],
-          queryFn: () => get_vsdb(rpc, address, id!),
+          queryFn: () => get_vsdb(rpc, address!, id!),
           enabled: !!address && !!id,
         }
       }) ?? [],

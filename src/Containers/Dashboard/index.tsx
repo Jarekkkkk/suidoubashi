@@ -1,26 +1,24 @@
 import React, { useState, useContext } from 'react'
 import { useWalletKit } from '@mysten/wallet-kit'
-import { TransactionBlock } from '@mysten/sui.js'
-import { lock } from '@/Constants/API/vsdb'
 
-import useRpc from '@/Hooks/useRpc'
 import { formatBalance } from '@/Utils/format'
-import { payCoin } from '@/Utils/payCoin'
 import { useGetMulBalance } from '@/Hooks/Coin/useGetBalance'
 
-import { useGetCoins } from '@/Hooks/Coin/useGetCoins'
 import {
   useGetMulVsdb,
-  useGetTotalVsdbID,
   useGetVsdb,
+  useGetVsdbIDs,
 } from '@/Hooks/VSDB/useGetVSDB'
 import { Button, Coincard, NFTCard } from '@/Components'
 
-import { Coin, Coins } from '@/Constants/coin'
+import { Coins } from '@/Constants/coin'
 import { useMintSDB } from '@/Hooks/VSDB/useMintSDB'
 import { useIncreaseUnlockTime } from '@/Hooks/VSDB/useIncreaseUnlockTime'
 import { useRevive } from '@/Hooks/VSDB/useRevive'
 import { useLock } from '@/Hooks/VSDB/useLock'
+import { useIncreaseUnlockAmount } from '@/Hooks/VSDB/useIncreaseUnlockAmount'
+import { useMerge } from '@/Hooks/VSDB/useMerge'
+
 export const DashboardContext = React.createContext<DashboardContext>({
   data: null,
   fetching: false,
@@ -34,51 +32,27 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
   const [data, setData] = useState(null)
   const [fetching, setFetching] = useState(false)
 
-  const provider = useRpc()
-  const { currentAccount, signTransactionBlock } = useWalletKit()
+  const { currentAccount } = useWalletKit()
   const walletAddress =
-    currentAccount?.address ??
-    '0x0b3fc768f8bb3c772321e3e7781cac4a45585b4bc64043686beb634d65341798'
+    currentAccount?.address
 
   // -- Balances
   const balances = useGetMulBalance(Coins, currentAccount?.address)
 
-  const sdb_coins = useGetCoins(Coin.SDB, walletAddress)
-  const lock_vsdb_action = async () => {
-    if (sdb_coins?.data) {
-      const txb = new TransactionBlock()
-      const sdb_coin = payCoin(
-        txb,
-        sdb_coins.data.pages[0],
-        "1000000000000",
-        false,
-      )
-      lock(txb, sdb_coin, '604800')
-      let signed_tx = await signTransactionBlock({ transactionBlock: txb })
-      const res = await provider.executeTransactionBlock({
-        transactionBlock: signed_tx.transactionBlockBytes,
-        signature: signed_tx.signature,
-        options: {
-          showEffects: true,
-        },
-      })
-      console.log(res)
-    }
-  }
-
-  const vsdb_ids = useGetTotalVsdbID(walletAddress)
-
+  const vsdb_ids = useGetVsdbIDs(walletAddress)
   // multiple VSDB fetching
-  const nft = useGetMulVsdb(walletAddress, vsdb_ids.data?.pages[0]?.data)
-  // singel Vsdb fetching
+  const nft = useGetMulVsdb(walletAddress, vsdb_ids?.data)
+
+  // single Vsdb fetching
   const vsdb = useGetVsdb(walletAddress, nft[0]?.data?.id)
 
   // mutation
   const mint_sdb = useMintSDB()
   const lock = useLock()
   const increase_unlocked_time = useIncreaseUnlockTime()
+  const increase_unlocked_amount = useIncreaseUnlockAmount()
+  const merge = useMerge()
   const revive = useRevive()
-
 
   const handleFetchData = () => {
     console.log('handle fetch data')
@@ -103,7 +77,12 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
       <Button
         styleType='outlined'
         text='Lock VSDB'
-        onClick={() => lock.mutate({depositValue:"100000000000",extended_duration:"604800"})}
+        onClick={() =>
+          lock.mutate({
+            depositValue: '100000000000',
+            extended_duration: '604800',
+          })
+        }
       />
       <Button
         styleType='tonal'
@@ -111,13 +90,36 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
         onClick={() => {
           if (vsdb?.data?.id)
             increase_unlocked_time.mutate({
-              vsdb: vsdb.data.id,
-              extended_duration: '604800',
+              vsdb: '0xd58dfec7b6d6a2ed05f520514663fa7bd7855ae3b60ee87a4002e13e3fd980cb',
+              extended_duration: '12804800',
             })
         }}
       />
       <Button
         styleType='filled'
+        text='Increase Unlocked Amount'
+        onClick={() => {
+          if (vsdb?.data?.id)
+            increase_unlocked_amount.mutate({
+              vsdb: '0x1bea82b0770e0631f685d359f5ff3f4f4d78d7cd49767c2ffe34698409c51e50',
+              depositValue: '500000000000',
+            })
+        }}
+      />
+      <Button
+        styleType='tonal'
+        text='Merge'
+        onClick={() => {
+          if (vsdb?.data?.id)
+            merge.mutate({
+              vsdb: '0x1bea82b0770e0631f685d359f5ff3f4f4d78d7cd49767c2ffe34698409c51e50',
+              mergedVsdb:
+                '0xd61ddfbc0b4aa49ad019026ee6e8ee938475c1dc4a82fc4384861b18c0753f85',
+            })
+        }}
+      />
+      <Button
+        styleType='outlined'
         text='revive'
         onClick={() => {
           if (vsdb?.data?.id)
@@ -136,7 +138,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
           coinValue={formatBalance(balance?.data?.totalBalance ?? '0', 9)}
         />
       ))}
-      <div style={{ display: 'flex-col' }}>
+      <div>
         {nft.map((nft) => {
           const vsdb = !nft?.isLoading && nft?.data ? nft.data : null
           return (
@@ -148,7 +150,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
                 }
                 level={vsdb?.level ?? '0'}
                 expValue={parseInt(vsdb?.experience ?? '0')}
-                sdbValue = {parseInt(vsdb?.balance ?? "0")}
+                sdbValue={parseInt(vsdb?.balance ?? '0')}
                 vesdbValue={parseInt(vsdb?.vesdb ?? '0')}
                 address={vsdb?.id ?? '0x00'}
                 onCardNextChange={handleFetchData}

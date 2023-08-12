@@ -23,7 +23,7 @@ export const generateSideBarLinks = () => [
   },
   {
     key: 'Pool',
-    path: '/poo',
+    path: '/pool',
     element: <Pool />,
     title: 'Pool',
     icon: <Icon.PoolIcon />,

@@ -6,26 +6,25 @@ import {
   isValidSuiObjectId,
   getExecutionStatusType,
 } from '@mysten/sui.js'
-import { increase_unlock_time } from '@/Constants/API/vsdb'
 import { queryClient } from '@/App'
 import { get_vsdb_key } from './useGetVSDB'
+import { unlock } from '@/Constants/API/vsdb'
 
 type MutationProps = {
   vsdb: string
-  extended_duration: string
 }
 
-export const useIncreaseUnlockTime = () => {
+export const useUnlock = () => {
   const rpc = useRpc()
-
   const { signTransactionBlock, currentAccount } = useWalletKit()
+
   return useMutation({
-    mutationFn: async ({ vsdb, extended_duration }: MutationProps) => {
+    mutationFn: async ({ vsdb }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       if (!isValidSuiObjectId(vsdb)) throw new Error('invalid VSDB ID')
 
       const txb = new TransactionBlock()
-      increase_unlock_time(txb, vsdb, extended_duration)
+      unlock(txb, vsdb)
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
@@ -33,13 +32,19 @@ export const useIncreaseUnlockTime = () => {
       })
 
       if (getExecutionStatusType(res) == 'failure') {
-        throw new Error('Mint SDB tx fail')
+        throw new Error('Increase Unlock Amount tx fail')
       }
 
-      return 'success'
+      console.log(res)
+      return vsdb
     },
     onSuccess: (_, params) => {
-      queryClient.invalidateQueries({
+      queryClient.setQueryData(
+        ['get-vsdbs', currentAccount!.address],
+        (vsdb_ids?: string[]) =>
+          [...(vsdb_ids ?? [])].filter((id) => id !== params.vsdb),
+      )
+      queryClient.removeQueries({
         queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
       })
     },

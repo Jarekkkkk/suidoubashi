@@ -1,4 +1,3 @@
-
 import { useWalletKit } from '@mysten/wallet-kit'
 import useRpc from '../useRpc'
 import { useMutation } from '@tanstack/react-query'
@@ -7,26 +6,32 @@ import {
   isValidSuiObjectId,
   getExecutionStatusType,
 } from '@mysten/sui.js'
-import { increase_unlock_time } from '@/Constants/API/vsdb'
 import { queryClient } from '@/App'
 import { get_vsdb_key } from './useGetVSDB'
+import { increase_unlock_amount } from '@/Constants/API/vsdb'
+import { get_coins_key, useGetCoins } from '../Coin/useGetCoins'
+import { Coin } from '@/Constants/coin'
+import { payCoin } from '@/Utils/payCoin'
 
 type MutationProps = {
   vsdb: string
-  extended_duration: string
+  depositValue: string
 }
 
-export const useIncreaseUnlockTime = () => {
+export const useIncreaseUnlockAmount = () => {
   const rpc = useRpc()
-
   const { signTransactionBlock, currentAccount } = useWalletKit()
+  const sdb_coins = useGetCoins(Coin.SDB, currentAccount?.address)
+
   return useMutation({
-    mutationFn: async ({ vsdb, exended_duration }: MutationProps) => {
+    mutationFn: async ({ vsdb, depositValue }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       if (!isValidSuiObjectId(vsdb)) throw new Error('invalid VSDB ID')
+      if (!sdb_coins?.data?.pages || sdb_coins?.hasNextPage) throw new Error("fetching Coins")
 
       const txb = new TransactionBlock()
-      increase_unlock_amount(txb, vsdb, coin_sdb)
+      const sdb = payCoin(txb, sdb_coins.data.pages[0], depositValue, false)
+      increase_unlock_amount(txb, vsdb, sdb)
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
@@ -34,15 +39,15 @@ export const useIncreaseUnlockTime = () => {
       })
 
       if (getExecutionStatusType(res) == 'failure') {
-        throw new Error('Mint SDB tx fail')
+        throw new Error('Increase Unlock Amount tx fail')
       }
-
-      console.log(res)
-      return 'success'
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries({
         queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
+      })
+      queryClient.invalidateQueries({
+        queryKey: get_coins_key(currentAccount!.address, Coin.SDB),
       })
     },
     onError: (err: Error) => console.error(err),

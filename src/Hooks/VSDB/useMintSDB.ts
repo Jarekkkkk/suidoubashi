@@ -36,7 +36,6 @@ export const useMintSDB = () => {
       return 'success'
     },
     onSuccess: () => {
-      queryClient.setQueryData([],)
       queryClient.invalidateQueries({
         queryKey: get_balance_key(Coin.SDB, currentAccount!.address)
       })
