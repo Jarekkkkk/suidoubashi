@@ -1,5 +1,5 @@
 
-import { bcs_registry } from "./iindex"
+import { bcs_registry } from "./index"
 import { BCS } from "@mysten/bcs";
 
 export const amm_package = import.meta.env.VITE_AMM_PACKAGE as string

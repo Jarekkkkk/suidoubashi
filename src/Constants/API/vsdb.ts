@@ -32,7 +32,7 @@ export function mint_sdb(txb: TransactionBlock, address: string) {
       txb.object(
         '0x472ec685810e4d0a5c7900a04330379685a1cceb5c9281c089f2e7d4a540438b',
       ),
-      txb.pure(100000000000000),
+      txb.pure(100000000000),
       txb.pure(address),
     ],
   })
@@ -63,9 +63,7 @@ export async function get_vsdb(
       showDisplay: true,
     },
   })
-
-  //@ts-ignore
-  const { balance, level, end, experience, modules } = getObjectFields(res)
+  const { balance, level, end, experience, modules } = getObjectFields(res) as any
   id = getObjectId(res)
   const display = getObjectDisplay(res).data
   const vesdb = await voting_weight(rpc, address, id)
@@ -196,7 +194,6 @@ export async function voting_weight(
     sender,
     transactionBlock: txb,
   })
-
   const returnValue = res?.results?.at(0)?.returnValues?.at(0)
   if (!returnValue) {
     return '0'
@@ -208,12 +205,12 @@ export async function voting_weight(
 }
 
 // Gaming
-export async function upgrade(txb: TransactionBlock, vsdb: Vsdb) {
+export async function upgrade(txb: TransactionBlock, vsdb: string) {
   txb.moveCall({
     target: `${vsdb_package}::vsdb::unlock`,
     arguments: [
       txb.object(vsdb_reg),
-      txb.object(vsdb.id),
+      txb.object(vsdb),
       txb.object(SUI_CLOCK_OBJECT_ID),
     ],
   })
