@@ -14,7 +14,8 @@ import { CoinIcon } from '@/Assets/icon'
 export interface CoinInterface {
   type: Coin,
   logo: any,
-  name: string
+  name: string,
+  decimals: number,
 }
 
 
@@ -22,31 +23,37 @@ export const Coins: CoinInterface[] = [
   {
     type: Coin.BTC,
     logo: <CoinIcon.BTCIcon />,
+    decimals: 8,
     name: "BTC"
   },
   {
     type: Coin.ETH,
     logo: <CoinIcon.WETHIcon />,
+    decimals: 9,
     name: "ETH"
   },
   {
     type: Coin.USDC,
     logo: <CoinIcon.USDCIcon />,
+    decimals: 6,
     name: "USDC"
   },
   {
     type: Coin.USDT,
     logo: <CoinIcon.USDTIcon />,
+    decimals: 6,
     name: "USDT"
   },
   {
     type: Coin.SUI,
     logo: <CoinIcon.SUIIcon />,
+    decimals: 9,
     name: "SUI"
   },
   {
     type: Coin.SDB,
     logo: <CoinIcon.SDBIcon />,
+    decimals: 9,
     name: "SDB"
 
   },
