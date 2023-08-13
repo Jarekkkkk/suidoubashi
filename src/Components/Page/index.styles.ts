@@ -18,6 +18,7 @@ export const mainContent = css`
   flex-direction: row;
   position: relative;
   margin: 0 auto;
+  padding: 14px 12px;
   width: 100%;
   max-width: 1480px;
   height: 100vh;

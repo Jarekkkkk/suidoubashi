@@ -14,8 +14,9 @@ interface Props {
   sdbValue: number
   vesdbValue: number
   address: string
-  onCardNextChange: (e: any) => void
-  onCardPrevChange: (e: any) => void
+  handleFetchNFTData: (e: any) => void
+  isPrevBtnDisplay: boolean,
+  isNextBtnDisplay: boolean,
 }
 
 const NFTCardComponent = (props: Props) => {
@@ -26,8 +27,9 @@ const NFTCardComponent = (props: Props) => {
     expValue,
     sdbValue,
     vesdbValue,
-    onCardNextChange,
-    onCardPrevChange,
+    handleFetchNFTData,
+    isPrevBtnDisplay,
+    isNextBtnDisplay,
   } = props
 
   const handleOnCopy = (value: string) => {
@@ -37,9 +39,9 @@ const NFTCardComponent = (props: Props) => {
   return (
     <div className={styles.cardContainer}>
       <div className={styles.cardContent}>
-        <div className={styles.cardPrev} onClick={onCardNextChange} />
+        {isPrevBtnDisplay && <div className={styles.cardPrev} onClick={() => handleFetchNFTData('prev')} />}
         <img src={nftImg} />
-        <div className={styles.cardNext} onClick={onCardPrevChange} />
+        {isNextBtnDisplay && <div className={styles.cardNext} onClick={() => handleFetchNFTData('next')} />}
       </div>
       <div className={styles.cardInfo}>
         <div className={cx(styles.infoContent, styles.levelContent)}>

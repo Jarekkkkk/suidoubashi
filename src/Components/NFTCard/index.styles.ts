@@ -120,11 +120,17 @@ export const levelContent = css`
 export const addressContent = css`
   display: flex;
   flex-direction: row;
+  margin: 0 auto;
+  width: 80%;
   color: #2977EC;
   font-size: 10px;
 
   span {
     margin-right: 8px;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `
 

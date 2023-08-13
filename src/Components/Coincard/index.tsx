@@ -4,7 +4,7 @@ import * as styles from './index.styles';
 interface Props {
   coinIcon: any,
   coinName: string,
-  coinValue: string,
+  coinValue: number,
 }
 
 const Coincard = (props: Props) => {
@@ -14,7 +14,9 @@ const Coincard = (props: Props) => {
     <div className={styles.coincardContainer}>
       {coinIcon && coinIcon}
       <div className={styles.coinname}>{coinName}</div>
-      <div className={styles.coninvalue}>{coinValue}</div>
+      <div className={styles.coninvalue}>
+        <span>{coinValue}</span>
+      </div>
     </div>
   )
 };
