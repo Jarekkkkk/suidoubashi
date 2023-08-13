@@ -38,7 +38,6 @@ export interface AMMState {
   earned_times: string
 }
 
-
 export type Pool = {
   id: string
   type_x: string
@@ -143,8 +142,8 @@ export function add_liquidity(
   coin_x: any,
   coin_y: any,
   lp: any,
-  deposit_x_min: bigint | number,
-  deposit_y_min: bigint | number,
+  deposit_x_min: number,
+  deposit_y_min: number,
 ) {
   txb.moveCall({
     target: `${amm_package}::pool::add_liquidity`,
@@ -331,11 +330,11 @@ export async function get_lp(
   })
 }
 
-export const create_lp = (txb: TransactionBlock, pool: Pool) => {
+export const create_lp = (txb: TransactionBlock, pool_id: string, type_x: string, type_y: string) => {
   return txb.moveCall({
     target: `${amm_package}::pool::create_lp`,
-    typeArguments: [pool.type_x, pool.type_y],
-    arguments: [txb.object(pool.id)],
+    typeArguments: [type_x, type_y],
+    arguments: [txb.object(pool_id)],
   })
 }
 
