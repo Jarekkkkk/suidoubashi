@@ -4,7 +4,7 @@ import * as styles from './index.styles';
 interface Props {
   coinIcon: any,
   coinName: string,
-  coinValue: number,
+  coinValue: string,
 }
 
 const Coincard = (props: Props) => {

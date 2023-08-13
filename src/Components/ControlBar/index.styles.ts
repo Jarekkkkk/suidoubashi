@@ -7,3 +7,13 @@ export const barContainer = css`
   width: 100%;
   height: 100%;
 `
+
+export const loadingContent = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.70);
+  backdrop-filter: blur(8px);
+`

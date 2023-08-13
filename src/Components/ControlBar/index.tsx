@@ -1,4 +1,4 @@
-import { NFTCard, Tabs, Coincard } from '@/Components';
+import { NFTCard, Tabs, Coincard, Loading } from '@/Components';
 import { Coins } from '@/Constants/coin'
 import { formatBalance } from '@/Utils/format'
 import * as styles from './index.styles';
@@ -18,18 +18,17 @@ interface Props {
 
 const ControlBarComponent = (props: Props) => {
 	const { nftData, coinData, handleFetchNFTData, isPrevBtnDisplay, isNextBtnDisplay } = props;
-  if (!nftData.data) return null;
 
   const tabDataKeys = [
     {
       id: 0,
       title: "Coin",
-      children: coinData.map((balance, idx) => (
+      children: coinData && coinData.map((balance, idx) => (
         <Coincard
           key={idx}
           coinIcon={Coins[idx].logo}
           coinName={Coins[idx].name}
-          coinValue={formatBalance(balance.data.totalBalance ?? '0', 9)}
+          coinValue={formatBalance(balance?.data?.totalBalance, Coins[idx].decimals)}
         />
       )),
     },
@@ -47,18 +46,31 @@ const ControlBarComponent = (props: Props) => {
 
   return (
     <div className={styles.barContainer}>
-      <NFTCard
-        isPrevBtnDisplay={isPrevBtnDisplay}
-        isNextBtnDisplay={isNextBtnDisplay}
-        nftImg={nftData.data.display.image_url}
-        level={nftData.data.level}
-        expValue={parseInt(nftData.data.experience)}
-        sdbValue={parseInt(nftData.data.balance)}
-        vesdbValue={parseInt(nftData.data.vesdb)}
-        address={nftData.data.id}
-        handleFetchNFTData={handleFetchNFTData}
-      />
-      <Tabs links={tabDataKeys} />
+      {
+        !nftData.data ?
+          <div className={styles.loadingContent}>
+            <Loading />
+          </div>
+        :
+          <NFTCard
+            isPrevBtnDisplay={isPrevBtnDisplay}
+            isNextBtnDisplay={isNextBtnDisplay}
+            nftImg={nftData.data.display.image_url}
+            level={nftData.data.level}
+            expValue={parseInt(nftData.data.experience)}
+            sdbValue={parseInt(nftData.data.balance)}
+            vesdbValue={parseInt(nftData.data.vesdb)}
+            address={nftData.data.id}
+            handleFetchNFTData={handleFetchNFTData}
+          />
+      }
+      {
+        !coinData ? (
+          <div className={styles.loadingContent}>
+            <Loading />
+          </div>
+        ) : <Tabs links={tabDataKeys} />
+      }
     </div>
   );
 };
