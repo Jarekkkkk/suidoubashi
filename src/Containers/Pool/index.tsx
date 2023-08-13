@@ -1,54 +1,47 @@
+import {
+  useGetMulPool,
+  useGetPoolIDs,
+} from '@/Hooks/AMM/useGetPool'
 import React, {
-    useState,
-    useEffect,
-    useContext,
-    PropsWithChildren,
-} from 'react';
-import { useParams } from 'react-router-dom';
+  useState,
+  useContext,
+  PropsWithChildren,
+} from 'react'
 
 const PoolContext = React.createContext<PoolContext>({
-    data: null,
-    fetching: false
-});
-export const usePoolContext = () => useContext(PoolContext);
+  data: null,
+  fetching: false,
+})
+export const usePoolContext = () => useContext(PoolContext)
 
 const PoolContainer = ({ children }: PropsWithChildren) => {
-    const [data, setData] = useState(null);
-    const [fetching, setFetching] = useState(false);
+  const [data, setData] = useState(null)
+  const [fetching, setFetching] = useState(false)
 
-    const handleFetchData = () => {
-        return
-    };
+  const pool_ids = useGetPoolIDs()
+  const pools = useGetMulPool(pool_ids?.data)
 
-    const departPool = () => {
-        try {
-            const res = get_pool_reg();
 
-        } catch (error) {
 
-        }
+  const handleFetchData = () => {
+    return
+  }
 
-    };
-
-    useEffect(() => {
-        departPool();
-    }, []);
-    return (
-        <PoolContext.Provider
-            value={{
-                data,
-                fetching,
-            }}
-        >
-            {children}
-        </PoolContext.Provider>
-    );
-};
-
-interface PoolContext {
-    readonly data: [] | null,
-    readonly fetching: boolean,
+  return (
+    <PoolContext.Provider
+      value={{
+        data,
+        fetching,
+      }}
+    >
+      {children}
+    </PoolContext.Provider>
+  )
 }
 
+interface PoolContext {
+  readonly data: [] | null
+  readonly fetching: boolean
+}
 
-export default PoolContainer;
+export default PoolContainer

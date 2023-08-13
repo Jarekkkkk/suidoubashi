@@ -10,9 +10,9 @@ import {
 import { lock, vsdb_package } from '@/Constants/API/vsdb'
 import { queryClient } from '@/App'
 import { Coin } from '@/Constants/coin'
-import { get_coins_key, useGetCoins } from '../Coin/useGetCoins'
+import { get_coins_key } from '../Coin/useGetCoins'
 import { payCoin } from '@/Utils/payCoin'
-import useGetBalance, { get_balance_key } from '../Coin/useGetBalance'
+import { get_balance_key } from '../Coin/useGetBalance'
 
 type MutationProps = {
   depositValue: string
@@ -22,26 +22,18 @@ type MutationProps = {
 export const useLock = () => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
-  const sdb_coins = useGetCoins(Coin.SDB, currentAccount?.address)
-  const sdb_balance = useGetBalance(Coin.SDB, currentAccount?.address)
 
   return useMutation({
     mutationFn: async ({ depositValue, extended_duration }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
-      // shoueld refatorc
-      if (!sdb_coins?.data?.pages || sdb_coins?.hasNextPage)
-        throw new Error('getting Coins')
-      if (!sdb_balance?.data?.totalBalance) throw new Error('getting balance')
-      if (BigInt(depositValue) > BigInt(sdb_balance.data.totalBalance))
-        throw new Error('Insufficient SDB balance')
+      // should refacotr
 
       const txb = new TransactionBlock()
-      const coin_sdb = payCoin(
-        txb,
-        sdb_coins.data.pages[0],
-        depositValue,
-        false,
-      )
+      const sdb_coins = await rpc.getCoins({
+        owner: currentAccount.address,
+        coinType: Coin.SDB,
+      })
+      const coin_sdb = payCoin(txb, sdb_coins, depositValue, false)
       lock(txb, coin_sdb, extended_duration)
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({

@@ -38,36 +38,6 @@ export interface AMMState {
   earned_times: string
 }
 
-/// [GET] PoolReg
-export async function get_pool_reg(
-  rpc: JsonRpcProvider,
-  id: string,
-): Promise<poolReg | null> {
-  if (!isValidSuiObjectId(id)) return null
-
-  const pool_gov = await rpc.getObject({ id, options: defaultOptions })
-  const fields = getObjectFields(pool_gov)
-
-  if (!fields) return null
-
-  const df_id = normalizeSuiObjectId(fields.pools.fields.id.id)
-  const pools_ = await rpc.getDynamicFields({
-    parentId: df_id,
-  })
-
-  const promises = pools_.data.map((df) =>
-    rpc.getDynamicFieldObject({ parentId: df_id, name: df.name }),
-  )
-
-  const pools = (await Promise.all(promises)).map(
-    (pool) => getObjectFields(pool)?.value ?? null,
-  )
-
-  return {
-    ...fields,
-    pools,
-  } as poolReg
-}
 
 export type Pool = {
   id: string
@@ -96,7 +66,10 @@ export async function get_pool(
   rpc: JsonRpcProvider,
   id: string,
 ): Promise<Pool | null> {
-  const pool = await rpc.getObject({ id, options: {showType: true, showContent: true} })
+  const pool = await rpc.getObject({
+    id,
+    options: { showType: true, showContent: true },
+  })
 
   const {
     name,
@@ -142,7 +115,7 @@ export async function get_output(
 ): Promise<string> {
   let txb = new TransactionBlock()
   txb.moveCall({
-    target: `${process.env.package}::pool::get_output`,
+    target: `${amm_package}::pool::get_output`,
     typeArguments: [pool.type_x, pool.type_y, input_type] ?? [],
     arguments: [txb.object(pool.id), txb.pure(input_amount)],
   })
@@ -164,7 +137,9 @@ export async function get_output(
 /// [POST] add_liquidity
 export function add_liquidity(
   txb: TransactionBlock,
-  pool: Pool,
+  pool: string,
+  type_x: string,
+  type_y: string,
   coin_x: any,
   coin_y: any,
   lp: any,
@@ -172,10 +147,10 @@ export function add_liquidity(
   deposit_y_min: bigint | number,
 ) {
   txb.moveCall({
-    target: `${process.env.package}::pool::add_liquidity`,
-    typeArguments: [pool.type_x, pool.type_y] ?? [],
+    target: `${amm_package}::pool::add_liquidity`,
+    typeArguments: [type_x, type_y],
     arguments: [
-      txb.object(pool.id),
+      txb.object(pool),
       coin_x,
       coin_y,
       lp,
@@ -195,7 +170,7 @@ export async function zap_x(
   deposit_y_min: bigint | number,
 ) {
   txb.moveCall({
-    target: `${process.env.package}::pool::zap_x`,
+    target: `${amm_package}::pool::zap_x`,
     typeArguments: [pool.type_x, pool.type_y],
     arguments: [
       txb.object(pool.id),
@@ -217,7 +192,7 @@ export async function zap_y(
   deposit_y_min: bigint | number,
 ) {
   txb.moveCall({
-    target: `${process.env.package}::pool::zap_y`,
+    target: `${amm_package}::pool::zap_y`,
     typeArguments: [pool.type_x, pool.type_y],
     arguments: [
       txb.object(pool.id),
@@ -245,7 +220,7 @@ export function remove_liquidity(
   deposit_y_min: bigint | number | string,
 ) {
   txb.moveCall({
-    target: `${process.env.package}::pool::remove_liquidity`,
+    target: `${amm_package}::pool::remove_liquidity`,
     typeArguments: [pool.type_x, pool.type_y] ?? [],
     arguments: [
       txb.object(pool.id),
@@ -270,7 +245,7 @@ export function swap_for_x(
   output_x_min: bigint | number | string,
 ) {
   txb.moveCall({
-    target: `${process.env.package}::pool::swap_for_x`,
+    target: `${amm_package}::pool::swap_for_x`,
     typeArguments: [pool.type_x, pool.type_y] ?? [],
     arguments: [
       txb.object(pool.id),
@@ -288,7 +263,7 @@ export function swap_for_y(
   output_y_min: bigint | number | string,
 ) {
   txb.moveCall({
-    target: `${process.env.package}::pool::swap_for_y`,
+    target: `${amm_package}::pool::swap_for_y`,
     typeArguments: [pool.type_x, pool.type_y] ?? [],
     arguments: [
       txb.object(pool.id),
@@ -325,7 +300,7 @@ export async function get_lp(
   const { data } = await rpc.getOwnedObjects({
     owner,
     filter: {
-      MatchAll: [{ StructType: `${process.env.package}::pool::LP` }],
+      MatchAll: [{ StructType: `${amm_package}::pool::LP` }],
     },
     options: {
       showType: true,
@@ -358,7 +333,7 @@ export async function get_lp(
 
 export const create_lp = (txb: TransactionBlock, pool: Pool) => {
   return txb.moveCall({
-    target: `${process.env.package}::pool::create_lp`,
+    target: `${amm_package}::pool::create_lp`,
     typeArguments: [pool.type_x, pool.type_y],
     arguments: [txb.object(pool.id)],
   })
@@ -366,7 +341,7 @@ export const create_lp = (txb: TransactionBlock, pool: Pool) => {
 
 export function delete_lp(txb: TransactionBlock, lp: LP) {
   txb.moveCall({
-    target: `${process.env.package}::pool::delete_lp`,
+    target: `${amm_package}::pool::delete_lp`,
     typeArguments: [lp.type_x, lp.type_y] ?? [],
     arguments: [txb.object(lp.id)],
   })
@@ -379,7 +354,7 @@ export async function get_claimable_x(
 ) {
   let txb = new TransactionBlock()
   txb.moveCall({
-    target: `${process.env.package}::pool::get_claimable_x`,
+    target: `${amm_package}::pool::get_claimable_x`,
     typeArguments: [lp.type_x, lp.type_y] ?? [],
     arguments: [txb.object(lp.id)],
   })
@@ -398,7 +373,7 @@ export async function get_claimable_y(
 ) {
   const txb = new TransactionBlock()
   txb.moveCall({
-    target: `${process.env.package}::pool::get_claimable_y`,
+    target: `${amm_package}::pool::get_claimable_y`,
     typeArguments: [lp.type_x, lp.type_y] ?? [],
     arguments: [txb.object(lp.id)],
   })
