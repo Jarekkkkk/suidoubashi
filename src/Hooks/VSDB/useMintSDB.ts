@@ -11,14 +11,16 @@ import { mint_sdb } from '@/Constants/API/vsdb'
 import { queryClient } from '@/App'
 import { get_balance_key } from '../Coin/useGetBalance'
 
-
-
 export const useMintSDB = () => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
   return useMutation({
     mutationFn: async () => {
-      if (!currentAccount?.address || !isValidSuiAddress(currentAccount.address)) throw new Error('no wallet address')
+      if (
+        !currentAccount?.address ||
+        !isValidSuiAddress(currentAccount.address)
+      )
+        throw new Error('no wallet address')
 
       const txb = new TransactionBlock()
       mint_sdb(txb, currentAccount.address)
@@ -26,18 +28,15 @@ export const useMintSDB = () => {
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
-        options:{showBalanceChanges: true}
+        options: { showBalanceChanges: true },
       })
-
       if (getExecutionStatusType(res) == 'failure') {
         throw new Error('Mint SDB tx fail')
       }
-
-      return 'success'
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: get_balance_key(Coin.SDB, currentAccount!.address)
+        queryKey: get_balance_key(Coin.SDB, currentAccount!.address),
       })
     },
     onError: (err: Error) => console.error(err),

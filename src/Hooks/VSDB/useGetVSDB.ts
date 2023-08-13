@@ -39,7 +39,7 @@ export function useGetTotalVsdbID(
       enabled: !!address,
       getNextPageParam: (lastPage) =>
         lastPage?.hasNextPage ? lastPage.nextCursor : null,
-    },
+    }
   )
 }
 
@@ -67,7 +67,6 @@ export function useGetVsdbIDs(
     },
   )
 }
-
 
 export const get_vsdb_key = (address: string, vsdb: string) => [
   'vsdb',
