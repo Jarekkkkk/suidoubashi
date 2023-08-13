@@ -1,9 +1,6 @@
 import { css } from '@emotion/css'
 
 export const sidebarContainer = css`
-  position: absolute;
-  left: 15px;
-  top: 15px;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;

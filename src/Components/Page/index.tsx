@@ -8,9 +8,11 @@ const PageComponent = (props: Props) => {
 
 	return (
 		<div className={styles.layoutContainer}>
-			<Sidebar isOpen={true} />
 			<div className={styles.mainContent}>
-				{children}
+				<Sidebar isOpen={true} />
+				<div className={styles.content}>
+					{children}
+				</div>
 			</div>
 		</div>
 	);
