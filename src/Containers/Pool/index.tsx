@@ -1,7 +1,7 @@
 import { Button } from '@/Components'
 import { Coin } from '@/Constants/coin'
 import { useAddLiquidity } from '@/Hooks/AMM/useAddLiquidity'
-import { useGetLP, useGetMulLP } from '@/Hooks/AMM/useGetLP'
+import {  useGetMulLP } from '@/Hooks/AMM/useGetLP'
 import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { useWalletKit } from '@mysten/wallet-kit'
