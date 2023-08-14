@@ -6,7 +6,7 @@ import { getObjectFields, getObjectType } from '@mysten/sui.js'
 export const useGetMulLP = (address?: string) => {
   const rpc = useRpc()
   return useQuery(
-    ['lp'],
+    ['LP'],
     async () => {
       const res = await rpc.getOwnedObjects({
         owner: address!,
@@ -42,11 +42,6 @@ export const useGetMulLP = (address?: string) => {
             } as LP,
           ]
         })
-        .reduce((a, v: any) => {
-          return { ...a,[v[0]]: {
-[v[1]]:v[2]
-          } }
-        }, {})
     },
     {
       enabled: !!address,
