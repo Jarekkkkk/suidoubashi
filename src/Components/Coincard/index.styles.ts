@@ -86,6 +86,7 @@ export const lpvalueContent = css`
   width: 100%;
 
   div {
+    position: relative;
     font-size: 20px;
     font-weight: bold;
     color: #000;
@@ -96,6 +97,10 @@ export const lpvalueContent = css`
     font-weight: normal;
     color: #A4A8B2;
     line-height: 1;
+
+    &:nth-child(3) {
+      margin-top: 6px;
+    }
   }
 `
 

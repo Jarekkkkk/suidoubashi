@@ -37,7 +37,9 @@ const Coincard = (props: Props) => {
               <div className={styles.lpName}>{coinXName}/{coinYName}</div>
             </div>
             <div className={styles.lpvalueContent}>
+              <span>{coinXName}</span>
               <div>{coinXValue}</div>
+              <span>{coinYName}</span>
               <div>{coinYValue}</div>
             </div>
           </>
