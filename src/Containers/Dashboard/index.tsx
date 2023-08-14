@@ -69,13 +69,13 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
       }}
     >
       <Button
-        styleType='filled'
+        styletype='filled'
         text='Mint SDB'
         onClick={() => mint_sdb.mutate()}
       />
       {mint_sdb.isLoading && <div>Loading</div>}
       <Button
-        styleType='outlined'
+        styletype='outlined'
         text='Lock VSDB'
         onClick={() =>
           lock.mutate({
@@ -85,7 +85,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
         }
       />
       <Button
-        styleType='tonal'
+        styletype='tonal'
         text='Increase Unlocked Time'
         onClick={() => {
           if (vsdb?.data?.id)
@@ -96,7 +96,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
         }}
       />
       <Button
-        styleType='filled'
+        styletype='filled'
         text='Increase Unlocked Amount'
         onClick={() => {
           if (vsdb?.data?.id)
@@ -107,7 +107,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
         }}
       />
       <Button
-        styleType='tonal'
+        styletype='tonal'
         text='Merge'
         onClick={() => {
           if (vsdb?.data?.id)
@@ -119,7 +119,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
         }}
       />
       <Button
-        styleType='outlined'
+        styletype='outlined'
         text='revive'
         onClick={() => {
           if (vsdb?.data?.id)
@@ -130,36 +130,6 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
             })
         }}
       />
-      {balances.map((balance, idx) => (
-        <Coincard
-          key={idx}
-          coinIcon={Coins[idx].logo}
-          coinName={Coins[idx].name}
-          coinValue={formatBalance(balance?.data?.totalBalance ?? '0', 9)}
-        />
-      ))}
-      <div>
-        {nft.map((nft) => {
-          const vsdb = !nft?.isLoading && nft?.data ? nft.data : null
-          return (
-            vsdb && (
-              <NFTCard
-                key={vsdb.id}
-                nftImg={
-                  'https://cdn.dribbble.com/userupload/9136133/file/original-d341189818151d42d21356b6ffca165a.jpg?resize=2273x1720'
-                }
-                level={vsdb?.level ?? '0'}
-                expValue={parseInt(vsdb?.experience ?? '0')}
-                sdbValue={parseInt(vsdb?.balance ?? '0')}
-                vesdbValue={parseInt(vsdb?.vesdb ?? '0')}
-                address={vsdb?.id ?? '0x00'}
-                onCardNextChange={handleFetchData}
-                onCardPrevChange={handleFetchData}
-              />
-            )
-          )
-        })}
-      </div>
       {children}
     </DashboardContext.Provider>
   )
