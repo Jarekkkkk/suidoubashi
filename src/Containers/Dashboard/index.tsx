@@ -67,17 +67,16 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
         handleFetchData,
       }}
     >
+      {/*
       <Button
         styletype='filled'
         text='Mint SDB'
         onClick={() => mint_sdb.mutate()}
       />
       {mint_sdb.isLoading && <div>Loading</div>}
-<<<<<<< HEAD
       <Button
         styletype='outlined'
-=======
-      {/*     <Button
+      <Button
         styleType='outlined'
 >>>>>>> 70fcc47 ([front_end] LP hooks setup)
         text='Lock VSDB'
@@ -166,7 +165,6 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
           )
         })}
       </div>*/}
->>>>>>> 70fcc47 ([front_end] LP hooks setup)
       {children}
     </DashboardContext.Provider>
   )

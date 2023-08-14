@@ -46,10 +46,10 @@ export const useGetMulPool = (pool_ids?: (string | undefined)[]) => {
   )
 }
 
-export const useGetPool = (pool_id: string) => {
+export const useGetPool = (pool_id?: string) => {
   const rpc = useRpc()
   return useQuery(['pool', pool_id], () => get_pool(rpc, pool_id!), {
-    enabled: !pool_id,
+    enabled: !!pool_id,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   })

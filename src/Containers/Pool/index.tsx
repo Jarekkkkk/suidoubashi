@@ -1,8 +1,12 @@
 import { Button } from '@/Components'
 import { Coin } from '@/Constants/coin'
 import { useAddLiquidity } from '@/Hooks/AMM/useAddLiquidity'
-import {  useGetMulLP } from '@/Hooks/AMM/useGetLP'
-import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
+import { useGetMulLP } from '@/Hooks/AMM/useGetLP'
+import {
+  useGetMulPool,
+  useGetPool,
+  useGetPoolIDs,
+} from '@/Hooks/AMM/useGetPool'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { useWalletKit } from '@mysten/wallet-kit'
 import React, { useState, useContext, PropsWithChildren } from 'react'
@@ -22,12 +26,9 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   const pools = useGetMulPool(pool_ids?.data)
   const add_liquidity = useAddLiquidity()
 
-  //coins
   const balance_x = useGetBalance(Coin.SDB, currentAccount?.address)
-
-  const lps = useGetMulLP(currentAccount?.address)
-  console.log(lps?.data)
-
+  const pool = useGetPool(pool_ids?.data?.[0])
+  console.log(pool)
   const handleAddLiquidity = () => {
     if (pools[0]?.data && balance_x.data?.coinType) {
       const pool = pools[0].data
