@@ -1,41 +1,85 @@
 import { NFTCard, Tabs, Coincard, Loading } from '@/Components';
-import { Coins } from '@/Constants/coin'
+import { Coin, Coins } from '@/Constants/coin'
 import { formatBalance } from '@/Utils/format'
 import * as styles from './index.styles';
 import { Key } from 'react';
 
 interface Props {
   nftData: any,
-  coinData: Array<{
-    [x: string]: any;
-    balance: { data: { totalBalance: any; }; },
-    idx: Key,
-  }>,
+  coinData: any,
+  lpData: any,
   handleFetchNFTData: (e: any) => void,
   isPrevBtnDisplay: boolean,
   isNextBtnDisplay: boolean,
 }
 
+const fetchIcon = (type: Coin) => Coins.filter(coin => coin.type === type)[0];
+
 const ControlBarComponent = (props: Props) => {
-	const { nftData, coinData, handleFetchNFTData, isPrevBtnDisplay, isNextBtnDisplay } = props;
+	const {
+    nftData, coinData, lpData,
+    handleFetchNFTData, isPrevBtnDisplay, isNextBtnDisplay
+  } = props;
 
   const tabDataKeys = [
     {
       id: 0,
       title: "Coin",
-      children: coinData && coinData.map((balance, idx) => (
-        <Coincard
-          key={idx}
-          coinIcon={Coins[idx].logo}
-          coinName={Coins[idx].name}
-          coinValue={formatBalance(balance?.data?.totalBalance, Coins[idx].decimals)}
-        />
-      )),
+      children: coinData && coinData
+      .sort((
+        prev: {
+          data: { totalBalance: any; };
+        },
+        next: {
+          data: { totalBalance: any; };
+        }) => Number(next.data?.totalBalance) - Number(prev.data?.totalBalance))
+      .map((
+        balance: {
+          data: {
+            coinType: Coin;
+            totalBalance: string | number | bigint;
+          };
+        },
+        idx: Key | null | undefined) => {
+        if (!balance.data) return <div className={styles.cardLoadingContent}><Loading /></div>;
+        const _coinIdx = fetchIcon(balance.data.coinType);
+
+        return (
+          <Coincard
+            key={idx}
+            coinXIcon={_coinIdx.logo}
+            coinXName={_coinIdx.name}
+            coinXValue={formatBalance(balance.data.totalBalance, _coinIdx.decimals)}
+          />
+      )}),
     },
     {
       id: 1,
       title: "LP",
-      children: <p>3333</p>,
+      children: lpData && lpData.map((
+          data: {
+            type_x: Coin; type_y: Coin;
+            claimable_x: string | number | bigint;
+            claimable_y: string | number | bigint;
+          },
+          idx: Key | null | undefined
+        ) => {
+          if (!data) return <div className={styles.cardLoadingContent}><Loading /></div>;
+        const _coinXIdx =  fetchIcon(data.type_x);
+        const _coinYIdx =  fetchIcon(data.type_y);
+
+        return (
+          <Coincard
+            key={idx}
+            coinXIcon={_coinXIdx.logo}
+            coinXName={_coinXIdx.name}
+            coinXValue={formatBalance(data?.claimable_x, _coinXIdx.decimals)}
+            coinYIcon={_coinYIdx.logo}
+            coinYName={_coinYIdx.name}
+            coinYValue={formatBalance(data?.claimable_y, _coinYIdx.decimals)}
+          />
+        )
+      }),
     },
     {
       id: 2,

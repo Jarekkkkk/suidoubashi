@@ -16,6 +16,7 @@ export const layoutContainer = css`
 export const mainContent = css`
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   position: relative;
   margin: 0 auto;
   padding: 14px 12px;

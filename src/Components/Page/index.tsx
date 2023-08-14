@@ -6,6 +6,7 @@ import {
   useGetVsdb,
   useGetVsdbIDs,
 } from '@/Hooks/VSDB/useGetVSDB';
+import { useGetMulLP } from '@/Hooks/AMM/useGetLP'
 
 import { Coins } from '@/Constants/coin';
 import { Sidebar, ControlBar } from '@/Components';
@@ -25,6 +26,8 @@ const PageComponent = (props: Props) => {
 	const _nftData = useGetVsdb(walletAddress, vsdb_ids?.data?.[currentVsdbId])
   const balances = useGetMulBalance(Coins, currentAccount?.address);
 
+  const lps = useGetMulLP(currentAccount?.address)
+
 	const handleFetchNFTData = (mode: string) => {
 		if (vsdb_ids.data && vsdb_ids.data.length > 0 && currentVsdbId < vsdb_ids.data.length) {
 			if (mode === 'next') {
@@ -39,8 +42,6 @@ const PageComponent = (props: Props) => {
 		}
 	};
 
-	console.log('balances', balances);
-
 	return (
 		<div className={styles.layoutContainer}>
 			<div className={styles.mainContent}>
@@ -53,6 +54,7 @@ const PageComponent = (props: Props) => {
 					isNextBtnDisplay={vsdb_ids?.data && currentVsdbId < (Number(vsdb_ids?.data.length) - 1) || false}
 					nftData={_nftData}
 					coinData={balances}
+					lpData={lps.data}
 					handleFetchNFTData={handleFetchNFTData}
 				/>
 			</div>

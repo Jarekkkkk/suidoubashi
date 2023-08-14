@@ -1,4 +1,4 @@
-
+import { Loading } from '@/Components';
 import * as styles from './index.styles';
 
 interface Props {
@@ -14,6 +14,7 @@ const Coincard = (props: Props) => {
   const { coinXIcon, coinXName, coinXValue,
     coinYIcon, coinYName, coinYValue,
    } = props;
+   if (!coinXIcon) return <Loading />;
 
   return (
     <div className={styles.coincardContainer}>
