@@ -59,3 +59,59 @@ export const coninvalue = css`
     line-height: 1;
   }
 `
+
+export const lpContent = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: left;
+
+  svg {
+    margin-bottom: 4px;
+  }
+`
+
+export const lpName = css`
+  width: 6rem;
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+  line-height: 1;
+`
+
+export const lpvalueContent = css`
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+  width: 100%;
+
+  div {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+  }
+
+  span {
+    font-size: 12px;
+    font-weight: normal;
+    color: #A4A8B2;
+    line-height: 1;
+  }
+`
+
+export const coinCombin = css`
+  position: relative;
+  width: 100%;
+  text-align: left;
+
+  svg:nth-child(1) {
+    position: relative;
+    z-index: 1;
+  }
+
+  svg:nth-last-child(1) {
+    position: absolute;
+    left: 20px;
+    z-index: 0;
+  }
+`

@@ -2,21 +2,46 @@
 import * as styles from './index.styles';
 
 interface Props {
-  coinIcon: any,
-  coinName: string,
-  coinValue: string,
+  coinXIcon: any,
+  coinXName: string,
+  coinXValue: string,
+  coinYIcon?: any,
+  coinYName?: string,
+  coinYValue?: string,
 }
 
 const Coincard = (props: Props) => {
-  const { coinIcon, coinName, coinValue } = props;
+  const { coinXIcon, coinXName, coinXValue,
+    coinYIcon, coinYName, coinYValue,
+   } = props;
 
   return (
     <div className={styles.coincardContainer}>
-      {coinIcon && coinIcon}
-      <div className={styles.coinname}>{coinName}</div>
-      <div className={styles.coninvalue}>
-        <span>{coinValue}</span>
-      </div>
+      {
+        !coinYIcon ? (
+          <>
+            {coinXIcon && coinXIcon}
+            <div className={styles.coinname}>{coinXName}</div>
+            <div className={styles.coninvalue}>
+              <span>{coinXValue}</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className={styles.lpContent}>
+              <div className={styles.coinCombin}>
+                {coinXIcon && coinXIcon}
+                {coinYIcon && coinYIcon}
+              </div>
+              <div className={styles.lpName}>{coinXName}/{coinYName}</div>
+            </div>
+            <div className={styles.lpvalueContent}>
+              <div>{coinXValue}</div>
+              <div>{coinYValue}</div>
+            </div>
+          </>
+        )
+      }
     </div>
   )
 };
