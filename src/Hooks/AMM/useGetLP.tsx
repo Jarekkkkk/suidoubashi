@@ -18,30 +18,27 @@ export const useGetMulLP = (address?: string) => {
 
       if (res.data.length == 0) return null
 
-      return res.data
-        .map((lp) => {
-          const { id, lp_balance, claimable_x, claimable_y } = getObjectFields(
-            lp,
-          ) as any
-          const type = getObjectType(lp)
+      return res.data.map((lp) => {
+        const { id, lp_balance, claimable_x, claimable_y } = getObjectFields(
+          lp,
+        ) as any
+        const type = getObjectType(lp)
 
-          const [X, Y] =
-            type
-              ?.slice(type.indexOf('<') + 1, type.indexOf('>'))
-              .split(',')
-              .map((t) => t.trim()) ?? []
+        const [X, Y] =
+          type
+            ?.slice(type.indexOf('<') + 1, type.indexOf('>'))
+            .split(',')
+            .map((t) => t.trim()) ?? []
 
-          return [
-            X,
-            Y,
-            {
-              id: id.id,
-              lp_balance: lp_balance,
-              claimable_x,
-              claimable_y,
-            } as LP,
-          ]
-        })
+        return {
+            id: id.id,
+            type_x: X,
+            type_y: Y,
+            lp_balance: lp_balance,
+            claimable_x,
+            claimable_y,
+          } as LP
+      })
     },
     {
       enabled: !!address,
