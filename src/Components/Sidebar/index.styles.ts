@@ -39,6 +39,10 @@ export const sidebarButton = css`
     color: #595959;
     text-decoration-line: unset;
     transition: 0.3s;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   svg {
