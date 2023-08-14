@@ -7,9 +7,7 @@ import {
   getObjectFields,
   getObjectType,
   isValidSuiAddress,
-  isValidSuiObjectId,
   normalizeSuiAddress,
-  normalizeSuiObjectId,
 } from '@mysten/sui.js'
 import { bcs_registry } from '../bcs'
 
@@ -142,8 +140,8 @@ export function add_liquidity(
   coin_x: any,
   coin_y: any,
   lp: any,
-  deposit_x_min: number,
-  deposit_y_min: number,
+  deposit_x_min: bigint | number,
+  deposit_y_min: bigint | number,
 ) {
   txb.moveCall({
     target: `${amm_package}::pool::add_liquidity`,
@@ -330,7 +328,12 @@ export async function get_lp(
   })
 }
 
-export const create_lp = (txb: TransactionBlock, pool_id: string, type_x: string, type_y: string) => {
+export const create_lp = (
+  txb: TransactionBlock,
+  pool_id: string,
+  type_x: string,
+  type_y: string,
+) => {
   return txb.moveCall({
     target: `${amm_package}::pool::create_lp`,
     typeArguments: [type_x, type_y],

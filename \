@@ -42,10 +42,8 @@ export const useGetMulLP = (address?: string) => {
             } as LP,
           ]
         })
-        .reduce((a, v: any) => {
-          return { ...a,[v[0]]: {
-[v[1]]:v[2]
-          } }
+        .reduce((a,v:any) => {
+          return ({...a, [v]:v})
         }, {})
     },
     {
