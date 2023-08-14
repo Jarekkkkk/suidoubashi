@@ -28,11 +28,22 @@ const ControlBarComponent = (props: Props) => {
       children: coinData && coinData
       .sort((
         prev: {
-          data: { totalBalance: any; };
+          data: {
+            coinType: Coin;
+            totalBalance: any;
+          };
         },
         next: {
-          data: { totalBalance: any; };
-        }) => Number(next.data?.totalBalance) - Number(prev.data?.totalBalance))
+          data: {
+            coinType: Coin;
+            totalBalance: any;
+          };
+        }) => {
+          const _prevIdx = fetchIcon(prev.data?.coinType)?.decimals || 0;
+          const _nextIdx = fetchIcon(next.data?.coinType)?.decimals || 0;
+
+          return Number(BigInt(next.data?.totalBalance ?? "0")* BigInt("10") ** BigInt((9 - _nextIdx).toString()) - BigInt(prev.data?.totalBalance ?? "0")* BigInt("10") ** BigInt((9 - _prevIdx).toString()))
+        })
       .map((
         balance: {
           data: {
