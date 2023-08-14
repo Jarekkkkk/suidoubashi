@@ -24,7 +24,7 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
 
   //coins
   const balance_x = useGetBalance(Coin.SDB, currentAccount?.address)
-  
+
   const lps = useGetMulLP(currentAccount?.address)
   console.log(lps?.data)
 
@@ -52,7 +52,7 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
         fetching,
       }}
     >
-      <Button styleType='filled' text='Mint SDB' onClick={handleAddLiquidity} />
+      <Button styletype='filled' text='Mint SDB' onClick={handleAddLiquidity} />
       {children}
     </PoolContext.Provider>
   )

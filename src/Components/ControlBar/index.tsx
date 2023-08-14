@@ -52,7 +52,7 @@ const ControlBarComponent = (props: Props) => {
           };
         },
         idx: Key | null | undefined) => {
-        if (!balance.data) return <div className={styles.cardLoadingContent}><Loading /></div>;
+        if (!balance.data) return <div key={idx} className={styles.cardLoadingContent}><Loading /></div>;
         const _coinIdx = fetchIcon(balance.data.coinType);
 
         return (
