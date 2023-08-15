@@ -6,7 +6,7 @@ import { getObjectFields, getObjectType } from '@mysten/sui.js'
 export const useGetMulLP = (address?: string) => {
   const rpc = useRpc()
   return useQuery(
-    ['LP'],
+    ['LP', address],
     async () => {
       const res = await rpc.getOwnedObjects({
         owner: address!,
@@ -16,7 +16,7 @@ export const useGetMulLP = (address?: string) => {
         options: { showType: true, showContent: true },
       })
 
-      if (res.data.length == 0) return null
+      if (res.data.length == 0) return []
 
       return res.data.map((lp) => {
         const { id, lp_balance, claimable_x, claimable_y } = getObjectFields(

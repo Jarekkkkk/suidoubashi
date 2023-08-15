@@ -4,7 +4,7 @@ export enum Coin {
   USDC = '0xd60d2e85c82048a43a67fb90a5f7e0d47c466a8444ec4fa1a010da29034dfbe1::mock_usdc::MOCK_USDC',
   USDT = '0xd60d2e85c82048a43a67fb90a5f7e0d47c466a8444ec4fa1a010da29034dfbe1::mock_usdt::MOCK_USDT',
   SUI = '0x2::sui::SUI',
-  SDB = '0x2cbce1ca3f0a0db8ec8e920eeb4602bf88c1dbb639edcb3c7cd4c579a7be77c5::sdb::SDB',
+  SDB = '0x6fe46b9ab46be33d41159656faaccada37cbe256eeb60c949b02b143a2d3857a::sdb::SDB',
 }
 
 import { CoinIcon } from '@/Assets/icon'

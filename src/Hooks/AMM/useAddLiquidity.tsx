@@ -11,6 +11,7 @@ import {
 import { payCoin } from '@/Utils/payCoin'
 import { add_liquidity, amm_package, create_lp } from '@/Constants/API/pool'
 import { SettingInterface } from '@/Constants/setting'
+import { queryClient } from '@/App'
 
 type AddLiquidityMutationArgs = {
   pool_id: string
@@ -60,7 +61,8 @@ export const useAddLiquidity = () => {
         pool_type_x == SUI_TYPE_ARG,
       )
       const deposit_x_min =
-        (BigInt('10000') - BigInt(setting.slippage)) * BigInt(coin_x_value) * BigInt('10000')
+        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(coin_x_value)) /
+        BigInt('10000')
       // coni_y
       const coins_y = await rpc.getCoins({
         owner: currentAccount.address,
@@ -73,7 +75,8 @@ export const useAddLiquidity = () => {
         pool_type_y == SUI_TYPE_ARG,
       )
       const deposit_y_min =
-        (BigInt('10000') - BigInt(setting.slippage)) * BigInt(coin_y_value) * BigInt('10000')
+        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(coin_y_value)) /
+        BigInt('10000')
       // LO
       let lp = lp_id
         ? txb.pure(lp_id)
@@ -103,17 +106,19 @@ export const useAddLiquidity = () => {
           deposit_x_min,
         )
       }
-      
+
       // return id first time deposit
-      if(lp_id == null){
+      if (lp_id == null) {
         txb.transferObjects([lp], txb.pure(currentAccount.address))
       }
+
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
         options: {
           showObjectChanges: true,
+          showEvents: true,
         },
       })
 
@@ -121,9 +126,18 @@ export const useAddLiquidity = () => {
         throw new Error('Vesting Vsdb Tx fail')
       }
 
-      console.log(res)
+      return res.events?.find((e) =>
+        e.type.startsWith(`${amm_package}::event::LiquidityAdded`),
+      )?.parsedJson
     },
-    onSuccess: () => {},
-    onError: () => {},
+    onSuccess: ({ deposit_x, deposit_y }) => {
+      queryClient.setQueryData(
+        ['get-vsdbs', currentAccount!.address],
+        (vsdb_ids?: string[]) => [...(vsdb_ids ?? []), new_vsdb.objectId],
+      )
+    },
+    onError: (err: Error) => {
+      console.log(err)
+    },
   })
 }
