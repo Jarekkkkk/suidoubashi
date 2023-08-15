@@ -3,9 +3,10 @@ import { ProgressBar } from '@blueprintjs/core'
 import '@blueprintjs/core/lib/css/blueprint.css'
 
 import { Icon } from '@/Assets/icon'
-import * as styles from './index.styles'
 import { cx } from '@emotion/css'
 import { required_exp } from '@/Utils/game'
+import Image from '@/Assets/image'
+import * as styles from './index.styles'
 
 interface Props {
   nftImg: any
@@ -40,7 +41,7 @@ const NFTCardComponent = (props: Props) => {
     <div className={styles.cardContainer}>
       <div className={styles.cardContent}>
         {isPrevBtnDisplay && <div className={styles.cardPrev} onClick={() => handleFetchNFTData('prev')} />}
-        <img src={nftImg} />
+        <img src={nftImg || Image.nftDefault} />
         {isNextBtnDisplay && <div className={styles.cardNext} onClick={() => handleFetchNFTData('next')} />}
       </div>
       <div className={styles.cardInfo}>
