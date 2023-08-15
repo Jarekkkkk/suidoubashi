@@ -28,7 +28,12 @@ export const vestCardLoadingContainer = css`
   align-items: center;
   justify-content: center;
   min-height: 300px;
+  border-radius: 12px;
   box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+
+  &:not(:nth-last-child(1)) {
+    margin-bottom: 12px;
+  }
 `
 export const vestCardContainer = css`
   display: flex;
