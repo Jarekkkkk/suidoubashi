@@ -15,7 +15,7 @@ export const amm_package = import.meta.env.VITE_AMM_PACKAGE as string
 export const pool_reg = import.meta.env.VITE_POOL_REG as string
 
 export const pools_df_id =
-  '0xd1792cdc93fbc30c05f87231748d88cc7417495987f4de27cd99e6ad5565d80b'
+  '0xf1040bf11169822ce043fe86462d92d3c7023b7da8cbfe1ba6f2452b1ba653ac'
 export const defaultOptions = {
   showType: true,
   showContent: true,

@@ -79,7 +79,7 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
         fetching,
       }}
     >
-      <Button styletype='filled' text='Mint SDB' onClick={handleAddLiquidity} />
+      <Button styletype='filled' text='SDB/SUI LP' onClick={handleAddLiquidity} />
       <Button styletype='filled' text='Lock SDB' onClick={handleLock} />
       {children}
     </PoolContext.Provider>

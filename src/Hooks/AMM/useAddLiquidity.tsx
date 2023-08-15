@@ -9,7 +9,13 @@ import {
   getObjectChanges,
 } from '@mysten/sui.js'
 import { payCoin } from '@/Utils/payCoin'
-import { add_liquidity, amm_package, create_lp } from '@/Constants/API/pool'
+import {
+  LP,
+  LiquidityAdded,
+  add_liquidity,
+  amm_package,
+  create_lp,
+} from '@/Constants/API/pool'
 import { SettingInterface } from '@/Constants/setting'
 import { queryClient } from '@/App'
 
@@ -126,14 +132,49 @@ export const useAddLiquidity = () => {
         throw new Error('Vesting Vsdb Tx fail')
       }
 
-      return res.events?.find((e) =>
-        e.type.startsWith(`${amm_package}::event::LiquidityAdded`),
-      )?.parsedJson
+      console.log(res)
+
+      return {
+        lp: getObjectChanges(res)?.find(
+          (obj) =>
+            obj.type == 'created' &&
+            obj.objectType == `${amm_package}::pool::LP`,
+        ) as SuiObjectChangeCreated,
+
+        deposit: res.events?.find((e) =>
+          e.type.startsWith(`${amm_package}::event::LiquidityAdded`),
+        )?.parsedJson as LiquidityAdded,
+      }
     },
-    onSuccess: ({ deposit_x, deposit_y }) => {
+    onSuccess: (
+      { lp, deposit: { deposit_x, deposit_y, lp_token } },
+      params,
+    ) => {
+      console.log(lp_token)
       queryClient.setQueryData(
-        ['get-vsdbs', currentAccount!.address],
-        (vsdb_ids?: string[]) => [...(vsdb_ids ?? []), new_vsdb.objectId],
+        ['LP', currentAccount!.address],
+        (lp_ids?: LP[]) => {
+          let lps = lp_ids ?? []
+          const lp_id = lps.findIndex(
+            (lp) =>
+              lp.type_x == params.pool_type_x &&
+              lp.type_y == params.pool_type_y,
+          )
+
+          if (lp_id > -1) {
+            lps[lp_id].lp_balance = (
+              BigInt(lps[lp_id].lp_balance) + BigInt(lp_token)
+            ).toString()
+          } else {
+            lps.push({
+              id: lp?.objectId,
+              claimable_x: '0',
+              claimable_y: '0',
+              lp_balance: lp_token,
+            } as LP)
+          }
+          return lps
+        },
       )
     },
     onError: (err: Error) => {
