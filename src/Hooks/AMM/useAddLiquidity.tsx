@@ -31,8 +31,7 @@ type AddLiquidityMutationArgs = {
 
 export const useAddLiquidity = () => {
   const rpc = useRpc()
-  const { signTransactionBlock,  currentAccount } =
-    useWalletKit()
+  const { signTransactionBlock, currentAccount } = useWalletKit()
   // TODO
   const setting: SettingInterface = {
     gasBudget: '1000000',
@@ -52,7 +51,6 @@ export const useAddLiquidity = () => {
     }: AddLiquidityMutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       // should refacotr
-
       const txb = new TransactionBlock()
 
       // coin_x
@@ -103,16 +101,16 @@ export const useAddLiquidity = () => {
         add_liquidity(
           txb,
           pool_id,
-          pool_type_y,
           pool_type_x,
-          coin_y,
+          pool_type_y,
           coin_x,
+          coin_y,
           lp,
           deposit_y_min,
           deposit_x_min,
         )
       }
-
+      console.log(txb)
       // return id first time deposit
       if (lp_id == null) {
         txb.transferObjects([lp], txb.pure(currentAccount.address))
