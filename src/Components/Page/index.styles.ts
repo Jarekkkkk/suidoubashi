@@ -23,12 +23,12 @@ export const mainContent = css`
   width: 100%;
   max-width: 1480px;
   height: 100vh;
-  overflow: auto;
+  overflow: hidden;
 `
 
 export const content = css`
   margin: 0 12px;
   max-width: 800px;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 28px);
 `

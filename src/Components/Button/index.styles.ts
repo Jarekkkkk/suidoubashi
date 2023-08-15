@@ -5,7 +5,7 @@ export const button = css`
   justify-content: center;
   align-items: center;
   margin: 0;
-  padding:13px 0;
+  padding:13px 6px;
   min-width: 160px;
   height: 40px;
   border-radius: 4px;

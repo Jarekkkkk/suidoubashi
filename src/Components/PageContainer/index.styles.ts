@@ -3,7 +3,7 @@ import { css } from '@emotion/css'
 export const pageContainer = css`
   position: relative;
   width: 100%;
-  min-height: 90vh;
+  height: 100%;
   background-color: #fff;
   border-radius: 12px;
   overflow: hidden;

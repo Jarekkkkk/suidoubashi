@@ -3,21 +3,25 @@ import { Coin, Coins } from '@/Constants/coin'
 import { formatBalance } from '@/Utils/format'
 import * as styles from './index.styles';
 import { Key } from 'react';
+import BigNumber from 'bignumber.js';
+import { LP, Pool } from '@/Constants/API/pool';
+import { Vsdb } from '@/Constants/API/vsdb';
 
 interface Props {
-  nftData: any,
+  nftData: Vsdb | undefined,
+  poolDataList: Pool[] | undefined,
   coinData: any,
-  lpData: any,
+  lpData: LP [] | undefined,
   handleFetchNFTData: (e: any) => void,
   isPrevBtnDisplay: boolean,
   isNextBtnDisplay: boolean,
 }
 
-const fetchIcon = (type: Coin) => Coins.filter(coin => coin.type === type)[0];
+const fetchIcon = (type: string) => Coins.filter(coin => coin.type === type)[0];
 
 const ControlBarComponent = (props: Props) => {
 	const {
-    nftData, coinData, lpData,
+    nftData, coinData, lpData, poolDataList,
     handleFetchNFTData, isPrevBtnDisplay, isNextBtnDisplay
   } = props;
 
@@ -67,27 +71,25 @@ const ControlBarComponent = (props: Props) => {
     {
       id: 1,
       title: "LP",
-      children: lpData && lpData.map((
-          data: {
-            type_x: Coin; type_y: Coin;
-            claimable_x: string | number | bigint;
-            claimable_y: string | number | bigint;
-          },
-          idx: Key | null | undefined
-        ) => {
-          if (!data) return <div className={styles.cardLoadingContent}><Loading /></div>;
+      children: lpData && lpData.map((data, idx) => {
+        if (!data || !poolDataList) return <div className={styles.cardLoadingContent}><Loading /></div>;
+
         const _coinXIdx =  fetchIcon(data.type_x);
         const _coinYIdx =  fetchIcon(data.type_y);
+        const { lp_supply, reserve_x, reserve_y } = poolDataList.find((p)=> p.type_x == data.type_x && p.type_y == data.type_y);
+        const percentage = BigNumber(data.lp_balance).div(lp_supply);
+        const x = percentage.multipliedBy(reserve_x).shiftedBy(- _coinXIdx.decimals).decimalPlaces(3).toString();
+        const y = percentage.multipliedBy(reserve_y).shiftedBy(- _coinYIdx.decimals).decimalPlaces(3).toString();
 
         return (
           <Coincard
             key={idx}
             coinXIcon={_coinXIdx.logo}
             coinXName={_coinXIdx.name}
-            coinXValue={formatBalance(data?.claimable_x, _coinXIdx.decimals)}
+            coinXValue={x}
             coinYIcon={_coinYIdx.logo}
             coinYName={_coinYIdx.name}
-            coinYValue={formatBalance(data?.claimable_y, _coinYIdx.decimals)}
+            coinYValue={y}
           />
         )
       }),
@@ -102,7 +104,7 @@ const ControlBarComponent = (props: Props) => {
   return (
     <div className={styles.barContainer}>
       {
-        !nftData.data ?
+        !nftData ?
           <div className={styles.loadingContent}>
             <Loading />
           </div>
@@ -110,22 +112,16 @@ const ControlBarComponent = (props: Props) => {
           <NFTCard
             isPrevBtnDisplay={isPrevBtnDisplay}
             isNextBtnDisplay={isNextBtnDisplay}
-            nftImg={nftData.data.display.image_url}
-            level={nftData.data.level}
-            expValue={parseInt(nftData.data.experience)}
-            sdbValue={parseInt(nftData.data.balance)}
-            vesdbValue={parseInt(nftData.data.vesdb)}
-            address={nftData.data.id}
+            nftImg={nftData?.display?.image_url}
+            level={nftData.level}
+            expValue={parseInt(nftData.experience)}
+            sdbValue={parseInt(nftData.balance)}
+            vesdbValue={parseInt(nftData.vesdb)}
+            address={nftData.id}
             handleFetchNFTData={handleFetchNFTData}
           />
       }
-      {
-        !coinData ? (
-          <div className={styles.loadingContent}>
-            <Loading />
-          </div>
-        ) : <Tabs links={tabDataKeys} />
-      }
+      <Tabs links={tabDataKeys} />
     </div>
   );
 };

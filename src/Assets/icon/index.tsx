@@ -7,6 +7,8 @@ import { ReactComponent as BookIcon } from '@/Assets/icon/icon_book.svg'
 import { ReactComponent as TwitterIcon } from '@/Assets/icon/icon_twitter.svg'
 import { ReactComponent as SearchIcon } from '@/Assets/icon/icon_search.svg'
 import { ReactComponent as CopyIcon } from '@/Assets/icon/icon_copy.svg'
+import { ReactComponent as FileIcon } from '@/Assets/icon/icon_file.svg'
+import { ReactComponent as SquareAddIcon } from '@/Assets/icon/icon_squareAdd.svg'
 
 
 export const Icon = {
@@ -19,6 +21,8 @@ export const Icon = {
   BookIcon,
   SearchIcon,
   CopyIcon,
+  FileIcon,
+  SquareAddIcon,
 }
 
 
