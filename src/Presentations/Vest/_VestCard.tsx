@@ -1,5 +1,6 @@
 import { ProgressBar } from '@blueprintjs/core';
 import { Button } from '@/Components';
+import Image from '@/Assets/image'
 
 import * as styles from './index.styles';
 
@@ -67,7 +68,7 @@ const VestCardComponent = (props: Props) => {
   return (
     <div className={styles.vestCardContainer}>
       <div className={styles.imgSection}>
-        <img src={nftImg} />
+        <img src={nftImg || Image.nftDefault} />
       </div>
       <div className={styles.cardContentSection}>
         <TextItem title="Level" level={level}/>
