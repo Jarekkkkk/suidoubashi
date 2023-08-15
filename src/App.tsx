@@ -5,10 +5,7 @@ import { WalletKitProvider } from '@mysten/wallet-kit'
 
 import { generateLinks } from '@/Constants'
 import { Page } from '@/Components'
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 export const queryClient = new QueryClient({
@@ -20,6 +17,8 @@ export const queryClient = new QueryClient({
       staleTime: 5 * 60 * 1000,
       refetchInterval: false,
       refetchIntervalInBackground: false,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
       onError: (err) => console.log(err),
     },
     mutations: {

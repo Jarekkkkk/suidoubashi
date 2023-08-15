@@ -31,7 +31,8 @@ type AddLiquidityMutationArgs = {
 
 export const useAddLiquidity = () => {
   const rpc = useRpc()
-  const { signTransactionBlock, currentAccount } = useWalletKit()
+  const { signTransactionBlock,  currentAccount } =
+    useWalletKit()
   // TODO
   const setting: SettingInterface = {
     gasBudget: '1000000',
@@ -103,14 +104,13 @@ export const useAddLiquidity = () => {
           pool_id,
           pool_type_x,
           pool_type_y,
-          coin_x,
           coin_y,
+          coin_x,
           lp,
           deposit_y_min,
           deposit_x_min,
         )
       }
-      console.log(txb)
       // return id first time deposit
       if (lp_id == null) {
         txb.transferObjects([lp], txb.pure(currentAccount.address))

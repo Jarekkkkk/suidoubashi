@@ -1,5 +1,6 @@
 import { Button } from '@/Components'
 import { Coin } from '@/Constants/coin'
+import { useRemoveLiquidity } from '@/Hooks/AMM/removeLiquidity'
 import { useAddLiquidity } from '@/Hooks/AMM/useAddLiquidity'
 import { useGetMulLP } from '@/Hooks/AMM/useGetLP'
 import {
@@ -49,6 +50,7 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   const lock_sdb = useLock()
   const add_liquidity = useAddLiquidity()
   const zap = useZap()
+  const withdraw = useRemoveLiquidity()
 
   const handleAddLiquidity = () => {
     if (pools[0]?.data && balance_x.data?.coinType) {
@@ -59,7 +61,7 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
         pool_type_y: pool.type_y,
         is_type_x: pool.type_x == balance_x.data?.coinType,
         lp_id: lp ? lp.id : null,
-        coin_x_value: '2000000000',
+        coin_x_value: '1625352078',
         coin_y_value: '500000000',
       })
     }
@@ -85,8 +87,20 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
     }
   }
 
-  const handleFetchData = () => {}
+  const handleWithdraw = () => {
+    if (pools[0]?.data && lp) {
+      const pool = pools[0].data
+      withdraw.mutate({
+        pool_id: pool.id,
+        pool_type_x: pool.type_x,
+        pool_type_y: pool.type_y,
+        lp_id: lp.id,
+        withdrawl: (BigInt(lp.lp_balance) / BigInt('10')).toString(),
+      })
+    }
+  }
 
+  const handleFetchData = () => {}
   return (
     <PoolContext.Provider
       value={{
@@ -101,6 +115,7 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
       />
       <Button styletype='filled' text='Lock SDB' onClick={handleLock} />
       <Button styletype='filled' text='Zap' onClick={handleZap} />
+      <Button styletype='filled' text='Withdraw' onClick={handleWithdraw} />
       {children}
     </PoolContext.Provider>
   )

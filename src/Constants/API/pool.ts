@@ -110,7 +110,7 @@ export async function get_output(
   pool_type_x: string,
   pool_type_y: string,
   input_type: string,
-  input_amount: string ,
+  input_amount: string,
 ): Promise<string> {
   let txb = new TransactionBlock()
   txb.moveCall({
@@ -215,7 +215,9 @@ export interface LiquidityAdded {
 
 export function remove_liquidity(
   txb: TransactionBlock,
-  pool: Pool,
+  pool: string,
+  pool_type_x: string,
+  pool_type_y: string,
   lp: any,
   value: bigint | number | string,
   deposit_x_min: bigint | number | string,
@@ -223,9 +225,9 @@ export function remove_liquidity(
 ) {
   txb.moveCall({
     target: `${amm_package}::pool::remove_liquidity`,
-    typeArguments: [pool.type_x, pool.type_y] ?? [],
+    typeArguments: [pool_type_x, pool_type_y],
     arguments: [
-      txb.object(pool.id),
+      txb.object(pool),
       lp,
       txb.pure(value),
       txb.pure(deposit_x_min),
@@ -234,10 +236,43 @@ export function remove_liquidity(
     ],
   })
 }
+export async function quote_remove_liquidity(
+  rpc: JsonRpcProvider,
+  sender: SuiAddress,
+  pool: string,
+  pool_type_x: string,
+  pool_type_y: string,
+  withdrawl: string,
+): Promise<string[]> {
+  let txb = new TransactionBlock()
+  txb.moveCall({
+    target: `${amm_package}::pool::quote_remove_liquidity`,
+    typeArguments: [pool_type_x, pool_type_y],
+    arguments: [txb.object(pool), txb.pure(withdrawl)],
+  })
+  let res = await rpc.devInspectTransactionBlock({
+    sender,
+    transactionBlock: txb,
+  })
+
+  console.log(res)
+
+  return (
+    res?.results?.at(0)?.returnValues?.map((returnValue) => {
+      if (!returnValue) {
+        return '0'
+      } else {
+        const valueType = returnValue[1].toString()
+        const valueData = Uint8Array.from(returnValue[0] as Iterable<number>)
+        return bcs_registry.de(valueType, valueData, 'hex')
+      }
+    }) ?? []
+  )
+}
 export interface LiquidityRemoved {
   withdrawl_x: string
   withdrawl_y: string
-  burned_lp: string
+  lp_token: string
 }
 
 export function swap_for_x(
