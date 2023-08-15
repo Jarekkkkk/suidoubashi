@@ -124,17 +124,24 @@ export const addressContent = css`
   width: 80%;
   color: #2977EC;
   font-size: 10px;
+  width: 100%;
+  overflow: hidden;
+`
 
-  span {
-    margin-right: 8px;
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+export const prev = css`
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`
+
+export const next = css`
+  display: block;
+  white-space: nowrap;
 `
 
 export const copyIcon = css`
+  margin-left: 8px;
   cursor: pointer;
 
   &:hover {

@@ -68,7 +68,12 @@ const NFTCardComponent = (props: Props) => {
           />
         </div>
         <div className={styles.addressContent}>
-          <span>{address}</span>
+          {address.length > 10 ? (
+            <>
+              <span className={styles.prev}>{address.slice(0, -15)}</span>
+              <span className={styles.next}>{address.slice(-15)}</span>
+            </>
+          ): <span>{address}</span>}
           <div
             className={styles.copyIcon}
             onClick={() => handleOnCopy(address)}
