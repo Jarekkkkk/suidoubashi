@@ -106,22 +106,23 @@ export async function get_pool(
 export async function get_output(
   rpc: JsonRpcProvider,
   sender: SuiAddress,
-  pool: Pool,
+  pool: string,
+  pool_type_x: string,
+  pool_type_y: string,
   input_type: string,
-  input_amount: bigint | number,
+  input_amount: string ,
 ): Promise<string> {
   let txb = new TransactionBlock()
   txb.moveCall({
     target: `${amm_package}::pool::get_output`,
-    typeArguments: [pool.type_x, pool.type_y, input_type] ?? [],
-    arguments: [txb.object(pool.id), txb.pure(input_amount)],
+    typeArguments: [pool_type_x, pool_type_y, input_type] ?? [],
+    arguments: [txb.object(pool), txb.pure(input_amount)],
   })
   let res = await rpc.devInspectTransactionBlock({
     sender,
     transactionBlock: txb,
   })
-
-  const returnValue = res?.results?.at(0)?.returnValues?.at(0)?.at(0)
+  const returnValue = res?.results?.at(0)?.returnValues?.[0]
   if (!returnValue) {
     return '0'
   } else {
@@ -160,7 +161,9 @@ export function add_liquidity(
 
 export async function zap_x(
   txb: TransactionBlock,
-  pool: Pool,
+  pool: string,
+  pool_type_x: string,
+  pool_type_y: string,
   coin_x: any,
   lp: any,
   deposit_x_min: bigint | number,
@@ -168,9 +171,9 @@ export async function zap_x(
 ) {
   txb.moveCall({
     target: `${amm_package}::pool::zap_x`,
-    typeArguments: [pool.type_x, pool.type_y],
+    typeArguments: [pool_type_x, pool_type_y],
     arguments: [
-      txb.object(pool.id),
+      txb.object(pool),
       coin_x,
       lp,
       txb.pure(deposit_x_min),
@@ -182,17 +185,19 @@ export async function zap_x(
 
 export async function zap_y(
   txb: TransactionBlock,
-  pool: Pool,
+  pool: string,
+  pool_type_x: string,
+  pool_type_y: string,
   coin_y: any,
-  lp: LP,
+  lp: any,
   deposit_x_min: bigint | number,
   deposit_y_min: bigint | number,
 ) {
   txb.moveCall({
     target: `${amm_package}::pool::zap_y`,
-    typeArguments: [pool.type_x, pool.type_y],
+    typeArguments: [pool_type_x, pool_type_y],
     arguments: [
-      txb.object(pool.id),
+      txb.object(pool),
       coin_y,
       lp,
       txb.pure(deposit_x_min),

@@ -31,7 +31,7 @@ type AddLiquidityMutationArgs = {
 
 export const useAddLiquidity = () => {
   const rpc = useRpc()
-  const { signTransactionBlock, executeTransactionBlock, currentAccount } =
+  const { signTransactionBlock,  currentAccount } =
     useWalletKit()
   // TODO
   const setting: SettingInterface = {

@@ -1,10 +1,25 @@
-import { useMutation } from "@tanstack/react-query"
-import useRpc from "../useRpc"
-import { useWalletKit } from "@mysten/wallet-kit"
-import { SettingInterface } from "@/Constants/setting"
-import { SUI_TYPE_ARG, TransactionBlock } from "@mysten/sui.js"
-import { payCoin } from "@/Utils/payCoin"
-import { create_lp } from "@/Constants/API/pool"
+import { useMutation } from '@tanstack/react-query'
+import useRpc from '../useRpc'
+import { useWalletKit } from '@mysten/wallet-kit'
+import { SettingInterface } from '@/Constants/setting'
+import {
+  SUI_TYPE_ARG,
+  SuiObjectChangeCreated,
+  TransactionBlock,
+  getExecutionStatusType,
+  getObjectChanges,
+} from '@mysten/sui.js'
+import { payCoin } from '@/Utils/payCoin'
+import {
+  LP,
+  LiquidityAdded,
+  amm_package,
+  create_lp,
+  get_output,
+  zap_x,
+  zap_y,
+} from '@/Constants/API/pool'
+import { queryClient } from '@/App'
 
 type ZapMutationArgs = {
   pool_id: string
@@ -17,8 +32,7 @@ type ZapMutationArgs = {
 
 export const useZap = () => {
   const rpc = useRpc()
-  const { signTransactionBlock, executeTransactionBlock, currentAccount } =
-    useWalletKit()
+  const { signTransactionBlock, currentAccount } = useWalletKit()
   // TODO
   const setting: SettingInterface = {
     gasBudget: '1000000',
@@ -37,54 +51,57 @@ export const useZap = () => {
     }: ZapMutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       // should refacotr
-
       const txb = new TransactionBlock()
 
       // coin_x
+      const input_type = is_type_x ? pool_type_x : pool_type_y
       const coins = await rpc.getCoins({
         owner: currentAccount.address,
-        coinType: pool_type_x,
+        coinType: input_type,
       })
-      const coin = payCoin(
-        txb,
-        coins,
-        coin_value,
-        pool_type_x == SUI_TYPE_ARG,
-      )
+      const coin = payCoin(txb, coins, coin_value, input_type == SUI_TYPE_ARG)
       const deposit_x_min =
         ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(coin_value)) /
         BigInt('10000')
+
+      const output = await get_output(
+        rpc,
+        currentAccount.address,
+        pool_id,
+        pool_type_x,
+        pool_type_y,
+        input_type,
+        (BigInt(coin_value) / BigInt('2')).toString(),
+      )
       // coni_y_min
       const deposit_y_min =
-        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(coin_y_value)) /
+        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(output)) /
         BigInt('10000')
       // LO
       let lp = lp_id
-        ? txb.pure(lp_id)
+        ? txb.object(lp_id)
         : create_lp(txb, pool_id, pool_type_x, pool_type_y)
       if (is_type_x) {
-        add_liquidity(
+        zap_x(
           txb,
           pool_id,
           pool_type_x,
           pool_type_y,
-          coin_x,
-          coin_y,
+          coin,
           lp,
           deposit_x_min,
           deposit_y_min,
         )
       } else {
-        add_liquidity(
+        zap_y(
           txb,
           pool_id,
-          pool_type_y,
           pool_type_x,
-          coin_y,
-          coin_x,
+          pool_type_y,
+          coin,
           lp,
-          deposit_y_min,
           deposit_x_min,
+          deposit_y_min,
         )
       }
 
@@ -92,7 +109,7 @@ export const useZap = () => {
       if (lp_id == null) {
         txb.transferObjects([lp], txb.pure(currentAccount.address))
       }
-
+      console.log(txb)
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
@@ -156,6 +173,4 @@ export const useZap = () => {
       console.log(err)
     },
   })
- 
 }
-
