@@ -30,7 +30,7 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   const pools = useGetMulPool(pool_ids?.data)
   const pool = useGetPool(pool_ids?.data?.[0])
   // balance
-  const balance_x = useGetBalance(Coin.SUI, currentAccount?.address)
+  const balance_x = useGetBalance(Coin.SDB, currentAccount?.address)
   // LP
   const lps = useGetMulLP(currentAccount?.address)
 
