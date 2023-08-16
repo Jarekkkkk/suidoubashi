@@ -1,5 +1,6 @@
 import React, {
 	PropsWithChildren,
+	useState,
 } from 'react';
 import { useWalletKit } from '@mysten/wallet-kit'
 
@@ -17,6 +18,14 @@ export const VestContext = React.createContext<VestContext>({
 	handleIncreaseUnlockedAmount: () => {},
 	handleRevival: () => {},
 	handleUnlock: () => {},
+	isShowCreateVSDBModal: false,
+	isShowDepositVSDBModal: false,
+	isShowMergeVSDBModal: false,
+	isShowWithdrawVSDBModal: false,
+	setIsShowCreateVSDBModal: () => {},
+	setIsShowDepositVSDBModal: () => {},
+	setIsShowMergeVSDBModal: () => {},
+	setIsShowWithdrawVSDBModal: () => {},
 });
 
 const handleIncreaseUnlockedTime = (nftDataId: any) => {
@@ -68,6 +77,10 @@ const VestContainer = ({ children }: PropsWithChildren) => {
 	const walletAddress = currentAccount?.address;
 	const vsdbIdList = useGetVsdbIDs(walletAddress).data;
 	const nftList = useGetMulVsdb(walletAddress, vsdbIdList);
+	const [isShowCreateVSDBModal, setIsShowCreateVSDBModal] = useState(false);
+	const [isShowDepositVSDBModal, setIsShowDepositVSDBModal] = useState(false);
+	const [isShowMergeVSDBModal, setIsShowMergeVSDBModal] = useState(false);
+	const [isShowWithdrawVSDBModal, setIsShowWithdrawVSDBModal] = useState(false);
 
 	return (
 		<VestContext.Provider
@@ -77,6 +90,14 @@ const VestContainer = ({ children }: PropsWithChildren) => {
 				handleIncreaseUnlockedAmount,
 				handleRevival,
 				handleUnlock,
+				isShowCreateVSDBModal,
+				setIsShowCreateVSDBModal,
+				isShowDepositVSDBModal,
+				setIsShowDepositVSDBModal,
+				isShowMergeVSDBModal,
+				setIsShowMergeVSDBModal,
+				isShowWithdrawVSDBModal,
+				setIsShowWithdrawVSDBModal,
 			}}
 		>
 			{children}
@@ -90,6 +111,14 @@ interface VestContext {
 	handleIncreaseUnlockedAmount: Function,
 	handleRevival: Function,
 	handleUnlock: Function,
+	isShowCreateVSDBModal: boolean,
+	isShowDepositVSDBModal: boolean,
+	isShowMergeVSDBModal: boolean,
+	isShowWithdrawVSDBModal: boolean,
+	setIsShowCreateVSDBModal: Function,
+	setIsShowDepositVSDBModal: Function,
+	setIsShowMergeVSDBModal: Function,
+	setIsShowWithdrawVSDBModal: Function,
 }
 
 export default VestContainer;

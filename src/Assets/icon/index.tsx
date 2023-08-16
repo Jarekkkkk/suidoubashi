@@ -9,6 +9,7 @@ import { ReactComponent as SearchIcon } from '@/Assets/icon/icon_search.svg'
 import { ReactComponent as CopyIcon } from '@/Assets/icon/icon_copy.svg'
 import { ReactComponent as FileIcon } from '@/Assets/icon/icon_file.svg'
 import { ReactComponent as SquareAddIcon } from '@/Assets/icon/icon_squareAdd.svg'
+import { ReactComponent as CrossIcon } from '@/Assets/icon/icon_cross.svg'
 
 
 export const Icon = {
@@ -23,6 +24,7 @@ export const Icon = {
   CopyIcon,
   FileIcon,
   SquareAddIcon,
+  CrossIcon,
 }
 
 

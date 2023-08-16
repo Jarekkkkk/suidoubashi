@@ -12,3 +12,4 @@ export { default as NFTCard } from './NFTCard';
 export { default as ControlBar } from './ControlBar';
 export { default as Loading } from './Loading';
 export { default as PageContainer } from './PageContainer';
+export { default as Dialog } from './Dialog';

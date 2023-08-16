@@ -16,6 +16,8 @@ interface Props {
 	handleIncreaseUnlockedAmount: Function,
 	handleRevival: Function,
 	handleUnlock: Function,
+  setIsShowDepositVSDBModal: Function,
+  setIsShowWithdrawVSDBModal: Function,
 }
 
 interface TextItemProps {
@@ -61,6 +63,8 @@ const VestCardComponent = (props: Props) => {
 		handleIncreaseUnlockedAmount,
 		handleRevival,
 		handleUnlock,
+		setIsShowDepositVSDBModal,
+		setIsShowWithdrawVSDBModal,
   } = props;
 
   const _nowDate = new Date().toLocaleDateString('en-ZA');
@@ -92,7 +96,10 @@ const VestCardComponent = (props: Props) => {
                 <Button
                   styletype='outlined'
                   text='Revival'
-                  onClick={() => handleRevival(nftId)}
+                  onClick={() => {
+                    setIsShowWithdrawVSDBModal(true);
+                    // handleRevival(nftId);
+                  }}
                 />
               </>
             ) : (
@@ -100,12 +107,18 @@ const VestCardComponent = (props: Props) => {
                 <Button
                   styletype='outlined'
                   text='Increase Unlocked Time'
-                  onClick={() => handleIncreaseUnlockedTime(nftId)}
+                  onClick={() => {
+                    setIsShowDepositVSDBModal(true);
+                    // handleIncreaseUnlockedTime(nftId);
+                  }}
                 />
                 <Button
                   styletype='outlined'
                   text='Increase Unlocked Amount'
-                  onClick={() => handleIncreaseUnlockedAmount(nftId)}
+                  onClick={() => {
+                    setIsShowDepositVSDBModal(true);
+                    // handleIncreaseUnlockedAmount(nftId);
+                  }}
                 />
               </>
             )
