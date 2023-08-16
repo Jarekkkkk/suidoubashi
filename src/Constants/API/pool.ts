@@ -159,6 +159,38 @@ export function add_liquidity(
   })
 }
 
+export async function quote_add_liquidity(
+  rpc: JsonRpcProvider,
+  sender: SuiAddress,
+  pool: string,
+  pool_type_x: string,
+  pool_type_y: string,
+  value_x: string,
+  value_y: string,
+): Promise<string[]> {
+  let txb = new TransactionBlock()
+  txb.moveCall({
+    target: `${amm_package}::pool::quote_add_liquidity`,
+    typeArguments: [pool_type_x, pool_type_y],
+    arguments: [txb.object(pool), txb.pure(value_x), txb.pure(value_y)],
+  })
+  let res = await rpc.devInspectTransactionBlock({
+    sender,
+    transactionBlock: txb,
+  })
+
+  return (
+    res?.results?.at(0)?.returnValues?.map((returnValue) => {
+      if (!returnValue) {
+        return '0'
+      } else {
+        const valueType = returnValue[1].toString()
+        const valueData = Uint8Array.from(returnValue[0] as Iterable<number>)
+        return bcs_registry.de(valueType, valueData, 'hex')
+      }
+    }) ?? []
+  )
+}
 export async function zap_x(
   txb: TransactionBlock,
   pool: string,

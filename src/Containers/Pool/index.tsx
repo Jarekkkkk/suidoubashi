@@ -61,8 +61,8 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
         pool_type_y: pool.type_y,
         is_type_x: pool.type_x == balance_x.data?.coinType,
         lp_id: lp ? lp.id : null,
-        coin_x_value: '1625352078',
-        coin_y_value: '500000000',
+        input_a_value: '3147131016',
+        input_b_value: "1000000000",
       })
     }
   }
