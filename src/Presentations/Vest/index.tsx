@@ -20,7 +20,7 @@ const VestPresentation = () => {
 	} = useContext(VestContext);
 
 	return (
-		<PageContainer title='Vest' titleImg={Image.Background}>
+		<PageContainer title='Vest' titleImg={Image.pageBackground_1}>
 			{
 				!data ? (
 					<Loading />
