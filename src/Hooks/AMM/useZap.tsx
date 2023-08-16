@@ -27,7 +27,7 @@ type ZapMutationArgs = {
   pool_type_y: string
   is_type_x: boolean
   lp_id: string | null
-  coin_value: string
+  input_value: string
 }
 
 export const useZap = () => {
@@ -47,7 +47,7 @@ export const useZap = () => {
       pool_type_y,
       is_type_x,
       lp_id,
-      coin_value,
+      input_value,
     }: ZapMutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       // should refacotr
@@ -59,9 +59,9 @@ export const useZap = () => {
         owner: currentAccount.address,
         coinType: input_type,
       })
-      const coin = payCoin(txb, coins, coin_value, input_type == SUI_TYPE_ARG)
+      const coin = payCoin(txb, coins, input_value, input_type == SUI_TYPE_ARG)
       const deposit_x_min =
-        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(coin_value)) /
+        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(input_value)) /
         BigInt('10000')
 
       const output = await get_output(
@@ -71,7 +71,7 @@ export const useZap = () => {
         pool_type_x,
         pool_type_y,
         input_type,
-        (BigInt(coin_value) / BigInt('2')).toString(),
+        (BigInt(input_value) / BigInt('2')).toString(),
       )
       // coni_y_min
       const deposit_y_min =

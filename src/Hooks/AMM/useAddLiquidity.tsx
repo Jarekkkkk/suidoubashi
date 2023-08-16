@@ -15,7 +15,6 @@ import {
   add_liquidity,
   amm_package,
   create_lp,
-  quote_add_liquidity,
 } from '@/Constants/API/pool'
 import { SettingInterface } from '@/Constants/setting'
 import { queryClient } from '@/App'
@@ -96,7 +95,7 @@ export const useAddLiquidity = () => {
         coin_y,
         lp,
         is_type_x ? deposit_x_min : deposit_y_min,
-is_type_x ?         deposit_y_min : deposit_x_min,
+        is_type_x ? deposit_y_min : deposit_x_min,
       )
       // return id first time deposit
       if (lp_id == null) {

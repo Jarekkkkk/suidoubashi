@@ -176,7 +176,7 @@ export async function quote_add_liquidity(
   })
   let res = await rpc.devInspectTransactionBlock({
     sender,
-    transactionBlock: txb,
+    transactionBlock: txb
   })
 
   return (
@@ -309,15 +309,17 @@ export interface LiquidityRemoved {
 
 export function swap_for_x(
   txb: TransactionBlock,
-  pool: Pool,
+  pool: string,
+  pool_type_x: string,
+  pool_type_y: string,
   coin_y: any,
   output_x_min: bigint | number | string,
 ) {
   txb.moveCall({
     target: `${amm_package}::pool::swap_for_x`,
-    typeArguments: [pool.type_x, pool.type_y] ?? [],
+    typeArguments: [pool_type_x, pool_type_y],
     arguments: [
-      txb.object(pool.id),
+      txb.object(pool),
       coin_y,
       txb.pure(output_x_min),
       txb.object(SUI_CLOCK_OBJECT_ID),
@@ -327,15 +329,17 @@ export function swap_for_x(
 
 export function swap_for_y(
   txb: TransactionBlock,
-  pool: Pool,
+  pool: string,
+  pool_type_x: string,
+  pool_type_y: string,
   coin_x: any,
   output_y_min: bigint | number | string,
 ) {
   txb.moveCall({
     target: `${amm_package}::pool::swap_for_y`,
-    typeArguments: [pool.type_x, pool.type_y] ?? [],
+    typeArguments: [pool_type_x, pool_type_y] ?? [],
     arguments: [
-      txb.object(pool.id),
+      txb.object(pool),
       coin_x,
       txb.pure(output_y_min),
       txb.object(SUI_CLOCK_OBJECT_ID),
