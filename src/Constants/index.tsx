@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import { Dashboard, Swap, Pool, Vest, Vote, Rewards } from '@/Scenes'
 
 import { Icon } from '@/Assets/icon'
@@ -89,3 +91,22 @@ export const generateLinks = () => [
     title: 'Rewards',
   },
 ]
+
+export const vsdbTimeSettingOptions = [
+  {
+    label: '6 weeks',
+    value: moment().add(42, 'days').toDate().toDateString(),
+  },
+  {
+    label: '12 weeks',
+    value: moment().add(84, 'days').toDate().toDateString(),
+  },
+  {
+    label: '18 weeks',
+    value: moment().add(126, 'days').toDate().toDateString(),
+  },
+  {
+    label: '24 weeks',
+    value: moment().add(168, 'days').toDate().toDateString(),
+  },
+];

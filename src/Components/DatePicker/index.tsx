@@ -4,18 +4,20 @@ import "react-datepicker/dist/react-datepicker.css";
 import * as styles from './index.styles';
 
 interface Props {
-  selected: Date,
-  onChange: (e: any) => void,
+  startDate: Date | null,
+  handleOnChange: (date: any) => void,
 }
 
 const DatePickerComponent = (props: Props) => {
-  const { onChange } = props;
+  const { startDate, handleOnChange } = props;
 
   return (
     <DatePicker
       {...props}
-      onChange={onChange}
+      selected={startDate}
+      onChange={handleOnChange}
       className={styles.datePickerComponent}
+      dateFormat="yyyy/MM/dd"
     />
   );
 };

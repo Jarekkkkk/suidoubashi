@@ -7,16 +7,19 @@ interface Props {
   onChange: (e: any) => void,
   options: Array<{
     label: string,
-    value: string
+    value: string,
   }>,
 }
 
 const RadioGroupComponent = (props: Props) => {
+  const { onChange, options } = props;
 
   return (
     <RadioGroup
       {...props}
       className={styles.radioGroupComponent}
+      onChange={onChange}
+      options={options}
     />
   );
 };

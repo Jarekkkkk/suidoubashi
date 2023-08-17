@@ -129,3 +129,50 @@ export const buttonContent = css`
     margin-right: 4px;
   }
 `
+// CreateVSDBModal
+export const vsdbCountContainer = css`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 14px 45px;
+  border: 1px solid #A4A8B3;
+  border-radius: 8px;
+  background-color: #FFF;
+  color: #A4A8B3;
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 1;
+`
+
+export const vsdbCountBlock = css`
+  display: flex;
+  flex-direction: column;
+  color: #909399;
+
+  div {
+    color: #909399;
+  }
+
+  div:not(:nth-last-child(1)) {
+    margin-bottom: 8px;
+  }
+
+  span {
+    color: #FFD24D;
+    font-weight: bold;
+  }
+`
+
+export const vsdbCountContent = css`
+  margin-top: 4px;
+  font-size: 32px;
+  font-weight: bold;
+  color: #2977EC !important;
+  line-height: 1;
+`
+
+export const vsdbModalbutton = css`
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+`

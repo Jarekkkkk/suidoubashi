@@ -10,6 +10,7 @@ import { ReactComponent as CopyIcon } from '@/Assets/icon/icon_copy.svg'
 import { ReactComponent as FileIcon } from '@/Assets/icon/icon_file.svg'
 import { ReactComponent as SquareAddIcon } from '@/Assets/icon/icon_squareAdd.svg'
 import { ReactComponent as CrossIcon } from '@/Assets/icon/icon_cross.svg'
+import { ReactComponent as VectorIcon } from '@/Assets/icon/icon_vector.svg'
 
 
 export const Icon = {
@@ -25,6 +26,7 @@ export const Icon = {
   FileIcon,
   SquareAddIcon,
   CrossIcon,
+  VectorIcon,
 }
 
 

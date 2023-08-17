@@ -10,13 +10,15 @@ export const InputContent = css`
     margin: 0;
     padding: 0 10px;
     width: 100%;
+    height: 48px;
     border-radius: 8px;
     border: 1px solid #606266;
     background-color: #fff;
     box-shadow: none;
     color: #2977EC;
-    font-size: 16px;
+    font-size: 24px;
     font-weight: bold;
+    text-align: center;
 
     &:focus, &:focus-within, &:active {
       border-color: #2977EC;
