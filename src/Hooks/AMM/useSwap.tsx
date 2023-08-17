@@ -11,7 +11,7 @@ import { payCoin } from '@/Utils/payCoin'
 import { Swap, amm_package, swap_for_x, swap_for_y } from '@/Constants/API/pool'
 import { SettingInterface } from '@/Constants/setting'
 import { queryClient } from '@/App'
-import { contentSection } from '@/Presentations/Vest/index.styles'
+import { calculate_slippage } from '@/Utils/calculateAPR'
 
 type SwapMutationArgs = {
   pool_id: string
@@ -53,9 +53,7 @@ export const useSwap = () => {
       })
       const coin = payCoin(txb, coins, input_value, input_type == SUI_TYPE_ARG)
 
-      const output_min =
-        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(output_value)) /
-        BigInt('10000')
+      const output_min = calculate_slippage(setting.slippage, output_value)
 
       if (is_type_x) {
         swap_for_y(txb, pool_id, pool_type_x, pool_type_y, coin, output_min)

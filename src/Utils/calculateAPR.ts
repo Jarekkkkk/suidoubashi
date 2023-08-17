@@ -28,3 +28,11 @@ export const calculateVAPR = (
       .toFormat() + '%'
   )
 }
+
+export const calculate_slippage =  (
+  slippage: string,
+  output_value: string
+)=>{
+return ((BigInt('10000') - BigInt(slippage)) * BigInt(output_value)) /
+BigInt('10000')
+}
