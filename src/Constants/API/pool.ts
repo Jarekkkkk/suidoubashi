@@ -10,6 +10,7 @@ import {
   normalizeSuiAddress,
 } from '@mysten/sui.js'
 import { bcs_registry } from '../bcs'
+import { sqrt } from '@/Utils/bigint_math'
 
 export const amm_package = import.meta.env.VITE_AMM_PACKAGE as string
 export const pool_reg = import.meta.env.VITE_POOL_REG as string
@@ -110,12 +111,12 @@ export async function get_output(
   pool_type_x: string,
   pool_type_y: string,
   input_type: string,
-  input_amount: string,
+  input_amount: string | BigInt,
 ): Promise<string> {
   let txb = new TransactionBlock()
   txb.moveCall({
     target: `${amm_package}::pool::get_output`,
-    typeArguments: [pool_type_x, pool_type_y, input_type] ?? [],
+    typeArguments: [pool_type_x, pool_type_y, input_type],
     arguments: [txb.object(pool), txb.pure(input_amount)],
   })
   let res = await rpc.devInspectTransactionBlock({
@@ -176,7 +177,7 @@ export async function quote_add_liquidity(
   })
   let res = await rpc.devInspectTransactionBlock({
     sender,
-    transactionBlock: txb
+    transactionBlock: txb,
   })
 
   return (
@@ -237,6 +238,83 @@ export async function zap_y(
       txb.object(SUI_CLOCK_OBJECT_ID),
     ],
   })
+}
+
+export async function zap_optimized_input(
+  rpc: JsonRpcProvider,
+  sender: SuiAddress,
+  reserve: string,
+  input_amount: string,
+  fee: string,
+) {
+  let txb = new TransactionBlock()
+  txb.moveCall({
+    target: `${amm_package}::amm_math::zap_optimized_input`,
+    arguments: [txb.pure(reserve), txb.pure(input_amount), txb.pure(fee)],
+  })
+  let res = await rpc.devInspectTransactionBlock({
+    sender,
+    transactionBlock: txb,
+  })
+  const returnValue = res?.results?.at(0)?.returnValues?.[0]
+  if (!returnValue) {
+    return '0'
+  } else {
+    const valueType = returnValue[1].toString()
+    const valueData = Uint8Array.from(returnValue[0] as Iterable<number>)
+    return bcs_registry.de(valueType, valueData, 'hex')
+  }
+}
+
+export function zap_optimized_input_(
+  reserve: string,
+  input: string,
+  fee: string,
+) {
+  const reserve_ = BigInt(reserve)
+  const input_ = BigInt(input)
+
+  if (fee == '10') {
+    return (
+      (sqrt(
+        reserve_ * (reserve_ * BigInt(399600100) + input_ * BigInt(399600000)),
+      ) -
+        reserve_ * BigInt(19990)) /
+      BigInt(19980)
+    )
+  } else if (fee == '20') {
+    return (
+      (sqrt(
+        reserve_ * (reserve_ * BigInt(399600400) + input_ * BigInt(399200000)),
+      ) -
+        reserve_ * BigInt(19980)) /
+      BigInt(19960)
+    )
+  } else if (fee == '30') {
+    return (
+      (sqrt(
+        reserve_ * (reserve_ * BigInt(398880900) + input_ * BigInt(398800000)),
+      ) -
+        reserve_ * BigInt(19970)) /
+      BigInt(19940)
+    )
+  } else if (fee == '40') {
+    return (
+      (sqrt(
+        reserve_ * (reserve_ * BigInt(398401600) + input_ * BigInt(39400000)),
+      ) -
+        reserve_ * BigInt(19960)) /
+      BigInt(19920)
+    )
+  } else {
+    return (
+      (sqrt(
+        reserve_ * (reserve_ * BigInt(398002500) + input_ * BigInt(398000000)),
+      ) -
+        reserve_ * BigInt(19950)) /
+      BigInt(19900)
+    )
+  }
 }
 ///[Response] for zap, add_liqudiity
 export interface LiquidityAdded {

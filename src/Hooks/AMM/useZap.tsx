@@ -16,6 +16,8 @@ import {
   amm_package,
   create_lp,
   get_output,
+  zap_optimized_input,
+  zap_optimized_input_,
   zap_x,
   zap_y,
 } from '@/Constants/API/pool'
@@ -25,6 +27,9 @@ type ZapMutationArgs = {
   pool_id: string
   pool_type_x: string
   pool_type_y: string
+  reserve_x: string
+  reserve_y: string
+  fee: string
   is_type_x: boolean
   lp_id: string | null
   input_value: string
@@ -45,6 +50,9 @@ export const useZap = () => {
       pool_id,
       pool_type_x,
       pool_type_y,
+      reserve_x,
+      reserve_y,
+      fee,
       is_type_x,
       lp_id,
       input_value,
@@ -60,10 +68,20 @@ export const useZap = () => {
         coinType: input_type,
       })
       const coin = payCoin(txb, coins, input_value, input_type == SUI_TYPE_ARG)
+
+      // pure function: can be local
+      const swapped_x = zap_optimized_input_(
+        is_type_x ? reserve_x : reserve_y,
+        input_value,
+        fee,
+      )
+
       const deposit_x_min =
-        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(input_value)) /
+        ((BigInt('10000') - BigInt(setting.slippage)) *
+          (BigInt(input_value) - swapped_x)) /
         BigInt('10000')
 
+      // this should e in programable tx block
       const output = await get_output(
         rpc,
         currentAccount.address,
@@ -71,9 +89,10 @@ export const useZap = () => {
         pool_type_x,
         pool_type_y,
         input_type,
-        (BigInt(input_value) / BigInt('2')).toString(),
+        swapped_x,
       )
-      // coni_y_min
+
+      console.log(swapped_x.toString(), input_value, output) //
       const deposit_y_min =
         ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(output)) /
         BigInt('10000')
@@ -100,8 +119,8 @@ export const useZap = () => {
           pool_type_y,
           coin,
           lp,
-          deposit_x_min,
           deposit_y_min,
+          deposit_x_min,
         )
       }
 
@@ -142,7 +161,7 @@ export const useZap = () => {
       { lp, deposit: { deposit_x, deposit_y, lp_token } },
       params,
     ) => {
-      console.log(lp_token)
+      console.log(deposit_x, deposit_y, lp_token)
       queryClient.setQueryData(
         ['LP', currentAccount!.address],
         (lp_ids?: LP[]) => {

@@ -31,7 +31,7 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   const pools = useGetMulPool(pool_ids?.data)
   const pool = useGetPool(pool_ids?.data?.[0])
   // balance
-  const balance_x = useGetBalance(Coin.SUI, currentAccount?.address)
+  const balance_x = useGetBalance(Coin.SDB, currentAccount?.address)
   // LP
   const lps = useGetMulLP(currentAccount?.address)
 
@@ -82,9 +82,12 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
         pool_id: pool?.data.id,
         pool_type_x: pool?.data.type_x,
         pool_type_y: pool?.data.type_y,
+        reserve_x: pool?.data.reserve_x,
+        reserve_y: pool?.data.reserve_y,
+        fee: pool?.data.fee.fee_percentage,
         is_type_x: pool?.data?.type_x == balance_x?.data?.coinType,
         lp_id: lp ? lp.id : null,
-        input_value: '500000000',
+        input_value: '10000000000',
       })
     }
   }
