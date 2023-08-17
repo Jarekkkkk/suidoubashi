@@ -176,3 +176,24 @@ export const vsdbModalbutton = css`
   justify-content: center;
   margin-top: 28px;
 `
+
+export const vsdbTabContainer = css`
+  display: block;
+  margin-top: 30px;
+  min-height: 360px;
+`
+// DepositVSDBModal
+export const vsdbDepositCountBlock = css`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 28px;
+  padding-top: 28px;
+  border-top: 1px solid #A4A8B3;
+`
+export const vsdbDepositCount = css`
+  padding: 22px 35px;
+  border: 1px solid #A4A8B3;
+  border-radius: 8px;
+`
