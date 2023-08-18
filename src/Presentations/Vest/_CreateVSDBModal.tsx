@@ -13,6 +13,7 @@ type Props = {
 
 const CreateVSDBModal = (props: Props) => {
   const { isShowCreateVSDBModal, setIsShowCreateVSDBModal } = props;
+  if (!isShowCreateVSDBModal) return null;
   const [startDate, setStartDate] = useState(new Date());
   const [dateRange, setDateRange] = useState();
 

@@ -14,6 +14,7 @@ type Props = {
 
 const DepositVSDBModal = (props: Props) => {
   const { isShowDepositVSDBModal, setIsShowDepositVSDBModal } = props;
+  if (!isShowDepositVSDBModal) return null;
   const [startDate, setStartDate] = useState(new Date());
   const [dateRange, setDateRange] = useState();
 

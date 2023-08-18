@@ -14,6 +14,7 @@ type Props = {
 
 const WithdrawVSDBModal = (props: Props) => {
   const { isShowWithdrawVSDBModal, setIsShowWithdrawVSDBModal } = props;
+  if (!isShowWithdrawVSDBModal) return null;
   const [startDate, setStartDate] = useState(new Date());
   const [dateRange, setDateRange] = useState();
 
