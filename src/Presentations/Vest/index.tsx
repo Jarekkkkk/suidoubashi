@@ -73,7 +73,6 @@ const VestPresentation = () => {
 										handleUnlock={handleUnlock}
 										setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
 										setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
-										isShowDepositVSDBModal={isShowDepositVSDBModal}
 									/>
 								)})
 							}
