@@ -9,6 +9,7 @@ import VestCardComponent from './_VestCard';
 import CreateVSDBModal from './_CreateVSDBModal';
 import MergeVSDBModal from './_MergeVSDBModal';
 import WithdrawVSDBModal from './_WithdrawVSDBModal';
+import DepositVSDBModal from './_DepositVSDBModal';
 
 import * as styles from './index.styles'
 import BigNumber from 'bignumber.js';
@@ -83,6 +84,10 @@ const VestPresentation = () => {
 			<CreateVSDBModal
 				isShowCreateVSDBModal={isShowCreateVSDBModal}
 				setIsShowCreateVSDBModal={setIsShowCreateVSDBModal}
+			/>
+			<DepositVSDBModal
+				isShowDepositVSDBModal={isShowDepositVSDBModal}
+				setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
 			/>
 			<MergeVSDBModal
 				isShowMergeVSDBModal={isShowMergeVSDBModal}
