@@ -12,6 +12,22 @@ import { CoinIcon, Icon } from '@/Assets/icon'
 import { vsdbTimeSettingOptions } from '@/Constants/index'
 
 import * as styles from './index.styles'
+import { useLock } from '@/Hooks/VSDB/useLock'
+
+const handleLock = (deposit_value: string | undefined, endDate: string) => {
+  const deposit = parseFloat(deposit_value ?? '')
+  const now = new Date()
+
+  now.setHours(0, 0, 0, 0)
+
+  const timestamp = (new Date(endDate).getTime() - now.getTime())/1000
+  console.log(timestamp)
+  if (deposit > 1) {
+    const lock = useLock()
+    const foo = deposit * Math.pow(10, 9)
+//    lock.mutate({depositValue: deposit * Math.pow(10, 9)})
+  }
+}
 
 type Props = {
   isShowCreateVSDBModal: boolean
@@ -23,11 +39,25 @@ const CreateVSDBModal = (props: Props) => {
 
   if (!isShowCreateVSDBModal) return null
   const [endDate, setEndDate] = useState<string>(new Date().toString())
-  const [balance, setBalance] = useState()
+  const [balance, setBalance] = useState<string>()
+  const [input, setInput] = useState<string>()
 
   const handleOnChange = (date: string) => {
     setEndDate(date)
   }
+
+  const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value
+    const inputValue = value
+    const isValid = /^-?\d*\.?\d*$/.test(inputValue)
+
+    if (!isValid) {
+      value = inputValue.slice(0, -1)
+    }
+
+    setInput(value)
+  }
+
   const handleOnBalanceChange = (bal: string) => {
     setBalance(bal)
   }
@@ -49,10 +79,14 @@ const CreateVSDBModal = (props: Props) => {
         }
         inputChildren={
           <>
-            <Input placeholder='Increase Unlocked Amount' />
+            <Input
+              value={input}
+              onChange={handleOnInputChange}
+              placeholder='Increase Unlocked Amount'
+            />
           </>
         }
-        balance={balance}
+        balance={'30000'}
       />
       <InputSection
         titleChildren={
@@ -96,7 +130,11 @@ const CreateVSDBModal = (props: Props) => {
         </div>
       </div>
       <div className={styles.vsdbModalbutton}>
-        <Button text='Lock' styletype='filled' onClick={() => { }} />
+        <Button
+          text='Lock'
+          styletype='filled'
+          onClick={() => handleLock(input?.toString(), endDate)}
+        />
       </div>
     </Dialog>
   )
