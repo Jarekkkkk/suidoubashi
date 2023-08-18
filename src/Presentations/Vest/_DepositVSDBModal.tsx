@@ -119,7 +119,7 @@ const DepositVSDBModal = (props: Props) => {
       isShow={isShowDepositVSDBModal}
       setIsShow={setIsShowDepositVSDBModal}
     >
-      <Tabs links={tabDataKeys} />
+      <Tabs links={tabDataKeys} styletype='ellipse' />
     </Dialog>
   )
 };

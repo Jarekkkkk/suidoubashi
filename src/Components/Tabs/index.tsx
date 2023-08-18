@@ -11,24 +11,31 @@ type Tabprops = {
 
 type Props = {
   links: Array<Tabprops>,
+  styletype?: string, // default\ellipse
 };
 
 const Tabs = (props: Props) => {
-  const { links } = props;
+  const { links, styletype='default' } = props;
   const [currTabId, setCurrTabId] = useState(0);
 
   return (
     <div className={styles.tabs}>
-      <div className={styles.tabList}>
+      <div
+        className={cx(styles.tabList, {
+          [styles.ellipseTabList]: styletype === 'ellipse',
+        })}
+      >
         {
           Array.isArray(links) && links.map((item) => (
             <span
               key={item.id}
               onClick={() => setCurrTabId(item.id)}
               className={cx(
-                styles.tabTitle,
                 {
-                  [styles.activeTab]: item.id === currTabId,
+                  [styles.defaultTabTitle]: styletype === 'default',
+                  [styles.ellipseTabTitle]: styletype === 'ellipse',
+                  [styles.defaultActiveTab]: styletype === 'default' && item.id === currTabId,
+                  [styles.ellipseActiveTab]: styletype === 'ellipse' && item.id === currTabId,
                 },
               )}
             >
