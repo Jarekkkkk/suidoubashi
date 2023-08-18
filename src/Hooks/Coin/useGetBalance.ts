@@ -7,6 +7,11 @@ export function get_balance_key(type: Coin, address: string) {
   return ['get-balance', address, type]
 }
 
+export type Balance = {
+  type: string
+  totalBalance: string
+}
+
 export default function useGetBalance(coinType: Coin, address?: string | null) {
   const rpc = useRpc()
   return useQuery(

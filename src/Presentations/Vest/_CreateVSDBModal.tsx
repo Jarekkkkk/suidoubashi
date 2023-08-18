@@ -1,40 +1,41 @@
-import { useEffect, useState } from 'react';
-import { Dialog, Input, InputSection, DatePicker, RadioGroup, Button } from '@/Components';
-import Image from '@/Assets/image';
-import { CoinIcon, Icon } from '@/Assets/icon';
+import { useEffect, useState } from 'react'
+import {
+  Dialog,
+  Input,
+  InputSection,
+  DatePicker,
+  RadioGroup,
+  Button,
+} from '@/Components'
+import Image from '@/Assets/image'
+import { CoinIcon, Icon } from '@/Assets/icon'
 import { vsdbTimeSettingOptions } from '@/Constants/index'
 
-import * as styles from './index.styles';
+import * as styles from './index.styles'
 
 type Props = {
-  isShowCreateVSDBModal: boolean,
-  setIsShowCreateVSDBModal: Function,
+  isShowCreateVSDBModal: boolean
+  setIsShowCreateVSDBModal: Function
 }
 
 const CreateVSDBModal = (props: Props) => {
-  const { isShowCreateVSDBModal, setIsShowCreateVSDBModal } = props;
-  if (!isShowCreateVSDBModal) return null;
-  const [startDate, setStartDate] = useState(new Date());
-  const [dateRange, setDateRange] = useState();
+  const { isShowCreateVSDBModal, setIsShowCreateVSDBModal } = props
 
-  const handleOnChange = (date: any) =>  {
-    setStartDate(date)
-  };
+  if (!isShowCreateVSDBModal) return null
+  const [endDate, setEndDate] = useState<string>(new Date().toString())
+  const [balance, setBalance] = useState()
 
-  const handleOnRadioChange = (e: any) =>  {
-    setDateRange(e.target.value)
-  };
-
-  useEffect(() => {
-    if (!!dateRange) {
-      handleOnChange(Date.parse(dateRange));
-    }
-  }, [dateRange]);
+  const handleOnChange = (date: string) => {
+    setEndDate(date)
+  }
+  const handleOnBalanceChange = (bal: string) => {
+    setBalance(bal)
+  }
 
   return (
     <Dialog
       {...props}
-      title="Create VSDB"
+      title='Create VSDB'
       titleImg={Image.pageBackground_2}
       isShow={isShowCreateVSDBModal}
       setIsShow={setIsShowCreateVSDBModal}
@@ -48,10 +49,10 @@ const CreateVSDBModal = (props: Props) => {
         }
         inputChildren={
           <>
-            <Input placeholder="Increase Unlocked Amount" />
+            <Input placeholder='Increase Unlocked Amount' />
           </>
         }
-        balance={30000}
+        balance={balance}
       />
       <InputSection
         titleChildren={
@@ -62,11 +63,14 @@ const CreateVSDBModal = (props: Props) => {
         }
         inputChildren={
           <>
-            <DatePicker startDate={startDate} handleOnChange={handleOnChange} />
+            <DatePicker
+              endDate={new Date(endDate)}
+              handleOnChange={handleOnChange}
+            />
             <RadioGroup
-              selectedValue={dateRange}
+              selectedValue={endDate}
               options={vsdbTimeSettingOptions}
-              onChange={handleOnRadioChange}
+              onChange={handleOnChange}
             />
           </>
         }
@@ -77,17 +81,25 @@ const CreateVSDBModal = (props: Props) => {
           <div className={styles.vsdbCountContent}>987.34</div>
         </div>
         <div className={styles.vsdbCountBlock}>
-          <div>1 SDB locked for <span>24 weeks</span> = 1.00 VeSDB</div>
-          <div>1 SDB locked for <span>18 weeks</span> = 0.75 VeSDB</div>
-          <div>1 SDB locked for <span>12 weeks</span> = 0.50 VeSDB</div>
-          <div>1 SDB locked for <span>6 weeks</span> = 0.25 VeSDB</div>
+          <div>
+            1 SDB locked for <span>24 weeks</span> = 1.00 VeSDB
+          </div>
+          <div>
+            1 SDB locked for <span>18 weeks</span> = 0.75 VeSDB
+          </div>
+          <div>
+            1 SDB locked for <span>12 weeks</span> = 0.50 VeSDB
+          </div>
+          <div>
+            1 SDB locked for <span>6 weeks</span> = 0.25 VeSDB
+          </div>
         </div>
       </div>
       <div className={styles.vsdbModalbutton}>
-        <Button text="Lock" styletype='filled' onClick={() => {}} />
+        <Button text='Lock' styletype='filled' onClick={() => { }} />
       </div>
     </Dialog>
   )
-};
+}
 
-export default CreateVSDBModal;
+export default CreateVSDBModal

@@ -1,27 +1,25 @@
-import { RadioGroup } from '@blueprintjs/core';
+import { RadioGroup } from '@blueprintjs/core'
 
-import * as styles from './index.styles';
+import * as styles from './index.styles'
 
 interface Props {
-  selectedValue?: string,
-  onChange: (e: any) => void,
+  selectedValue: string | number
+  onChange: (e: any) => void
   options: Array<{
-    label: string,
-    value: string,
-  }>,
+    label: string
+    value: string
+  }>
 }
 
 const RadioGroupComponent = (props: Props) => {
-  const { onChange, options } = props;
-
+  const { onChange, options } = props
   return (
     <RadioGroup
       {...props}
       className={styles.radioGroupComponent}
-      onChange={onChange}
+      onChange={(e) => onChange(e.currentTarget.value)}
       options={options}
     />
-  );
-};
-
-export default RadioGroupComponent;
+  )
+}
+export default RadioGroupComponent
