@@ -2,7 +2,6 @@ import { ProgressBar } from '@blueprintjs/core';
 import { Button } from '@/Components';
 import Image from '@/Assets/image'
 
-import DepositVSDBModal from './_DepositVSDBModal';
 import * as styles from './index.styles';
 
 interface Props {
@@ -18,7 +17,6 @@ interface Props {
 	handleIncreaseUnlockedAmount?: Function,
 	handleRevival?: Function,
 	handleUnlock?: Function,
-  isShowDepositVSDBModal?: boolean,
   setIsShowDepositVSDBModal?: Function,
   setIsShowWithdrawVSDBModal?: Function,
 }
@@ -66,7 +64,6 @@ const VestCardComponent = (props: Props) => {
 		handleIncreaseUnlockedAmount,
 		handleRevival,
 		handleUnlock,
-    isShowDepositVSDBModal,
 		setIsShowDepositVSDBModal,
 		setIsShowWithdrawVSDBModal,
   } = props;
@@ -122,12 +119,6 @@ const VestCardComponent = (props: Props) => {
           )
         }
       </div>
-			{(!isPerviewMode && isShowDepositVSDBModal && setIsShowDepositVSDBModal) &&
-        <DepositVSDBModal
-          isShowDepositVSDBModal={isShowDepositVSDBModal}
-          setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
-        />
-      }
     </div>
   );
 };
