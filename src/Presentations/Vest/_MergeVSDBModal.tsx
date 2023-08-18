@@ -45,6 +45,7 @@ const MergeVSDBModal = (props: Props) => {
         </div>
       </div>
       <VestCardComponent
+        isPerviewMode={true}
         nftId="0xd1cfa7b1f3a86a1ca3166dcb4a7f804bb8170c05fe4bfd025a85b69c17fd7f"
         nftImg={Image.nftDefault}
         level='1'
