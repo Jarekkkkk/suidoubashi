@@ -12,12 +12,13 @@ interface Props {
   vesdbValue: number,
   lockSdbValue: string,
   expiration: string,
-	handleIncreaseUnlockedTime: Function,
-	handleIncreaseUnlockedAmount: Function,
-	handleRevival: Function,
-	handleUnlock: Function,
-  setIsShowDepositVSDBModal: Function,
-  setIsShowWithdrawVSDBModal: Function,
+  isPerviewMode?: boolean,
+	handleIncreaseUnlockedTime?: Function,
+	handleIncreaseUnlockedAmount?: Function,
+	handleRevival?: Function,
+	handleUnlock?: Function,
+  setIsShowDepositVSDBModal?: Function,
+  setIsShowWithdrawVSDBModal?: Function,
 }
 
 interface TextItemProps {
@@ -57,7 +58,7 @@ const ValueItem = (props: ValueItemProps) => {
 
 const VestCardComponent = (props: Props) => {
   const {
-    nftImg, level, expValue, nftId,
+    nftImg, level, expValue, nftId, isPerviewMode,
     vesdbValue, lockSdbValue, expiration,
 		handleIncreaseUnlockedTime,
 		handleIncreaseUnlockedAmount,
@@ -82,48 +83,41 @@ const VestCardComponent = (props: Props) => {
           <TextItem title="Locked SDB" level={lockSdbValue} />
           <TextItem title="Expiration" level={expiration}  />
         </div>
-        <div></div>
-        <div className={styles.buttonContent}>
-          {
-            Date.parse(_nowDate) > Date.parse(expiration) ?
-            (
-              <>
-                <Button
-                  styletype='outlined'
-                  text='Unlock'
-                  onClick={() => handleUnlock(nftId)}
-                />
-                <Button
-                  styletype='outlined'
-                  text='Revival'
-                  onClick={() => {
-                    setIsShowWithdrawVSDBModal(true);
-                    // handleRevival(nftId);
-                  }}
-                />
-              </>
-            ) : (
-              <>
-                <Button
-                  styletype='outlined'
-                  text='Increase Unlocked Time'
-                  onClick={() => {
-                    setIsShowDepositVSDBModal(true);
-                    // handleIncreaseUnlockedTime(nftId);
-                  }}
-                />
-                <Button
-                  styletype='outlined'
-                  text='Increase Unlocked Amount'
-                  onClick={() => {
-                    setIsShowDepositVSDBModal(true);
-                    // handleIncreaseUnlockedAmount(nftId);
-                  }}
-                />
-              </>
-            )
-          }
-        </div>
+        {
+          !isPerviewMode && (
+            <div className={styles.buttonContent}>
+              {
+                Date.parse(_nowDate) > Date.parse(expiration) ?
+                (
+                  <>
+                    {handleUnlock && <Button
+                      styletype='outlined'
+                      text='Unlock'
+                      onClick={() => handleUnlock(nftId)}
+                    />}
+                    {setIsShowWithdrawVSDBModal && <Button
+                      styletype='outlined'
+                      text='Revival'
+                      onClick={() => {
+                        setIsShowWithdrawVSDBModal(true);
+                        // handleRevival(nftId);
+                      }}
+                    />}
+                  </>
+                ) :
+                  setIsShowDepositVSDBModal &&
+                    <Button
+                      styletype='outlined'
+                      text='Increase Unlocked'
+                      onClick={() => {
+                        setIsShowDepositVSDBModal(true);
+                        // handleIncreaseUnlockedTime(nftId);
+                      }}
+                    />
+              }
+            </div>
+          )
+        }
       </div>
     </div>
   );

@@ -197,3 +197,49 @@ export const vsdbDepositCount = css`
   border: 1px solid #A4A8B3;
   border-radius: 8px;
 `
+
+// MergeVSDBModal
+export const perviewContainer = css`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 30px;
+  width: 100%;
+`
+
+export const perviewCardBlock = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+  width: calc(50% - 28px);
+`
+
+export const perviewCard = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  max-width: 140px;
+
+  div {
+    color: #A4A8B3;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 1.5;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+`
+
+export const perviewImage = css`
+  margin-top: 12px;
+  border: 1px solid #2977EC;
+  border-radius: 8px;
+  overflow: hidden;
+`
