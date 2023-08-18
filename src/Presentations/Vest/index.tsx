@@ -7,7 +7,6 @@ import { required_exp } from '@/Utils/game';
 
 import VestCardComponent from './_VestCard';
 import CreateVSDBModal from './_CreateVSDBModal';
-import DepositVSDBModal from './_DepositVSDBModal';
 import MergeVSDBModal from './_MergeVSDBModal';
 import WithdrawVSDBModal from './_WithdrawVSDBModal';
 
@@ -73,6 +72,7 @@ const VestPresentation = () => {
 										handleUnlock={handleUnlock}
 										setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
 										setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
+										isShowDepositVSDBModal={isShowDepositVSDBModal}
 									/>
 								)})
 							}
@@ -84,17 +84,13 @@ const VestPresentation = () => {
 				isShowCreateVSDBModal={isShowCreateVSDBModal}
 				setIsShowCreateVSDBModal={setIsShowCreateVSDBModal}
 			/>
-			<DepositVSDBModal
-				isShowCreateVSDBModal={isShowDepositVSDBModal}
-				setIsShowCreateVSDBModal={setIsShowDepositVSDBModal}
-			/>
 			<MergeVSDBModal
-				isShowCreateVSDBModal={isShowMergeVSDBModal}
-				setIsShowCreateVSDBModal={setIsShowMergeVSDBModal}
+				isShowMergeVSDBModal={isShowMergeVSDBModal}
+				setIsShowMergeVSDBModal={setIsShowMergeVSDBModal}
 			/>
 			<WithdrawVSDBModal
-				isShowCreateVSDBModal={isShowWithdrawVSDBModal}
-				setIsShowCreateVSDBModal={setIsShowWithdrawVSDBModal}
+				isShowWithdrawVSDBModal={isShowWithdrawVSDBModal}
+				setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
 			/>
 		</PageContainer>
 	)

@@ -8,12 +8,12 @@ import * as styles from './index.styles';
 import { cx } from '@emotion/css';
 
 type Props = {
-  isShowCreateVSDBModal: boolean,
-  setIsShowCreateVSDBModal: Function,
+  isShowWithdrawVSDBModal: boolean,
+  setIsShowWithdrawVSDBModal: Function,
 }
 
 const WithdrawVSDBModal = (props: Props) => {
-  const { isShowCreateVSDBModal, setIsShowCreateVSDBModal } = props;
+  const { isShowWithdrawVSDBModal, setIsShowWithdrawVSDBModal } = props;
   const [startDate, setStartDate] = useState(new Date());
   const [dateRange, setDateRange] = useState();
 
@@ -116,8 +116,8 @@ const WithdrawVSDBModal = (props: Props) => {
       {...props}
       title="Withdraw VSDB"
       titleImg={Image.pageBackground_2}
-      isShow={isShowCreateVSDBModal}
-      setIsShow={setIsShowCreateVSDBModal}
+      isShow={isShowWithdrawVSDBModal}
+      setIsShow={setIsShowWithdrawVSDBModal}
     >
       <Tabs links={tabDataKeys} />
     </Dialog>

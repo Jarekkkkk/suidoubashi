@@ -7,20 +7,20 @@ import VestCardComponent from './_VestCard';
 import * as styles from './index.styles';
 
 type Props = {
-  isShowCreateVSDBModal: boolean,
-  setIsShowCreateVSDBModal: Function,
+  isShowMergeVSDBModal: boolean,
+  setIsShowMergeVSDBModal: Function,
 }
 
 const MergeVSDBModal = (props: Props) => {
-  const { isShowCreateVSDBModal, setIsShowCreateVSDBModal } = props;
+  const { isShowMergeVSDBModal, setIsShowMergeVSDBModal } = props;
 
   return (
     <Dialog
       {...props}
       title="Merge VSDB"
       titleImg={Image.pageBackground_2}
-      isShow={isShowCreateVSDBModal}
-      setIsShow={setIsShowCreateVSDBModal}
+      isShow={isShowMergeVSDBModal}
+      setIsShow={setIsShowMergeVSDBModal}
     >
       <div className={styles.perviewContainer}>
         <div className={styles.perviewCardBlock}>

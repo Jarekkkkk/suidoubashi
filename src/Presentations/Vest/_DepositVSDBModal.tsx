@@ -8,12 +8,12 @@ import * as styles from './index.styles';
 import { cx } from '@emotion/css';
 
 type Props = {
-  isShowCreateVSDBModal: boolean,
-  setIsShowCreateVSDBModal: Function,
+  isShowDepositVSDBModal: boolean,
+  setIsShowDepositVSDBModal: Function,
 }
 
 const DepositVSDBModal = (props: Props) => {
-  const { isShowCreateVSDBModal, setIsShowCreateVSDBModal } = props;
+  const { isShowDepositVSDBModal, setIsShowDepositVSDBModal } = props;
   const [startDate, setStartDate] = useState(new Date());
   const [dateRange, setDateRange] = useState();
 
@@ -116,8 +116,8 @@ const DepositVSDBModal = (props: Props) => {
       {...props}
       title="Deposit VSDB"
       titleImg={Image.pageBackground_2}
-      isShow={isShowCreateVSDBModal}
-      setIsShow={setIsShowCreateVSDBModal}
+      isShow={isShowDepositVSDBModal}
+      setIsShow={setIsShowDepositVSDBModal}
     >
       <Tabs links={tabDataKeys} />
     </Dialog>
