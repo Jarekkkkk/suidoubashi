@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Dialog,
   Input,
@@ -13,21 +13,7 @@ import { vsdbTimeSettingOptions } from '@/Constants/index'
 
 import * as styles from './index.styles'
 import { useLock } from '@/Hooks/VSDB/useLock'
-
-const handleLock = (deposit_value: string | undefined, endDate: string) => {
-  const deposit = parseFloat(deposit_value ?? '')
-  const now = new Date()
-
-  now.setHours(0, 0, 0, 0)
-
-  const timestamp = (new Date(endDate).getTime() - now.getTime())/1000
-  console.log(timestamp)
-  if (deposit > 1) {
-    const lock = useLock()
-    const foo = deposit * Math.pow(10, 9)
-//    lock.mutate({depositValue: deposit * Math.pow(10, 9)})
-  }
-}
+import moment from 'moment'
 
 type Props = {
   isShowCreateVSDBModal: boolean
@@ -38,28 +24,52 @@ const CreateVSDBModal = (props: Props) => {
   const { isShowCreateVSDBModal, setIsShowCreateVSDBModal } = props
 
   if (!isShowCreateVSDBModal) return null
-  const [endDate, setEndDate] = useState<string>(new Date().toString())
-  const [balance, setBalance] = useState<string>()
-  const [input, setInput] = useState<string>()
+  const [endDate, setEndDate] = useState<string>(
+    moment().add(168, 'days').toDate().toDateString(),
+  )
+
+  const [balance, setBalance] = useState<string>('')
+  const [input, setInput] = useState<string>('')
 
   const handleOnChange = (date: string) => {
     setEndDate(date)
   }
 
-  const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value
-    const inputValue = value
-    const isValid = /^-?\d*\.?\d*$/.test(inputValue)
+  const { mutate: lock } = useLock()
 
-    if (!isValid) {
-      value = inputValue.slice(0, -1)
-    }
+  const handleOnInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value
+      const inputValue = value
+      const isValid = /^-?\d*\.?\d*$/.test(inputValue)
 
-    setInput(value)
-  }
+      if (!isValid) {
+        value = inputValue.slice(0, -1)
+      }
+
+      setInput(value)
+    },
+
+    [setInput],
+  )
 
   const handleOnBalanceChange = (bal: string) => {
     setBalance(bal)
+  }
+
+  // mutation
+  const handleLock = () => {
+    if (!input) return null
+    const extended_duration =
+      (new Date(endDate).getTime() -
+        moment().startOf('day').toDate().getTime()) /
+      1000
+    
+    const deposit_value = parseFloat(deposit_value) * Math.pow(10, 9)
+
+    console.log(extended_duration)
+    console.log(deposit_value)
+    //    lock.mutate({depositValue: deposit * Math.pow(10, 9)})
   }
 
   return (

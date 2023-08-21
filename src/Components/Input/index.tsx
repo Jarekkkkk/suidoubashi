@@ -15,7 +15,6 @@ const InputComponent = (props: Props) => {
   return (
     <InputGroup
       {...props}
-      onChange={props.onChange}
       placeholder={placeholder}
       leftIcon={leftIcon}
       className={styles.InputContent}
