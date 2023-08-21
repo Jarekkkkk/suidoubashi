@@ -19,7 +19,7 @@ interface Props {
   handleIncreaseUnlockedAmount?: Function
   handleRevival?: Function
   handleUnlock?: Function
-  setIsShowDepositVSDBModal?: Function
+  handleSetDepositVSDBId?: Function
   setIsShowWithdrawVSDBModal?: Function
 }
 
@@ -73,7 +73,7 @@ const VestCardComponent = (props: Props) => {
     handleIncreaseUnlockedAmount,
     handleRevival,
     handleUnlock,
-    setIsShowDepositVSDBModal,
+    handleSetDepositVSDBId,
     setIsShowWithdrawVSDBModal,
   } = props
 
@@ -113,19 +113,17 @@ const VestCardComponent = (props: Props) => {
                     text='Revival'
                     onClick={() => {
                       setIsShowWithdrawVSDBModal(true)
-                      // handleRevival(nftId);
                     }}
                   />
                 )}
               </>
             ) : (
-              setIsShowDepositVSDBModal && (
+              handleSetDepositVSDBId && (
                 <Button
                   styletype='outlined'
                   text='Deposit VSDB'
                   onClick={() => {
-                    setIsShowDepositVSDBModal(true)
-                    // handleIncreaseUnlockedTime(nftId);
+                    handleSetDepositVSDBId(nftId)
                   }}
                 />
               )
