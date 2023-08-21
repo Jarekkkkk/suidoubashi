@@ -98,7 +98,11 @@ const CreateVSDBModal = (props: Props) => {
             />
           </>
         }
-        balance={balance ? BigNumber(balance.totalBalance).shiftedBy(-9).toFormat() : '0'}
+        balance={
+          balance
+            ? BigNumber(balance.totalBalance).shiftedBy(-9).toFormat()
+            : '...'
+        }
       />
       <InputSection
         titleChildren={
