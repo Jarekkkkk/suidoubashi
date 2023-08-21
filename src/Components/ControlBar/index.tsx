@@ -1,11 +1,12 @@
+import { Key } from 'react';
+import BigNumber from 'bignumber.js';
 import { NFTCard, Tabs, Coincard, Loading } from '@/Components';
 import { Coin, Coins } from '@/Constants/coin'
 import { formatBalance } from '@/Utils/format'
-import * as styles from './index.styles';
-import { Key } from 'react';
-import BigNumber from 'bignumber.js';
 import { LP, Pool } from '@/Constants/API/pool';
 import { Vsdb } from '@/Constants/API/vsdb';
+
+import * as styles from './index.styles';
 
 interface Props {
   nftData: Vsdb | undefined,

@@ -78,7 +78,7 @@ const CreateVSDBModal = (props: Props) => {
     <Dialog
       {...props}
       title='Create VSDB'
-      titleImg={Image.pageBackground_2}
+      titleImg={Image.pageBackground_3}
       isShow={isShowCreateVSDBModal}
       setIsShow={setIsShowCreateVSDBModal}
     >

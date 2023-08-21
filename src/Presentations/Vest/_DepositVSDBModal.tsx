@@ -116,7 +116,7 @@ const DepositVSDBModal = (props: Props) => {
     <Dialog
       {...props}
       title="Deposit VSDB"
-      titleImg={Image.pageBackground_2}
+      titleImg={Image.pageBackground_1}
       isShow={isShowDepositVSDBModal}
       setIsShow={setIsShowDepositVSDBModal}
     >

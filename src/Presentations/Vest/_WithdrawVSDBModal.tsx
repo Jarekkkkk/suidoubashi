@@ -116,7 +116,7 @@ const WithdrawVSDBModal = (props: Props) => {
     <Dialog
       {...props}
       title="Withdraw VSDB"
-      titleImg={Image.pageBackground_2}
+      titleImg={Image.pageBackground_1}
       isShow={isShowWithdrawVSDBModal}
       setIsShow={setIsShowWithdrawVSDBModal}
     >
