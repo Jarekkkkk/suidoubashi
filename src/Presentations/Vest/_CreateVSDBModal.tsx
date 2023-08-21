@@ -46,20 +46,16 @@ const CreateVSDBModal = (props: Props) => {
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
-      const inputValue = value
-      const isValid = /^-?\d*\.?\d*$/.test(inputValue)
-
+      const isValid = /^-?\d*\.?\d*$/.test(value)
       if (!isValid) {
-        value = inputValue.slice(0, -1)
+        value = value.slice(0, -1)
       }
-
       setInput(value)
     },
 
     [setInput],
   )
 
-  // mutation
   const handleLock = () => {
     const extended_duration =
       (new Date(endDate).getTime() -
@@ -146,11 +142,7 @@ const CreateVSDBModal = (props: Props) => {
         </div>
       </div>
       <div className={styles.vsdbModalbutton}>
-        <Button
-          text='Lock'
-          styletype='filled'
-          onClick={() => handleLock(input?.toString(), endDate)}
-        />
+        <Button text='Lock' styletype='filled' onClick={handleLock} />
       </div>
     </Dialog>
   )
