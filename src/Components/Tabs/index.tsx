@@ -20,33 +20,55 @@ const Tabs = (props: Props) => {
 
   return (
     <div className={styles.tabs}>
-      <div
-        className={cx(styles.tabList, {
-          [styles.ellipseTabList]: styletype === 'ellipse',
-        })}
-      >
-        {
-          Array.isArray(links) && links.map((item) => (
-            <span
-              key={item.id}
-              onClick={() => setCurrTabId(item.id)}
-              className={cx(
-                {
-                  [styles.defaultTabTitle]: styletype === 'default',
-                  [styles.ellipseTabTitle]: styletype === 'ellipse',
-                  [styles.defaultActiveTab]: styletype === 'default' && item.id === currTabId,
-                  [styles.ellipseActiveTab]: styletype === 'ellipse' && item.id === currTabId,
-                },
-              )}
-            >
-              {item.title}
-            </span>
-          ))
-        }
-      </div>
-      <div className={styles.panel}>
-        {links[currTabId].children}
-      </div>
+    {
+      styletype === 'default' ? (
+        <>
+          <div className={styles.tabList}>
+            {
+              Array.isArray(links) && links.map((item) => (
+                <span
+                  key={item.id}
+                  onClick={() => setCurrTabId(item.id)}
+                  className={cx(styles.defaultTabTitle,
+                    {
+                      [styles.defaultActiveTab]: item.id === currTabId,
+                    },
+                  )}
+                >
+                  {item.title}
+                </span>
+              ))
+            }
+          </div>
+          <div className={styles.defaultPanel}>
+            {links[currTabId].children}
+          </div>
+        </>
+      ) : (
+        <>
+          <div className={cx(styles.tabList, styles.ellipseTabList)}>
+            {
+              Array.isArray(links) && links.map((item) => (
+                <span
+                  key={item.id}
+                  onClick={() => setCurrTabId(item.id)}
+                  className={cx(styles.ellipseTabTitle,
+                    {
+                      [styles.ellipseActiveTab]: item.id === currTabId,
+                    },
+                  )}
+                >
+                  {item.title}
+                </span>
+              ))
+            }
+          </div>
+          <div className={styles.ellipsePanel}>
+            {links[currTabId].children}
+          </div>
+        </>
+      )
+    }
     </div>
   )
 };

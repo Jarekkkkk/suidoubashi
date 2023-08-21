@@ -59,7 +59,17 @@ export const ellipseActiveTab = css`
   transition: 0.3s;
 `;
 
-export const panel = css`
+export const defaultPanel = css`
+  padding: 14px;
+  max-height: calc(100vh - 485px);
+  min-height: 50px;
+  background-color: rgba(255, 255, 255, 0.70);
+  backdrop-filter: blur(8px);
+  border-radius: 0px 0px 12px 12px;
+  overflow-x: scroll;
+`;
+
+export const ellipsePanel = css`
   padding: 14px;
   background-color: rgba(255, 255, 255, 0.70);
   backdrop-filter: blur(8px);
