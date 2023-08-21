@@ -1,17 +1,17 @@
-import cx from 'classnames';
-import { Dialog } from '@blueprintjs/core';
+import cx from 'classnames'
+import { Dialog } from '@blueprintjs/core'
 
-import { Icon } from '@/Assets/icon';
-import * as styles from './index.styles';
+import { Icon } from '@/Assets/icon'
+import * as styles from './index.styles'
 
 type Props = {
-  title: string,
-  titleImg: string,
-  className?: string,
-  bodyClassname?: string,
-  children: any,
-  isShow: boolean,
-  setIsShow: Function,
+  title: string
+  titleImg: string
+  className?: string
+  bodyClassname?: string
+  children: any
+  isShow: boolean
+  setIsShow: Function
 }
 
 const DialogComponent = (props: Props) => {
@@ -23,7 +23,7 @@ const DialogComponent = (props: Props) => {
     isShow,
     setIsShow,
     ...nextProps
-  } = props;
+  } = props
 
   return (
     <Dialog
@@ -34,13 +34,14 @@ const DialogComponent = (props: Props) => {
       <div className={styles.titleSection}>
         <div className={styles.title}>{title}</div>
         <img className={styles.titleImg} src={titleImg} />
-        <Icon.CrossIcon className={styles.closeButton} onClick={() => setIsShow(false)} />
+        <Icon.CrossIcon
+          className={styles.closeButton}
+          onClick={() => setIsShow(false)}
+        />
       </div>
-      <div className={cx(styles.body, props.bodyClassname)}>
-        {children}
-      </div>
+      <div className={cx(styles.body, props.bodyClassname)}>{children}</div>
     </Dialog>
-  );
-};
+  )
+}
 
-export default DialogComponent;
+export default DialogComponent

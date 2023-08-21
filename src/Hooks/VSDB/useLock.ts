@@ -26,7 +26,7 @@ export const useLock = () => {
   return useMutation({
     mutationFn: async ({ deposit_value, extended_duration }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
-      // should refacotr
+      // should refactor
 
       const txb = new TransactionBlock()
       const sdb_coins = await rpc.getCoins({

@@ -2,7 +2,7 @@ import { InputGroup } from '@blueprintjs/core'
 import * as styles from './index.styles'
 
 interface Props {
-  value?: string 
+  value?: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   placeholder: string
   leftIcon?: any

@@ -14,6 +14,10 @@ import { vsdbTimeSettingOptions } from '@/Constants/index'
 import * as styles from './index.styles'
 import { useLock } from '@/Hooks/VSDB/useLock'
 import moment from 'moment'
+import { useWalletKit } from '@mysten/wallet-kit'
+import useGetBalance from '@/Hooks/Coin/useGetBalance'
+import { Coin } from '@/Constants/coin'
+import BigNumber from 'bignumber.js'
 
 type Props = {
   isShowCreateVSDBModal: boolean
@@ -27,6 +31,9 @@ const CreateVSDBModal = (props: Props) => {
   const [endDate, setEndDate] = useState<string>(
     moment().add(168, 'days').toDate().toDateString(),
   )
+
+  const { currentAccount } = useWalletKit()
+  const { data: balance } = useGetBalance(Coin.SDB, currentAccount?.address)
 
   const [input, setInput] = useState<string>('')
 
@@ -61,7 +68,10 @@ const CreateVSDBModal = (props: Props) => {
 
     if (!input || extended_duration < 0) return null
 
-    lock({ deposit_value:(parseFloat(input) * Math.pow(10, 9)).toString(), extended_duration: extended_duration.toString() })
+    lock({
+      deposit_value: (parseFloat(input) * Math.pow(10, 9)).toString(),
+      extended_duration: extended_duration.toString(),
+    })
   }
 
   return (
@@ -88,7 +98,7 @@ const CreateVSDBModal = (props: Props) => {
             />
           </>
         }
-        balance={'30000'}
+        balance={balance ? BigNumber(balance.totalBalance).shiftedBy(-9).toFormat() : '0'}
       />
       <InputSection
         titleChildren={
