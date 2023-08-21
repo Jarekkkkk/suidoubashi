@@ -1,4 +1,4 @@
-import { useState , useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import {
   Dialog,
   InputSection,
@@ -21,16 +21,20 @@ import { useWalletKit } from '@mysten/wallet-kit'
 import { Coin } from '@/Constants/coin'
 
 type Props = {
+  currentVSDBId: string
   isShowDepositVSDBModal: boolean
   setIsShowDepositVSDBModal: Function
 }
 
 const DepositVSDBModal = (props: Props) => {
-  const { isShowDepositVSDBModal, setIsShowDepositVSDBModal } = props
+  const { isShowDepositVSDBModal, setIsShowDepositVSDBModal, currentVSDBId } =
+    props
   if (!isShowDepositVSDBModal) return null
   const [endDate, setEndDate] = useState<string>(
     moment().add(168, 'days').toDate().toDateString(),
   )
+
+  console.log(currentVSDBId)
 
   const { currentAccount } = useWalletKit()
   const { data: balance } = useGetBalance(Coin.SDB, currentAccount?.address)
@@ -162,13 +166,8 @@ const DepositVSDBModal = (props: Props) => {
   return (
     <Dialog
       {...props}
-<<<<<<< HEAD
-      title="Deposit VSDB"
-      titleImg={Image.pageBackground_1}
-=======
       title='Deposit VSDB'
-      titleImg={Image.pageBackground_2}
->>>>>>> c8e2c40 ([front_end] deposit Vsdb api)
+      titleImg={Image.pageBackground_1}
       isShow={isShowDepositVSDBModal}
       setIsShow={setIsShowDepositVSDBModal}
     >
