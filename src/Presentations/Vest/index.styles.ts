@@ -100,10 +100,15 @@ export const valueContent = css`
   flex-direction: column;
 `
 
+export const marginTop = css`
+  margin-top: 12px;
+`
+
 export const mulValueContent = css`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   &:nth-child(1) {
     margin-right: 12px;

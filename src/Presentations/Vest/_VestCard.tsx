@@ -1,4 +1,6 @@
 import { ProgressBar } from '@blueprintjs/core';
+import { cx } from '@emotion/css';
+
 import { Button } from '@/Components';
 import Image from '@/Assets/image'
 
@@ -24,6 +26,7 @@ interface Props {
 interface TextItemProps {
 	title: string,
 	level: string,
+  className?: any,
 }
 
 interface ValueItemProps {
@@ -32,9 +35,9 @@ interface ValueItemProps {
 }
 
 const TextItem = (props: TextItemProps) => {
-  const { title, level } = props;
+  const { title, level, className } = props;
   return (
-    <div className={styles.textContent}>
+    <div className={cx(styles.textContent, className)}>
       <div>{title}</div>
       <span>{level}</span>
     </div>
@@ -81,7 +84,7 @@ const VestCardComponent = (props: Props) => {
         <ValueItem title="VeSDB" value={vesdbValue}/>
         <div className={styles.mulValueContent}>
           <TextItem title="Locked SDB" level={lockSdbValue} />
-          <TextItem title="Expiration" level={expiration}  />
+          <TextItem className={cx({ [styles.marginTop]: isPerviewMode })} title="Expiration" level={expiration}  />
         </div>
         {
           !isPerviewMode && (
