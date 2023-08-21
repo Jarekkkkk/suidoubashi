@@ -15,7 +15,7 @@ import { payCoin } from '@/Utils/payCoin'
 import { get_balance_key } from '../Coin/useGetBalance'
 
 type MutationProps = {
-  depositValue: string
+  deposit_value: string
   extended_duration: string
 }
 
@@ -24,7 +24,7 @@ export const useLock = () => {
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
   return useMutation({
-    mutationFn: async ({ depositValue, extended_duration }: MutationProps) => {
+    mutationFn: async ({ deposit_value, extended_duration }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       // should refacotr
 
@@ -33,7 +33,7 @@ export const useLock = () => {
         owner: currentAccount.address,
         coinType: Coin.SDB,
       })
-      const coin_sdb = payCoin(txb, sdb_coins, depositValue, false)
+      const coin_sdb = payCoin(txb, sdb_coins, deposit_value, false)
       lock(txb, coin_sdb, extended_duration)
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({

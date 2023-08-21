@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import {
   Dialog,
   Input,
@@ -28,7 +28,6 @@ const CreateVSDBModal = (props: Props) => {
     moment().add(168, 'days').toDate().toDateString(),
   )
 
-  const [balance, setBalance] = useState<string>('')
   const [input, setInput] = useState<string>('')
 
   const handleOnChange = (date: string) => {
@@ -53,23 +52,16 @@ const CreateVSDBModal = (props: Props) => {
     [setInput],
   )
 
-  const handleOnBalanceChange = (bal: string) => {
-    setBalance(bal)
-  }
-
   // mutation
   const handleLock = () => {
-    if (!input) return null
     const extended_duration =
       (new Date(endDate).getTime() -
         moment().startOf('day').toDate().getTime()) /
       1000
-    
-    const deposit_value = parseFloat(deposit_value) * Math.pow(10, 9)
 
-    console.log(extended_duration)
-    console.log(deposit_value)
-    //    lock.mutate({depositValue: deposit * Math.pow(10, 9)})
+    if (!input || extended_duration < 0) return null
+
+    lock({ deposit_value:(parseFloat(input) * Math.pow(10, 9)).toString(), extended_duration: extended_duration.toString() })
   }
 
   return (
