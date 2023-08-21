@@ -209,7 +209,7 @@ export const perviewContainer = css`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 30px;
+  padding: 10px 0px;
   width: 100%;
 `
 
