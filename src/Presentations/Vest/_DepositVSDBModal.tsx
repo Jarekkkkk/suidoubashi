@@ -57,7 +57,6 @@ const DepositVSDBModal = (props: Props) => {
   const handleOnChange = (date: string) => {
     setEndDate(date)
   }
-  console.log(input)
 
   const tabDataKeys = [
     {

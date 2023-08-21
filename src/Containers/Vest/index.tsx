@@ -84,6 +84,7 @@ const VestContainer = ({ children }: PropsWithChildren) => {
   const [currentVSDBId, setCurrentVSDBId] = useState('')
 
   const handleSetDepositVSDBId = (id: string) => {
+    if (!id) return null
     setCurrentVSDBId(id)
     setIsShowDepositVSDBModal(true)
   }
