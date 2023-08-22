@@ -9,7 +9,10 @@ import { Vsdb } from '@/Constants/API/vsdb';
 import * as styles from './index.styles';
 
 interface Props {
-  nftData: Vsdb | undefined,
+  nftInfo: {
+    data: Vsdb | undefined,
+    isLoading: boolean,
+  },
   poolDataList: Pool[] | undefined,
   coinData: any,
   lpData: LP [] | undefined,
@@ -22,7 +25,7 @@ const fetchIcon = (type: string) => Coins.filter(coin => coin.type === type)[0];
 
 const ControlBarComponent = (props: Props) => {
 	const {
-    nftData, coinData, lpData, poolDataList,
+    nftInfo, coinData, lpData, poolDataList,
     handleFetchNFTData, isPrevBtnDisplay, isNextBtnDisplay
   } = props;
 
@@ -105,7 +108,7 @@ const ControlBarComponent = (props: Props) => {
   return (
     <div className={styles.barContainer}>
       {
-        !nftData ?
+        nftInfo.isLoading || !nftInfo.data ?
           <div className={styles.loadingContent}>
             <Loading />
           </div>
@@ -113,12 +116,12 @@ const ControlBarComponent = (props: Props) => {
           <NFTCard
             isPrevBtnDisplay={isPrevBtnDisplay}
             isNextBtnDisplay={isNextBtnDisplay}
-            nftImg={nftData?.display?.image_url}
-            level={nftData.level}
-            expValue={parseInt(nftData.experience)}
-            sdbValue={parseInt(nftData.balance)}
-            vesdbValue={parseInt(nftData.vesdb)}
-            address={nftData.id}
+            nftImg={nftInfo?.data?.display?.image_url}
+            level={nftInfo?.data?.level}
+            expValue={parseInt(nftInfo?.data?.experience)}
+            sdbValue={parseInt(nftInfo?.data?.balance)}
+            vesdbValue={parseInt(nftInfo?.data?.vesdb)}
+            address={nftInfo?.data?.id}
             handleFetchNFTData={handleFetchNFTData}
           />
       }

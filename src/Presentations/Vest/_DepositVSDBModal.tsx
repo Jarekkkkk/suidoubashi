@@ -39,6 +39,7 @@ const DepositVSDBModal = (props: Props) => {
 
 
   const [input, setInput] = useState<string>('')
+
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value

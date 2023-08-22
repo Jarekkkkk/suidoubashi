@@ -26,7 +26,7 @@ const PageComponent = (props: Props) => {
 
   const vsdb_ids = useGetVsdbIDs(walletAddress);
 
-	const _nftData = useGetVsdb(walletAddress, vsdb_ids?.data?.[currentVsdbId]);
+	const _nftInfo = useGetVsdb(walletAddress, vsdb_ids?.data?.[currentVsdbId]);
   const balances = useGetMulBalance(Coins, currentAccount?.address);
 
   const lps = useGetMulLP(currentAccount?.address);
@@ -68,7 +68,7 @@ const PageComponent = (props: Props) => {
 					isPrevBtnDisplay={currentVsdbId !== 0}
 					isNextBtnDisplay={vsdb_ids?.data && currentVsdbId < (Number(vsdb_ids?.data.length) - 1) || false}
 					poolDataList={poolDataList}
-					nftData={_nftData.data}
+					nftInfo={_nftInfo}
 					coinData={balances}
 					lpData={lps.data}
 					handleFetchNFTData={handleFetchNFTData}
