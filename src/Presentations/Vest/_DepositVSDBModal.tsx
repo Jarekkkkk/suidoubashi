@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useState, useCallback } from 'react'
+=======
+import { useState , useCallback } from 'react'
+>>>>>>> 3aa265e ([front_end] deposit Vsdb api)
 import {
   Dialog,
   InputSection,
@@ -21,19 +25,27 @@ import { useWalletKit } from '@mysten/wallet-kit'
 import { Coin } from '@/Constants/coin'
 
 type Props = {
+<<<<<<< HEAD
   currentVSDBId: string
+=======
+>>>>>>> 3aa265e ([front_end] deposit Vsdb api)
   isShowDepositVSDBModal: boolean
   setIsShowDepositVSDBModal: Function
 }
 
 const DepositVSDBModal = (props: Props) => {
+<<<<<<< HEAD
   const { isShowDepositVSDBModal, setIsShowDepositVSDBModal, currentVSDBId } =
     props
+=======
+  const { isShowDepositVSDBModal, setIsShowDepositVSDBModal } = props
+>>>>>>> 3aa265e ([front_end] deposit Vsdb api)
   if (!isShowDepositVSDBModal) return null
   const [endDate, setEndDate] = useState<string>(
     moment().add(168, 'days').toDate().toDateString(),
   )
 
+<<<<<<< HEAD
   console.log(currentVSDBId)
 
   const { currentAccount } = useWalletKit()
@@ -45,6 +57,17 @@ const DepositVSDBModal = (props: Props) => {
       let value = e.target.value
       const isValid = /^-?\d*\.?\d*$/.test(value)
 
+=======
+  const { currentAccount } = useWalletKit()
+  const { data: balance } = useGetBalance(Coin.SDB, currentAccount?.address)
+
+  const [input, setInput] = useState<string>('')
+  const handleOnInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value
+      const isValid = /^-?\d*\.?\d*$/.test(value)
+
+>>>>>>> 3aa265e ([front_end] deposit Vsdb api)
       if (!isValid) {
         value = value.slice(0, -1)
       }
@@ -57,6 +80,10 @@ const DepositVSDBModal = (props: Props) => {
   const handleOnChange = (date: string) => {
     setEndDate(date)
   }
+<<<<<<< HEAD
+=======
+  console.log(input)
+>>>>>>> 3aa265e ([front_end] deposit Vsdb api)
 
   const tabDataKeys = [
     {
@@ -165,8 +192,17 @@ const DepositVSDBModal = (props: Props) => {
   return (
     <Dialog
       {...props}
+<<<<<<< HEAD
       title='Deposit VSDB'
+=======
+<<<<<<< HEAD
+      title="Deposit VSDB"
+>>>>>>> 3aa265e ([front_end] deposit Vsdb api)
       titleImg={Image.pageBackground_1}
+=======
+      title='Deposit VSDB'
+      titleImg={Image.pageBackground_2}
+>>>>>>> c8e2c40 ([front_end] deposit Vsdb api)
       isShow={isShowDepositVSDBModal}
       setIsShow={setIsShowDepositVSDBModal}
     >
