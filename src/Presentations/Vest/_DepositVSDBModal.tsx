@@ -1,4 +1,4 @@
-import { useState , useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import {
   Dialog,
   InputSection,
@@ -19,6 +19,8 @@ import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import BigNumber from 'bignumber.js'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { Coin } from '@/Constants/coin'
+import { useIncreaseUnlockTime } from '@/Hooks/VSDB/useIncreaseUnlockTime'
+import { useIncreaseUnlockAmount } from '@/Hooks/VSDB/useIncreaseUnlockAmount'
 
 type Props = {
   currentVSDBId: string
@@ -27,19 +29,17 @@ type Props = {
 }
 
 const DepositVSDBModal = (props: Props) => {
-  const { isShowDepositVSDBModal, setIsShowDepositVSDBModal } = props
-  
+  const { isShowDepositVSDBModal, setIsShowDepositVSDBModal, currentVSDBId } =
+    props
+
   const [endDate, setEndDate] = useState<string>(
     moment().add(168, 'days').toDate().toDateString(),
   )
 
-
   const { currentAccount } = useWalletKit()
   const { data: balance } = useGetBalance(Coin.SDB, currentAccount?.address)
 
-
   const [input, setInput] = useState<string>('')
-
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
@@ -56,6 +56,31 @@ const DepositVSDBModal = (props: Props) => {
   )
   const handleOnChange = (date: string) => {
     setEndDate(date)
+  }
+
+  const { mutate: increase_unlocked_amount } = useIncreaseUnlockAmount()
+  const handleIncreaseAmount = () => {
+    if (!input) return null
+
+    increase_unlocked_amount({
+      vsdb: currentVSDBId,
+      depositValue: (parseFloat(input) * Math.pow(10, 9)).toString(),
+    })
+  }
+
+  const { mutate: increase_unlocked_time } = useIncreaseUnlockTime()
+  const handleIncreaseDuration = () => {
+    const extended_duration =
+      (new Date(endDate).getTime() -
+        moment().startOf('day').toDate().getTime()) /
+      1000
+
+    if (extended_duration < 0) return null
+
+    increase_unlocked_time({
+      vsdb: currentVSDBId,
+      extended_duration: extended_duration.toString(),
+    })
   }
 
   const tabDataKeys = [
@@ -98,7 +123,11 @@ const DepositVSDBModal = (props: Props) => {
             </div>
           </div>
           <div className={styles.vsdbModalbutton}>
-            <Button text='Increase SDB' styletype='filled' onClick={() => {}} />
+            <Button
+              text='Increase SDB'
+              styletype='filled'
+              onClick={handleIncreaseAmount}
+            />
           </div>
         </div>
       ),
@@ -151,7 +180,7 @@ const DepositVSDBModal = (props: Props) => {
                   <Button
                     text='Increase Duration'
                     styletype='filled'
-                    onClick={() => {}}
+                    onClick={handleIncreaseDuration}
                   />
                 </div>
               </>
@@ -165,7 +194,7 @@ const DepositVSDBModal = (props: Props) => {
   return (
     <Dialog
       {...props}
-      title="Deposit VSDB"
+      title='Deposit VSDB'
       titleImg={Image.pageBackground_1}
       isShow={isShowDepositVSDBModal}
       setIsShow={setIsShowDepositVSDBModal}

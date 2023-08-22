@@ -12,6 +12,7 @@ import { increase_unlock_amount } from '@/Constants/API/vsdb'
 import { get_coins_key } from '../Coin/useGetCoins'
 import { Coin } from '@/Constants/coin'
 import { payCoin } from '@/Utils/payCoin'
+import { get_balance_key } from '../Coin/useGetBalance'
 
 type MutationProps = {
   vsdb: string
@@ -43,13 +44,15 @@ export const useIncreaseUnlockAmount = () => {
       if (getExecutionStatusType(res) == 'failure') {
         throw new Error('Increase Unlock Amount tx fail')
       }
+
+      return "success"
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries({
         queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
       })
       queryClient.invalidateQueries({
-        queryKey: get_coins_key(currentAccount!.address, Coin.SDB),
+        queryKey: get_balance_key(Coin.SDB, currentAccount!.address),
       })
     },
     onError: (err: Error) => console.error(err),

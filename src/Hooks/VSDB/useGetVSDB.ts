@@ -3,7 +3,7 @@ import useRpc from '../useRpc'
 
 import { useMemo } from 'react'
 
-import {get_vsdb} from '@/Constants/API/vsdb'
+import { get_vsdb } from '@/Constants/API/vsdb'
 
 const MAX_OBJECTS_PER_REQ = 5
 
@@ -39,13 +39,11 @@ export function useGetTotalVsdbID(
       enabled: !!address,
       getNextPageParam: (lastPage) =>
         lastPage?.hasNextPage ? lastPage.nextCursor : null,
-    }
+    },
   )
 }
 
-export function useGetVsdbIDs(
-  address?: string | null
-) {
+export function useGetVsdbIDs(address?: string | null) {
   const rpc = useRpc()
   return useQuery(
     ['get-vsdbs', address],
@@ -54,7 +52,7 @@ export function useGetVsdbIDs(
         owner: address!,
         filter: {
           MatchAll: [{ StructType: `${vsdb_package}::vsdb::Vsdb` }],
-        }
+        },
       })
 
       if (res.data.length == 0) return []
@@ -73,7 +71,7 @@ export const get_vsdb_key = (address: string, vsdb: string) => [
   address,
   vsdb,
 ]
-export const useGetVsdb= (address?: string, vsdb?: string) => {
+export const useGetVsdb = (address?: string, vsdb?: string) => {
   const rpc = useRpc()
   return useQuery(
     ['vsdb', address, vsdb],

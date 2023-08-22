@@ -63,7 +63,8 @@ export async function get_vsdb(
       showDisplay: true,
     },
   })
-  const { balance, level, end, experience, modules } = getObjectFields(res) as any
+  //@ts-ignore
+  const { balance, level, end, experience, modules } = getObjectFields(res)
   id = getObjectId(res)
   const display = getObjectDisplay(res).data
   const vesdb = await voting_weight(rpc, address, id)
