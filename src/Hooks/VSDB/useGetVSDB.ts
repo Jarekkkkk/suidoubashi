@@ -66,12 +66,12 @@ export function useGetVsdbIDs(address?: string | null) {
   )
 }
 
-export const get_vsdb_key = (address: string, vsdb: string) => [
+export const get_vsdb_key = (address: string | null, vsdb: string) => [
   'vsdb',
   address,
   vsdb,
 ]
-export const useGetVsdb = (address?: string, vsdb?: string) => {
+export const useGetVsdb= (address?: string | null, vsdb?: string) => {
   const rpc = useRpc()
   return useQuery(
     ['vsdb', address, vsdb],
