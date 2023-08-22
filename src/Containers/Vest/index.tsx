@@ -74,7 +74,7 @@ const handleUnlock = (nftDataId: { data: { id: any } }) => {
 const VestContainer = ({ children }: PropsWithChildren) => {
   const { currentAccount } = useWalletKit()
   const walletAddress = currentAccount?.address
-  const vsdbIdList = useGetVsdbIDs(walletAddress).data
+  const { data: vsdbIdList } = useGetVsdbIDs(walletAddress)
   const nftList = useGetMulVsdb(walletAddress, vsdbIdList)
   const [isShowCreateVSDBModal, setIsShowCreateVSDBModal] = useState(false)
   const [isShowDepositVSDBModal, setIsShowDepositVSDBModal] = useState(false)

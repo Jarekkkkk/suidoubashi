@@ -93,31 +93,32 @@ const VestPresentation = () => {
           </div>
         </div>
       )}
-      {isShowCreateVSDBModal &&
-				<CreateVSDBModal
-					isShowCreateVSDBModal={isShowCreateVSDBModal}
-					setIsShowCreateVSDBModal={setIsShowCreateVSDBModal}
-				/>
-			}
-      {isShowDepositVSDBModal &&
-				<DepositVSDBModal
-					currentVSDBId={currentVSDBId}
-					isShowDepositVSDBModal={isShowDepositVSDBModal}
-					setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
-				/>
-			}
-      {isShowMergeVSDBModal &&
-				<MergeVSDBModal
-					isShowMergeVSDBModal={isShowMergeVSDBModal}
-					setIsShowMergeVSDBModal={setIsShowMergeVSDBModal}
-				/>
-			}
-      {isShowWithdrawVSDBModal &&
-				<WithdrawVSDBModal
-					isShowWithdrawVSDBModal={isShowWithdrawVSDBModal}
-					setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
-				/>
-			}
+      {isShowCreateVSDBModal && (
+        <CreateVSDBModal
+          isShowCreateVSDBModal={isShowCreateVSDBModal}
+          setIsShowCreateVSDBModal={setIsShowCreateVSDBModal}
+        />
+      )}
+      {isShowDepositVSDBModal && (
+        <DepositVSDBModal
+          currentVSDBId={currentVSDBId}
+          isShowDepositVSDBModal={isShowDepositVSDBModal}
+          setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
+        />
+      )}
+      {isShowMergeVSDBModal && (
+        <MergeVSDBModal
+          vsdbs={data}
+          isShowMergeVSDBModal={isShowMergeVSDBModal}
+          setIsShowMergeVSDBModal={setIsShowMergeVSDBModal}
+        />
+      )}
+      {isShowWithdrawVSDBModal && (
+        <WithdrawVSDBModal
+          isShowWithdrawVSDBModal={isShowWithdrawVSDBModal}
+          setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
+        />
+      )}
     </PageContainer>
   )
 }

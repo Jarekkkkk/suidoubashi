@@ -9,39 +9,6 @@ const MAX_OBJECTS_PER_REQ = 5
 
 export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE as string
 
-export function useGetTotalVsdbID(
-  address?: string | null,
-  maxObjectRequests = MAX_OBJECTS_PER_REQ,
-) {
-  const rpc = useRpc()
-  return useInfiniteQuery(
-    ['get-vsdbs', address],
-    async ({ pageParam }) => {
-      const res = await rpc.getOwnedObjects({
-        owner: address!,
-        filter: {
-          MatchAll: [{ StructType: `${vsdb_package}::vsdb::Vsdb` }],
-        },
-        limit: maxObjectRequests,
-        cursor: pageParam,
-      })
-
-      if (res.data.length == 0) return null
-
-      const data = res.data.map((vsdb_d) => vsdb_d.data?.objectId)
-      return {
-        ...res,
-        data,
-      }
-    },
-    {
-      staleTime: 10 * 1000,
-      enabled: !!address,
-      getNextPageParam: (lastPage) =>
-        lastPage?.hasNextPage ? lastPage.nextCursor : null,
-    },
-  )
-}
 
 export function useGetVsdbIDs(address?: string | null) {
   const rpc = useRpc()
@@ -57,7 +24,7 @@ export function useGetVsdbIDs(address?: string | null) {
 
       if (res.data.length == 0) return []
 
-      return res.data.map((vsdb_d) => vsdb_d.data?.objectId)
+      return res.data.map((vsdb_d) => vsdb_d.data!.objectId)
     },
     {
       staleTime: 10 * 1000,
@@ -86,7 +53,7 @@ export const useGetVsdb= (address?: string | null, vsdb?: string) => {
 
 export const useGetMulVsdb = (
   address?: string,
-  owned_vsdb?: (string | undefined)[],
+  owned_vsdb?: (string | null)[],
 ) => {
   const rpc = useRpc()
   const mul_vsdb = useQueries({
