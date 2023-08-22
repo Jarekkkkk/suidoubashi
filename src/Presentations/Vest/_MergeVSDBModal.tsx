@@ -13,7 +13,6 @@ type Props = {
 
 const MergeVSDBModal = (props: Props) => {
   const { isShowMergeVSDBModal, setIsShowMergeVSDBModal } = props;
-  if (!isShowMergeVSDBModal) return null;
 
   return (
     <Dialog

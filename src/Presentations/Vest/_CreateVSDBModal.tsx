@@ -26,8 +26,7 @@ type Props = {
 
 const CreateVSDBModal = (props: Props) => {
   const { isShowCreateVSDBModal, setIsShowCreateVSDBModal } = props
-
-  if (!isShowCreateVSDBModal) return null
+  
   const [endDate, setEndDate] = useState<string>(
     moment().add(168, 'days').toDate().toDateString(),
   )
