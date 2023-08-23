@@ -10,6 +10,7 @@ import { formatBalance, formatDate, formatId } from '@/Utils/format'
 import { useMemo, useState } from 'react'
 import { SelectOption } from '@/Components/Select'
 import { useMerge } from '@/Hooks/VSDB/useMerge'
+import { calculate_vesdb } from '@/Utils/calculateAPR'
 
 type Props = {
   vsdbs: Vsdb[]
@@ -43,17 +44,7 @@ const MergeVSDBModal = (props: Props) => {
       BigInt(currentVsdb.balance) + BigInt(secondVsdb.balance)
     ).toString()
 
-    const diff = Math.floor(
-      (new Date(parseInt(_mergedVsdb.end) * 1000).getTime() -
-        new Date().getTime()) /
-        1000,
-    )
-    _mergedVsdb.vesdb = BigNumber(_mergedVsdb.balance)
-      .multipliedBy(diff)
-      .div(14515200)
-      .decimalPlaces(3)
-      .toString()
-
+    _mergedVsdb.vesdb = calculate_vesdb(_mergedVsdb.balance, _mergedVsdb.end)
     return _mergedVsdb
   }, [secondVsdb, currentVsdb])
 
@@ -94,7 +85,7 @@ const MergeVSDBModal = (props: Props) => {
             <div>{formatDate(currentVsdb.end)}</div>
             <div>{formatBalance(currentVsdb.balance, 9)} SDB</div>
             <div className={styles.perviewImage}>
-              <img src={Image.nftDefault} />
+              <img src={currentVsdb.display.image_url} />
             </div>
           </div>
         </div>
@@ -119,7 +110,11 @@ const MergeVSDBModal = (props: Props) => {
                 : '---'}
             </div>
             <div className={styles.perviewImage}>
-              <img src={Image.nftDefault} />
+              <img
+                src={
+                  secondVsdb ? secondVsdb.display.image_url : Image.nftDefault
+                }
+              />
             </div>
           </div>
         </div>

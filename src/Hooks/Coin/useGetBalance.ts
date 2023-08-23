@@ -1,4 +1,4 @@
-import { useQueries, useQuery } from '@tanstack/react-query'
+import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { Coin, CoinInterface } from '@/Constants/coin'
 import { useMemo } from 'react'
@@ -12,22 +12,11 @@ export type Balance = {
   totalBalance: string
 }
 
-export default function useGetBalance(coinType: Coin, address?: string | null) {
-  const rpc = useRpc()
-  return useQuery(
-    ['get-balance', address, coinType],
-    async () => {
-      return await rpc.getBalance({
-        owner: address!,
-        coinType,
-      })
-    },
-    {
-      enabled: !!address,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-    },
-  )
+export default function useGetBalance(coinType: Coin) {
+  const queryClient = useQueryClient()
+  return queryClient
+    .getQueryData<Balance[]>(['balance'])
+    ?.find((bal) => bal.coinType == coinType)
 }
 
 export function useGetAllBalance(
@@ -36,7 +25,7 @@ export function useGetAllBalance(
 ) {
   const rpc = useRpc()
   return useQuery(
-    ['balance', address],
+    ['balance'],
     async () => {
       const res = await rpc.getAllBalances({
         owner: address!,
@@ -53,8 +42,6 @@ export function useGetAllBalance(
     },
     {
       enabled: !!address,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
     },
   )
 }

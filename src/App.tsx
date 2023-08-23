@@ -14,7 +14,7 @@ export const queryClient = new QueryClient({
       // We default the stale time to 5 minutes, which is an arbitrary number selected to
       // strike the balance between stale data and cache hits.
       // Individual queries can override this value based on their caching needs.
-      staleTime: 5 * 60 * 1000,
+      staleTime: 10 * 60 * 1000,
       refetchInterval: false,
       refetchIntervalInBackground: false,
       refetchOnMount: false,
@@ -46,6 +46,6 @@ const App = () => {
       </WalletKitProvider>
     </QueryClientProvider>
   )
-};
+}
 
-export default App;
+export default App

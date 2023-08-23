@@ -1,13 +1,12 @@
 import { useWalletKit } from '@mysten/wallet-kit'
 import useRpc from '../useRpc'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   TransactionBlock,
   isValidSuiObjectId,
   getExecutionStatusType,
 } from '@mysten/sui.js'
 import { increase_unlock_time } from '@/Constants/API/vsdb'
-import { queryClient } from '@/App'
 import { get_vsdb_key } from './useGetVSDB'
 
 type MutationProps = {
@@ -17,6 +16,7 @@ type MutationProps = {
 
 export const useIncreaseUnlockTime = (setIsShowDepositVSDBModal: Function) => {
   const rpc = useRpc()
+  const queryClient = useQueryClient()
 
   const { signTransactionBlock, currentAccount } = useWalletKit()
   return useMutation({

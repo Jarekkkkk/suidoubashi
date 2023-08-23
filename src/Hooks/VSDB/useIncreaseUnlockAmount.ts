@@ -1,17 +1,16 @@
 import { useWalletKit } from '@mysten/wallet-kit'
 import useRpc from '../useRpc'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   TransactionBlock,
   isValidSuiObjectId,
   getExecutionStatusType,
 } from '@mysten/sui.js'
-import { queryClient } from '@/App'
 import { get_vsdb_key } from './useGetVSDB'
 import { increase_unlock_amount } from '@/Constants/API/vsdb'
 import { Coin } from '@/Constants/coin'
 import { payCoin } from '@/Utils/payCoin'
-import { get_balance_key } from '../Coin/useGetBalance'
+import { Balance } from '../Coin/useGetBalance'
 
 type MutationProps = {
   vsdb: string
@@ -22,6 +21,7 @@ export const useIncreaseUnlockAmount = (
   setIsShowDepositVSDBModal: Function,
 ) => {
   const rpc = useRpc()
+  const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
   return useMutation({
@@ -40,20 +40,30 @@ export const useIncreaseUnlockAmount = (
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
+        options: { showBalanceChanges: true },
       })
 
       if (getExecutionStatusType(res) == 'failure') {
         throw new Error('Increase Unlock Amount tx fail')
       }
 
-      return 'success'
+      if(!res.balanceChanges) throw new Error("no balance changes")
+      return res.balanceChanges
     },
-    onSuccess: (_, params) => {
+    onSuccess: (balanceChanges, params) => {
       queryClient.invalidateQueries({
         queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
       })
-      queryClient.invalidateQueries({
-        queryKey: get_balance_key(Coin.SDB, currentAccount!.address),
+      queryClient.setQueryData(['balance'], (balances?: Balance[]) => {
+        if (!balances) return []
+        balanceChanges?.forEach((bal) => {
+          const balance = balances.find((b) => b.coinType == bal.coinType)
+          if (balance)
+            balance.totalBalance = (
+              BigInt(balance.totalBalance) + BigInt(bal.amount)
+            ).toString()
+        })
+        return [...balances]
       })
       setIsShowDepositVSDBModal(false)
     },

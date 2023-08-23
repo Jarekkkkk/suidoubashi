@@ -10,14 +10,13 @@ import {
 import Image from '@/Assets/image'
 import { CoinIcon, Icon } from '@/Assets/icon'
 import { vsdbTimeSettingOptions } from '@/Constants/index'
-
 import * as styles from './index.styles'
 import { useLock } from '@/Hooks/VSDB/useLock'
 import moment from 'moment'
-import { useWalletKit } from '@mysten/wallet-kit'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { Coin } from '@/Constants/coin'
 import BigNumber from 'bignumber.js'
+import { calculate_vesdb } from '@/Utils/calculateAPR'
 
 type Props = {
   isShowCreateVSDBModal: boolean
@@ -26,13 +25,12 @@ type Props = {
 
 const CreateVSDBModal = (props: Props) => {
   const { isShowCreateVSDBModal, setIsShowCreateVSDBModal } = props
-  
+
   const [endDate, setEndDate] = useState<string>(
     moment().add(168, 'days').toDate().toDateString(),
   )
 
-  const { currentAccount } = useWalletKit()
-  const { data: balance } = useGetBalance(Coin.SDB, currentAccount?.address)
+  const balance = useGetBalance(Coin.SDB)
 
   const [input, setInput] = useState<string>('')
 
@@ -123,7 +121,12 @@ const CreateVSDBModal = (props: Props) => {
       <div className={styles.vsdbCountContainer}>
         <div className={styles.vsdbCountBlock}>
           <div>Your VeSDB</div>
-          <div className={styles.vsdbCountContent}>987.34</div>
+          <div className={styles.vsdbCountContent}>
+            {calculate_vesdb(
+              input || '0',
+              (new Date(endDate).getTime() / 1000).toString(),
+            )}
+          </div>
         </div>
         <div className={styles.vsdbCountBlock}>
           <div>

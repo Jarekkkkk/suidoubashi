@@ -35,3 +35,14 @@ export const calculate_slippage = (slippage: string, output_value: string) => {
     BigInt('10000')
   )
 }
+
+export const calculate_vesdb = (bal: string, end: string) => {
+  const diff = Math.floor(
+    (new Date(parseInt(end) * 1000).getTime() - new Date().getTime()) / 1000,
+  )
+  return BigNumber(bal)
+    .multipliedBy(diff)
+    .div(14515200)
+    .decimalPlaces(3)
+    .toString()
+}

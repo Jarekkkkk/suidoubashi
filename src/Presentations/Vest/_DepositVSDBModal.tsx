@@ -38,7 +38,7 @@ const DepositVSDBModal = (props: Props) => {
   )
 
   const { currentAccount } = useWalletKit()
-  const { data: balance } = useGetBalance(Coin.SDB, currentAccount?.address)
+  const balance = useGetBalance(Coin.SDB)
   const { data: vsdb } = useGetVsdb(currentAccount?.address, currentVSDBId)
 
   const [input, setInput] = useState<string>()
@@ -60,7 +60,9 @@ const DepositVSDBModal = (props: Props) => {
     setEndDate(date)
   }
 
-  const { mutate: increase_unlocked_amount } = useIncreaseUnlockAmount(setIsShowDepositVSDBModal)
+  const { mutate: increase_unlocked_amount } = useIncreaseUnlockAmount(
+    setIsShowDepositVSDBModal,
+  )
   const handleIncreaseAmount = () => {
     if (!input) return null
 
@@ -70,7 +72,9 @@ const DepositVSDBModal = (props: Props) => {
     })
   }
 
-  const { mutate: increase_unlocked_time } = useIncreaseUnlockTime(setIsShowDepositVSDBModal)
+  const { mutate: increase_unlocked_time } = useIncreaseUnlockTime(
+    setIsShowDepositVSDBModal,
+  )
   const handleIncreaseDuration = () => {
     const extended_duration =
       (new Date(endDate).getTime() -
@@ -92,7 +96,7 @@ const DepositVSDBModal = (props: Props) => {
 
   const handleIncreaseSDBVesdbOnchange = (input: string) => {
     const extended_duration =
-      (new Date(parseInt(vsdb?.end ?? "0") * 1000).getTime() -
+      (new Date(parseInt(vsdb?.end ?? '0') * 1000).getTime() -
         moment().startOf('day').toDate().getTime()) /
       1000
 
@@ -112,7 +116,7 @@ const DepositVSDBModal = (props: Props) => {
       (new Date(end).getTime() - moment().startOf('day').toDate().getTime()) /
       1000
 
-    return BigNumber(vsdb!.balance)
+    return BigNumber(vsdb?.balance ?? '0')
       .multipliedBy(extended_duration)
       .dividedBy(14515200)
       .shiftedBy(-9)
@@ -148,7 +152,7 @@ const DepositVSDBModal = (props: Props) => {
             <div className={cx(styles.vsdbDepositCount, styles.vsdbCountBlock)}>
               <div>Current VeSDB</div>
               <span className={styles.vsdbCountContent}>
-                {format(vsdb?.vesdb ?? '')}
+                {format(vsdb?.vesdb ?? '0')}
               </span>
             </div>
             <Icon.BgArrowIcon />
@@ -201,7 +205,7 @@ const DepositVSDBModal = (props: Props) => {
                   >
                     <div>Current VeSDB</div>
                     <span className={styles.vsdbCountContent}>
-                      {format(vsdb?.vesdb ?? '')}
+                      {format(vsdb?.vesdb ?? '0')}
                     </span>
                   </div>
                   <Icon.BgArrowIcon />

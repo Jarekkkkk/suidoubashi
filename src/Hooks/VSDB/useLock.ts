@@ -1,18 +1,17 @@
 import { useWalletKit } from '@mysten/wallet-kit'
 import useRpc from '../useRpc'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   TransactionBlock,
   getExecutionStatusType,
   getObjectChanges,
+  BalanceChange,
   SuiObjectChangeCreated,
 } from '@mysten/sui.js'
 import { lock, vsdb_package } from '@/Constants/API/vsdb'
-import { queryClient } from '@/App'
 import { Coin } from '@/Constants/coin'
-import { get_coins_key } from '../Coin/useGetCoins'
 import { payCoin } from '@/Utils/payCoin'
-import { get_balance_key } from '../Coin/useGetBalance'
+import { Balance } from '../Coin/useGetBalance'
 
 type MutationProps = {
   deposit_value: string
@@ -21,6 +20,7 @@ type MutationProps = {
 
 export const useLock = (setIsShowCreateVSDBModal: Function) => {
   const rpc = useRpc()
+  const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
   return useMutation({
@@ -41,6 +41,7 @@ export const useLock = (setIsShowCreateVSDBModal: Function) => {
         signature: signed_tx.signature,
         options: {
           showObjectChanges: true,
+          showBalanceChanges: true,
         },
       })
 
@@ -48,22 +49,30 @@ export const useLock = (setIsShowCreateVSDBModal: Function) => {
         throw new Error('Vesting Vsdb Tx fail')
       }
 
-      return getObjectChanges(res)?.find(
-        (obj) =>
-          obj.type == 'created' &&
-          obj.objectType == `${vsdb_package}::vsdb::Vsdb`,
-      ) as SuiObjectChangeCreated
+      return {
+        balanceChanges: res.balanceChanges,
+        new_vsdb: getObjectChanges(res)?.find(
+          (obj) =>
+            obj.type == 'created' &&
+            obj.objectType == `${vsdb_package}::vsdb::Vsdb`,
+        ) as SuiObjectChangeCreated,
+      }
     },
-    onSuccess: (new_vsdb) => {
+    onSuccess: ({ new_vsdb, balanceChanges }) => {
       queryClient.setQueryData(
         ['get-vsdbs', currentAccount!.address],
         (vsdb_ids?: string[]) => [...(vsdb_ids ?? []), new_vsdb.objectId],
       )
-      queryClient.invalidateQueries({
-        queryKey: get_coins_key(currentAccount!.address, Coin.SDB),
-      })
-      queryClient.invalidateQueries({
-        queryKey: get_balance_key(Coin.SDB, currentAccount!.address),
+      queryClient.setQueryData(['balance'], (balances?: Balance[]) => {
+        if (!balances) return []
+        balanceChanges?.forEach((bal) => {
+          const balance = balances.find((b) => b.coinType == bal.coinType)
+          if (balance)
+            balance.totalBalance = (
+              BigInt(balance.totalBalance) + BigInt(bal.amount)
+            ).toString()
+        })
+        return [...balances]
       })
 
       setIsShowCreateVSDBModal(false)

@@ -5,7 +5,6 @@ import {
   TransactionBlock,
   getObjectFields,
   getObjectDisplay,
-  DisplayFieldsResponse,
   getObjectId,
 } from '@mysten/sui.js'
 import { AMMState } from './pool'
@@ -48,9 +47,15 @@ export type Vsdb = {
   modules: string[]
   amm_state?: AMMState
   voting_state?: VotingState
-  display: DisplayFieldsResponse['data']
+  display: Record<Display, string>
 }
 
+enum Display {
+  DESCRIPTION = 'description',
+  IMAGE_URL = 'image_url',
+  LINK = 'link',
+  PROJECT_URL = 'project_url',
+}
 
 export async function get_vsdb(
   rpc: JsonRpcProvider,
@@ -67,7 +72,7 @@ export async function get_vsdb(
   //@ts-ignore
   const { balance, level, end, experience, modules } = getObjectFields(res)
   id = getObjectId(res)
-  const display = getObjectDisplay(res).data
+  const display = getObjectDisplay(res).data as Record<Display, string>
   const vesdb = await voting_weight(rpc, address, id)
   return {
     id,

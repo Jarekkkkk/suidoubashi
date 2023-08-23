@@ -1,7 +1,6 @@
-import { Key } from 'react'
 import BigNumber from 'bignumber.js'
 import { NFTCard, Tabs, Coincard, Loading } from '@/Components'
-import { Coin, Coins } from '@/Constants/coin'
+import { Coins } from '@/Constants/coin'
 import { formatBalance } from '@/Utils/format'
 import { LP, Pool } from '@/Constants/API/pool'
 import { Vsdb } from '@/Constants/API/vsdb'
@@ -34,11 +33,13 @@ const ControlBarComponent = (props: Props) => {
     isPrevBtnDisplay,
     isNextBtnDisplay,
   } = props
+
   const tabDataKeys = [
     {
       id: 0,
       title: 'Coin',
-      children: coinData ? (
+      children:
+        coinData &&
         coinData
           .sort((prev, next) => {
             const _prevIdx = fetchIcon(prev.coinType)?.decimals || 0
@@ -64,12 +65,7 @@ const ControlBarComponent = (props: Props) => {
                 )}
               />
             )
-          })
-      ) : (
-        <div className={styles.cardLoadingContent}>
-          <Loading />
-        </div>
-      ),
+          }),
     },
     {
       id: 1,
@@ -83,7 +79,6 @@ const ControlBarComponent = (props: Props) => {
                 <Loading />
               </div>
             )
-
           const _coinXIdx = fetchIcon(data.type_x)
           const _coinYIdx = fetchIcon(data.type_y)
           const { lp_supply, reserve_x, reserve_y } = poolDataList.find(
