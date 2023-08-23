@@ -44,5 +44,5 @@ export const sidebarContent = css`
   position: fixed;
   margin-top: 14px;
   margin-left: 12px;
-  z-index: 1;
+  z-index: 5;
 `
