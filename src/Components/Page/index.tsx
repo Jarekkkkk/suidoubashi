@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useWalletKit } from '@mysten/wallet-kit';
 
 import { useGetMulBalance } from '@/Hooks/Coin/useGetBalance';
@@ -13,28 +14,31 @@ import { Coins } from '@/Constants/coin';
 import { Sidebar, ControlBar } from '@/Components';
 import * as styles from './index.styles';
 import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool';
+
 interface Props {
 	children: any,
 }
 const PageComponent = (props: Props) => {
 	const { children } = props;
+	const location = useLocation();
+	const isDashboard = location.pathname === '/';
 	const [currentVsdbId, setCurrentVsdbId] = useState(0);
 	const [poolDataList, setPoolDataList] = useState();
 
   const { currentAccount } = useWalletKit();
 	const walletAddress = currentAccount?.address;
 
-  const vsdb_ids = useGetVsdbIDs(walletAddress);
+  const vsdbList = useGetVsdbIDs(walletAddress);
+	const currentNFTInfo = useGetVsdb(walletAddress, vsdbList.data?.[currentVsdbId]);
 
-	const _nftInfo = useGetVsdb(walletAddress, vsdb_ids?.data?.[currentVsdbId]);
-  const balances = useGetMulBalance(Coins, currentAccount?.address);
+  const currentNFTIBalances = useGetMulBalance(Coins, currentAccount?.address);
 
-  const lps = useGetMulLP(currentAccount?.address);
-	const pool_ids = useGetPoolIDs();
-	const pools = pool_ids && useGetMulPool(pool_ids.data);
+  const lPList = useGetMulLP(currentAccount?.address);
+	const poolIDList = useGetPoolIDs();
+	const poolList = poolIDList && useGetMulPool(poolIDList.data);
 
 	const handleFetchNFTData = (mode: string) => {
-		if (vsdb_ids.data && vsdb_ids.data.length > 0 && currentVsdbId < vsdb_ids.data.length) {
+		if (vsdbList.data && vsdbList.data.length > 0 && currentVsdbId < vsdbList.data.length) {
 			if (mode === 'next') {
 				const _vsdbId = currentVsdbId + 1;
 				setCurrentVsdbId(_vsdbId);
@@ -48,33 +52,47 @@ const PageComponent = (props: Props) => {
 	};
 
 	useEffect(() => {
-		if (pools[0] && pools[0]?.isSuccess) {
+		if (poolList[0] && poolList[0]?.isSuccess) {
 			const _poolDataList: (Pool)[] = [];
 
-			pools.map((pool) => pool.data && _poolDataList.push(pool.data));
+			poolList.map((pool) => pool.data && _poolDataList.push(pool.data));
 
 			setPoolDataList(_poolDataList);
 		}
-	}, [pools[0]?.isSuccess]);
+	}, [poolList[0]?.isSuccess]);
 
 	return (
-		<div className={styles.layoutContainer}>
-			<div className={styles.mainContent}>
-				<Sidebar isOpen={true} />
-				<div className={styles.content}>
-					{children}
+		!isDashboard ? (
+			<div className={styles.layoutContainer}>
+				<div className={styles.mainContent}>
+					<Sidebar isOpen={true} />
+					<div className={styles.content}>
+						{children}
+					</div>
+					<ControlBar
+						isPrevBtnDisplay={currentVsdbId !== 0}
+						isNextBtnDisplay={vsdbList?.data && currentVsdbId < (Number(vsdbList?.data.length) - 1) || false}
+						poolDataList={poolDataList}
+						nftInfo={currentNFTInfo}
+						coinData={currentNFTIBalances}
+						lpData={lPList.data}
+						handleFetchNFTData={handleFetchNFTData}
+					/>
 				</div>
-				<ControlBar
-					isPrevBtnDisplay={currentVsdbId !== 0}
-					isNextBtnDisplay={vsdb_ids?.data && currentVsdbId < (Number(vsdb_ids?.data.length) - 1) || false}
-					poolDataList={poolDataList}
-					nftInfo={_nftInfo}
-					coinData={balances}
-					lpData={lps.data}
-					handleFetchNFTData={handleFetchNFTData}
-				/>
 			</div>
-		</div>
+		) : (
+			<>
+				{
+					currentAccount?.address &&
+						<div className={styles.dashboardMainContent}>
+							<div className={styles.sidebarContent}>
+								<Sidebar isOpen={true} />
+							</div>
+						</div>
+				}
+				{children}
+			</>
+		)
 	);
 };
 export default PageComponent;

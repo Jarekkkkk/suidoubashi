@@ -1,6 +1,9 @@
 import { ReactComponent as LogoText  } from '@/Assets/image/Logo_text.svg';
 
 import Background from '@/Assets/image/background.png';
+import BackgroundPinkA from '@/Assets/image/background_pink.png';
+import BackgroundPinkB from '@/Assets/image/background_pink02.png';
+import BackgroundPinkWater from '@/Assets/image/background_water.png';
 import logo from '@/Assets/image/logo.png';
 import nftDefault from '@/Assets/image/nft_default.png';
 import pageBackground_1 from '@/Assets/image/page_background_1.png';
@@ -9,6 +12,9 @@ import pageBackground_3 from '@/Assets/image/page_background_3.png';
 
 const Image = {
   Background,
+  BackgroundPinkA,
+  BackgroundPinkB,
+  BackgroundPinkWater,
   logo,
   LogoText,
   nftDefault,

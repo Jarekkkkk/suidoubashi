@@ -27,8 +27,9 @@ export const queryClient = new QueryClient({
   },
 })
 
-function App() {
+const App = () => {
   const links = useMemo(() => generateLinks(), [])
+
   return (
     <QueryClientProvider client={queryClient}>
       <WalletKitProvider>
@@ -45,6 +46,6 @@ function App() {
       </WalletKitProvider>
     </QueryClientProvider>
   )
-}
+};
 
-export default App
+export default App;

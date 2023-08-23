@@ -32,3 +32,17 @@ export const content = css`
   width: 100%;
   height: calc(100vh - 28px);
 `
+
+export const dashboardMainContent = css`
+  position: relative;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1480px;
+`
+
+export const sidebarContent = css`
+  position: fixed;
+  margin-top: 14px;
+  margin-left: 12px;
+  z-index: 1;
+`
