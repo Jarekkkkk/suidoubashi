@@ -8,7 +8,7 @@ export function get_balance_key(type: Coin, address: string) {
 }
 
 export type Balance = {
-  type: string
+  coinType: string
   totalBalance: string
 }
 
@@ -21,6 +21,35 @@ export default function useGetBalance(coinType: Coin, address?: string | null) {
         owner: address!,
         coinType,
       })
+    },
+    {
+      enabled: !!address,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    },
+  )
+}
+
+export function useGetAllBalance(
+  coin_types: CoinInterface[],
+  address?: string,
+) {
+  const rpc = useRpc()
+  return useQuery(
+    ['balance', address],
+    async () => {
+      const res = await rpc.getAllBalances({
+        owner: address!,
+      })
+
+      if (!res.length) return []
+
+      return res
+        .filter((bal) => coin_types.some((c) => c.type == bal.coinType))
+        .map((bal) => ({
+          coinType: bal.coinType,
+          totalBalance: bal.totalBalance,
+        })) as Balance[]
     },
     {
       enabled: !!address,
