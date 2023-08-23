@@ -19,7 +19,7 @@ type MutationProps = {
   extended_duration: string
 }
 
-export const useLock = () => {
+export const useLock = (setIsShowCreateVSDBModal: Function) => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
@@ -65,6 +65,8 @@ export const useLock = () => {
       queryClient.invalidateQueries({
         queryKey: get_balance_key(Coin.SDB, currentAccount!.address),
       })
+
+      setIsShowCreateVSDBModal(false)
     },
     onError: (err: Error) => console.error(err),
   })

@@ -15,7 +15,7 @@ type MutationProps = {
   extended_duration: string
 }
 
-export const useIncreaseUnlockTime = () => {
+export const useIncreaseUnlockTime = (setIsShowDepositVSDBModal: Function) => {
   const rpc = useRpc()
 
   const { signTransactionBlock, currentAccount } = useWalletKit()
@@ -42,6 +42,8 @@ export const useIncreaseUnlockTime = () => {
       queryClient.invalidateQueries({
         queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
       })
+
+      setIsShowDepositVSDBModal(false)
     },
     onError: (err: Error) => console.error(err),
   })

@@ -40,7 +40,7 @@ const CreateVSDBModal = (props: Props) => {
     setEndDate(date)
   }
 
-  const { mutate: lock } = useLock()
+  const { mutate: lock } = useLock(setIsShowCreateVSDBModal)
 
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

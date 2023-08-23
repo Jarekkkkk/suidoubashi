@@ -9,7 +9,6 @@ import {
 import { queryClient } from '@/App'
 import { get_vsdb_key } from './useGetVSDB'
 import { increase_unlock_amount } from '@/Constants/API/vsdb'
-import { get_coins_key } from '../Coin/useGetCoins'
 import { Coin } from '@/Constants/coin'
 import { payCoin } from '@/Utils/payCoin'
 import { get_balance_key } from '../Coin/useGetBalance'
@@ -19,7 +18,9 @@ type MutationProps = {
   depositValue: string
 }
 
-export const useIncreaseUnlockAmount = () => {
+export const useIncreaseUnlockAmount = (
+  setIsShowDepositVSDBModal: Function,
+) => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
@@ -45,7 +46,7 @@ export const useIncreaseUnlockAmount = () => {
         throw new Error('Increase Unlock Amount tx fail')
       }
 
-      return "success"
+      return 'success'
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries({
@@ -54,6 +55,7 @@ export const useIncreaseUnlockAmount = () => {
       queryClient.invalidateQueries({
         queryKey: get_balance_key(Coin.SDB, currentAccount!.address),
       })
+      setIsShowDepositVSDBModal(false)
     },
     onError: (err: Error) => console.error(err),
   })

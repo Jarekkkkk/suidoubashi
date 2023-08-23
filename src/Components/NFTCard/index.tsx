@@ -16,8 +16,8 @@ interface Props {
   vesdbValue: number
   address: string
   handleFetchNFTData: (e: any) => void
-  isPrevBtnDisplay: boolean,
-  isNextBtnDisplay: boolean,
+  isPrevBtnDisplay: boolean
+  isNextBtnDisplay: boolean
 }
 
 const NFTCardComponent = (props: Props) => {
@@ -40,9 +40,19 @@ const NFTCardComponent = (props: Props) => {
   return (
     <div className={styles.cardContainer}>
       <div className={styles.cardContent}>
-        {isPrevBtnDisplay && <div className={styles.cardPrev} onClick={() => handleFetchNFTData('prev')} />}
+        {isPrevBtnDisplay && (
+          <div
+            className={styles.cardPrev}
+            onClick={() => handleFetchNFTData('prev')}
+          />
+        )}
         <img src={nftImg || Image.nftDefault} />
-        {isNextBtnDisplay && <div className={styles.cardNext} onClick={() => handleFetchNFTData('next')} />}
+        {isNextBtnDisplay && (
+          <div
+            className={styles.cardNext}
+            onClick={() => handleFetchNFTData('next')}
+          />
+        )}
       </div>
       <div className={styles.cardInfo}>
         <div className={cx(styles.infoContent, styles.levelContent)}>
@@ -61,7 +71,7 @@ const NFTCardComponent = (props: Props) => {
         <div className={styles.infoContent}>
           <div className={styles.valueText}>VeSDB</div>
           <ProgressBar
-            value={vesdbValue/ sdbValue}
+            value={vesdbValue / sdbValue}
             animate={false}
             stripes={false}
             intent='primary'
@@ -73,7 +83,9 @@ const NFTCardComponent = (props: Props) => {
               <span className={styles.prev}>{address.slice(0, -15)}</span>
               <span className={styles.next}>{address.slice(-15)}</span>
             </>
-          ): <span>{address}</span>}
+          ) : (
+            <span>{address}</span>
+          )}
           <div
             className={styles.copyIcon}
             onClick={() => handleOnCopy(address)}

@@ -60,7 +60,7 @@ const DepositVSDBModal = (props: Props) => {
     setEndDate(date)
   }
 
-  const { mutate: increase_unlocked_amount } = useIncreaseUnlockAmount()
+  const { mutate: increase_unlocked_amount } = useIncreaseUnlockAmount(setIsShowDepositVSDBModal)
   const handleIncreaseAmount = () => {
     if (!input) return null
 
@@ -70,7 +70,7 @@ const DepositVSDBModal = (props: Props) => {
     })
   }
 
-  const { mutate: increase_unlocked_time } = useIncreaseUnlockTime()
+  const { mutate: increase_unlocked_time } = useIncreaseUnlockTime(setIsShowDepositVSDBModal)
   const handleIncreaseDuration = () => {
     const extended_duration =
       (new Date(endDate).getTime() -
@@ -92,7 +92,7 @@ const DepositVSDBModal = (props: Props) => {
 
   const handleIncreaseSDBVesdbOnchange = (input: string) => {
     const extended_duration =
-      (new Date(parseInt(vsdb!.end) * 1000).getTime() -
+      (new Date(parseInt(vsdb?.end ?? "0") * 1000).getTime() -
         moment().startOf('day').toDate().getTime()) /
       1000
 
