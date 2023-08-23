@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import moment from 'moment'
 
 export enum CoinFormat {
   ROUNDED = 'ROUNDED',
@@ -31,3 +32,12 @@ export function formatBalance(
   return bn.toFormat() + postfix
 }
 
+export function formatDate(timestamp: string) {
+  const date = moment.unix(parseInt(timestamp))
+
+  return date.format('Do MMM')
+}
+
+export function formatId(id: string, places: number = 4) {
+  return id.slice(0, places) + '.'.repeat(places) + id.slice(-places)
+}

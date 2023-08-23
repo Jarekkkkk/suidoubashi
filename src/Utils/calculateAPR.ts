@@ -29,10 +29,9 @@ export const calculateVAPR = (
   )
 }
 
-export const calculate_slippage =  (
-  slippage: string,
-  output_value: string
-)=>{
-return ((BigInt('10000') - BigInt(slippage)) * BigInt(output_value)) /
-BigInt('10000')
+export const calculate_slippage = (slippage: string, output_value: string) => {
+  return (
+    ((BigInt('10000') - BigInt(slippage)) * BigInt(output_value)) /
+    BigInt('10000')
+  )
 }

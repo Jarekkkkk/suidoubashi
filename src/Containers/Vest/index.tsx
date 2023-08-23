@@ -92,7 +92,7 @@ const VestContainer = ({ children }: PropsWithChildren) => {
   return (
     <VestContext.Provider
       value={{
-        data: nftList.map((nft) => nft.data),
+        data: nftList,
         handleIncreaseUnlockedTime,
         handleIncreaseUnlockedAmount,
         handleRevival,
@@ -115,7 +115,7 @@ const VestContainer = ({ children }: PropsWithChildren) => {
 }
 
 interface VestContext {
-  readonly data: (Vsdb | undefined)[] | undefined
+  readonly data: Vsdb[]
   currentVSDBId: string
   handleIncreaseUnlockedTime: Function
   handleIncreaseUnlockedAmount: Function

@@ -1,14 +1,11 @@
-import { useInfiniteQuery, useQueries, useQuery } from '@tanstack/react-query'
+import { useQueries, useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 
 import { useMemo } from 'react'
 
-import { get_vsdb } from '@/Constants/API/vsdb'
-
-const MAX_OBJECTS_PER_REQ = 5
+import { Vsdb, get_vsdb } from '@/Constants/API/vsdb'
 
 export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE as string
-
 
 export function useGetVsdbIDs(address?: string | null) {
   const rpc = useRpc()
@@ -38,7 +35,7 @@ export const get_vsdb_key = (address: string | null, vsdb: string) => [
   address,
   vsdb,
 ]
-export const useGetVsdb= (address?: string | null, vsdb?: string) => {
+export const useGetVsdb = (address?: string | null, vsdb?: string) => {
   const rpc = useRpc()
   return useQuery(
     ['vsdb', address, vsdb],
@@ -66,8 +63,17 @@ export const useGetMulVsdb = (
         }
       }) ?? [],
   })
-  return useMemo(
-    () => (!mul_vsdb.length ? [] : mul_vsdb.map((data) => data)),
-    [mul_vsdb],
-  )
+  return useMemo(() => {
+    if (!mul_vsdb.length) return []
+
+    const ret: Vsdb[] = []
+    mul_vsdb.forEach(({ data }) => {
+      if (!data) return []
+      ret.push(data)
+    })
+
+    if (!ret.length) return []
+
+    return ret
+  }, [mul_vsdb])
 }

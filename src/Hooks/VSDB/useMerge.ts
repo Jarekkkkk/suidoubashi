@@ -15,7 +15,7 @@ type MutationProps = {
   mergedVsdb: string
 }
 
-export const useMerge = () => {
+export const useMerge = (setIsShowMergeVSDBModal: Function) => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
@@ -49,6 +49,8 @@ export const useMerge = () => {
       queryClient.removeQueries({
         queryKey: get_vsdb_key(currentAccount!.address, params.mergedVsdb),
       })
+
+      setIsShowMergeVSDBModal(false)
     },
     onError: (err: Error) => console.error(err),
   })

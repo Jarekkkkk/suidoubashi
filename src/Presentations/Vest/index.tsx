@@ -35,7 +35,7 @@ const VestPresentation = () => {
 
   return (
     <PageContainer title='Vest' titleImg={Image.pageBackground_1}>
-      {!data ? (
+      {!data.length ? (
         <Loading />
       ) : (
         <div className={styles.controlContainer}>
@@ -54,42 +54,34 @@ const VestPresentation = () => {
             />
           </div>
           <div className={styles.contentSection}>
-            {data &&
-              data.map((item, idx) => {
-                if (!item)
-                  return (
-                    <div key={idx} className={styles.vestCardLoadingContainer}>
-                      <Loading />
-                    </div>
-                  )
-
-                return (
-                  <VestCardComponent
-                    key={idx}
-                    nftId={item.id}
-                    nftImg={item?.display?.image_url}
-                    level={item.level}
-                    expValue={
-                      parseInt(item.experience) /
-                      required_exp(parseInt(item.level) + 1)
-                    }
-                    vesdbValue={parseInt(item.vesdb) / parseInt(item.balance)}
-                    lockSdbValue={BigNumber(item.balance)
-                      .shiftedBy(-9)
-                      .decimalPlaces(3)
-                      .toFormat()}
-                    expiration={new Date(
-                      Number(item.end) * 1000,
-                    ).toLocaleDateString('en-ZA')}
-                    handleIncreaseUnlockedTime={handleIncreaseUnlockedTime}
-                    handleIncreaseUnlockedAmount={handleIncreaseUnlockedAmount}
-                    handleRevival={handleRevival}
-                    handleUnlock={handleUnlock}
-                    handleSetDepositVSDBId={handleSetDepositVSDBId}
-                    setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
-                  />
-                )
-              })}
+            {data.map((item, idx) => {
+              return (
+                <VestCardComponent
+                  key={idx}
+                  nftId={item.id}
+                  nftImg={item?.display?.image_url}
+                  level={item.level}
+                  expValue={
+                    parseInt(item.experience) /
+                    required_exp(parseInt(item.level) + 1)
+                  }
+                  vesdbValue={parseInt(item.vesdb) / parseInt(item.balance)}
+                  lockSdbValue={BigNumber(item.balance)
+                    .shiftedBy(-9)
+                    .decimalPlaces(3)
+                    .toFormat()}
+                  expiration={new Date(
+                    Number(item.end) * 1000,
+                  ).toLocaleDateString('en-ZA')}
+                  handleIncreaseUnlockedTime={handleIncreaseUnlockedTime}
+                  handleIncreaseUnlockedAmount={handleIncreaseUnlockedAmount}
+                  handleRevival={handleRevival}
+                  handleUnlock={handleUnlock}
+                  handleSetDepositVSDBId={handleSetDepositVSDBId}
+                  setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
+                />
+              )
+            })}
           </div>
         </div>
       )}

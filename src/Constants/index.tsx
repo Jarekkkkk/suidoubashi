@@ -109,4 +109,4 @@ export const vsdbTimeSettingOptions = [
     label: '24 weeks',
     value: moment().add(168, 'days').toDate().toDateString(),
   },
-];
+]
