@@ -123,7 +123,7 @@ const CreateVSDBModal = (props: Props) => {
           <div>Your VeSDB</div>
           <div className={styles.vsdbCountContent}>
             {calculate_vesdb(
-              input || '0',
+              (parseFloat(input || '0') * Math.pow(10, 9)).toString(),
               (new Date(endDate).getTime() / 1000).toString(),
             )}
           </div>

@@ -43,6 +43,7 @@ export const calculate_vesdb = (bal: string, end: string) => {
   return BigNumber(bal)
     .multipliedBy(diff)
     .div(14515200)
+    .shiftedBy(-9)
     .decimalPlaces(3)
     .toString()
 }

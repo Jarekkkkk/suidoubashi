@@ -5,6 +5,7 @@ import { Button } from '@/Components'
 import Image from '@/Assets/image'
 
 import * as styles from './index.styles'
+import { useUnlock } from '@/Hooks/VSDB/useUnlock'
 
 interface Props {
   nftId: string
@@ -15,11 +16,8 @@ interface Props {
   lockSdbValue: string
   expiration: string
   isPerviewMode?: boolean
-  handleIncreaseUnlockedTime?: Function
-  handleIncreaseUnlockedAmount?: Function
-  handleRevival?: Function
-  handleUnlock?: Function
-  handleSetDepositVSDBId?: Function
+  setCurrentVSDBId: Function
+  setIsShowDepositVSDBModal: Function
   setIsShowWithdrawVSDBModal?: Function
 }
 
@@ -69,13 +67,15 @@ const VestCardComponent = (props: Props) => {
     vesdbValue,
     lockSdbValue,
     expiration,
-    handleIncreaseUnlockedTime,
-    handleIncreaseUnlockedAmount,
-    handleRevival,
-    handleUnlock,
-    handleSetDepositVSDBId,
+    setIsShowDepositVSDBModal,
+    setCurrentVSDBId,
     setIsShowWithdrawVSDBModal,
   } = props
+
+  const { mutate: unlock } = useUnlock()
+  const handleUnlock = (nftId: string) => {
+    unlock({ vsdb: nftId })
+  }
 
   const _nowDate = new Date().toLocaleDateString('en-ZA')
 
@@ -98,35 +98,35 @@ const VestCardComponent = (props: Props) => {
         </div>
         {!isPerviewMode && (
           <div className={styles.buttonContent}>
-            {Date.parse(_nowDate) > Date.parse(expiration) ? (
+            {Date.parse(_nowDate) >= Date.parse(expiration) ? (
               <>
-                {handleUnlock && (
+                {
                   <Button
                     styletype='outlined'
                     text='Unlock'
                     onClick={() => handleUnlock(nftId)}
                   />
-                )}
+                }
                 {setIsShowWithdrawVSDBModal && (
                   <Button
                     styletype='outlined'
                     text='Revival'
                     onClick={() => {
                       setIsShowWithdrawVSDBModal(true)
+                      setCurrentVSDBId(nftId)
                     }}
                   />
                 )}
               </>
             ) : (
-              handleSetDepositVSDBId && (
-                <Button
-                  styletype='outlined'
-                  text='Deposit VSDB'
-                  onClick={() => {
-                    handleSetDepositVSDBId(nftId)
-                  }}
-                />
-              )
+              <Button
+                styletype='outlined'
+                text='Deposit VSDB'
+                onClick={() => {
+                  setIsShowDepositVSDBModal(true)
+                  setCurrentVSDBId(nftId)
+                }}
+              />
             )}
           </div>
         )}

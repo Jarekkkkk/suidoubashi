@@ -15,6 +15,7 @@ export const queryClient = new QueryClient({
       // strike the balance between stale data and cache hits.
       // Individual queries can override this value based on their caching needs.
       staleTime: 10 * 60 * 1000,
+      cacheTime: 10 * 60 * 1000,
       refetchInterval: false,
       refetchIntervalInBackground: false,
       refetchOnMount: false,

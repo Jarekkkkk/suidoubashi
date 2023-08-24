@@ -18,11 +18,7 @@ const VestPresentation = () => {
   const {
     data,
     currentVSDBId,
-    handleSetDepositVSDBId,
-    handleIncreaseUnlockedTime,
-    handleIncreaseUnlockedAmount,
-    handleRevival,
-    handleUnlock,
+    setCurrentVSDBId,
     isShowCreateVSDBModal,
     isShowDepositVSDBModal,
     isShowMergeVSDBModal,
@@ -73,11 +69,8 @@ const VestPresentation = () => {
                   expiration={new Date(
                     Number(item.end) * 1000,
                   ).toLocaleDateString('en-ZA')}
-                  handleIncreaseUnlockedTime={handleIncreaseUnlockedTime}
-                  handleIncreaseUnlockedAmount={handleIncreaseUnlockedAmount}
-                  handleRevival={handleRevival}
-                  handleUnlock={handleUnlock}
-                  handleSetDepositVSDBId={handleSetDepositVSDBId}
+                    setCurrentVSDBId = {setCurrentVSDBId}
+                    setIsShowDepositVSDBModal = {setIsShowDepositVSDBModal}
                   setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
                 />
               )
@@ -107,6 +100,7 @@ const VestPresentation = () => {
       )}
       {isShowWithdrawVSDBModal && (
         <WithdrawVSDBModal
+          currentVSDBId={currentVSDBId}
           isShowWithdrawVSDBModal={isShowWithdrawVSDBModal}
           setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
         />

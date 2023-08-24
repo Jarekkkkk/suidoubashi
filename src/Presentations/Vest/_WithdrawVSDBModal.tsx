@@ -1,128 +1,153 @@
-import { useState, useEffect } from 'react'
-import { Dialog, InputSection, Input, DatePicker, RadioGroup, Tabs, Button } from '@/Components'
+import { useState, useCallback } from 'react'
+import {
+  Dialog,
+  InputSection,
+  Input,
+  DatePicker,
+  RadioGroup,
+  Button,
+} from '@/Components'
 import Image from '@/Assets/image'
-import { CoinIcon, Icon } from '@/Assets/icon';
+import { CoinIcon, Icon } from '@/Assets/icon'
 import { vsdbTimeSettingOptions } from '@/Constants/index'
 
-import * as styles from './index.styles';
-import { cx } from '@emotion/css';
+import * as styles from './index.styles'
+import { cx } from '@emotion/css'
+import useGetBalance from '@/Hooks/Coin/useGetBalance'
+import { Coin } from '@/Constants/coin'
+import moment from 'moment'
+import BigNumber from 'bignumber.js'
+import { useWalletKit } from '@mysten/wallet-kit'
+import { useGetVsdb } from '@/Hooks/VSDB/useGetVSDB'
+import { calculate_vesdb } from '@/Utils/calculateAPR'
 
 type Props = {
-  isShowWithdrawVSDBModal: boolean,
-  setIsShowWithdrawVSDBModal: Function,
+  isShowWithdrawVSDBModal: boolean
+  setIsShowWithdrawVSDBModal: Function
+  currentVSDBId: string
 }
 
 const WithdrawVSDBModal = (props: Props) => {
-  const { isShowWithdrawVSDBModal, setIsShowWithdrawVSDBModal } = props;
-  
-  const [startDate, setStartDate] = useState(new Date());
-  const [dateRange, setDateRange] = useState();
+  const { isShowWithdrawVSDBModal, setIsShowWithdrawVSDBModal, currentVSDBId } =
+    props
 
-  const handleOnChange = (date: any) =>  {
-    setStartDate(date)
-  };
+  const [endDate, setEndDate] = useState<string>(
+    moment().add(168, 'days').toDate().toDateString(),
+  )
+  const handleOnChange = (date: string) => {
+    setEndDate(date)
+  }
 
-  const handleOnRadioChange = (e: any) =>  {
-    setDateRange(e.target.value)
-  };
+  const balance = useGetBalance(Coin.SDB)
+  const { currentAccount } = useWalletKit()
+  const { data: vsdb } = useGetVsdb(currentAccount?.address, currentVSDBId)
 
-  useEffect(() => {
-    if (!!dateRange) {
-      handleOnChange(Date.parse(dateRange));
-    }
-  }, [dateRange]);
+  const [input, setInput] = useState<string>('')
 
-  const tabDataKeys = [
-    {
-      id: 0,
-      title: "Claim SDB",
-      children: (
-        <div className={styles.vsdbTabContainer}>
-          <InputSection
-            titleChildren={
-              <>
-                <CoinIcon.SDBIcon />
-                <span>SDB</span>
-              </>
-            }
-            inputChildren={
-              <>
-                <Input placeholder="Claim SDB" />
-              </>
-            }
-            balance={30000}
-          />
-          <div className={styles.vsdbDepositCountBlock}>
-            <div className={cx(styles.vsdbDepositCount, styles.vsdbCountBlock)}>
-              <div>Current VeSDB</div>
-              <span className={styles.vsdbCountContent}>987.34</span>
-            </div>
-            <Icon.BgArrowIcon />
-            <div className={cx(styles.vsdbDepositCount, styles.vsdbCountBlock)}>
-              <div>New VeSDB</div>
-              <span className={styles.vsdbCountContent}>997.34</span>
-            </div>
-          </div>
-          <div className={styles.vsdbModalbutton}>
-            <Button text="Increase SDB" styletype='filled' onClick={() => {}} />
-          </div>
-        </div>
-      )
+  const handleOnInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value
+      const isValid = /^-?\d*\.?\d*$/.test(value)
+      if (!isValid) {
+        value = value.slice(0, -1)
+      }
+      setInput(value)
     },
-    {
-      id: 1,
-      title: "Increase Duration",
-      children: (
-        <div className={styles.vsdbTabContainer}>
-          <InputSection
-            titleChildren={
-              <>
-                <Icon.VectorIcon />
-                <span>Unlocked Date</span>
-              </>
-            }
-            inputChildren={
-              <>
-                <DatePicker startDate={startDate} handleOnChange={handleOnChange} />
-                <RadioGroup
-                  selectedValue={dateRange}
-                  options={vsdbTimeSettingOptions}
-                  onChange={handleOnRadioChange}
-                />
-                <div className={styles.vsdbDepositCountBlock}>
-                  <div className={cx(styles.vsdbDepositCount, styles.vsdbCountBlock)}>
-                    <div>Current VeSDB</div>
-                    <span className={styles.vsdbCountContent}>987.34</span>
-                  </div>
-                  <Icon.BgArrowIcon />
-                  <div className={cx(styles.vsdbDepositCount, styles.vsdbCountBlock)}>
-                    <div>New VeSDB</div>
-                    <span className={styles.vsdbCountContent}>997.34</span>
-                  </div>
-                </div>
-                <div className={styles.vsdbModalbutton}>
-                  <Button text="Increase Duration" styletype='filled' onClick={() => {}} />
-                </div>
-              </>
-            }
-          />
-        </div>
-      )
-    }
-  ];
 
+    [setInput],
+  )
+
+  const handleRevive = () => {}
+  const format = (vesdb: string) => {
+    return BigNumber(vesdb).shiftedBy(-9).decimalPlaces(3).toFormat()
+  }
+
+  console.log(
+    (
+      Number(vsdb?.balance ?? '0') -
+      parseFloat(input) * Math.pow(10, 9)
+    ).toString(),
+  )
 
   return (
     <Dialog
       {...props}
-      title="Withdraw VSDB"
-      titleImg={Image.pageBackground_1}
+      title='Withdraw VSDB'
+      titleImg={Image.pageBackground_3}
       isShow={isShowWithdrawVSDBModal}
       setIsShow={setIsShowWithdrawVSDBModal}
     >
-      <Tabs links={tabDataKeys} />
+      <InputSection
+        titleChildren={
+          <>
+            <CoinIcon.SDBIcon />
+            <span>SDB</span>
+          </>
+        }
+        inputChildren={
+          <>
+            <Input
+              value={input}
+              onChange={handleOnInputChange}
+              placeholder='Increase Unlocked Amount'
+            />
+          </>
+        }
+        balance={
+          balance
+            ? BigNumber(balance.totalBalance).shiftedBy(-9).toFormat()
+            : '...'
+        }
+      />
+      <InputSection
+        titleChildren={
+          <>
+            <Icon.VectorIcon />
+            <span>Unlocked Date</span>
+          </>
+        }
+        inputChildren={
+          <>
+            <DatePicker
+              endDate={new Date(endDate)}
+              handleOnChange={handleOnChange}
+            />
+            <RadioGroup
+              selectedValue={endDate}
+              options={vsdbTimeSettingOptions}
+              onChange={handleOnChange}
+            />
+          </>
+        }
+      />
+      <div className={styles.vsdbDepositCountBlock}>
+        <div className={cx(styles.vsdbDepositCount, styles.vsdbCountBlock)}>
+          <div>Current VeSDB</div>
+          <span className={styles.vsdbCountContent}>
+            {format(vsdb?.vesdb ?? '0')}
+          </span>
+        </div>
+        <Icon.BgArrowIcon />
+        <div className={cx(styles.vsdbDepositCount, styles.vsdbCountBlock)}>
+          <div>New VeSDB</div>
+          <span className={styles.vsdbCountContent}>
+            {vsdb
+              ? calculate_vesdb(
+                  (
+                    Number(vsdb.balance) -
+                    parseFloat(input) * Math.pow(10, 9)
+                  ).toString(),
+                  (new Date(endDate).getTime() / 1000).toString(),
+                )
+              : '0'}
+          </span>
+        </div>
+      </div>
+      <div className={styles.vsdbModalbutton}>
+        <Button text='Claim' styletype='filled' onClick={handleRevive} />
+      </div>
     </Dialog>
   )
-};
+}
 
-export default WithdrawVSDBModal;
+export default WithdrawVSDBModal

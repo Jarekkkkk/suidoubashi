@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useWalletKit } from '@mysten/wallet-kit'
 
-import { useGetAllBalance  } from '@/Hooks/Coin/useGetBalance'
+import { useGetAllBalance } from '@/Hooks/Coin/useGetBalance'
 import { useGetVsdb, useGetVsdbIDs } from '@/Hooks/VSDB/useGetVSDB'
 import { useGetMulLP } from '@/Hooks/AMM/useGetLP'
 import { Pool } from '@/Constants/API/pool'
@@ -28,8 +28,7 @@ const PageComponent = (props: Props) => {
   const { data: vsdbList } = useGetVsdbIDs(walletAddress)
   const currentNFTInfo = useGetVsdb(walletAddress, vsdbList?.[currentVsdbId])
 
-
-  const {data: bal} = useGetAllBalance(Coins, currentAccount?.address)
+  const { data: bal } = useGetAllBalance(Coins, currentAccount?.address)
   const lPList = useGetMulLP(currentAccount?.address)
   const poolIDList = useGetPoolIDs()
   const poolList = poolIDList && useGetMulPool(poolIDList.data)
@@ -46,8 +45,6 @@ const PageComponent = (props: Props) => {
       }
     }
   }
-
-  console.log(bal)
 
   useEffect(() => {
     if (poolList[0] && poolList[0]?.isSuccess) {

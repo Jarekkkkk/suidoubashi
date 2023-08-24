@@ -37,7 +37,6 @@ export const useMerge = (setIsShowMergeVSDBModal: Function) => {
         throw new Error('Increase Unlock Amount tx fail')
       }
 
-      console.log(res)
       return mergedVsdb
     },
     onSuccess: (_, params) => {
