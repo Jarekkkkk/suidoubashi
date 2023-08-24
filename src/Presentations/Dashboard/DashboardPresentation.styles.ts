@@ -19,6 +19,7 @@ export const sectionA = css`
   background-position: center;
   background-repeat: no-repeat;
   background-image: url(${Image.BackgroundPinkA});
+  overflow: hidden;
 `
 
 export const sectionB = css`
@@ -35,6 +36,7 @@ export const sectionB = css`
   background-position: center;
   background-repeat: no-repeat;
   background-image: url(${Image.BackgroundPinkB});
+  overflow: hidden;
 `
 
 export const logo = css`
@@ -50,11 +52,12 @@ export const sectionBContent = css`
   width: 100%;
   max-width: 1480px;
   height: calc(100vh - 28px);
-  overflow: scroll;
 `
 export const sectionContent = css`
   margin: 0 auto;
   max-width: 880px;
+  height: 100%;
+  overflow: scroll;
 `
 
 export const twinsContent = css`
@@ -70,6 +73,8 @@ export const twinsContent = css`
 export const block = css`
   display: flex;
   flex-direction: column;
+  margin-top: 24px;
+  margin-left: 24px;
 `
 
 export const titleBlock = css`
@@ -115,4 +120,5 @@ export const contentBlock = css`
   max-width: 850px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.60);
+  backdrop-filter: blur(8px);
 `
