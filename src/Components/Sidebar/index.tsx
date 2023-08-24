@@ -45,7 +45,7 @@ const SidebarComponent = (props: Props) => {
 						<Icon.TwitterIcon />
 					</Link>
 				</div>
-				<span>Mainnet</span>
+				<span>Testnet</span>
 			</div>
 		</div>
 	);
