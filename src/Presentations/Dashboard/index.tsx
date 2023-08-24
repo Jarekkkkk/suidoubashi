@@ -21,7 +21,7 @@ const DashboardPresentation = () => {
 			} else if (e.deltaY > 0 && sectionB) {
 				sectionB.scrollIntoView({ behavior: "smooth", block: "start"});
 			}
-		})
+		});
 
 	return (
 		<>

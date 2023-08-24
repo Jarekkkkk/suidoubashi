@@ -22,6 +22,7 @@ export const generateSideBarLinks = () => [
     element: <Swap />,
     title: 'Swap',
     icon: <Icon.SwapIcon />,
+    isHidden: true,
   },
   {
     key: 'Pool',
@@ -29,6 +30,7 @@ export const generateSideBarLinks = () => [
     element: <Pool />,
     title: 'Pool',
     icon: <Icon.PoolIcon />,
+    isHidden: true,
   },
   {
     key: 'Vest',
@@ -36,6 +38,7 @@ export const generateSideBarLinks = () => [
     element: <Vest />,
     title: 'Vest',
     icon: <Icon.VestIcon />,
+    isHidden: false,
   },
   {
     key: 'Vote',
@@ -43,6 +46,7 @@ export const generateSideBarLinks = () => [
     element: <Vote />,
     title: 'Vote',
     icon: <Icon.VoteIcon />,
+    isHidden: true,
   },
   {
     key: 'Rewards',
@@ -50,6 +54,7 @@ export const generateSideBarLinks = () => [
     element: <Rewards />,
     title: 'Rewards',
     icon: <Icon.RewardsIcon />,
+    isHidden: true,
   },
 ]
 

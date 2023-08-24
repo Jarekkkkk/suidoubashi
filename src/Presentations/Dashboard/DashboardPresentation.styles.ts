@@ -54,10 +54,12 @@ export const sectionBContent = css`
   height: calc(100vh - 28px);
 `
 export const sectionContent = css`
+  position: relative;
   margin: 0 auto;
   max-width: 880px;
   height: 100%;
   overflow: scroll;
+  overscroll-behavior: auto;
 `
 
 export const twinsContent = css`

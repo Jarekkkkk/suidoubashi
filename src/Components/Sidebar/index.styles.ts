@@ -7,6 +7,7 @@ export const sidebarContainer = css`
   padding: 28px 24px;
   width: 140px;
   height: 80%;
+  min-height: 80vh;
   border-radius: 12px;
   backdrop-filter: blur(8px);
   box-sizing: border-box;
@@ -39,10 +40,7 @@ export const sidebarButton = css`
     color: #595959;
     text-decoration-line: unset;
     transition: 0.3s;
-
-    &:focus {
-      outline: none;
-    }
+    outline: none !important;
   }
 
   svg {
@@ -84,9 +82,47 @@ export const active  = css`
 export const logoContent = css`
   margin-bottom: 46px;
   transition: 0.3s;
+  outline: none !important;
+
+  a {
+    outline: none !important;
+  }
 
   &:hover {
     opacity: 0.85;
     transform: scale(1.05);
   }
 `;
+
+export const footerContent = css`
+  margin-top: auto;
+
+  span {
+    display: block;
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+    color: #2977EC;
+  }
+`
+
+export const footerIconBlock = css`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    transition: 0.3s;
+
+    &:hover {
+      opacity: 0.85;
+      transform: scale(1.05);
+    }
+  }
+
+  a {
+    outline: none !important;
+  }
+`
