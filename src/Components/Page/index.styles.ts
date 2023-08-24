@@ -31,6 +31,7 @@ export const content = css`
   max-width: 800px;
   width: 100%;
   height: calc(100vh - 28px);
+  overflow: scroll;
 `
 
 export const dashboardMainContent = css`
