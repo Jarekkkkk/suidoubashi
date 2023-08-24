@@ -1,11 +1,11 @@
 import { ProgressBar } from '@blueprintjs/core'
 import { cx } from '@emotion/css'
-
 import { Button } from '@/Components'
 import Image from '@/Assets/image'
 
 import * as styles from './index.styles'
 import { useUnlock } from '@/Hooks/VSDB/useUnlock'
+import BigNumber from 'bignumber.js'
 
 interface Props {
   nftId: string
@@ -42,11 +42,18 @@ const TextItem = (props: TextItemProps) => {
   )
 }
 
+const format = (value: string | number) =>{
+  return BigNumber(value).decimalPlaces(5).multipliedBy(100).toFormat()
+}
+
 const ValueItem = (props: ValueItemProps) => {
   const { title, value } = props
   return (
     <div className={styles.valueContent}>
-      <div>{title}</div>
+      <div className={styles.valueTitle}>
+        <div>{title}</div>
+        <span>{format(value)}</span>
+      </div>
       <ProgressBar
         value={value}
         animate={false}
@@ -113,7 +120,7 @@ const VestCardComponent = (props: Props) => {
                     text='Revival'
                     onClick={() => {
                       setIsShowWithdrawVSDBModal(true)
-                      setCurrentVSDBId(nftId)
+                      setCurrentVSDBId && setCurrentVSDBId(nftId)
                     }}
                   />
                 )}
@@ -123,8 +130,8 @@ const VestCardComponent = (props: Props) => {
                 styletype='outlined'
                 text='Deposit VSDB'
                 onClick={() => {
-                  setIsShowDepositVSDBModal(true)
-                  setCurrentVSDBId(nftId)
+                  setIsShowDepositVSDBModal && setIsShowDepositVSDBModal(true)
+                  setCurrentVSDBId && setCurrentVSDBId(nftId)
                 }}
               />
             )}

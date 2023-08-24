@@ -100,6 +100,17 @@ export const valueContent = css`
   flex-direction: column;
 `
 
+export const valueTitle = css`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: end;
+
+  span {
+    font-size: 12px;
+  }
+`
+
 export const marginTop = css`
   margin-top: 12px;
 `
