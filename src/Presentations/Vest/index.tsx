@@ -61,6 +61,10 @@ const VestPresentation = () => {
                     parseInt(item.experience) /
                     required_exp(parseInt(item.level) + 1)
                   }
+                  expSpanValue={{
+                    experience: parseInt(item.experience),
+                    required_exp: required_exp(parseInt(item.level) + 1),
+                  }}
                   vesdbValue={parseInt(item.vesdb) / parseInt(item.balance)}
                   lockSdbValue={BigNumber(item.balance)
                     .shiftedBy(-9)
