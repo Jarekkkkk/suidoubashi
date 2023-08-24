@@ -7,6 +7,7 @@ import {
   getExecutionStatusType,
   getObjectChanges,
 } from '@mysten/sui.js'
+import { toast } from 'react-hot-toast'
 import {
   LP,
   LiquidityAdded,
@@ -109,9 +110,11 @@ export const useRemoveLiquidity = () => {
           return lps
         },
       )
+
+      toast.success('Remove Liquidity Success!')
     },
     onError: (err: Error) => {
-      console.log(err)
+      toast.error('Oops! Have some error')
     },
   })
 }

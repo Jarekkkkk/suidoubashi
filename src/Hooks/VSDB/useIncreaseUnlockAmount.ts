@@ -6,6 +6,7 @@ import {
   isValidSuiObjectId,
   getExecutionStatusType,
 } from '@mysten/sui.js'
+import { toast } from 'react-hot-toast'
 import { get_vsdb_key } from './useGetVSDB'
 import { increase_unlock_amount } from '@/Constants/API/vsdb'
 import { Coin } from '@/Constants/coin'
@@ -65,8 +66,9 @@ export const useIncreaseUnlockAmount = (
         })
         return [...balances]
       })
+      toast.success('Deposit VSDB Success!')
       setIsShowDepositVSDBModal(false)
     },
-    onError: (err: Error) => console.error(err),
+    onError: (err: Error) => toast.error('Oops! Have some error'),
   })
 }

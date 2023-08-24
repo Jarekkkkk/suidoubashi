@@ -9,6 +9,7 @@ import {
   getExecutionStatusType,
   getObjectChanges,
 } from '@mysten/sui.js'
+import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
 import {
   LP,
@@ -187,9 +188,11 @@ export const useZap = () => {
           return lps
         },
       )
+
+      toast.success('Success!')
     },
     onError: (err: Error) => {
-      console.log(err)
+      toast.error('Oops! Have some error')
     },
   })
 }

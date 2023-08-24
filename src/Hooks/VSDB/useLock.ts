@@ -1,6 +1,7 @@
 import { useWalletKit } from '@mysten/wallet-kit'
 import useRpc from '../useRpc'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'react-hot-toast'
 import {
   TransactionBlock,
   getExecutionStatusType,
@@ -74,9 +75,9 @@ export const useLock = (setIsShowCreateVSDBModal: Function) => {
         })
         return [...balances]
       })
-
+      toast.success('Create VSDB Success!')
       setIsShowCreateVSDBModal(false)
     },
-    onError: (err: Error) => console.error(err),
+    onError: (err: Error) => toast.error('Oops! Have some error'),
   })
 }

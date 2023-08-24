@@ -7,6 +7,7 @@ import {
   TransactionBlock,
   getExecutionStatusType,
 } from '@mysten/sui.js'
+import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
 import { Swap, amm_package, swap_for_x, swap_for_y } from '@/Constants/API/pool'
 import { SettingInterface } from '@/Constants/setting'
@@ -123,9 +124,12 @@ export const useSwap = () => {
                 lockedBalance: {},
               } as CoinBalance),
       )
+
+      toast.success('Swap Success!')
     },
     onError: (err: Error) => {
       console.log(err)
+      toast.error('Oops! Have some error')
     },
   })
 }

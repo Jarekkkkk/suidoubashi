@@ -73,7 +73,6 @@ export const useGetMulVsdb = (
     })
 
     if (!ret.length) return []
-
     return ret
   }, [mul_vsdb])
 }

@@ -6,6 +6,7 @@ import {
   isValidSuiObjectId,
   getExecutionStatusType,
 } from '@mysten/sui.js'
+import { toast } from 'react-hot-toast'
 import { increase_unlock_time } from '@/Constants/API/vsdb'
 import { get_vsdb_key } from './useGetVSDB'
 
@@ -42,9 +43,9 @@ export const useIncreaseUnlockTime = (setIsShowDepositVSDBModal: Function) => {
       queryClient.invalidateQueries({
         queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
       })
-
+      toast.success('Deposit VSDB Success!')
       setIsShowDepositVSDBModal(false)
     },
-    onError: (err: Error) => console.error(err),
+    onError: (err: Error) => toast.error('Oops! Have some error'),
   })
 }

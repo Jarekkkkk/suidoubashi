@@ -1,6 +1,7 @@
 import { useWalletKit } from '@mysten/wallet-kit'
 import useRpc from '../useRpc'
 import { useMutation } from '@tanstack/react-query'
+import { toast } from 'react-hot-toast'
 import {
   TransactionBlock,
   isValidSuiObjectId,
@@ -47,7 +48,9 @@ export const useUnlock = () => {
       queryClient.removeQueries({
         queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
       })
+
+      toast.success('Increase Unlock Amount Success!')
     },
-    onError: (err: Error) => console.error(err),
+    onError: (err: Error) => toast.error('Oops! Have some error'),
   })
 }

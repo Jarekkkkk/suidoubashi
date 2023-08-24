@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { WalletKitProvider } from '@mysten/wallet-kit'
 
 import { generateLinks } from '@/Constants'
-import { Page } from '@/Components'
+import { Page, Toaster } from '@/Components'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
@@ -35,6 +35,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <WalletKitProvider>
         <BrowserRouter>
+          <Toaster />
           <Page>
             <Routes>
               {links.map((link) => {
