@@ -1,6 +1,6 @@
-import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueries, useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
-import { Coin, CoinInterface } from '@/Constants/coin'
+import { Coin, CoinInterface, Coins } from '@/Constants/coin'
 import { useMemo } from 'react'
 
 export function get_balance_key(type: Coin, address: string) {
@@ -12,20 +12,22 @@ export type Balance = {
   totalBalance: string
 }
 
-export default function useGetBalance(coinType: Coin) {
-  const queryClient = useQueryClient()
-  return queryClient
-    .getQueryData<Balance[]>(['balance'])
-    ?.find((bal) => bal.coinType == coinType)
+export default function useGetBalance(coinType: Coin, address?: string) {
+  const res = useGetAllBalance(undefined, address)
+
+  return useMemo(
+    () => res.data?.find((bal) => bal.coinType == coinType) ?? null,
+    [res, coinType],
+  )
 }
 
 export function useGetAllBalance(
-  coin_types: CoinInterface[],
+  coin_types: CoinInterface[] = Coins,
   address?: string,
 ) {
   const rpc = useRpc()
   return useQuery(
-    ['balance'],
+    ['balance', address],
     async () => {
       const res = await rpc.getAllBalances({
         owner: address!,

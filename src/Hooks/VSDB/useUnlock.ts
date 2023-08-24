@@ -1,13 +1,12 @@
 import { useWalletKit } from '@mysten/wallet-kit'
-import useRpc from '../useRpc'
-import { useMutation } from '@tanstack/react-query'
-import { toast } from 'react-hot-toast'
+import useRpc from '../useRpc
+import { useMutation, useQueryClient } from '@tanstack/react-query
+import { toast } from 'react-hot-toast''
 import {
   TransactionBlock,
   isValidSuiObjectId,
   getExecutionStatusType,
 } from '@mysten/sui.js'
-import { queryClient } from '@/App'
 import { get_vsdb_key } from './useGetVSDB'
 import { unlock } from '@/Constants/API/vsdb'
 
@@ -17,6 +16,7 @@ type MutationProps = {
 
 export const useUnlock = () => {
   const rpc = useRpc()
+  const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
   return useMutation({
@@ -50,6 +50,7 @@ export const useUnlock = () => {
       })
 
       toast.success('Increase Unlock Amount Success!')
+      queryClient.invalidateQueries(['balance'])
     },
     onError: (err: Error) => toast.error('Oops! Have some error'),
   })

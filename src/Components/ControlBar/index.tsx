@@ -34,6 +34,7 @@ const ControlBarComponent = (props: Props) => {
     isNextBtnDisplay,
   } = props
 
+    console.log(coinData)
   const tabDataKeys = [
     {
       id: 0,

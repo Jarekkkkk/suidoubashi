@@ -50,6 +50,7 @@ export const useRevive = () => {
         queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
       })
       toast.success('Revive Success!')
+      queryClient.invalidateQueries(['balance'])
     },
     onError: (err: Error) => toast.error('Oops! Have some error'),
   })

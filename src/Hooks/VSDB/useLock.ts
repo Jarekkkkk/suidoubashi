@@ -50,31 +50,20 @@ export const useLock = (setIsShowCreateVSDBModal: Function) => {
         throw new Error('Vesting Vsdb Tx fail')
       }
 
-      return {
-        balanceChanges: res.balanceChanges,
-        new_vsdb: getObjectChanges(res)?.find(
-          (obj) =>
-            obj.type == 'created' &&
-            obj.objectType == `${vsdb_package}::vsdb::Vsdb`,
-        ) as SuiObjectChangeCreated,
-      }
+      if (!res.balanceChanges) throw new Error('No Balances Changes')
+
+      return getObjectChanges(res)?.find(
+        (obj) =>
+          obj.type == 'created' &&
+          obj.objectType == `${vsdb_package}::vsdb::Vsdb`,
+      ) as SuiObjectChangeCreated
     },
-    onSuccess: ({ new_vsdb, balanceChanges }) => {
+    onSuccess: (new_vsdb) => {
       queryClient.setQueryData(
         ['get-vsdbs', currentAccount!.address],
         (vsdb_ids?: string[]) => [...(vsdb_ids ?? []), new_vsdb.objectId],
       )
-      queryClient.setQueryData(['balance'], (balances?: Balance[]) => {
-        if (!balances) return []
-        balanceChanges?.forEach((bal) => {
-          const balance = balances.find((b) => b.coinType == bal.coinType)
-          if (balance)
-            balance.totalBalance = (
-              BigInt(balance.totalBalance) + BigInt(bal.amount)
-            ).toString()
-        })
-        return [...balances]
-      })
+      queryClient.invalidateQueries(['balance'])
       toast.success('Create VSDB Success!')
       setIsShowCreateVSDBModal(false)
     },

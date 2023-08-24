@@ -20,6 +20,7 @@ import BigNumber from 'bignumber.js'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { useGetVsdb } from '@/Hooks/VSDB/useGetVSDB'
 import { calculate_vesdb } from '@/Utils/calculateAPR'
+import { useRevive } from '@/Hooks/VSDB/useRevive'
 
 type Props = {
   isShowWithdrawVSDBModal: boolean
@@ -57,17 +58,24 @@ const WithdrawVSDBModal = (props: Props) => {
     [setInput],
   )
 
-  const handleRevive = () => {}
+  const { mutate: revive } = useRevive()
+  const handleRevive = () => {
+    const extended_duration =
+      (new Date(endDate).getTime() -
+        moment().startOf('day').toDate().getTime()) /
+      1000
+
+    if (!input || extended_duration < 0) return null
+
+    revive({
+      vsdb: currentVSDBId,
+      withdrawl: (parseFloat(input) * Math.pow(10, 9)).toString(),
+      extended_duration: extended_duration.toString(),
+    })
+  }
   const format = (vesdb: string) => {
     return BigNumber(vesdb).shiftedBy(-9).decimalPlaces(3).toFormat()
   }
-
-  console.log(
-    (
-      Number(vsdb?.balance ?? '0') -
-      parseFloat(input) * Math.pow(10, 9)
-    ).toString(),
-  )
 
   return (
     <Dialog
@@ -135,7 +143,7 @@ const WithdrawVSDBModal = (props: Props) => {
               ? calculate_vesdb(
                   (
                     Number(vsdb.balance) -
-                    parseFloat(input) * Math.pow(10, 9)
+                    parseFloat(input || '0') * Math.pow(10, 9)
                   ).toString(),
                   (new Date(endDate).getTime() / 1000).toString(),
                 )

@@ -47,25 +47,13 @@ export const useIncreaseUnlockAmount = (
       if (getExecutionStatusType(res) == 'failure') {
         throw new Error('Increase Unlock Amount tx fail')
       }
-
-      if(!res.balanceChanges) throw new Error("no balance changes")
-      return res.balanceChanges
     },
-    onSuccess: (balanceChanges, params) => {
+    onSuccess: (_, params) => {
       queryClient.invalidateQueries({
         queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
       })
-      queryClient.setQueryData(['balance'], (balances?: Balance[]) => {
-        if (!balances) return []
-        balanceChanges?.forEach((bal) => {
-          const balance = balances.find((b) => b.coinType == bal.coinType)
-          if (balance)
-            balance.totalBalance = (
-              BigInt(balance.totalBalance) + BigInt(bal.amount)
-            ).toString()
-        })
-        return [...balances]
-      })
+      queryClient.invalidateQueries(['balance'])
+
       toast.success('Deposit VSDB Success!')
       setIsShowDepositVSDBModal(false)
     },
