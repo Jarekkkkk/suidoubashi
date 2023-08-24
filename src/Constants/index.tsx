@@ -1,9 +1,8 @@
 import moment from 'moment'
 
-import { Dashboard, Swap, Pool, Vest, Vote, Rewards } from '@/Scenes'
+import { Dashboard, Swap, Pool, Vest, Vote, Rewards, Bridge } from '@/Scenes'
 
 import { Icon } from '@/Assets/icon'
-import Bridge from '@/Scenes/Bridge'
 
 export const END_POINT_OPTIONS = {
   fullnode: 'https://fullnode.devnet.vincagame.com',
@@ -63,6 +62,7 @@ export const generateSideBarLinks = () => [
     element: <Bridge />,
     title: 'Bridge',
     icon: <Icon.BridgeIcon />,
+    isHidden: false,
   },
 ]
 
@@ -102,6 +102,12 @@ export const generateLinks = () => [
     path: '/rewards/:action?',
     element: <Rewards />,
     title: 'Rewards',
+  },
+  {
+    key: 'Bridge',
+    path: '/bridge',
+    element: <Bridge />,
+    title: 'Bridge',
   },
 ]
 
