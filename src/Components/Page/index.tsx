@@ -28,8 +28,8 @@ const PageComponent = (props: Props) => {
   const { data: vsdbList } = useGetVsdbIDs(walletAddress)
   const currentNFTInfo = useGetVsdb(walletAddress, vsdbList?.[currentVsdbId])
 
-  const { data: bal } = useGetAllBalance(Coins, currentAccount?.address)
-  const lPList = useGetMulLP(currentAccount?.address)
+  const { data: bal, isLoading: isCoinDataLoading } = useGetAllBalance(Coins, currentAccount?.address)
+  const { data: lPList, isLoading: isLpDataLoading } = useGetMulLP(currentAccount?.address)
   const poolIDList = useGetPoolIDs()
   const poolList = poolIDList && useGetMulPool(poolIDList.data)
   const handleFetchNFTData = (mode: string) => {
@@ -69,8 +69,10 @@ const PageComponent = (props: Props) => {
           poolDataList={poolDataList}
           nftInfo={currentNFTInfo}
           coinData={bal}
-          lpData={lPList.data}
+          lpData={lPList}
           handleFetchNFTData={handleFetchNFTData}
+          isLpDataLoading={isLpDataLoading}
+          isCoinDataLoading={isCoinDataLoading}
         />
       </div>
     </div>

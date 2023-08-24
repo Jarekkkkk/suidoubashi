@@ -16,3 +16,4 @@ export { default as Dialog } from './Dialog';
 export { default as InputSection } from './InputSection';
 export { default as Select } from './Select';
 export { default as Toaster } from './Toaster';
+export { default as Empty } from './Empty';

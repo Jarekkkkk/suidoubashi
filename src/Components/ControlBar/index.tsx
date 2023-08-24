@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { NFTCard, Tabs, Coincard, Loading } from '@/Components'
+import { NFTCard, Tabs, Coincard, Loading, Empty } from '@/Components'
 import { Coins } from '@/Constants/coin'
 import { formatBalance } from '@/Utils/format'
 import { LP, Pool } from '@/Constants/API/pool'
@@ -19,6 +19,8 @@ interface Props {
   handleFetchNFTData: (e: any) => void
   isPrevBtnDisplay: boolean
   isNextBtnDisplay: boolean
+  isCoinDataLoading: boolean
+  isLpDataLoading: boolean
 }
 
 const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
@@ -32,48 +34,51 @@ const ControlBarComponent = (props: Props) => {
     handleFetchNFTData,
     isPrevBtnDisplay,
     isNextBtnDisplay,
+    isCoinDataLoading,
+    isLpDataLoading,
   } = props
 
-    console.log(coinData)
   const tabDataKeys = [
     {
       id: 0,
       title: 'Coin',
-      children:
-        coinData &&
-        coinData
-          .sort((prev, next) => {
-            const _prevIdx = fetchIcon(prev.coinType)?.decimals || 0
-            const _nextIdx = fetchIcon(next.coinType)?.decimals || 0
+      children: isCoinDataLoading ? (
+        <div className={styles.cardLoadingContent}><Loading /></div>
+      ) :
+      coinData && coinData.length > 1 ? coinData?.sort((prev, next) => {
+        const _prevIdx = fetchIcon(prev.coinType)?.decimals || 0
+        const _nextIdx = fetchIcon(next.coinType)?.decimals || 0
 
-            return Number(
-              BigInt(next.totalBalance) *
-                BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
-                BigInt(prev.totalBalance) *
-                  BigInt('10') ** BigInt((9 - _prevIdx).toString()),
-            )
-          })
-          .map((balance, idx) => {
-            const _coinIdx = fetchIcon(balance.coinType)
-            return (
-              <Coincard
-                key={idx}
-                coinXIcon={_coinIdx!.logo}
-                coinXName={_coinIdx!.name}
-                coinXValue={formatBalance(
-                  balance.totalBalance,
-                  _coinIdx!.decimals,
-                )}
-              />
-            )
-          }),
+        return Number(
+          BigInt(next.totalBalance) *
+            BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
+            BigInt(prev.totalBalance) *
+              BigInt('10') ** BigInt((9 - _prevIdx).toString()),
+        )
+        })
+        .map((balance, idx) => {
+          const _coinIdx = fetchIcon(balance.coinType)
+          return (
+            <Coincard
+              key={idx}
+              coinXIcon={_coinIdx!.logo}
+              coinXName={_coinIdx!.name}
+              coinXValue={formatBalance(
+                balance.totalBalance,
+                _coinIdx!.decimals,
+              )}
+            />
+          )
+        })
+      : <Empty />
     },
     {
       id: 1,
       title: 'LP',
-      children:
-        lpData &&
-        lpData.map((data, idx) => {
+      children: isLpDataLoading ?  (
+        <div className={styles.cardLoadingContent}><Loading /></div>
+      ) :
+        lpData && lpData.length > 1 ? lpData?.map((data, idx) => {
           if (!data || !poolDataList)
             return (
               <div className={styles.cardLoadingContent}>
@@ -108,12 +113,12 @@ const ControlBarComponent = (props: Props) => {
               coinYValue={y}
             />
           )
-        }),
+        }) : <Empty />
     },
     {
       id: 2,
       title: 'Stake',
-      children: <p>4444</p>,
+      children: <Empty />,
     },
   ]
 
