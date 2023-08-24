@@ -16,8 +16,8 @@ interface Props {
   lockSdbValue: string
   expiration: string
   isPerviewMode?: boolean
-  setCurrentVSDBId: Function
-  setIsShowDepositVSDBModal: Function
+  setCurrentVSDBId?: Function
+  setIsShowDepositVSDBModal?: Function
   setIsShowWithdrawVSDBModal?: Function
 }
 

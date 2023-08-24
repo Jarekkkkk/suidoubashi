@@ -13,6 +13,7 @@ import { ReactComponent as CrossIcon } from '@/Assets/icon/icon_cross.svg'
 import { ReactComponent as VectorIcon } from '@/Assets/icon/icon_vector.svg'
 import { ReactComponent as BgArrowIcon } from '@/Assets/icon/icon_bgArrow.svg'
 import { ReactComponent as LogoIcon } from '@/Assets/icon/icon_logo.svg'
+import { ReactComponent as BridgeIcon } from '@/Assets/icon/icon_wormhole.svg'
 
 
 export const Icon = {
@@ -31,6 +32,7 @@ export const Icon = {
   VectorIcon,
   BgArrowIcon,
   LogoIcon,
+  BridgeIcon
 }
 
 

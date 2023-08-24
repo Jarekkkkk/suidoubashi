@@ -1111,7 +1111,7 @@
 
 "@wormhole-foundation/wormhole-connect@^0.0.9":
   version "0.0.9"
-  resolved "https://registry.npmjs.org/@wormhole-foundation/wormhole-connect/-/wormhole-connect-0.0.9.tgz"
+  resolved "https://registry.yarnpkg.com/@wormhole-foundation/wormhole-connect/-/wormhole-connect-0.0.9.tgz#69b8771ed74ecaad6ce9c7a8a0b0827eeec92dfc"
   integrity sha512-0XYrRR+uEvztvT4m4FC2P5kD4wAnnrDWYKITClS9SI51Ssd5Qt/ylCF+pguqImRYEM/CnR0BVzgZhyW1bJlnLQ==
   dependencies:
     "@mui/material" "^5.12.1"
