@@ -43,42 +43,49 @@ const ControlBarComponent = (props: Props) => {
       id: 0,
       title: 'Coin',
       children: isCoinDataLoading ? (
-        <div className={styles.cardLoadingContent}><Loading /></div>
-      ) :
-      coinData && coinData.length > 1 ? coinData?.sort((prev, next) => {
-        const _prevIdx = fetchIcon(prev.coinType)?.decimals || 0
-        const _nextIdx = fetchIcon(next.coinType)?.decimals || 0
+        <div className={styles.cardLoadingContent}>
+          <Loading />
+        </div>
+      ) : coinData && coinData.length > 1 ? (
+        coinData
+          ?.sort((prev, next) => {
+            const _prevIdx = fetchIcon(prev.coinType)?.decimals || 0
+            const _nextIdx = fetchIcon(next.coinType)?.decimals || 0
 
-        return Number(
-          BigInt(next.totalBalance) *
-            BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
-            BigInt(prev.totalBalance) *
-              BigInt('10') ** BigInt((9 - _prevIdx).toString()),
-        )
-        })
-        .map((balance, idx) => {
-          const _coinIdx = fetchIcon(balance.coinType)
-          return (
-            <Coincard
-              key={idx}
-              coinXIcon={_coinIdx!.logo}
-              coinXName={_coinIdx!.name}
-              coinXValue={formatBalance(
-                balance.totalBalance,
-                _coinIdx!.decimals,
-              )}
-            />
-          )
-        })
-      : <Empty />
+            return Number(
+              BigInt(next.totalBalance) *
+                BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
+                BigInt(prev.totalBalance) *
+                  BigInt('10') ** BigInt((9 - _prevIdx).toString()),
+            )
+          })
+          .map((balance, idx) => {
+            const _coinIdx = fetchIcon(balance.coinType)
+            return (
+              <Coincard
+                key={idx}
+                coinXIcon={_coinIdx!.logo}
+                coinXName={_coinIdx!.name}
+                coinXValue={formatBalance(
+                  balance.totalBalance,
+                  _coinIdx!.decimals,
+                )}
+              />
+            )
+          })
+      ) : (
+        <Empty content={'No Deposited Liquidity'} />
+      ),
     },
     {
       id: 1,
       title: 'LP',
-      children: isLpDataLoading ?  (
-        <div className={styles.cardLoadingContent}><Loading /></div>
-      ) :
-        lpData && lpData.length > 1 ? lpData?.map((data, idx) => {
+      children: isLpDataLoading ? (
+        <div className={styles.cardLoadingContent}>
+          <Loading />
+        </div>
+      ) : lpData && lpData.length > 1 ? (
+        lpData?.map((data, idx) => {
           if (!data || !poolDataList)
             return (
               <div className={styles.cardLoadingContent}>
@@ -113,12 +120,15 @@ const ControlBarComponent = (props: Props) => {
               coinYValue={y}
             />
           )
-        }) : <Empty />
+        })
+      ) : (
+        <Empty content={'No Deposited Liquidity'} />
+      ),
     },
     {
       id: 2,
       title: 'Stake',
-      children: <Empty />,
+      children: <Empty content={"No Staked Liquidity"} />,
     },
   ]
 

@@ -1,13 +1,13 @@
 import { Icon } from '@/Assets/icon'
 import * as styles from './index.styles'
 
-const EmptyComponent = () => {
+const EmptyComponent = ({content}:{content: string}) => {
   return (
     <div className={styles.emptyContainer}>
       <Icon.LogoIcon />
-      <span>No results found.</span>
+      <span>{content}</span>
     </div>
-  );
-};
+  )
+}
 
-export default EmptyComponent;
+export default EmptyComponent
