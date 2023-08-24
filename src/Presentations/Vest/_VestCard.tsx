@@ -23,6 +23,7 @@ interface Props {
     experience: number,
     required_exp: number,
   },
+  vesdbSpanValue?: number,
 }
 
 interface TextItemProps {
@@ -38,6 +39,7 @@ interface ValueItemProps {
     experience: number,
     required_exp: number,
   },
+  vesdbSpanValue?: number,
 }
 
 const TextItem = (props: TextItemProps) => {
@@ -51,20 +53,17 @@ const TextItem = (props: TextItemProps) => {
 }
 
 const format = (value: string | number) =>{
-  return BigNumber(value).decimalPlaces(5).multipliedBy(100).toFormat()
+  return BigNumber(value).shiftedBy(-9).decimalPlaces(5).toFormat()
 }
 
 const ValueItem = (props: ValueItemProps) => {
-  const { title, value, expSpanValue } = props
+  const { title, value, expSpanValue, vesdbSpanValue } = props
   return (
     <div className={styles.valueContent}>
       <div className={styles.valueTitle}>
         <div>{title}</div>
-        {
-          expSpanValue ? (
-            <span>{expSpanValue.experience} / {expSpanValue.required_exp}</span>
-          ) : <span>{format(value)}</span>
-        }
+        {expSpanValue && <span>{expSpanValue.experience} / {expSpanValue.required_exp}</span>}
+        {vesdbSpanValue && <span>{format(vesdbSpanValue)}</span>}
       </div>
       <ProgressBar
         value={value}
@@ -90,6 +89,7 @@ const VestCardComponent = (props: Props) => {
     setCurrentVSDBId,
     setIsShowWithdrawVSDBModal,
     expSpanValue,
+    vesdbSpanValue,
   } = props
 
   const { mutate: unlock } = useUnlock()
@@ -107,7 +107,7 @@ const VestCardComponent = (props: Props) => {
       <div className={styles.cardContentSection}>
         <TextItem title='Level' level={level} />
         <ValueItem title='EXP' value={expValue} expSpanValue={expSpanValue} />
-        <ValueItem title='VeSDB' value={vesdbValue} />
+        <ValueItem title='VeSDB' value={vesdbValue} vesdbSpanValue={vesdbSpanValue} />
         <div className={styles.mulValueContent}>
           <TextItem title='Locked SDB' level={lockSdbValue} />
           <TextItem
