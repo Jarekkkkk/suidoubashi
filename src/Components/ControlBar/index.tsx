@@ -128,7 +128,7 @@ const ControlBarComponent = (props: Props) => {
     {
       id: 2,
       title: 'Stake',
-      children: <Empty content={"No Staked Liquidity"} />,
+      children: <Empty content={'No Staked Liquidity'} />,
     },
   ]
 

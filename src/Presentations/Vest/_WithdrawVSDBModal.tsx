@@ -39,8 +39,8 @@ const WithdrawVSDBModal = (props: Props) => {
     setEndDate(date)
   }
 
-  const balance = useGetBalance(Coin.SDB)
   const { currentAccount } = useWalletKit()
+  const balance = useGetBalance(Coin.SDB, currentAccount?.address)
   const { data: vsdb } = useGetVsdb(currentAccount?.address, currentVSDBId)
 
   const [input, setInput] = useState<string>('')
