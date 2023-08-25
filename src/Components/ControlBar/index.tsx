@@ -12,6 +12,7 @@ interface Props {
   nftInfo: {
     data: Vsdb | undefined
     isLoading: boolean
+    isFetching: boolean
   }
   poolDataList: Pool[] | undefined
   coinData: Balance[] | undefined
@@ -135,7 +136,7 @@ const ControlBarComponent = (props: Props) => {
   return (
     <div className={styles.barContainer}>
       {
-        nftInfo.isLoading ? (
+        nftInfo.isLoading && nftInfo.isFetching ? (
           <div className={styles.loadingContent}>
             <Loading />
           </div>

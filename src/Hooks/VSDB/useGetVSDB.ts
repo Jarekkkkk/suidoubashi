@@ -39,7 +39,7 @@ export const useGetVsdb = (address?: string | null, vsdb?: string) => {
     ['vsdb', address, vsdb],
     () => get_vsdb(rpc, address!, vsdb!),
     {
-      enabled: !!address && !!vsdb,
+      enabled: (!!address && !!vsdb),
       refetchOnMount: false,
       refetchOnWindowFocus: false,
     },
