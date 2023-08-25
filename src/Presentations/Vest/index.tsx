@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { PageContainer, Button, Loading, Empty } from '@/Components'
 import { VestContext } from '@/Containers/Vest'
 import Image from '@/Assets/image'
-import { Icon } from '@/Assets/icon'
+import { CoinIcon, Icon } from '@/Assets/icon'
 import { required_exp } from '@/Utils/game'
 
 import VestCardComponent from './_VestCard'
@@ -13,6 +13,7 @@ import DepositVSDBModal from './_DepositVSDBModal'
 
 import * as styles from './index.styles'
 import BigNumber from 'bignumber.js'
+import { useMintSDB } from '@/Hooks/VSDB/useMintSDB'
 
 const VestPresentation = () => {
   const {
@@ -43,6 +44,7 @@ const VestPresentation = () => {
         ) : (
           <div className={styles.controlContainer}>
             <div className={styles.buttonSection}>
+              <TestMintSDBButton />
               <Button
                 styletype='filled'
                 text='Merge VSDB'
@@ -81,8 +83,8 @@ const VestPresentation = () => {
                     expiration={new Date(
                       Number(item.end) * 1000,
                     ).toLocaleDateString('en-ZA')}
-                      setCurrentVSDBId = {setCurrentVSDBId}
-                      setIsShowDepositVSDBModal = {setIsShowDepositVSDBModal}
+                    setCurrentVSDBId={setCurrentVSDBId}
+                    setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
                     setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
                   />
                 )
@@ -123,3 +125,15 @@ const VestPresentation = () => {
 }
 
 export default VestPresentation
+
+const TestMintSDBButton = () => {
+  const { mutate: mint } = useMintSDB()
+  return (
+    <Button
+      styletype='filled'
+      text='Mint 100 SDB'
+      icon={<CoinIcon.SDBIcon />}
+      onClick={() => mint()}
+    />
+  )
+}

@@ -6,11 +6,9 @@ import {
   isValidSuiAddress,
 } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
-import { Coin } from '@/Constants/coin'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { mint_sdb } from '@/Constants/API/vsdb'
 import { queryClient } from '@/App'
-import { get_balance_key } from '../Coin/useGetBalance'
 
 export const useMintSDB = () => {
   const rpc = useRpc()
@@ -36,11 +34,9 @@ export const useMintSDB = () => {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: get_balance_key(Coin.SDB, currentAccount!.address),
-      })
-      toast.success('Mint SDB Success!')
+      queryClient.invalidateQueries(['balance'])
+      toast.success('Mint 100 SDB Success!')
     },
-    onError: (err: Error) => toast.error('Oops! Have some error'),
+    onError: (_: Error) => toast.error('Oops! Have some error'),
   })
 }
