@@ -46,7 +46,7 @@ const ControlBarComponent = (props: Props) => {
         <div className={styles.cardLoadingContent}>
           <Loading />
         </div>
-      ) : coinData && coinData.length > 1 ? (
+      ) : coinData && !!coinData.length ? (
         coinData
           ?.sort((prev, next) => {
             const _prevIdx = fetchIcon(prev.coinType)?.decimals || 0
