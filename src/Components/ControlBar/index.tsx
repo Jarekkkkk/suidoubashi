@@ -134,23 +134,29 @@ const ControlBarComponent = (props: Props) => {
 
   return (
     <div className={styles.barContainer}>
-      {nftInfo.isLoading || !nftInfo.data ? (
-        <div className={styles.loadingContent}>
-          <Loading />
-        </div>
-      ) : (
-        <NFTCard
-          isPrevBtnDisplay={isPrevBtnDisplay}
-          isNextBtnDisplay={isNextBtnDisplay}
-          nftImg={nftInfo?.data?.display?.image_url}
-          level={nftInfo?.data?.level}
-          expValue={parseInt(nftInfo?.data?.experience)}
-          sdbValue={parseInt(nftInfo?.data?.balance)}
-          vesdbValue={parseInt(nftInfo?.data?.vesdb)}
-          address={nftInfo?.data?.id}
-          handleFetchNFTData={handleFetchNFTData}
-        />
-      )}
+      {
+        nftInfo.isLoading ? (
+          <div className={styles.loadingContent}>
+            <Loading />
+          </div>
+        ) : !nftInfo.data ? (
+          <div className={styles.loadingContent}>
+            <Empty content="No Data" />
+          </div>
+        ) : (
+          <NFTCard
+            isPrevBtnDisplay={isPrevBtnDisplay}
+            isNextBtnDisplay={isNextBtnDisplay}
+            nftImg={nftInfo?.data?.display?.image_url}
+            level={nftInfo?.data?.level}
+            expValue={parseInt(nftInfo?.data?.experience)}
+            sdbValue={parseInt(nftInfo?.data?.balance)}
+            vesdbValue={parseInt(nftInfo?.data?.vesdb)}
+            address={nftInfo?.data?.id}
+            handleFetchNFTData={handleFetchNFTData}
+          />
+        )
+      }
       <Tabs links={tabDataKeys} />
     </div>
   )
