@@ -31,7 +31,6 @@ const VestContainer = ({ children }: PropsWithChildren) => {
   const [isShowDepositVSDBModal, setIsShowDepositVSDBModal] = useState(false)
   const [isShowMergeVSDBModal, setIsShowMergeVSDBModal] = useState(false)
   const [isShowWithdrawVSDBModal, setIsShowWithdrawVSDBModal] = useState(false)
-
   const [currentVSDBId, setCurrentVSDBId] = useState('')
 
   return (

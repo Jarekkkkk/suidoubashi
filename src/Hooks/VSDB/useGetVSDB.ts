@@ -5,7 +5,6 @@ import { useMemo } from 'react'
 
 import { Vsdb, get_vsdb, vsdb_package } from '@/Constants/API/vsdb'
 
-
 export function useGetVsdbIDs(address?: string | null) {
   const rpc = useRpc()
   return useQuery(
@@ -63,17 +62,17 @@ export const useGetMulVsdb = (
       }) ?? [],
   })
   return useMemo(() => {
-    if (!mul_vsdb.length) return {isLoading: false, data: []}
+    if (!mul_vsdb.length) return { isLoading: false, data: [] }
 
     const ret: Vsdb[] = []
     mul_vsdb.forEach(({ data }) => {
-      if (!data) return {isLoading: false, data:[]}
+      if (!data) return { isLoading: false, data: [] }
       ret.push(data)
     })
 
-    const isLoading = mul_vsdb.some((v)=>v.isLoading)
+    const isLoading = mul_vsdb.some((v) => v.isLoading)
 
-    if (!ret.length) return {isLoading: false, data: []}
-    return {isLoading, data: ret}
+    if (!ret.length) return { isLoading: false, data: [] }
+    return { isLoading, data: ret }
   }, [mul_vsdb])
 }

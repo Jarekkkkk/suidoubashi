@@ -46,7 +46,7 @@ const VestPresentation = () => {
               icon={<Icon.SquareAddIcon />}
               onClick={() => setIsShowCreateVSDBModal(true)}
             />
-         </div>
+          </div>
           <div className={styles.EmptyContainer}>
             <Empty content='No Data' />
           </div>

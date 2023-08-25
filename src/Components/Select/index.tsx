@@ -8,6 +8,7 @@ export interface SelectOption {
 type Props = {
   options: Array<SelectOption>
   onChange: (v: any) => void
+  value?: SelectOption | null
   defaultValue?: SelectOption
 }
 

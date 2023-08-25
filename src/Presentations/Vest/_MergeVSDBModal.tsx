@@ -66,20 +66,21 @@ const MergeVSDBModal = (props: Props) => {
       <div className={styles.perviewContainer}>
         <div className={styles.perviewCardBlock}>
           <Select
-            options={vsdbs
-              .filter((v) => v.id != secondVsdb?.id)
-              .map(
-                (vsdb) =>
-                  ({
-                    label: formatId(vsdb.id, 6),
-                    value: vsdb,
-                  }) as SelectOption,
-              )}
+            options={vsdbs.map(
+              (vsdb) =>
+                ({
+                  label: formatId(vsdb.id, 6),
+                  value: vsdb,
+                }) as SelectOption,
+            )}
             defaultValue={{
               value: currentVsdb,
               label: formatId(currentVsdb.id, 6),
             }}
-            onChange={({ value }: SelectOption) => setCurrentVsdb(value)}
+            onChange={({ value }: SelectOption) => {
+              setCurrentVsdb(value)
+              setSecondVsdb(undefined)
+            }}
           />
           <div className={styles.perviewCard}>
             <div>{formatDate(currentVsdb.end)}</div>
@@ -100,6 +101,14 @@ const MergeVSDBModal = (props: Props) => {
                     value: vsdb,
                   }) as SelectOption,
               )}
+            value={
+              secondVsdb
+                ? ({
+                    label: formatId(secondVsdb.id, 6),
+                    value: secondVsdb,
+                  } as SelectOption)
+                : null
+            }
             onChange={({ value }: SelectOption) => setSecondVsdb(value)}
           />
           <div className={styles.perviewCard}>
