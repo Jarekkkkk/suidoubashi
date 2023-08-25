@@ -6,7 +6,7 @@ import {
   devnetConnection,
   localnetConnection,
   testnetConnection,
-  mainnetConnection
+  mainnetConnection,
 } from '@mysten/sui.js'
 import { createContext, useState } from 'react'
 
@@ -14,7 +14,7 @@ export enum Network {
   LOCAL = 'LOCAL',
   DEVNET = 'DEVNET',
   TESTNET = 'TESTNET',
-  MAINNET = 'MAINNET'
+  MAINNET = 'MAINNET',
 }
 const vincagame_options = {
   fullnode: 'https://fullnode.devnet.vincagame.com',
@@ -26,10 +26,10 @@ const ENDPOINTS: Record<Network, Connection> = {
   [Network.LOCAL]: localnetConnection,
   [Network.DEVNET]: devnetConnection,
   [Network.TESTNET]: testnetConnection,
-  [Network.MAINNET]: mainnetConnection
+  [Network.MAINNET]: mainnetConnection,
 }
 
-export const defaultNetwork = Network.DEVNET
+export const defaultNetwork = Network.TESTNET
 
 export function getEndpoint(network: Network | string): string {
   if (Object.keys(ENDPOINTS).includes(network)) {

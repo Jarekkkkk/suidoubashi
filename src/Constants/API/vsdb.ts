@@ -11,8 +11,11 @@ import { AMMState } from './pool'
 import { VotingState } from './vote'
 import { bcs_registry } from '../bcs'
 
-export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE as string
-export const vsdb_reg = import.meta.env.VITE_VSDB_REG as string
+//export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE as string
+//export const vsdb_reg = import.meta.env.VITE_VSDB_REG as string
+export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE_TESTNET as string
+export const vsdb_reg = import.meta.env.VITE_VSDB_REG_TESTNET as string
+export const vsdb_cap = import.meta.env.VITE_SDB_CAP as string
 // Options for rpc calling
 export const defaultOptions = {
   showType: false,
@@ -28,9 +31,7 @@ export function mint_sdb(txb: TransactionBlock, address: string) {
     target: '0x2::coin::mint_and_transfer',
     typeArguments: [`${vsdb_package}::sdb::SDB`],
     arguments: [
-      txb.object(
-        '0x472ec685810e4d0a5c7900a04330379685a1cceb5c9281c089f2e7d4a540438b',
-      ),
+      txb.object(vsdb_cap),
       txb.pure(100000000000),
       txb.pure(address),
     ],
