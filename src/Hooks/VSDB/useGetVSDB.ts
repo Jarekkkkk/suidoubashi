@@ -64,15 +64,17 @@ export const useGetMulVsdb = (
       }) ?? [],
   })
   return useMemo(() => {
-    if (!mul_vsdb.length) return []
+    if (!mul_vsdb.length) return {isLoading: false, data: []}
 
     const ret: Vsdb[] = []
     mul_vsdb.forEach(({ data }) => {
-      if (!data) return []
+      if (!data) return {isLoading: false, data:[]}
       ret.push(data)
     })
 
-    if (!ret.length) return []
-    return ret
+    const isLoading = mul_vsdb.some((v)=>v.isLoading)
+
+    if (!ret.length) return {isLoading: false, data: []}
+    return {isLoading, data: ret}
   }, [mul_vsdb])
 }

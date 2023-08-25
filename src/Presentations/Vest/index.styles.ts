@@ -22,6 +22,14 @@ export const contentSection = css`
   overflow: scroll;
 `
 
+export const EmptyContainer = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+`
+
 // _VestCard
 export const vestCardLoadingContainer = css`
   display: flex;

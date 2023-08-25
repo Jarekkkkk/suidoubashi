@@ -6,7 +6,10 @@ import { useGetMulVsdb, useGetVsdbIDs } from '@/Hooks/VSDB/useGetVSDB'
 import { Vsdb } from '@/Constants/API/vsdb'
 
 export const VestContext = React.createContext<VestContext>({
-  data: [],
+  nftList: {
+    data: [],
+    isLoading: false,
+  },
   currentVSDBId: '',
   setCurrentVSDBId: () => {},
   isShowCreateVSDBModal: false,
@@ -34,7 +37,7 @@ const VestContainer = ({ children }: PropsWithChildren) => {
   return (
     <VestContext.Provider
       value={{
-        data: nftList,
+        nftList: nftList,
         isShowCreateVSDBModal,
         setIsShowCreateVSDBModal,
         isShowDepositVSDBModal,
@@ -53,7 +56,10 @@ const VestContainer = ({ children }: PropsWithChildren) => {
 }
 
 interface VestContext {
-  readonly data: Vsdb[]
+  readonly nftList: {
+    data: Vsdb[],
+    isLoading: boolean,
+  }
   currentVSDBId: string
   isShowCreateVSDBModal: boolean
   isShowDepositVSDBModal: boolean

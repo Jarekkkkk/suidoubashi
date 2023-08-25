@@ -74,7 +74,7 @@ const ControlBarComponent = (props: Props) => {
             )
           })
       ) : (
-        <Empty content={'No Deposited Liquidity'} />
+        <Empty content={'No Supported Coins'} />
       ),
     },
     {

@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { PageContainer, Button, Loading } from '@/Components'
+import { PageContainer, Button, Loading, Empty } from '@/Components'
 import { VestContext } from '@/Containers/Vest'
 import Image from '@/Assets/image'
 import { Icon } from '@/Assets/icon'
@@ -16,7 +16,7 @@ import BigNumber from 'bignumber.js'
 
 const VestPresentation = () => {
   const {
-    data,
+    nftList,
     currentVSDBId,
     setCurrentVSDBId,
     isShowCreateVSDBModal,
@@ -31,57 +31,65 @@ const VestPresentation = () => {
 
   return (
     <PageContainer title='Vest' titleImg={Image.pageBackground_1}>
-      {!data.length ? (
-        <Loading />
-      ) : (
-        <div className={styles.controlContainer}>
-          <div className={styles.buttonSection}>
-            <Button
-              styletype='filled'
-              text='Merge VSDB'
-              icon={<Icon.FileIcon />}
-              onClick={() => setIsShowMergeVSDBModal(true)}
-            />
-            <Button
-              styletype='filled'
-              text='Create VSDB'
-              icon={<Icon.SquareAddIcon />}
-              onClick={() => setIsShowCreateVSDBModal(true)}
-            />
-          </div>
-          <div className={styles.contentSection}>
-            {data.map((item, idx) => {
-              return (
-                <VestCardComponent
-                  key={idx}
-                  nftId={item.id}
-                  nftImg={item?.display?.image_url}
-                  level={item.level}
-                  expValue={
-                    parseInt(item.experience) /
-                    required_exp(parseInt(item.level) + 1)
-                  }
-                  expSpanValue={{
-                    experience: parseInt(item.experience),
-                    required_exp: required_exp(parseInt(item.level) + 1),
-                  }}
-                  vesdbSpanValue={item.vesdb}
-                  vesdbValue={parseInt(item.vesdb) / parseInt(item.balance)}
-                  lockSdbValue={BigNumber(item.balance)
-                    .shiftedBy(-9)
-                    .decimalPlaces(3)
-                    .toFormat()}
-                  expiration={new Date(
-                    Number(item.end) * 1000,
-                  ).toLocaleDateString('en-ZA')}
-                    setCurrentVSDBId = {setCurrentVSDBId}
-                    setIsShowDepositVSDBModal = {setIsShowDepositVSDBModal}
-                  setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
-                />
-              )
-            })}
-          </div>
+      {nftList.isLoading ? (
+        <div className={styles.EmptyContainer}>
+          <Loading />
         </div>
+      ) : (
+        nftList.data.length < 1 ? (
+          <div className={styles.EmptyContainer}>
+            <Empty content="No Data" />
+          </div>
+        ) : (
+          <div className={styles.controlContainer}>
+            <div className={styles.buttonSection}>
+              <Button
+                styletype='filled'
+                text='Merge VSDB'
+                icon={<Icon.FileIcon />}
+                onClick={() => setIsShowMergeVSDBModal(true)}
+              />
+              <Button
+                styletype='filled'
+                text='Create VSDB'
+                icon={<Icon.SquareAddIcon />}
+                onClick={() => setIsShowCreateVSDBModal(true)}
+              />
+            </div>
+            <div className={styles.contentSection}>
+              {nftList.data.map((item, idx) => {
+                return (
+                  <VestCardComponent
+                    key={idx}
+                    nftId={item.id}
+                    nftImg={item?.display?.image_url}
+                    level={item.level}
+                    expValue={
+                      parseInt(item.experience) /
+                      required_exp(parseInt(item.level) + 1)
+                    }
+                    expSpanValue={{
+                      experience: parseInt(item.experience),
+                      required_exp: required_exp(parseInt(item.level) + 1),
+                    }}
+                    vesdbSpanValue={item.vesdb}
+                    vesdbValue={parseInt(item.vesdb) / parseInt(item.balance)}
+                    lockSdbValue={BigNumber(item.balance)
+                      .shiftedBy(-9)
+                      .decimalPlaces(3)
+                      .toFormat()}
+                    expiration={new Date(
+                      Number(item.end) * 1000,
+                    ).toLocaleDateString('en-ZA')}
+                      setCurrentVSDBId = {setCurrentVSDBId}
+                      setIsShowDepositVSDBModal = {setIsShowDepositVSDBModal}
+                    setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
+                  />
+                )
+              })}
+            </div>
+          </div>
+        )
       )}
       {isShowCreateVSDBModal && (
         <CreateVSDBModal
@@ -98,7 +106,7 @@ const VestPresentation = () => {
       )}
       {isShowMergeVSDBModal && (
         <MergeVSDBModal
-          vsdbs={data}
+          vsdbs={nftList.data}
           isShowMergeVSDBModal={isShowMergeVSDBModal}
           setIsShowMergeVSDBModal={setIsShowMergeVSDBModal}
         />

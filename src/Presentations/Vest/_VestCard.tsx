@@ -23,7 +23,7 @@ interface Props {
     experience: number,
     required_exp: number,
   },
-  vesdbSpanValue?: number,
+  vesdbSpanValue?: string,
 }
 
 interface TextItemProps {
@@ -39,7 +39,7 @@ interface ValueItemProps {
     experience: number,
     required_exp: number,
   },
-  vesdbSpanValue?: number,
+  vesdbSpanValue?: string,
 }
 
 const TextItem = (props: TextItemProps) => {
