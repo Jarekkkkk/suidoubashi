@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useState } from 'react'
-import { useWalletKit } from '@mysten/wallet-kit'
 
 import { useGetMulVsdb, useGetVsdbIDs } from '@/Hooks/VSDB/useGetVSDB'
+import UserModule from '@/Modules/User'
 
 import { Vsdb } from '@/Constants/API/vsdb'
 
@@ -23,8 +23,9 @@ export const VestContext = React.createContext<VestContext>({
 })
 
 const VestContainer = ({ children }: PropsWithChildren) => {
-  const { currentAccount } = useWalletKit()
-  const walletAddress = currentAccount?.address
+  const walletAddress = UserModule.getUserToken();
+  if (!walletAddress) return null
+
   const { data: vsdbIdList } = useGetVsdbIDs(walletAddress)
   const nftList = useGetMulVsdb(walletAddress, vsdbIdList)
   const [isShowCreateVSDBModal, setIsShowCreateVSDBModal] = useState(false)

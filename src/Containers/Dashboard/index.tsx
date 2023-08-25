@@ -1,30 +1,19 @@
-import React, { useState, useContext, useEffect, PropsWithChildren } from 'react'
-import { useWalletKit } from '@mysten/wallet-kit'
+import React, { useContext, PropsWithChildren } from 'react'
+import UserModule from '@/Modules/User';
 
 export const DashboardContext = React.createContext<DashboardContext>({
-  walletAddress: '',
-  handleFetchWallet: () => {},
+  walletAddress: null,
 });
 
 export const useDashboardContext = () => useContext(DashboardContext);
 
 export const DashboardContainer = ({ children }: PropsWithChildren) => {
-  const [walletAddress, setWalletAddress] = useState<String | undefined>();
-  const { currentAccount } = useWalletKit();
-
-  const handleFetchWallet = () => {
-    setWalletAddress(currentAccount?.address)
-  };
-
-  useEffect(() => {
-    handleFetchWallet();
-  });
-
+  const walletAddress = UserModule.getUserToken();
+  
   return (
     <DashboardContext.Provider
       value={{
         walletAddress,
-        handleFetchWallet,
       }}
     >
       {children}
@@ -33,8 +22,7 @@ export const DashboardContainer = ({ children }: PropsWithChildren) => {
 };
 
 interface DashboardContext {
-  readonly walletAddress: String | undefined,
-  handleFetchWallet: Function,
+  readonly walletAddress: String | null,
 };
 
 export default DashboardContainer;

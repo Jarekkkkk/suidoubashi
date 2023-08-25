@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useWalletKit } from '@mysten/wallet-kit'
 
 import { useGetAllBalance } from '@/Hooks/Coin/useGetBalance'
 import { useGetVsdb, useGetVsdbIDs } from '@/Hooks/VSDB/useGetVSDB'
 import { useGetMulLP } from '@/Hooks/AMM/useGetLP'
 import { Pool } from '@/Constants/API/pool'
+import UserModule from '@/Modules/User';
+import { useWalletKit } from '@mysten/wallet-kit';
 
 import { Coins } from '@/Constants/coin'
 import { Sidebar, ControlBar } from '@/Components'
@@ -22,14 +23,18 @@ const PageComponent = (props: Props) => {
   const [currentVsdbId, setCurrentVsdbId] = useState(0)
   const [poolDataList, setPoolDataList] = useState()
 
-  const { currentAccount } = useWalletKit()
-  const walletAddress = currentAccount?.address
+  const { isConnected } = useWalletKit();
+  const walletAddress = UserModule.getUserToken()
+
+  if (!walletAddress && !isDashboard) {
+    window.location.href = '/'
+  }
 
   const { data: vsdbList } = useGetVsdbIDs(walletAddress)
   const currentNFTInfo = useGetVsdb(walletAddress, vsdbList?.[currentVsdbId])
 
-  const { data: bal, isLoading: isCoinDataLoading } = useGetAllBalance(Coins, currentAccount?.address)
-  const { data: lPList, isLoading: isLpDataLoading } = useGetMulLP(currentAccount?.address)
+  const { data: bal, isLoading: isCoinDataLoading } = useGetAllBalance(Coins, walletAddress)
+  const { data: lPList, isLoading: isLpDataLoading } = useGetMulLP(walletAddress)
   const poolIDList = useGetPoolIDs()
   const poolList = poolIDList && useGetMulPool(poolIDList.data)
   const handleFetchNFTData = (mode: string) => {
@@ -56,7 +61,22 @@ const PageComponent = (props: Props) => {
     }
   }, [poolList[0]?.isSuccess])
 
-  return !isDashboard ? (
+  if (isDashboard) {
+    return (
+      <>
+        {isConnected && (
+          <div className={styles.dashboardMainContent}>
+            <div className={styles.sidebarContent}>
+              <Sidebar isOpen={true} />
+            </div>
+          </div>
+        )}
+        {children}
+      </>
+    )
+  }
+
+  return walletAddress && (
     <div className={styles.layoutContainer}>
       <div className={styles.mainContent}>
         <Sidebar isOpen={true} />
@@ -76,17 +96,6 @@ const PageComponent = (props: Props) => {
         />
       </div>
     </div>
-  ) : (
-    <>
-      {currentAccount?.address && (
-        <div className={styles.dashboardMainContent}>
-          <div className={styles.sidebarContent}>
-            <Sidebar isOpen={true} />
-          </div>
-        </div>
-      )}
-      {children}
-    </>
   )
 }
 export default PageComponent

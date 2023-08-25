@@ -17,10 +17,10 @@ import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { Coin } from '@/Constants/coin'
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
-import { useWalletKit } from '@mysten/wallet-kit'
 import { useGetVsdb } from '@/Hooks/VSDB/useGetVSDB'
 import { calculate_vesdb } from '@/Utils/calculateAPR'
 import { useRevive } from '@/Hooks/VSDB/useRevive'
+import UserModule from '@/Modules/User';
 
 type Props = {
   isShowWithdrawVSDBModal: boolean
@@ -39,9 +39,9 @@ const WithdrawVSDBModal = (props: Props) => {
     setEndDate(date)
   }
 
-  const { currentAccount } = useWalletKit()
-  const balance = useGetBalance(Coin.SDB, currentAccount?.address)
-  const { data: vsdb } = useGetVsdb(currentAccount?.address, currentVSDBId)
+  const walletAddress = UserModule.getUserToken()
+  const balance = useGetBalance(Coin.SDB, walletAddress)
+  const { data: vsdb } = useGetVsdb(walletAddress, currentVSDBId)
 
   const [input, setInput] = useState<string>('')
 

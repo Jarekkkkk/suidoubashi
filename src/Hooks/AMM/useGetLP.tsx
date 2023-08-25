@@ -3,7 +3,7 @@ import useRpc from '../useRpc'
 import { LP, amm_package } from '@/Constants/API/pool'
 import { getObjectFields, getObjectType } from '@mysten/sui.js'
 
-export const useGetMulLP = (address?: string) => {
+export const useGetMulLP = (address?: string | null) => {
   const rpc = useRpc()
   return useQuery(
     ['LP', address],

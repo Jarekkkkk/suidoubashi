@@ -16,8 +16,9 @@ import * as styles from './index.styles'
 import { cx } from '@emotion/css'
 import moment from 'moment'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
+import UserModule from '@/Modules/User';
+
 import BigNumber from 'bignumber.js'
-import { useWalletKit } from '@mysten/wallet-kit'
 import { Coin } from '@/Constants/coin'
 import { useIncreaseUnlockTime } from '@/Hooks/VSDB/useIncreaseUnlockTime'
 import { useIncreaseUnlockAmount } from '@/Hooks/VSDB/useIncreaseUnlockAmount'
@@ -37,10 +38,10 @@ const DepositVSDBModal = (props: Props) => {
     moment().add(168, 'days').toDate().toDateString(),
   )
 
-  const { currentAccount } = useWalletKit()
-  const balance = useGetBalance(Coin.SDB, currentAccount?.address)
+  const walletAddress = UserModule.getUserToken()
+  const balance = useGetBalance(Coin.SDB, walletAddress)
 
-  const { data: vsdb } = useGetVsdb(currentAccount?.address, currentVSDBId)
+  const { data: vsdb } = useGetVsdb(walletAddress, currentVSDBId)
 
   const [input, setInput] = useState<string>()
   const handleOnInputChange = useCallback(

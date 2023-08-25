@@ -12,7 +12,7 @@ export type Balance = {
   totalBalance: string
 }
 
-export default function useGetBalance(coinType: Coin, address?: string) {
+export default function useGetBalance(coinType: Coin, address?: string | null) {
   const res = useGetAllBalance(undefined, address)
 
   return useMemo(
@@ -23,7 +23,7 @@ export default function useGetBalance(coinType: Coin, address?: string) {
 
 export function useGetAllBalance(
   coin_types: CoinInterface[] = Coins,
-  address?: string,
+  address?: string | null,
 ) {
   const rpc = useRpc()
   return useQuery(
