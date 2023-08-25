@@ -3,9 +3,8 @@ import useRpc from '../useRpc'
 
 import { useMemo } from 'react'
 
-import { Vsdb, get_vsdb } from '@/Constants/API/vsdb'
+import { Vsdb, get_vsdb, vsdb_package } from '@/Constants/API/vsdb'
 
-export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE as string
 
 export function useGetVsdbIDs(address?: string | null) {
   const rpc = useRpc()
