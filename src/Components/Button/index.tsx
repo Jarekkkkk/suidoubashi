@@ -1,5 +1,6 @@
 import { cx } from '@emotion/css'
 import * as styles from './index.styles';
+import { types } from './index.styles';
 interface Props {
   styletype: string, // filled | outlined | tonal
   text: string,
@@ -21,7 +22,7 @@ const BasicButton = (props: Props) => {
         onClick={onClick}
         className={cx(
           styles.button,
-          [styles[`${styletype}`]],
+          types[styletype],
         )}
       >
         {icon && icon}

@@ -1,4 +1,3 @@
-import { useGetCoinBalance } from '@/Hooks/coin';
 import React, {
     useState,
     useContext,
@@ -13,12 +12,8 @@ export const BribeContext = React.createContext<BribeContext>({
 export const useBribeContext = () => useContext(BribeContext);
 
 export const BribeContainer = ({ children }: PropsWithChildren) => {
-    const [data, setData] = useState(null);
-    const [fetching, setFetching] = useState(false);
-
-    const handleFetchData = () => {
-        return
-    };
+    const [data, _setData] = useState(null);
+    const [fetching, _setFetching] = useState(false);
 
 
     return (

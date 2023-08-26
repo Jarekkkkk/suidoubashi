@@ -46,6 +46,6 @@ export const useIncreaseUnlockTime = (setIsShowDepositVSDBModal: Function) => {
       toast.success('Deposit VSDB Success!')
       setIsShowDepositVSDBModal(false)
     },
-    onError: (err: Error) => toast.error('Oops! Have some error'),
+    onError: (_err: Error) => toast.error('Oops! Have some error'),
   })
 }

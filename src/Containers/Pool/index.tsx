@@ -11,7 +11,6 @@ import {
 import { useSwap } from '@/Hooks/AMM/useSwap'
 import { useZap } from '@/Hooks/AMM/useZap'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
-import { useLock } from '@/Hooks/VSDB/useLock'
 import { useWalletKit } from '@mysten/wallet-kit'
 import React, { useState, useContext, PropsWithChildren, useMemo } from 'react'
 
@@ -22,8 +21,8 @@ const PoolContext = React.createContext<PoolContext>({
 export const usePoolContext = () => useContext(PoolContext)
 
 const PoolContainer = ({ children }: PropsWithChildren) => {
-  const [data, setData] = useState(null)
-  const [fetching, setFetching] = useState(false)
+  const [data, _setData] = useState(null)
+  const [fetching, _setFetching] = useState(false)
 
   const { currentAccount } = useWalletKit()
   // pool
@@ -48,20 +47,19 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   )
 
   //mutation
-  const lock_sdb = useLock()
   const add_liquidity = useAddLiquidity()
   const zap = useZap()
   const withdraw = useRemoveLiquidity()
   const swap = useSwap()
 
   const handleAddLiquidity = () => {
-    if (pools[0]?.data && balance_x.data?.coinType) {
+    if (pools[0]?.data && balance_x?.coinType) {
       const pool = pools[0].data
       add_liquidity.mutate({
         pool_id: pool.id,
         pool_type_x: pool.type_x,
         pool_type_y: pool.type_y,
-        is_type_x: pool.type_x == balance_x.data?.coinType,
+        is_type_x: pool.type_x == balance_x?.coinType,
         lp_id: lp ? lp.id : null,
         input_a_value: '3147131016',
         input_b_value: '1000000000',
@@ -69,23 +67,17 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
     }
   }
 
-  const handleLock = () => {
-    lock_sdb.mutate({
-      depositValue: '50000000000000',
-      extended_duration: '12096000',
-    })
-  }
 
   const handleZap = () => {
-    if (pool?.data && balance_x?.data?.coinType) {
+    if (pool?.data && balance_x?.coinType) {
       zap.mutate({
-        pool_id: pool?.data.id,
+        pool_id: pool.data.id,
         pool_type_x: pool?.data.type_x,
         pool_type_y: pool?.data.type_y,
         reserve_x: pool?.data.reserve_x,
         reserve_y: pool?.data.reserve_y,
         fee: pool?.data.fee.fee_percentage,
-        is_type_x: pool?.data?.type_x == balance_x?.data?.coinType,
+        is_type_x: pool?.data?.type_x == balance_x.coinType,
         lp_id: lp ? lp.id : null,
         input_value: '10000000000',
       })
@@ -106,20 +98,19 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   }
 
   const handleSwap = () => {
-    if (pools[0]?.data && balance_x?.data?.coinType) {
+    if (pools[0]?.data && balance_x?.coinType) {
       const pool = pools[0].data
       swap.mutate({
         pool_id: pool.id,
         pool_type_x: pool.type_x,
         pool_type_y: pool.type_y,
-        is_type_x: pool.type_x == balance_x.data.coinType,
+        is_type_x: pool.type_x == balance_x.coinType,
         input_value: '1000000000',
         output_value: '0',
       })
     }
   }
 
-  const handleFetchData = () => {}
   return (
     <PoolContext.Provider
       value={{
@@ -132,7 +123,7 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
         text='SDB/SUI LP'
         onClick={handleAddLiquidity}
       />
-      <Button styletype='filled' text='Lock SDB' onClick={handleLock} />
+      <Button styletype='filled' text='Lock SDB' onClick={() => { }} />
       <Button styletype='filled' text='Zap' onClick={handleZap} />
       <Button styletype='filled' text='Withdraw' onClick={handleWithdraw} />
       <Button styletype='filled' text='Swap' onClick={handleSwap} />

@@ -55,6 +55,6 @@ export const useMerge = (setIsShowMergeVSDBModal: Function) => {
       toast.success('Merge VSDB Success!')
       setIsShowMergeVSDBModal(false)
     },
-    onError: (err: Error) => toast.error('Oops! Have some error'),
+    onError: (_err: Error) => toast.error('Oops! Have some error'),
   })
 }

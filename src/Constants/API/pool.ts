@@ -123,7 +123,7 @@ export async function get_output(
     sender,
     transactionBlock: txb,
   })
-  const returnValue = res?.results?.at(0)?.returnValues?.[0]
+  const returnValue = res?.results?.[0]?.returnValues?.[0]
   if (!returnValue) {
     return '0'
   } else {
@@ -181,7 +181,7 @@ export async function quote_add_liquidity(
   })
 
   return (
-    res?.results?.at(0)?.returnValues?.map((returnValue) => {
+    res?.results?.[0]?.returnValues?.map((returnValue) => {
       if (!returnValue) {
         return '0'
       } else {
@@ -256,7 +256,7 @@ export async function zap_optimized_input(
     sender,
     transactionBlock: txb,
   })
-  const returnValue = res?.results?.at(0)?.returnValues?.[0]
+  const returnValue = res?.results?.[0]?.returnValues?.[0]
   if (!returnValue) {
     return '0'
   } else {
@@ -368,7 +368,7 @@ export async function quote_remove_liquidity(
   console.log(res)
 
   return (
-    res?.results?.at(0)?.returnValues?.map((returnValue) => {
+    res?.results?.[0]?.returnValues?.map((returnValue) => {
       if (!returnValue) {
         return '0'
       } else {
@@ -519,7 +519,7 @@ export async function get_claimable_x(
     transactionBlock: txb,
   })
 
-  return res?.results?.at(0)?.returnValues ?? 0
+  return res?.results?.[0]?.returnValues ?? 0
 }
 
 export async function get_claimable_y(
@@ -538,5 +538,5 @@ export async function get_claimable_y(
     transactionBlock: txb,
   })
 
-  return res?.results?.at(0)?.returnValues ?? 0
+  return res?.results?.[0]?.returnValues ?? 0
 }

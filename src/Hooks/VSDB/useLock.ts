@@ -65,6 +65,6 @@ export const useLock = (setIsShowCreateVSDBModal: Function) => {
       toast.success('Create VSDB Success!')
       setIsShowCreateVSDBModal(false)
     },
-    onError: (err: Error) => toast.error('Oops! Have some error'),
+    onError: (_: Error) => toast.error('Oops! Have some error'),
   })
 }

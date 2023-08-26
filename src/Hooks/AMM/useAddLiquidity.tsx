@@ -134,7 +134,7 @@ export const useAddLiquidity = () => {
       }
     },
     onSuccess: (
-      { lp, deposit: { deposit_x, deposit_y, lp_token } },
+      { lp, deposit: { deposit_x: _, deposit_y: __, lp_token } },
       params,
     ) => {
       console.log(lp_token)
@@ -166,7 +166,7 @@ export const useAddLiquidity = () => {
 
       toast.success('Add Liquidity Success!')
     },
-    onError: (err: Error) => {
+    onError: (_err: Error) => {
       toast.error('Oops! Have some error')
     },
   })

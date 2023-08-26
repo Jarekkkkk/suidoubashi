@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { PageContainer, Button, Loading, Empty } from '@/Components'
+import { PageContainer, Button, Loading } from '@/Components'
 import { VestContext } from '@/Containers/Vest'
 import Image from '@/Assets/image'
 import { CoinIcon, Icon } from '@/Assets/icon'
@@ -36,31 +36,18 @@ const VestPresentation = () => {
         <div className={styles.EmptyContainer}>
           <Loading />
         </div>
-      ) : nftList.data.length < 1 ? (
-        <div className={styles.controlContainer}>
-          <div className={styles.buttonSection}>
-            <TestMintSDBButton />
-            <Button
-              styletype='filled'
-              text='Create VSDB'
-              icon={<Icon.SquareAddIcon />}
-              onClick={() => setIsShowCreateVSDBModal(true)}
-            />
-          </div>
-          <div className={styles.EmptyContainer}>
-            <Empty content='No Data' />
-          </div>
-        </div>
       ) : (
         <div className={styles.controlContainer}>
           <div className={styles.buttonSection}>
             <TestMintSDBButton />
-            <Button
-              styletype='filled'
-              text='Merge VSDB'
-              icon={<Icon.FileIcon />}
-              onClick={() => setIsShowMergeVSDBModal(true)}
-            />
+            {nftList.data.length > 1 && (
+              <Button
+                styletype='filled'
+                text='Merge VSDB'
+                icon={<Icon.FileIcon />}
+                onClick={() => setIsShowMergeVSDBModal(true)}
+              />
+            )}
             <Button
               styletype='filled'
               text='Create VSDB'

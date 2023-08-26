@@ -11,12 +11,8 @@ const VoteContext = React.createContext<VoteContext>({
 export const useVoteContext = () => useContext(VoteContext);
 
 const VoteContainer = ({ children }: PropsWithChildren) => {
-    const [data, setData] = useState(null);
-    const [fetching, setFetching] = useState(false);
-
-    const handleFetchData = () => {
-        return
-    };
+    const [data, _setData] = useState(null);
+    const [fetching, _setFetching] = useState(false);
 
     return (
         <VoteContext.Provider

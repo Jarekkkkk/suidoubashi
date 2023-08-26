@@ -16,11 +16,11 @@ export enum Network {
   TESTNET = 'TESTNET',
   MAINNET = 'MAINNET',
 }
-const vincagame_options = {
-  fullnode: 'https://fullnode.devnet.vincagame.com',
-  websocket: 'https://fullnode.devnet.vincagame.com',
-  faucet: 'https://fullnode.devnet.vincagame.com/gas',
-}
+// const vincagame_options = {
+//   fullnode: 'https://fullnode.devnet.vincagame.com',
+//   websocket: 'https://fullnode.devnet.vincagame.com',
+//   faucet: 'https://fullnode.devnet.vincagame.com/gas',
+// }
 
 const ENDPOINTS: Record<Network, Connection> = {
   [Network.LOCAL]: localnetConnection,
@@ -40,18 +40,18 @@ export function getEndpoint(network: Network | string): string {
 
 const defaultRpcMap: Map<Network | string, JsonRpcProvider> = new Map()
 
-export const getRpcClient = (network: Network | string) => {
+export const getRpcClient = (network: Network) => {
   const existingClient = defaultRpcMap.get(network)
   if (existingClient) return existingClient
 
-  const provider = new JsonRpcProvider(ENDPOINTS[Network[network]])
+  const provider = new JsonRpcProvider(ENDPOINTS[network])
   defaultRpcMap.set(network, provider)
   return provider
 }
 
 export const NetworkContext = createContext<
-  [Network | string, (network: Network | string) => void]
->(['', () => null])
+  [Network, (network: Network) => void]
+>([Network.TESTNET, () => null])
 
 export function useNetwork(): [string, (network: Network | string) => void] {
   const [network, setNetwork] = useState<Network | string>(defaultNetwork)

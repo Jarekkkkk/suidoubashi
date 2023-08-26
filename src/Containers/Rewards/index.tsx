@@ -1,10 +1,8 @@
 import React, {
     useState,
-    useEffect,
     useContext,
     PropsWithChildren,
 } from 'react';
-import { useParams } from 'react-router-dom';
 
 const RewardsContext = React.createContext<RewardsContext>({
     data: null,
@@ -13,12 +11,8 @@ const RewardsContext = React.createContext<RewardsContext>({
 export const useRewardsContext = () => useContext(RewardsContext);
 
 const RewardsContainer = ({ children }: PropsWithChildren) => {
-    const [data, setData] = useState(null);
-    const [fetching, setFetching] = useState(false);
-
-    const handleFetchData = () => {
-        return
-    };
+    const [data, _setData] = useState(null);
+    const [fetching, _setFetching] = useState(false);
 
     return (
         <RewardsContext.Provider

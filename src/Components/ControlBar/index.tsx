@@ -55,9 +55,9 @@ const ControlBarComponent = (props: Props) => {
 
             return Number(
               BigInt(next.totalBalance) *
-                BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
-                BigInt(prev.totalBalance) *
-                  BigInt('10') ** BigInt((9 - _prevIdx).toString()),
+              BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
+              BigInt(prev.totalBalance) *
+              BigInt('10') ** BigInt((9 - _prevIdx).toString()),
             )
           })
           .map((balance, idx) => {
@@ -97,7 +97,8 @@ const ControlBarComponent = (props: Props) => {
           const _coinYIdx = fetchIcon(data.type_y)
           const { lp_supply, reserve_x, reserve_y } = poolDataList.find(
             (p) => p.type_x == data.type_x && p.type_y == data.type_y,
-          )
+          ) ?? { lp_supply: 0, reserve_x: 0, reserve_y: 0 }
+
           const percentage = BigNumber(data.lp_balance).div(lp_supply)
           const x = percentage
             .multipliedBy(reserve_x)
@@ -133,8 +134,6 @@ const ControlBarComponent = (props: Props) => {
     },
   ]
 
-  console.log(nftInfo.isFetching)
-  console.log(nftInfo.isLoading)
   return (
     <div className={styles.barContainer}>
       {nftInfo.isLoading || nftInfo.isFetching ? (

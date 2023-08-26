@@ -2,15 +2,12 @@ import { useMutation } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
 import {
-  SuiObjectChangeCreated,
   TransactionBlock,
   getExecutionStatusType,
-  getObjectChanges,
 } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import {
   LP,
-  LiquidityAdded,
   quote_remove_liquidity,
   amm_package,
   remove_liquidity,
@@ -48,6 +45,7 @@ export const useRemoveLiquidity = () => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       // should refacotr
       const txb = new TransactionBlock()
+      txb.setGasBudget(BigInt(setting.gasBudget))
 
       const quote = await quote_remove_liquidity(
         rpc,
@@ -89,11 +87,10 @@ export const useRemoveLiquidity = () => {
         e.type.startsWith(`${amm_package}::event::LiquidityRemoved`),
       )?.parsedJson as LiquidityRemoved
     },
-    onSuccess: ({ withdrawl_x, withdraw_y, lp_token }, params) => {
+    onSuccess: ({ withdrawl_x: _, withdrawl_y: __, lp_token }, params) => {
       queryClient.setQueryData(
         ['LP', currentAccount!.address],
         (lp_ids?: LP[]) => {
-          console.log(lp_token)
           let lps = lp_ids ?? []
           const lp_id = lps.findIndex((lp) => lp.id == params.lp_id)
 
@@ -113,7 +110,7 @@ export const useRemoveLiquidity = () => {
 
       toast.success('Remove Liquidity Success!')
     },
-    onError: (err: Error) => {
+    onError: (_: Error) => {
       toast.error('Oops! Have some error')
     },
   })

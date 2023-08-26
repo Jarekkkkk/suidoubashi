@@ -11,7 +11,6 @@ import { get_vsdb_key } from './useGetVSDB'
 import { increase_unlock_amount } from '@/Constants/API/vsdb'
 import { Coin } from '@/Constants/coin'
 import { payCoin } from '@/Utils/payCoin'
-import { Balance } from '../Coin/useGetBalance'
 
 type MutationProps = {
   vsdb: string
@@ -57,6 +56,6 @@ export const useIncreaseUnlockAmount = (
       toast.success('Deposit VSDB Success!')
       setIsShowDepositVSDBModal(false)
     },
-    onError: (err: Error) => toast.error('Oops! Have some error'),
+    onError: (_err: Error) => toast.error('Oops! Have some error'),
   })
 }

@@ -1,4 +1,4 @@
-import { bcs_registry } from "./iindex";
+import { bcs_registry } from "./index";
 
 export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE as string
 

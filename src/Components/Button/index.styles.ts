@@ -94,3 +94,9 @@ export const tonal = css`
     }
   }
 `
+
+export const types: Record<string, string> = {
+  "filled": filled,
+  "outlined": outlined,
+  "tonal": tonal
+}

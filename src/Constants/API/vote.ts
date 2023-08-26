@@ -1,7 +1,7 @@
-import { JsonRpcProvider, ObjectId, SUI_CLOCK_OBJECT_ID, SUI_TYPE_ARG, TransactionBlock, getObjectFields, getObjectType, isValidSuiAddress, isValidSuiObjectId, normalizeSuiAddress, normalizeSuiObjectId } from "@mysten/sui.js";
+import { JsonRpcProvider, ObjectId, SUI_CLOCK_OBJECT_ID, SUI_TYPE_ARG, TransactionBlock, getObjectFields, getObjectType, isValidSuiObjectId, normalizeSuiObjectId } from "@mysten/sui.js";
 
 import { vote_package } from "../bcs/vote";
-import { Vsdb } from "./vsdb";
+import { Vsdb, vsdb_package } from "./vsdb";
 
 // Options for rpc calling
 export const defaultOptions = {
@@ -161,7 +161,7 @@ export async function get_rewards(rpc: JsonRpcProvider, id: string): Promise<Rew
         }
     ]
 
-    const sdb_type = `${process.env.vsdb_pkg}::sdb::SDB`
+    const sdb_type = `${vsdb_package}::sdb::SDB`
     if (entries[0].type != sdb_type && entries[1].type != sdb_type) {
         entries.push({
             type: "0x1::type_name::TypeName",
@@ -192,7 +192,7 @@ export async function get_rewards(rpc: JsonRpcProvider, id: string): Promise<Rew
 }
 
 // Voting Actions
-export async function vote(txb: TransactionBlock, voter: Voter, vsdb: Vsdb, pools: string[], weights: string[], gauges: Gauge[], bribes: Bribe[]) {
+export async function vote(txb: TransactionBlock, voter: Voter, vsdb: Vsdb, pools: string[], weights: string[], gauges: Gauge[], _bribes: Bribe[]) {
     let potato = txb.moveCall({
         target: `${vote_package}::voter::voting_entry`,
         arguments: [

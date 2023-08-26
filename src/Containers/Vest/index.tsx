@@ -9,6 +9,7 @@ export const VestContext = React.createContext<VestContext>({
   nftList: {
     data: [],
     isLoading: false,
+    isFetching: false,
   },
   currentVSDBId: '',
   setCurrentVSDBId: () => {},
@@ -23,7 +24,7 @@ export const VestContext = React.createContext<VestContext>({
 })
 
 const VestContainer = ({ children }: PropsWithChildren) => {
-  const walletAddress = UserModule.getUserToken();
+  const walletAddress = UserModule.getUserToken()
   if (!walletAddress) return null
 
   const { data: vsdbIdList } = useGetVsdbIDs(walletAddress)
@@ -57,8 +58,9 @@ const VestContainer = ({ children }: PropsWithChildren) => {
 
 interface VestContext {
   readonly nftList: {
-    data: Vsdb[],
-    isLoading: boolean,
+    data: Vsdb[]
+    isLoading: boolean
+    isFetching: boolean
   }
   currentVSDBId: string
   isShowCreateVSDBModal: boolean

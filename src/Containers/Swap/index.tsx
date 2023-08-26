@@ -1,10 +1,8 @@
 import React, {
     useState,
-    useEffect,
     useContext,
     PropsWithChildren,
 } from 'react';
-import { useParams } from 'react-router-dom';
 
 const SwapContext = React.createContext<SwapContext>({
     data: null,
@@ -13,12 +11,9 @@ const SwapContext = React.createContext<SwapContext>({
 export const useSwapContext = () => useContext(SwapContext);
 
 const SwapContainer = ({ children }: PropsWithChildren) => {
-    const [data, setData] = useState(null);
-    const [fetching, setFetching] = useState(false);
+    const [data, _setData] = useState(null);
+    const [fetching, _setFetching] = useState(false);
 
-    const handleFetchData = () => {
-        return
-    };
 
     return (
         <SwapContext.Provider

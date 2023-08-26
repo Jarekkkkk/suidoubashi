@@ -202,7 +202,7 @@ export async function voting_weight(
     sender,
     transactionBlock: txb,
   })
-  const returnValue = res?.results?.at(0)?.returnValues?.at(0)
+  const returnValue = res?.results?.[0]?.returnValues?.[0]
   if (!returnValue) {
     return '0'
   } else {

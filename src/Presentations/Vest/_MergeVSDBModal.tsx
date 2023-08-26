@@ -21,10 +21,11 @@ type Props = {
 const MergeVSDBModal = (props: Props) => {
   const { isShowMergeVSDBModal, setIsShowMergeVSDBModal, vsdbs } = props
 
-  const [currentVsdb, setCurrentVsdb] = useState<Vsdb>(vsdbs[0])
+  const [currentVsdb, setCurrentVsdb] = useState<Vsdb>()
   const [secondVsdb, setSecondVsdb] = useState<Vsdb>()
 
   const mergedVsdb = useMemo(() => {
+    if (!currentVsdb) return null
     if (!secondVsdb) return currentVsdb
     let _mergedVsdb = Object.assign({}, currentVsdb)
 
@@ -73,27 +74,31 @@ const MergeVSDBModal = (props: Props) => {
                   value: vsdb,
                 }) as SelectOption,
             )}
-            defaultValue={{
-              value: currentVsdb,
-              label: formatId(currentVsdb.id, 6),
-            }}
             onChange={({ value }: SelectOption) => {
               setCurrentVsdb(value)
               setSecondVsdb(undefined)
             }}
           />
           <div className={styles.perviewCard}>
-            <div>{formatDate(currentVsdb.end)}</div>
-            <div>{formatBalance(currentVsdb.balance, 9)} SDB</div>
+            <div>{currentVsdb ? formatDate(currentVsdb.end) : '---'}</div>
+            <div>
+              {currentVsdb
+                ? formatBalance(currentVsdb.balance, 9) + ' SDB'
+                : '---'}
+            </div>
             <div className={styles.perviewImage}>
-              <img src={currentVsdb.display.image_url} />
+              <img
+                src={
+                  currentVsdb ? currentVsdb.display.image_url : Image.nftDefault
+                }
+              />
             </div>
           </div>
         </div>
         <div className={styles.perviewCardBlock}>
           <Select
             options={vsdbs
-              .filter((v) => v.id != currentVsdb.id)
+              .filter((v) => v.id != currentVsdb?.id)
               .map(
                 (vsdb) =>
                   ({
@@ -130,21 +135,31 @@ const MergeVSDBModal = (props: Props) => {
       </div>
       <VestCardComponent
         isPerviewMode={true}
-        nftId={mergedVsdb.id}
+        nftId={mergedVsdb?.id ?? '0x00'}
         nftImg={mergedVsdb?.display?.['image_url'] ?? Image.nftDefault}
-        level={mergedVsdb.level}
+        level={mergedVsdb?.level ?? '0'}
         expValue={
-          parseInt(mergedVsdb.experience) /
-          required_exp(parseInt(mergedVsdb.level) + 1)
+          mergedVsdb
+            ? parseInt(mergedVsdb?.experience) /
+              required_exp(parseInt(mergedVsdb.level) + 1)
+            : 0
         }
-        vesdbValue={parseInt(mergedVsdb.vesdb) / parseInt(mergedVsdb.balance)}
-        lockSdbValue={BigNumber(mergedVsdb.balance)
+        vesdbValue={
+          mergedVsdb
+            ? parseInt(mergedVsdb.vesdb) / parseInt(mergedVsdb.balance)
+            : 0
+        }
+        lockSdbValue={BigNumber(mergedVsdb?.balance ?? '0')
           .shiftedBy(-9)
           .decimalPlaces(3)
           .toFormat()}
-        expiration={new Date(Number(mergedVsdb.end) * 1000).toLocaleDateString(
-          'en-ZA',
-        )}
+        expiration={
+          mergedVsdb
+            ? new Date(Number(mergedVsdb.end) * 1000).toLocaleDateString(
+                'en-ZA',
+              )
+            : '---'
+        }
       />
       <div className={styles.vsdbModalbutton}>
         <Button text='Merge' styletype='filled' onClick={handleMerge} />

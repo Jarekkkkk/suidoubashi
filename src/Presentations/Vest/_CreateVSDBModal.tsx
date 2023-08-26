@@ -17,7 +17,7 @@ import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { Coin } from '@/Constants/coin'
 import BigNumber from 'bignumber.js'
 import { calculate_vesdb } from '@/Utils/calculateAPR'
-import UserModule from '@/Modules/User';
+import UserModule from '@/Modules/User'
 
 type Props = {
   isShowCreateVSDBModal: boolean
@@ -40,7 +40,9 @@ const CreateVSDBModal = (props: Props) => {
     setEndDate(date)
   }
 
-  const { mutate: lock } = useLock(setIsShowCreateVSDBModal)
+  const { mutate: lock, isLoading } = useLock(setIsShowCreateVSDBModal)
+
+  console.log(isLoading)
 
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

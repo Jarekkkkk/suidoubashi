@@ -17,7 +17,6 @@ import {
   amm_package,
   create_lp,
   get_output,
-  zap_optimized_input,
   zap_optimized_input_,
   zap_x,
   zap_y,
@@ -191,7 +190,7 @@ export const useZap = () => {
 
       toast.success('Success!')
     },
-    onError: (err: Error) => {
+    onError: (_err: Error) => {
       toast.error('Oops! Have some error')
     },
   })

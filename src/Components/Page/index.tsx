@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import { useGetAllBalance } from '@/Hooks/Coin/useGetBalance'
 import { useGetVsdb, useGetVsdbIDs } from '@/Hooks/VSDB/useGetVSDB'
 import { useGetMulLP } from '@/Hooks/AMM/useGetLP'
-import { Pool } from '@/Constants/API/pool'
+//import { Pool } from '@/Constants/API/pool'
 import UserModule from '@/Modules/User';
 import { useWalletKit } from '@mysten/wallet-kit';
 
 import { Coins } from '@/Constants/coin'
 import { Sidebar, ControlBar } from '@/Components'
 import * as styles from './index.styles'
-import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
+//import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 
 interface Props {
   children: any
@@ -21,7 +21,7 @@ const PageComponent = (props: Props) => {
   const location = useLocation()
   const isDashboard = location.pathname === '/'
   const [currentVsdbId, setCurrentVsdbId] = useState(0)
-  const [poolDataList, setPoolDataList] = useState()
+  const [poolDataList, _] = useState()
 
   const { isConnected } = useWalletKit();
   const walletAddress = UserModule.getUserToken()
@@ -35,8 +35,8 @@ const PageComponent = (props: Props) => {
 
   const { data: bal, isLoading: isCoinDataLoading } = useGetAllBalance(Coins, walletAddress)
   const { data: lPList, isLoading: isLpDataLoading } = useGetMulLP(walletAddress)
-  const poolIDList = useGetPoolIDs()
-  const poolList = poolIDList && useGetMulPool(poolIDList.data)
+  //const poolIDList = useGetPoolIDs()
+  //const poolList = poolIDList && useGetMulPool(poolIDList.data)
   const handleFetchNFTData = (mode: string) => {
     if (vsdbList && vsdbList.length > 0 && currentVsdbId < vsdbList.length) {
       if (mode === 'next') {
@@ -50,16 +50,6 @@ const PageComponent = (props: Props) => {
       }
     }
   }
-
-  useEffect(() => {
-    if (poolList[0] && poolList[0]?.isSuccess) {
-      const _poolDataList: Pool[] = []
-
-      poolList.map((pool) => pool.data && _poolDataList.push(pool.data))
-
-      setPoolDataList(_poolDataList)
-    }
-  }, [poolList[0]?.isSuccess])
 
   if (isDashboard) {
     return (

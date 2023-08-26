@@ -1,4 +1,4 @@
-import { bcs_registry } from "./iindex";
+import { bcs_registry } from "./index";
 
 export const vote_package = import.meta.env.VITE_VOTE_PACKAGE as string
 

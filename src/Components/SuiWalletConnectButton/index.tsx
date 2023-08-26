@@ -20,6 +20,7 @@ const SuiWalletConnectButton = () => {
 
     return (
       <ConnectButton
+        //@ts-ignore
         className={styles.buttonStyle}
         connectText={'Connect Wallet'}
         connectedText={currentAccount && `Connected: ${formatAddress(currentAccount.address)}`}

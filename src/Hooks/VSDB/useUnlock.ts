@@ -52,6 +52,6 @@ export const useUnlock = () => {
       toast.success('Increase Unlock Amount Success!')
       queryClient.invalidateQueries(['balance'])
     },
-    onError: (err: Error) => toast.error('Oops! Have some error'),
+    onError: (_err: Error) => toast.error('Oops! Have some error'),
   })
 }

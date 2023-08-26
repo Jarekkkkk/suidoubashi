@@ -1,6 +1,3 @@
-import { useContext } from 'react';
-
-import { DashboardContext } from '@/Containers/Dashboard';
 import { SuiWalletConnectButton } from '@/Components';
 import Image from '@/Assets/image'
 import { Icon } from '@/Assets/icon'
@@ -10,18 +7,16 @@ import { cx, css } from '@emotion/css';
 
 
 const DashboardPresentation = () => {
-    const { walletAddress } = useContext(DashboardContext);
+	const sectionA = document.getElementById('sectionA');
+	const sectionB = document.getElementById('sectionB');
 
-		const sectionA = document.getElementById('sectionA');
-		const sectionB = document.getElementById('sectionB');
-
-		window.addEventListener('wheel', (e) => {
-			if (e.deltaY < 0 && sectionA) {
-				sectionA.scrollIntoView({ behavior: "smooth", block: "start"});
-			} else if (e.deltaY > 0 && sectionB) {
-				sectionB.scrollIntoView({ behavior: "smooth", block: "start"});
-			}
-		});
+	window.addEventListener('wheel', (e) => {
+		if (e.deltaY < 0 && sectionA) {
+			sectionA.scrollIntoView({ behavior: "smooth", block: "start" });
+		} else if (e.deltaY > 0 && sectionB) {
+			sectionB.scrollIntoView({ behavior: "smooth", block: "start" });
+		}
+	});
 
 	return (
 		<>
