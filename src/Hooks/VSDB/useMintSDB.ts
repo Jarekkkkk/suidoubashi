@@ -27,15 +27,15 @@ export const useMintSDB = () => {
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
-        options: { showBalanceChanges: true },
       })
+
       if (getExecutionStatusType(res) == 'failure') {
         throw new Error('Mint SDB tx fail')
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['balance'])
-      toast.success('Mint 100 SDB Success!')
+      toast.success('Mint 100 SDB Successfully!')
     },
     onError: (_: Error) => toast.error('Oops! Have some error'),
   })

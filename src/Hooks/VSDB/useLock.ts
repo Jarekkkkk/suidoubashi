@@ -62,7 +62,7 @@ export const useLock = (setIsShowCreateVSDBModal: Function) => {
         (vsdb_ids?: string[]) => [...(vsdb_ids ?? []), new_vsdb.objectId],
       )
       queryClient.invalidateQueries(['balance'])
-      toast.success('Create VSDB Success!')
+      toast.success('Create VSDB Successfully!')
       setIsShowCreateVSDBModal(false)
     },
     onError: (_: Error) => toast.error('Oops! Have some error'),

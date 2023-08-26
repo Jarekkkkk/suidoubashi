@@ -40,9 +40,7 @@ const CreateVSDBModal = (props: Props) => {
     setEndDate(date)
   }
 
-  const { mutate: lock, isLoading } = useLock(setIsShowCreateVSDBModal)
-
-  console.log(isLoading)
+  const { mutate: lock, isLoading: _ } = useLock(setIsShowCreateVSDBModal)
 
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +61,8 @@ const CreateVSDBModal = (props: Props) => {
         moment().startOf('day').toDate().getTime()) /
       1000
 
-    if (!input || extended_duration < 0) return null
+    if (!input || extended_duration < 0 || balance?.totalBalance == '0')
+      return null
 
     lock({
       deposit_value: (parseFloat(input) * Math.pow(10, 9)).toString(),

@@ -25,7 +25,7 @@ const NFTCardComponent = (props: Props) => {
     level,
     address,
     nftImg,
-    expValue,
+   expValue,
     sdbValue,
     vesdbValue,
     handleFetchNFTData,

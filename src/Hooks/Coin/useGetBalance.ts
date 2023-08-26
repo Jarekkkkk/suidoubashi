@@ -16,7 +16,7 @@ export default function useGetBalance(coinType: Coin, address?: string | null) {
   const res = useGetAllBalance(undefined, address)
 
   return useMemo(
-    () => res.data?.find((bal) => bal.coinType == coinType) ?? null,
+    () => res.data!.find((bal) => bal.coinType == coinType),
     [res, coinType],
   )
 }
@@ -27,7 +27,7 @@ export function useGetAllBalance(
 ) {
   const rpc = useRpc()
   return useQuery(
-    ['balance', address],
+    ['balance'],
     async () => {
       const res = await rpc.getAllBalances({
         owner: address!,
@@ -35,12 +35,13 @@ export function useGetAllBalance(
 
       if (!res.length) return []
 
-      return res
-        .filter((bal) => coin_types.some((c) => c.type == bal.coinType))
-        .map((bal) => ({
-          coinType: bal.coinType,
-          totalBalance: bal.totalBalance,
-        })) as Balance[]
+      const objs = new Map()
+      res.forEach((r) => objs.set(r.coinType, r.totalBalance))
+      return coin_types.map((c) =>
+        objs.has(c.type)
+          ? { coinType: c.type, totalBalance: objs.get(c.type) }
+          : { coinType: c.type, totalBalance: '0' },
+      )
     },
     {
       enabled: !!address,

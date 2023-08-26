@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { PageContainer, Button, Loading } from '@/Components'
+import { PageContainer, Button, Loading, Empty } from '@/Components'
 import { VestContext } from '@/Containers/Vest'
 import Image from '@/Assets/image'
 import { CoinIcon, Icon } from '@/Assets/icon'
@@ -56,36 +56,42 @@ const VestPresentation = () => {
             />
           </div>
           <div className={styles.contentSection}>
-            {nftList.data.map((item, idx) => {
-              return (
-                <VestCardComponent
-                  key={idx}
-                  nftId={item.id}
-                  nftImg={item?.display?.image_url}
-                  level={item.level}
-                  expValue={
-                    parseInt(item.experience) /
-                    required_exp(parseInt(item.level) + 1)
-                  }
-                  expSpanValue={{
-                    experience: parseInt(item.experience),
-                    required_exp: required_exp(parseInt(item.level) + 1),
-                  }}
-                  vesdbSpanValue={item.vesdb}
-                  vesdbValue={parseInt(item.vesdb) / parseInt(item.balance)}
-                  lockSdbValue={BigNumber(item.balance)
-                    .shiftedBy(-9)
-                    .decimalPlaces(3)
-                    .toFormat()}
-                  expiration={new Date(
-                    Number(item.end) * 1000,
-                  ).toLocaleDateString('en-ZA')}
-                  setCurrentVSDBId={setCurrentVSDBId}
-                  setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
-                  setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
-                />
-              )
-            })}
+            {!!nftList.data.length ? (
+              nftList.data.map((item, idx) => {
+                return (
+                  <VestCardComponent
+                    key={idx}
+                    nftId={item.id}
+                    nftImg={item?.display?.image_url}
+                    level={item.level}
+                    expValue={
+                      parseInt(item.experience) /
+                      required_exp(parseInt(item.level) + 1)
+                    }
+                    expSpanValue={{
+                      experience: parseInt(item.experience),
+                      required_exp: required_exp(parseInt(item.level) + 1),
+                    }}
+                    vesdbSpanValue={item.vesdb}
+                    vesdbValue={parseInt(item.vesdb) / parseInt(item.balance)}
+                    lockSdbValue={BigNumber(item.balance)
+                      .shiftedBy(-9)
+                      .decimalPlaces(3)
+                      .toFormat()}
+                    expiration={new Date(
+                      Number(item.end) * 1000,
+                    ).toLocaleDateString('en-ZA')}
+                    setCurrentVSDBId={setCurrentVSDBId}
+                    setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
+                    setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
+                  />
+                )
+              })
+            ) : (
+              <div className={styles.EmptyContainer}>
+                <Empty content='No Vesting NFT' />
+              </div>
+            )}
           </div>
         </div>
       )}

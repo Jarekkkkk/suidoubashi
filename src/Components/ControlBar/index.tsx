@@ -55,9 +55,9 @@ const ControlBarComponent = (props: Props) => {
 
             return Number(
               BigInt(next.totalBalance) *
-              BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
-              BigInt(prev.totalBalance) *
-              BigInt('10') ** BigInt((9 - _prevIdx).toString()),
+                BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
+                BigInt(prev.totalBalance) *
+                  BigInt('10') ** BigInt((9 - _prevIdx).toString()),
             )
           })
           .map((balance, idx) => {
@@ -136,7 +136,7 @@ const ControlBarComponent = (props: Props) => {
 
   return (
     <div className={styles.barContainer}>
-      {nftInfo.isLoading || nftInfo.isFetching ? (
+      {nftInfo.isLoading && nftInfo.isFetching ? (
         <div className={styles.loadingContent}>
           <Loading />
         </div>

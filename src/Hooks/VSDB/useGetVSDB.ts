@@ -33,6 +33,7 @@ export const get_vsdb_key = (address: string | null, vsdb: string) => [
   address,
   vsdb,
 ]
+
 export const useGetVsdb = (address?: string | null, vsdb?: string) => {
   const rpc = useRpc()
   return useQuery(
@@ -63,7 +64,11 @@ export const useGetMulVsdb = (
   })
 
   return useMemo(() => {
-    const isLoading = mul_vsdb.some((v) => v.isLoading) || !owned_vsdb
+    if (!owned_vsdb) return { isLoading: true, isFetching: false, data: [] }
+    if (owned_vsdb.length == 0)
+      return { isLoading: false, isFetching: false, data: [] }
+
+    const isLoading = mul_vsdb.some((v) => v.isLoading)
     const isFetching = mul_vsdb.some((v) => v.isFetching)
     const ret: Vsdb[] = []
 

@@ -53,7 +53,7 @@ export const useIncreaseUnlockAmount = (
       })
       queryClient.invalidateQueries(['balance'])
 
-      toast.success('Deposit VSDB Success!')
+      toast.success('Deposit VSDB Successfully!')
       setIsShowDepositVSDBModal(false)
     },
     onError: (_err: Error) => toast.error('Oops! Have some error'),
