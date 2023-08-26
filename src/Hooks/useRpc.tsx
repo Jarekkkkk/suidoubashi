@@ -29,7 +29,7 @@ const ENDPOINTS: Record<Network, Connection> = {
   [Network.MAINNET]: mainnetConnection,
 }
 
-export const defaultNetwork = Network.DEVNET
+export const defaultNetwork = Network.TESTNET
 
 export function getEndpoint(network: Network | string): string {
   if (Object.keys(ENDPOINTS).includes(network)) {

@@ -39,7 +39,7 @@ export const useGetVsdb = (address?: string | null, vsdb?: string) => {
     ['vsdb', address, vsdb],
     () => get_vsdb(rpc, address!, vsdb!),
     {
-      enabled: (!!address && !!vsdb),
+      enabled: !!address && !!vsdb,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
     },
@@ -50,7 +50,7 @@ export const useGetMulVsdb = (
   address?: string,
   owned_vsdb?: (string | null)[],
 ) => {
-  const rpc = useRpc();
+  const rpc = useRpc()
   const mul_vsdb = useQueries({
     queries:
       owned_vsdb?.map((id) => {
@@ -60,13 +60,11 @@ export const useGetMulVsdb = (
           enabled: !!address && !!id,
         }
       }) ?? [],
-});
+  })
 
-return useMemo(() => {
-  if (!owned_vsdb) return {isLoading: true, data: []}
-
-    const isLoading = mul_vsdb.some((v) => v.isLoading && v.isFetching);
-    const ret: Vsdb[] = [];
+  return useMemo(() => {
+    const isLoading = mul_vsdb.some((v) => v.isLoading) || !owned_vsdb
+    const ret: Vsdb[] = []
 
     mul_vsdb.forEach(({ data }) => {
       if (!data) return { isLoading, data: [] }

@@ -49,6 +49,9 @@ export const useMerge = (setIsShowMergeVSDBModal: Function) => {
       queryClient.removeQueries({
         queryKey: get_vsdb_key(currentAccount!.address, params.mergedVsdb),
       })
+      queryClient.invalidateQueries({
+        queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
+      })
       toast.success('Merge VSDB Success!')
       setIsShowMergeVSDBModal(false)
     },
