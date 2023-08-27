@@ -3,7 +3,6 @@ import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { SettingInterface } from '@/Constants/setting'
 import {
-  SUI_TYPE_ARG,
   SuiObjectChangeCreated,
   TransactionBlock,
   getExecutionStatusType,
@@ -67,7 +66,7 @@ export const useZap = () => {
         owner: currentAccount.address,
         coinType: input_type,
       })
-      const coin = payCoin(txb, coins, input_value, input_type == SUI_TYPE_ARG)
+      const coin = payCoin(txb, coins, input_value, input_type)
 
       // pure function: can be local
       const swapped_x = zap_optimized_input_(

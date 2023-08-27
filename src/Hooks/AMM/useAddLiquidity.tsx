@@ -2,7 +2,6 @@ import { useMutation } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
 import {
-  SUI_TYPE_ARG,
   SuiObjectChangeCreated,
   TransactionBlock,
   getExecutionStatusType,
@@ -63,7 +62,7 @@ export const useAddLiquidity = () => {
         txb,
         coins_x,
         is_type_x ? input_a_value : input_b_value,
-        pool_type_x == SUI_TYPE_ARG,
+        pool_type_x,
       )
       const deposit_x_min =
         ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(input_a_value)) /
@@ -77,7 +76,7 @@ export const useAddLiquidity = () => {
         txb,
         coins_y,
         is_type_x ? input_b_value : input_a_value,
-        pool_type_y == SUI_TYPE_ARG,
+        pool_type_y,
       )
       const deposit_y_min =
         ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(input_b_value)) /

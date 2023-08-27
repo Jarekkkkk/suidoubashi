@@ -135,7 +135,7 @@ const ControlBarComponent = (props: Props) => {
 
   return (
     <div className={styles.barContainer}>
-      {nftInfo.isLoading || nftInfo.isFetching ? (
+      {nftInfo.isLoading && nftInfo.isFetching ? (
         <div className={styles.loadingContent}>
           <Loading />
         </div>

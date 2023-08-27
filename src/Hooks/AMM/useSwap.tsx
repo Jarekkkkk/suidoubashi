@@ -3,7 +3,6 @@ import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
 import {
   CoinBalance,
-  SUI_TYPE_ARG,
   TransactionBlock,
   getExecutionStatusType,
 } from '@mysten/sui.js'
@@ -52,7 +51,7 @@ export const useSwap = () => {
         owner: currentAccount.address,
         coinType: input_type,
       })
-      const coin = payCoin(txb, coins, input_value, input_type == SUI_TYPE_ARG)
+      const coin = payCoin(txb, coins, input_value, input_type)
 
       const output_min = calculate_slippage(setting.slippage, output_value)
 
