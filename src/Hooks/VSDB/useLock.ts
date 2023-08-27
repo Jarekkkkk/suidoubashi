@@ -25,30 +25,26 @@ export const useLock = (setIsShowCreateVSDBModal: Function) => {
   return useMutation({
     mutationFn: async ({ deposit_value, extended_duration }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
-      // should refactor
 
       const txb = new TransactionBlock()
       const sdb_coins = await rpc.getCoins({
         owner: currentAccount.address,
         coinType: Coin.SDB,
       })
-      const coin_sdb = payCoin(txb, sdb_coins, deposit_value, false)
+      const coin_sdb = payCoin(txb, sdb_coins, deposit_value, Coin.SDB)
       lock(txb, coin_sdb, extended_duration)
-      let signed_tx = await signTransactionBlock({ transactionBlock: txb })
+      const signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
         options: {
           showObjectChanges: true,
-          showBalanceChanges: true,
         },
       })
 
       if (getExecutionStatusType(res) == 'failure') {
         throw new Error('Vesting Vsdb Tx fail')
       }
-
-      if (!res.balanceChanges) throw new Error('No Balances Changes')
 
       return getObjectChanges(res)?.find(
         (obj) =>

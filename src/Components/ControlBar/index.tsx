@@ -38,7 +38,6 @@ const ControlBarComponent = (props: Props) => {
     isCoinDataLoading,
     isLpDataLoading,
   } = props
-
   const tabDataKeys = [
     {
       id: 0,
@@ -50,8 +49,8 @@ const ControlBarComponent = (props: Props) => {
       ) : coinData && !!coinData.length ? (
         coinData
           ?.sort((prev, next) => {
-            const _prevIdx = fetchIcon(prev.coinType)?.decimals || 0
-            const _nextIdx = fetchIcon(next.coinType)?.decimals || 0
+            const _prevIdx = fetchIcon(prev.coinType)!.decimals
+            const _nextIdx = fetchIcon(next.coinType)!.decimals
 
             return Number(
               BigInt(next.totalBalance) *
@@ -136,11 +135,11 @@ const ControlBarComponent = (props: Props) => {
 
   return (
     <div className={styles.barContainer}>
-      {nftInfo.isLoading && nftInfo.isFetching ? (
+      {nftInfo.isLoading || nftInfo.isFetching ? (
         <div className={styles.loadingContent}>
           <Loading />
         </div>
-      ) : !nftInfo.data ? (
+      ) : !nftInfo?.data ? (
         <div className={styles.loadingContent}>
           <Empty content='No Data' />
         </div>

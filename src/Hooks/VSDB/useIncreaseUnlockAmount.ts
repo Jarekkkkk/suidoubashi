@@ -34,7 +34,7 @@ export const useIncreaseUnlockAmount = (
         owner: currentAccount.address,
         coinType: Coin.SDB,
       })
-      const sdb = payCoin(txb, sdb_coins, depositValue, false)
+      const sdb = payCoin(txb, sdb_coins, depositValue, Coin.SDB)
       increase_unlock_amount(txb, vsdb, sdb)
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({

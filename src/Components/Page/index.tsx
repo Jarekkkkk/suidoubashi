@@ -5,8 +5,8 @@ import { useGetAllBalance } from '@/Hooks/Coin/useGetBalance'
 import { useGetVsdb, useGetVsdbIDs } from '@/Hooks/VSDB/useGetVSDB'
 import { useGetMulLP } from '@/Hooks/AMM/useGetLP'
 //import { Pool } from '@/Constants/API/pool'
-import UserModule from '@/Modules/User';
-import { useWalletKit } from '@mysten/wallet-kit';
+import UserModule from '@/Modules/User'
+import { useWalletKit } from '@mysten/wallet-kit'
 
 import { Coins } from '@/Constants/coin'
 import { Sidebar, ControlBar } from '@/Components'
@@ -23,7 +23,7 @@ const PageComponent = (props: Props) => {
   const [currentVsdbId, setCurrentVsdbId] = useState(0)
   const [poolDataList, _] = useState()
 
-  const { isConnected } = useWalletKit();
+  const { isConnected } = useWalletKit()
   const walletAddress = UserModule.getUserToken()
 
   if (!walletAddress && !isDashboard) {
@@ -33,8 +33,12 @@ const PageComponent = (props: Props) => {
   const { data: vsdbList } = useGetVsdbIDs(walletAddress)
   const currentNFTInfo = useGetVsdb(walletAddress, vsdbList?.[currentVsdbId])
 
-  const { data: bal, isLoading: isCoinDataLoading } = useGetAllBalance(Coins, walletAddress)
-  const { data: lPList, isLoading: isLpDataLoading } = useGetMulLP(walletAddress)
+  const { data: bal, isLoading: isCoinDataLoading } = useGetAllBalance(
+    Coins,
+    walletAddress,
+  )
+  const { data: lPList, isLoading: isLpDataLoading } =
+    useGetMulLP(walletAddress)
   //const poolIDList = useGetPoolIDs()
   //const poolList = poolIDList && useGetMulPool(poolIDList.data)
   const handleFetchNFTData = (mode: string) => {
@@ -57,7 +61,7 @@ const PageComponent = (props: Props) => {
         {isConnected && (
           <div className={styles.dashboardMainContent}>
             <div className={styles.sidebarContent}>
-              <Sidebar isOpen={true} />
+              <Sidebar />
             </div>
           </div>
         )}
@@ -66,26 +70,28 @@ const PageComponent = (props: Props) => {
     )
   }
 
-  return walletAddress && (
-    <div className={styles.layoutContainer}>
-      <div className={styles.mainContent}>
-        <Sidebar isOpen={true} />
-        <div className={styles.content}>{children}</div>
-        <ControlBar
-          isPrevBtnDisplay={currentVsdbId !== 0}
-          isNextBtnDisplay={
-            (vsdbList && currentVsdbId < Number(vsdbList?.length) - 1) || false
-          }
-          poolDataList={poolDataList}
-          nftInfo={currentNFTInfo}
-          coinData={bal}
-          lpData={lPList}
-          handleFetchNFTData={handleFetchNFTData}
-          isLpDataLoading={isLpDataLoading}
-          isCoinDataLoading={isCoinDataLoading}
-        />
+  return (
+    walletAddress && (
+      <div className={styles.layoutContainer}>
+        <div className={styles.mainContent}>
+          <Sidebar />
+          <div className={styles.content}>{children}</div>
+          <ControlBar
+            isPrevBtnDisplay={currentVsdbId !== 0}
+            isNextBtnDisplay={
+              vsdbList && currentVsdbId < Number(vsdbList?.length) - 1 || false
+            }
+            poolDataList={poolDataList}
+            nftInfo={currentNFTInfo}
+            coinData={bal}
+            lpData={lPList}
+            handleFetchNFTData={handleFetchNFTData}
+            isLpDataLoading={isLpDataLoading}
+            isCoinDataLoading={isCoinDataLoading}
+          />
+        </div>
       </div>
-    </div>
+    )
   )
 }
 export default PageComponent

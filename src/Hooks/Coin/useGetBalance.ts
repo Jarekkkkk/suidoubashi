@@ -16,7 +16,7 @@ export default function useGetBalance(coinType: Coin, address?: string | null) {
   const res = useGetAllBalance(undefined, address)
 
   return useMemo(
-    () => res.data!.find((bal) => bal.coinType == coinType),
+    () => res.data?.find((bal) => bal.coinType == coinType),
     [res, coinType],
   )
 }

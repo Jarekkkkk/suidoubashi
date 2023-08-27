@@ -65,15 +65,15 @@ const VestPresentation = () => {
                     nftImg={item?.display?.image_url}
                     level={item.level}
                     expValue={
-                      parseInt(item.experience) /
-                      required_exp(parseInt(item.level) + 1)
+                      Number(item.experience) /
+                      required_exp(Number(item.level) + 1)
                     }
                     expSpanValue={{
-                      experience: parseInt(item.experience),
-                      required_exp: required_exp(parseInt(item.level) + 1),
+                      experience: Number(item.experience),
+                      required_exp: required_exp(Number(item.level) + 1),
                     }}
                     vesdbSpanValue={item.vesdb}
-                    vesdbValue={parseInt(item.vesdb) / parseInt(item.balance)}
+                    vesdbValue={Number(item.vesdb) / Number(item.balance)}
                     lockSdbValue={BigNumber(item.balance)
                       .shiftedBy(-9)
                       .decimalPlaces(3)

@@ -9,7 +9,7 @@ import BigNumber from 'bignumber.js'
 
 interface Props {
   nftId: string
-  nftImg: any
+  nftImg: string
   level: string
   expValue: number
   vesdbValue: number

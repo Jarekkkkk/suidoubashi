@@ -16,13 +16,14 @@ import * as styles from './index.styles'
 import { cx } from '@emotion/css'
 import moment from 'moment'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
-import UserModule from '@/Modules/User';
+import UserModule from '@/Modules/User'
 
 import BigNumber from 'bignumber.js'
 import { Coin } from '@/Constants/coin'
 import { useIncreaseUnlockTime } from '@/Hooks/VSDB/useIncreaseUnlockTime'
 import { useIncreaseUnlockAmount } from '@/Hooks/VSDB/useIncreaseUnlockAmount'
 import { useGetVsdb } from '@/Hooks/VSDB/useGetVSDB'
+import { calculate_vesdb } from '@/Utils/calculateAPR'
 
 type Props = {
   currentVSDBId: string
@@ -47,7 +48,7 @@ const DepositVSDBModal = (props: Props) => {
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
-      const isValid = /^-?\d*\.?\d*$/.test(value)
+      const isValid = /^-?\d*\.?\d{0,9}$/.test(value)
 
       if (!isValid) {
         value = value.slice(0, -1)
@@ -70,7 +71,7 @@ const DepositVSDBModal = (props: Props) => {
 
     increase_unlocked_amount({
       vsdb: currentVSDBId,
-      depositValue: (parseFloat(input) * Math.pow(10, 9)).toString(),
+      depositValue: (parseFloat(input) * 1e9).toString(),
     })
   }
 
@@ -91,36 +92,26 @@ const DepositVSDBModal = (props: Props) => {
     })
   }
 
-  // format vesdb & SDB balance
   const format = (vesdb: string) => {
     return BigNumber(vesdb).shiftedBy(-9).decimalPlaces(3).toFormat()
   }
 
   const handleIncreaseSDBVesdbOnchange = (input: string) => {
-    const extended_duration =
-      (new Date(parseInt(vsdb?.end ?? '0') * 1000).getTime() -
-        moment().startOf('day').toDate().getTime()) /
-      1000
-
-    const acc = BigNumber(extended_duration)
-      .multipliedBy(parseFloat(input) * Math.pow(10, 9))
-      .dividedBy(14515200)
-
-    return BigNumber(vsdb?.vesdb || '0')
-      .plus(acc)
+    if (!vsdb?.balance) return '0'
+    return BigNumber(Number(vsdb?.vesdb || '0') / Number(vsdb.balance))
+      .multipliedBy(Number(vsdb?.balance || '0') + parseFloat(input) * 1e9)
       .shiftedBy(-9)
       .decimalPlaces(3)
       .toFormat()
   }
 
   const handleIncreaseDurationVesdbOnchange = (end: string) => {
-    const extended_duration =
-      (new Date(end).getTime() - moment().startOf('day').toDate().getTime()) /
-      1000
-
-    return BigNumber(vsdb?.balance ?? '0')
-      .multipliedBy(extended_duration)
-      .dividedBy(14515200)
+    return BigNumber(
+      calculate_vesdb(
+        vsdb?.balance || '0',
+        (new Date(end).getTime() / 1000).toString(),
+      ),
+    )
       .shiftedBy(-9)
       .decimalPlaces(3)
       .toFormat()
