@@ -31,7 +31,14 @@ const PageComponent = (props: Props) => {
   }
 
   const { data: vsdbList } = useGetVsdbIDs(walletAddress)
-  const currentNFTInfo = useGetVsdb(walletAddress, vsdbList?.[currentVsdbId])
+  const currentNFTInfo = useGetVsdb(
+    walletAddress,
+    vsdbList === undefined
+      ? undefined
+      : !vsdbList.length
+      ? null
+      : vsdbList[currentVsdbId],
+  )
 
   const { data: bal, isLoading: isCoinDataLoading } = useGetAllBalance(
     Coins,
@@ -79,7 +86,8 @@ const PageComponent = (props: Props) => {
           <ControlBar
             isPrevBtnDisplay={currentVsdbId !== 0}
             isNextBtnDisplay={
-              vsdbList && currentVsdbId < Number(vsdbList?.length) - 1 || false
+              (vsdbList && currentVsdbId < Number(vsdbList?.length) - 1) ||
+              false
             }
             poolDataList={poolDataList}
             nftInfo={currentNFTInfo}

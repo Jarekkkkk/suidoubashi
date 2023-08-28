@@ -34,9 +34,9 @@ export const get_vsdb_key = (address: string | null, vsdb: string) => [
   vsdb,
 ]
 
-export const useGetVsdb = (address?: string | null, vsdb?: string) => {
+export const useGetVsdb = (address?: string | null, vsdb?: string | null) => {
   const rpc = useRpc()
-  return useQuery(
+  const res = useQuery(
     ['vsdb', address, vsdb],
     () => get_vsdb(rpc, address!, vsdb!),
     {
@@ -45,6 +45,12 @@ export const useGetVsdb = (address?: string | null, vsdb?: string) => {
       refetchOnWindowFocus: false,
     },
   )
+  return useMemo(() => {
+    if (vsdb === undefined) return { isLoading: true, data: null }
+    if (vsdb === null) return { isLoading: false, data: null }
+    const { isLoading, data } = res
+    return { isLoading, data }
+  }, [address, vsdb, res])
 }
 
 export const useGetMulVsdb = (
