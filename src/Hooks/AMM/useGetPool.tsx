@@ -1,4 +1,4 @@
-import { get_pool, pools_df_id } from '@/Constants/API/pool'
+import { Pool, get_pool, pools_df_id } from '@/Constants/API/pool'
 import { getObjectFields } from '@mysten/sui.js'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
@@ -18,11 +18,12 @@ export function useGetPoolIDs() {
       )
 
       return (await Promise.all(promises)).map(
-        (pool) => getObjectFields(pool)?.value,
+        (pool) => getObjectFields(pool)?.value as string,
       )
     },
     {
-      staleTime: 10 * 1000,
+      staleTime: 24 * 60 * 60 * 1000,
+      cacheTime: 24 * 60 * 60 * 1000,
       enabled: !!pools_df_id,
     },
   )
@@ -40,10 +41,19 @@ export const useGetMulPool = (pool_ids?: (string | undefined)[]) => {
         }
       }) ?? [],
   })
-  return useMemo(
-    () => (!pools.length ? [] : pools.map((data) => data)),
-    [pools],
-  )
+  return useMemo(() => {
+    if (!pool_ids) return { isLoading: true, data: null }
+    if (pools.length == 0) return { isLoading: false, data: [] }
+
+    const isLoading = pools.some((v) => v.isLoading)
+    const ret: Pool[] = []
+
+    pools.forEach(({ data }) => {
+      if (!data) return { isLoading, data: [] }
+      ret.push(data)
+    })
+    return { isLoading, data: ret.length ? ret : [] }
+  }, [pools])
 }
 
 export const useGetPool = (pool_id?: string) => {

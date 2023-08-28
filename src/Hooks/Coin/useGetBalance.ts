@@ -49,30 +49,3 @@ export function useGetAllBalance(
   )
 }
 
-export function useGetMulBalance(
-  coin_types: CoinInterface[],
-  address?: string,
-) {
-  const rpc = useRpc()
-  const owned_balances = useQueries({
-    queries: coin_types.map(({ type: coinType }) => {
-      return {
-        queryKey: ['get-balance', address, coinType],
-        queryFn: () => rpc.getBalance({ owner: address!, coinType }),
-        enabled: !!address,
-      }
-    }),
-  })
-
-  return useMemo(
-    () =>
-      !owned_balances.length
-        ? []
-        : owned_balances.map(({ data, isLoading, error }) => ({
-            data,
-            isLoading,
-            error,
-          })),
-    [owned_balances],
-  )
-}

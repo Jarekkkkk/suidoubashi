@@ -13,7 +13,7 @@ interface Props {
     data: Vsdb | undefined | null
     isLoading: boolean
   }
-  poolDataList: Pool[] | undefined
+  poolDataList: Pool[] | undefined | null
   coinData: Balance[] | undefined
   lpData: LP[] | undefined
   handleFetchNFTData: (e: any) => void
@@ -21,6 +21,7 @@ interface Props {
   isNextBtnDisplay: boolean
   isCoinDataLoading: boolean
   isLpDataLoading: boolean
+  isPoolDataLoading: boolean
 }
 
 const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
@@ -36,6 +37,7 @@ const ControlBarComponent = (props: Props) => {
     isNextBtnDisplay,
     isCoinDataLoading,
     isLpDataLoading,
+    isPoolDataLoading,
   } = props
   const tabDataKeys = [
     {
@@ -79,51 +81,46 @@ const ControlBarComponent = (props: Props) => {
     {
       id: 1,
       title: 'LP',
-      children: isLpDataLoading ? (
-        <div className={styles.cardLoadingContent}>
-          <Loading />
-        </div>
-      ) : lpData && lpData.length > 1 ? (
-        lpData?.map((data, idx) => {
-          if (!data || !poolDataList)
+      children:
+        isLpDataLoading || isPoolDataLoading ? (
+          <div className={styles.cardLoadingContent}>
+            <Loading />
+          </div>
+        ) : lpData && poolDataList && !!lpData.length ? (
+          lpData.map((data, idx) => {
+            const _coinXIdx = fetchIcon(data.type_x)
+            const _coinYIdx = fetchIcon(data.type_y)
+            const { lp_supply, reserve_x, reserve_y } = poolDataList.find(
+              (p) => p.type_x == data.type_x && p.type_y == data.type_y,
+            ) ?? { lp_supply: 0, reserve_x: 0, reserve_y: 0 }
+
+            const percentage = BigNumber(data.lp_balance).div(lp_supply)
+            const x = percentage
+              .multipliedBy(reserve_x)
+              .shiftedBy(-_coinXIdx!.decimals)
+              .decimalPlaces(3)
+              .toString()
+            const y = percentage
+              .multipliedBy(reserve_y)
+              .shiftedBy(-_coinYIdx!.decimals)
+              .decimalPlaces(3)
+              .toString()
+
             return (
-              <div className={styles.cardLoadingContent}>
-                <Loading />
-              </div>
+              <Coincard
+                key={idx}
+                coinXIcon={_coinXIdx!.logo}
+                coinXName={_coinXIdx!.name}
+                coinXValue={x}
+                coinYIcon={_coinYIdx!.logo}
+                coinYName={_coinYIdx!.name}
+                coinYValue={y}
+              />
             )
-          const _coinXIdx = fetchIcon(data.type_x)
-          const _coinYIdx = fetchIcon(data.type_y)
-          const { lp_supply, reserve_x, reserve_y } = poolDataList.find(
-            (p) => p.type_x == data.type_x && p.type_y == data.type_y,
-          ) ?? { lp_supply: 0, reserve_x: 0, reserve_y: 0 }
-
-          const percentage = BigNumber(data.lp_balance).div(lp_supply)
-          const x = percentage
-            .multipliedBy(reserve_x)
-            .shiftedBy(-_coinXIdx!.decimals)
-            .decimalPlaces(3)
-            .toString()
-          const y = percentage
-            .multipliedBy(reserve_y)
-            .shiftedBy(-_coinYIdx!.decimals)
-            .decimalPlaces(3)
-            .toString()
-
-          return (
-            <Coincard
-              key={idx}
-              coinXIcon={_coinXIdx!.logo}
-              coinXName={_coinXIdx!.name}
-              coinXValue={x}
-              coinYIcon={_coinYIdx!.logo}
-              coinYName={_coinYIdx!.name}
-              coinYValue={y}
-            />
-          )
-        })
-      ) : (
-        <Empty content={'No Deposited Liquidity'} />
-      ),
+          })
+        ) : (
+          <Empty content={'No Deposited Liquidity'} />
+        ),
     },
     {
       id: 2,

@@ -12,19 +12,11 @@ import {
 import { bcs_registry } from '../bcs'
 import { sqrt } from '@/Utils/bigint_math'
 
-export const amm_package = import.meta.env.VITE_AMM_PACKAGE as string
-export const pool_reg = import.meta.env.VITE_POOL_REG as string
+export const amm_package = import.meta.env.VITE_AMM_PACKAGE_TESTNET as string
+export const pool_reg = import.meta.env.VITE_POOL_REG_TESTNET as string
 
 export const pools_df_id =
-  '0xf1040bf11169822ce043fe86462d92d3c7023b7da8cbfe1ba6f2452b1ba653ac'
-export const defaultOptions = {
-  showType: true,
-  showContent: true,
-  showOwner: false,
-  showPreviousTransaction: false,
-  showStorageRebate: false,
-  showDisplay: false,
-}
+  '0x60211d886816e624d6860de0b15c1e1bf6daa316c0de0f41d8876a4aa643f0ec'
 
 export type poolReg = {
   id: ObjectId
@@ -166,8 +158,8 @@ export async function quote_add_liquidity(
   pool: string,
   pool_type_x: string,
   pool_type_y: string,
-  value_x: string,
-  value_y: string,
+  value_x: string | bigint,
+  value_y: string | bigint,
 ): Promise<string[]> {
   let txb = new TransactionBlock()
   txb.moveCall({

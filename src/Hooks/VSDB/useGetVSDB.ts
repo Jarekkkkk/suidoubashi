@@ -28,7 +28,7 @@ export function useGetVsdbIDs(address?: string | null) {
   )
 }
 
-export const get_vsdb_key = (address: string | null, vsdb: string) => [
+export const get_vsdb_key = (address: string, vsdb: string) => [
   'vsdb',
   address,
   vsdb,
@@ -48,8 +48,7 @@ export const useGetVsdb = (address?: string | null, vsdb?: string | null) => {
   return useMemo(() => {
     if (vsdb === undefined) return { isLoading: true, data: null }
     if (vsdb === null) return { isLoading: false, data: null }
-    const { isLoading, data } = res
-    return { isLoading, data }
+    return { isLoading: res.isLoading, data: res.data }
   }, [address, vsdb, res])
 }
 
@@ -70,18 +69,16 @@ export const useGetMulVsdb = (
   })
 
   return useMemo(() => {
-    if (!owned_vsdb) return { isLoading: true, isFetching: false, data: [] }
-    if (owned_vsdb.length == 0)
-      return { isLoading: false, isFetching: false, data: [] }
+    if (!owned_vsdb) return { isLoading: true, data: [] }
+    if (owned_vsdb.length == 0) return { isLoading: false, data: [] }
 
     const isLoading = mul_vsdb.some((v) => v.isLoading)
-    const isFetching = mul_vsdb.some((v) => v.isFetching)
     const ret: Vsdb[] = []
 
     mul_vsdb.forEach(({ data }) => {
-      if (!data) return { isLoading, data: [], isFetching }
+      if (!data) return { isLoading, data: [] }
       ret.push(data)
     })
-    return { isLoading, isFetching, data: ret.length ? ret : [] }
+    return { isLoading, data: ret.length ? ret : [] }
   }, [mul_vsdb])
 }

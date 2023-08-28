@@ -9,13 +9,7 @@ import {
 } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
-import {
-  LP,
-  LiquidityAdded,
-  add_liquidity,
-  amm_package,
-  create_lp,
-} from '@/Constants/API/pool'
+import { add_liquidity, amm_package, create_lp } from '@/Constants/API/pool'
 import { SettingInterface } from '@/Constants/setting'
 import { queryClient } from '@/App'
 
@@ -23,10 +17,9 @@ type AddLiquidityMutationArgs = {
   pool_id: string
   pool_type_x: string
   pool_type_y: string
-  is_type_x: boolean
   lp_id: string | null
-  input_a_value: string
-  input_b_value: string
+  input_x_value: string
+  input_y_value: string
 }
 
 export const useAddLiquidity = () => {
@@ -44,13 +37,11 @@ export const useAddLiquidity = () => {
       pool_id,
       pool_type_x,
       pool_type_y,
-      is_type_x,
       lp_id,
-      input_a_value,
-      input_b_value,
+      input_x_value,
+      input_y_value,
     }: AddLiquidityMutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
-      // should refacotr
       const txb = new TransactionBlock()
 
       // coin_x
@@ -58,28 +49,18 @@ export const useAddLiquidity = () => {
         owner: currentAccount.address,
         coinType: pool_type_x,
       })
-      const coin_x = payCoin(
-        txb,
-        coins_x,
-        is_type_x ? input_a_value : input_b_value,
-        pool_type_x,
-      )
+      const coin_x = payCoin(txb, coins_x, input_x_value, pool_type_x)
       const deposit_x_min =
-        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(input_a_value)) /
+        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(input_x_value)) /
         BigInt('10000')
       // coni_y
       const coins_y = await rpc.getCoins({
         owner: currentAccount.address,
         coinType: pool_type_y,
       })
-      const coin_y = payCoin(
-        txb,
-        coins_y,
-        is_type_x ? input_b_value : input_a_value,
-        pool_type_y,
-      )
+      const coin_y = payCoin(txb, coins_y, input_y_value, pool_type_y)
       const deposit_y_min =
-        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(input_b_value)) /
+        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(input_y_value)) /
         BigInt('10000')
       // LO
       let lp = lp_id
@@ -94,15 +75,13 @@ export const useAddLiquidity = () => {
         coin_x,
         coin_y,
         lp,
-        is_type_x ? deposit_x_min : deposit_y_min,
-        is_type_x ? deposit_y_min : deposit_x_min,
+        deposit_x_min,
+        deposit_y_min,
       )
       // return id first time deposit
       if (lp_id == null) {
         txb.transferObjects([lp], txb.pure(currentAccount.address))
       }
-
-      console.log(txb)
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
@@ -118,54 +97,18 @@ export const useAddLiquidity = () => {
         throw new Error('Vesting Vsdb Tx fail')
       }
 
-      console.log(res)
-
-      return {
-        lp: getObjectChanges(res)?.find(
-          (obj) =>
-            obj.type == 'created' &&
-            obj.objectType == `${amm_package}::pool::LP`,
-        ) as SuiObjectChangeCreated,
-
-        deposit: res.events?.find((e) =>
-          e.type.startsWith(`${amm_package}::event::LiquidityAdded`),
-        )?.parsedJson as LiquidityAdded,
-      }
+      return getObjectChanges(res)?.find(
+        (obj) =>
+          obj.type == 'created' && obj.objectType == `${amm_package}::pool::LP`,
+      ) as SuiObjectChangeCreated
     },
-    onSuccess: (
-      { lp, deposit: { deposit_x: _, deposit_y: __, lp_token } },
-      params,
-    ) => {
-      console.log(lp_token)
-      queryClient.setQueryData(
-        ['LP', currentAccount!.address],
-        (lp_ids?: LP[]) => {
-          let lps = lp_ids ?? []
-          const lp_id = lps.findIndex(
-            (lp) =>
-              lp.type_x == params.pool_type_x &&
-              lp.type_y == params.pool_type_y,
-          )
-
-          if (lp_id > -1) {
-            lps[lp_id].lp_balance = (
-              BigInt(lps[lp_id].lp_balance) + BigInt(lp_token)
-            ).toString()
-          } else {
-            lps.push({
-              id: lp?.objectId,
-              claimable_x: '0',
-              claimable_y: '0',
-              lp_balance: lp_token,
-            } as LP)
-          }
-          return lps
-        },
-      )
-
+    onSuccess: (_, params) => {
+      queryClient.invalidateQueries(['LP'])
+      queryClient.invalidateQueries(['pool', params.pool_id])
       toast.success('Add Liquidity Success!')
     },
     onError: (_err: Error) => {
+      console.log(_err)
       toast.error('Oops! Have some error')
     },
   })

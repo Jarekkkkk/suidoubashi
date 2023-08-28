@@ -2,22 +2,25 @@ import { Button } from '@/Components'
 import { Coin } from '@/Constants/coin'
 import { useRemoveLiquidity } from '@/Hooks/AMM/removeLiquidity'
 import { useAddLiquidity } from '@/Hooks/AMM/useAddLiquidity'
-import { useGetMulLP } from '@/Hooks/AMM/useGetLP'
-import {
-  useGetMulPool,
-  useGetPool,
-  useGetPoolIDs,
-} from '@/Hooks/AMM/useGetPool'
+import { useGetAllLP, useGetLP } from '@/Hooks/AMM/useGetLP'
+import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import { useSwap } from '@/Hooks/AMM/useSwap'
 import { useZap } from '@/Hooks/AMM/useZap'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { useWalletKit } from '@mysten/wallet-kit'
-import React, { useState, useContext, PropsWithChildren, useMemo } from 'react'
+import React, {
+  useState,
+  useContext,
+  PropsWithChildren,
+  useMemo,
+  useCallback,
+} from 'react'
 
 const PoolContext = React.createContext<PoolContext>({
   data: null,
   fetching: false,
 })
+
 export const usePoolContext = () => useContext(PoolContext)
 
 const PoolContainer = ({ children }: PropsWithChildren) => {
@@ -27,25 +30,40 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   const { currentAccount } = useWalletKit()
   // pool
   const pool_ids = useGetPoolIDs()
-  const pools = useGetMulPool(pool_ids?.data)
-  const pool = useGetPool(pool_ids?.data?.[0])
+  const { data: pools } = useGetMulPool(pool_ids?.data)
   // balance
   const balance_x = useGetBalance(Coin.SDB, currentAccount?.address)
   // LP
-  const lps = useGetMulLP(currentAccount?.address)
+  const { data: lps } = useGetAllLP(currentAccount?.address)
 
-  // find corresponding LP
-  const lp = useMemo(
-    () =>
-      lps?.data?.find(
-        (lp) =>
-          lp.type_x == pool?.data?.type_x &&
-          lp.type_y == pool?.data?.type_y &&
-          pool?.data,
-      ),
-    [lps?.data, pool?.data],
+  // ipnut
+  const [input, setInput] = useState<string>('')
+  const handleOnInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value
+      const isValid = /^-?\d*\.?\d*$/.test(value)
+      if (!isValid) {
+        value = value.slice(0, -1)
+      }
+      setInput(value)
+    },
+    [setInput],
   )
+  const [coinInput, setCoinInput] = useState<Coin>(Coin.USDC)
+  const [coinInput2, setCoinInput2] = useState<Coin>(Coin.SDB)
 
+  // find corresponding PoolContext
+  const pool = useMemo(() => {
+    return (
+      pools?.find(
+        (p) =>
+          (p.type_x == coinInput && p.type_y == coinInput2) ||
+          (p.type_x == coinInput2 && p.type_y == coinInput),
+      ) ?? null
+    )
+  }, [coinInput, coinInput2, pools])
+  // find corresponding LP
+  const lp = useGetLP(currentAccount?.address, pool?.type_x, pool?.type_y)
   //mutation
   const add_liquidity = useAddLiquidity()
   const zap = useZap()
@@ -53,40 +71,38 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   const swap = useSwap()
 
   const handleAddLiquidity = () => {
-    if (pools[0]?.data && balance_x?.coinType) {
-      const pool = pools[0].data
+    if (pool && lp !== undefined) {
       add_liquidity.mutate({
         pool_id: pool.id,
         pool_type_x: pool.type_x,
         pool_type_y: pool.type_y,
-        is_type_x: pool.type_x == balance_x?.coinType,
         lp_id: lp ? lp.id : null,
-        input_a_value: '3147131016',
-        input_b_value: '1000000000',
+        input_x_value: '100000000',
+        input_y_value: '100000000',
       })
     }
   }
 
-
   const handleZap = () => {
-    if (pool?.data && balance_x?.coinType) {
+    if (pool && lp !== undefined) {
       zap.mutate({
-        pool_id: pool.data.id,
-        pool_type_x: pool?.data.type_x,
-        pool_type_y: pool?.data.type_y,
-        reserve_x: pool?.data.reserve_x,
-        reserve_y: pool?.data.reserve_y,
-        fee: pool?.data.fee.fee_percentage,
-        is_type_x: pool?.data?.type_x == balance_x.coinType,
+        pool_id: pool.id,
+        pool_type_x: pool.type_x,
+        pool_type_y: pool.type_y,
+        stable: pool.stable,
+        reserve_x: pool.reserve_x,
+        reserve_y: pool.reserve_y,
+        fee: pool?.fee.fee_percentage,
         lp_id: lp ? lp.id : null,
-        input_value: '10000000000',
+        input_type: coinInput2,
+        input_value: '100000000',
       })
     }
   }
 
   const handleWithdraw = () => {
-    if (pools[0]?.data && lp) {
-      const pool = pools[0].data
+    if (pools?.[0] && lp) {
+      const pool = pools[0]
       withdraw.mutate({
         pool_id: pool.id,
         pool_type_x: pool.type_x,
@@ -98,8 +114,8 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   }
 
   const handleSwap = () => {
-    if (pools[0]?.data && balance_x?.coinType) {
-      const pool = pools[0].data
+    if (pools?.[0] && balance_x?.coinType) {
+      const pool = pools[0]
       swap.mutate({
         pool_id: pool.id,
         pool_type_x: pool.type_x,
@@ -120,11 +136,15 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
     >
       <Button
         styletype='filled'
-        text='SDB/SUI LP'
+        text='USDC/USDT LP'
         onClick={handleAddLiquidity}
       />
-      <Button styletype='filled' text='Lock SDB' onClick={() => { }} />
-      <Button styletype='filled' text='Zap' onClick={handleZap} />
+      <Button
+        styletype='filled'
+        text={zap.isLoading ? '...' : 'Zap'}
+        disabled={zap.isLoading}
+        onClick={handleZap}
+      />
       <Button styletype='filled' text='Withdraw' onClick={handleWithdraw} />
       <Button styletype='filled' text='Swap' onClick={handleSwap} />
       {children}
