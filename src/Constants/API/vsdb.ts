@@ -16,15 +16,6 @@ import { bcs_registry } from '../bcs'
 export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE_TESTNET as string
 export const vsdb_reg = import.meta.env.VITE_VSDB_REG_TESTNET as string
 export const vsdb_cap = import.meta.env.VITE_SDB_CAP as string
-// Options for rpc calling
-export const defaultOptions = {
-  showType: false,
-  showContent: true,
-  showOwner: false,
-  showPreviousTransaction: false,
-  showStorageRebate: false,
-  showDisplay: false,
-}
 
 export function mint_sdb(txb: TransactionBlock, address: string) {
   txb.moveCall({

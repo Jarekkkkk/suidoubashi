@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import {
   TransactionBlock,
@@ -8,10 +8,10 @@ import {
 import { toast } from 'react-hot-toast'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { mint_sdb } from '@/Constants/API/vsdb'
-import { queryClient } from '@/App'
 
 export const useMintSDB = () => {
   const rpc = useRpc()
+  const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
   return useMutation({
     mutationFn: async () => {
