@@ -10,7 +10,7 @@ import { Balance } from '@/Hooks/Coin/useGetBalance'
 
 interface Props {
   nftInfo: {
-    data: Vsdb | undefined
+    data: Vsdb | undefined | null
     isLoading: boolean
   }
   poolDataList: Pool[] | undefined
