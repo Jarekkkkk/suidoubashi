@@ -5,9 +5,14 @@ export const settingContainer = css`
 `
 
 export const informationButton = css`
-  position: absolute,
-  width: 6px;
-  height: 6px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 36px;
+  height: 36px;
+  z-index: 2;
+  transition: 0.3s;
+
   &:hover {
     opacity: 0.9;
   }
