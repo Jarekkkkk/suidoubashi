@@ -9,7 +9,6 @@ export const VestContext = React.createContext<VestContext>({
   nftList: {
     data: [],
     isLoading: false,
-    isFetching: false,
   },
   currentVSDBId: '',
   setCurrentVSDBId: () => {},
@@ -60,7 +59,6 @@ interface VestContext {
   readonly nftList: {
     data: Vsdb[]
     isLoading: boolean
-    isFetching: boolean
   }
   currentVSDBId: string
   isShowCreateVSDBModal: boolean
