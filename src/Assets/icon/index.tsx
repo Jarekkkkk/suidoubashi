@@ -14,7 +14,8 @@ import { ReactComponent as VectorIcon } from '@/Assets/icon/icon_vector.svg'
 import { ReactComponent as BgArrowIcon } from '@/Assets/icon/icon_bgArrow.svg'
 import { ReactComponent as LogoIcon } from '@/Assets/icon/icon_logo.svg'
 import { ReactComponent as BridgeIcon } from '@/Assets/icon/icon_wormhole.svg'
-
+import { ReactComponent as SettingIcon } from '@/Assets/icon/icon_setting.svg'
+import { ReactComponent as InformationIcon } from '@/Assets/icon/icon_information.svg'
 
 export const Icon = {
   SwapIcon,
@@ -32,17 +33,17 @@ export const Icon = {
   VectorIcon,
   BgArrowIcon,
   LogoIcon,
-  BridgeIcon
+  BridgeIcon,
+  SettingIcon,
+  InformationIcon,
 }
 
-
-import { ReactComponent as BTCIcon} from '@/Assets/icon/coin/btc.svg'
-import { ReactComponent as WETHIcon} from '@/Assets/icon/coin/weth.svg'
-import { ReactComponent as USDCIcon} from '@/Assets/icon/coin/usdc.svg'
-import { ReactComponent as USDTIcon} from '@/Assets/icon/coin/usdt.svg'
-import { ReactComponent as SUIIcon} from '@/Assets/icon/coin/sui.svg'
-import { ReactComponent as SDBIcon} from '@/Assets/icon/coin/sdb.svg'
-
+import { ReactComponent as BTCIcon } from '@/Assets/icon/coin/btc.svg'
+import { ReactComponent as WETHIcon } from '@/Assets/icon/coin/weth.svg'
+import { ReactComponent as USDCIcon } from '@/Assets/icon/coin/usdc.svg'
+import { ReactComponent as USDTIcon } from '@/Assets/icon/coin/usdt.svg'
+import { ReactComponent as SUIIcon } from '@/Assets/icon/coin/sui.svg'
+import { ReactComponent as SDBIcon } from '@/Assets/icon/coin/sdb.svg'
 
 export const CoinIcon = {
   BTCIcon,
@@ -50,5 +51,5 @@ export const CoinIcon = {
   USDCIcon,
   USDTIcon,
   SUIIcon,
-  SDBIcon
+  SDBIcon,
 }
