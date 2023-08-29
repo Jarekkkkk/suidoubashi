@@ -25,4 +25,4 @@ dist-ssr
 
 
 # Production
-.firebase
+.firebase/
