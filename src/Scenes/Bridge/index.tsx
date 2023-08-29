@@ -3,7 +3,7 @@ import * as styles from './index.styles'
 //@ts-ignore
 import WormholeBridge from '@wormhole-foundation/wormhole-connect'
 
-const DashboardScene = () => {
+const BridgeScene = () => {
   return (
     <div className={styles.wormholeBridgeContainer}>
       <WormholeBridge />
@@ -11,4 +11,4 @@ const DashboardScene = () => {
   )
 }
 
-export default DashboardScene
+export default BridgeScene
