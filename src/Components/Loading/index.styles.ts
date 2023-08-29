@@ -1,4 +1,4 @@
-import { css } from '@emotion/css'
+import { css, keyframes } from '@emotion/css'
 
 export const wrap = css`
   position: relative;
@@ -9,4 +9,30 @@ export const wrap = css`
   display: flex;
   justify-content: center;
   align-items: center;
+`
+
+const swimUp = keyframes`
+  0% {
+    transform: rotate(360deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+`
+
+export const fishContent = css`
+  position: relative;
+  width: 150px;
+  height: 150px;
+  animation: ${swimUp} 5s linear infinite;
+`
+
+export const fishDown = css`
+  margin-right: 20px;
+`
+
+export const fishUp =css`
+  position: absolute;
+  margin-left: 20px;
 `

@@ -1,4 +1,6 @@
 import { ReactComponent as LogoText  } from '@/Assets/image/Logo_text.svg';
+import { ReactComponent as loadingFishDown } from '@/Assets/image/loading_fish_down.svg';
+import { ReactComponent as loadingFishUp } from '@/Assets/image/loading_fish_up.svg';
 
 import Background from '@/Assets/image/background.png';
 import BackgroundPinkA from '@/Assets/image/background_pink.png';
@@ -21,6 +23,8 @@ const Image = {
   pageBackground_1,
   pageBackground_2,
   pageBackground_3,
+  loadingFishDown,
+  loadingFishUp,
 };
 
 export default Image;

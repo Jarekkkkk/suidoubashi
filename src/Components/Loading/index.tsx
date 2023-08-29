@@ -1,6 +1,5 @@
 import cx from 'classnames';
-import { Spinner } from '@blueprintjs/core';
-
+import Image from '@/Assets/image';
 import * as styles from './index.styles'
 
 type Props = {
@@ -9,10 +8,13 @@ type Props = {
 
 const LoadingComponent = (props: Props) => (
   <div
-    className={cx('loading-animation', styles.wrap, props.className)}
+    className={cx(styles.wrap, props.className)}
     data-testid="loading"
   >
-    <Spinner {...props} />
+    <div className={styles.fishContent}>
+      <Image.loadingFishDown className={styles.fishDown}  />
+      <Image.loadingFishUp className={styles.fishUp} />
+    </div>
   </div>
 );
 
