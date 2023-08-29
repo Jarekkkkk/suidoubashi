@@ -95,8 +95,30 @@ export const tonal = css`
   }
 `
 
+export const badge = css`
+  padding: 2px 13px;
+  min-width: auto;
+  height: 20px;
+  border-radius: 20px;
+  background-color: #FFD24D;
+
+  p {
+    color: #FFF;
+  }
+
+  &:hover {
+    background-color: #FFD24D;
+  }
+
+  &:disabled {
+    cursor: no-drop;
+    background-color: #ffd24d4d;
+  }
+`
+
 export const types: Record<string, string> = {
   "filled": filled,
   "outlined": outlined,
-  "tonal": tonal
+  "tonal": tonal,
+  "badge": badge,
 }

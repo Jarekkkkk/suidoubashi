@@ -15,20 +15,18 @@ const BasicButton = (props: Props) => {
   } = props;
 
   return (
-    <div>
-      <button
-        {...props}
-        type="submit"
-        onClick={onClick}
-        className={cx(
-          styles.button,
-          types[styletype],
-        )}
-      >
-        {icon && icon}
-        {text && <p>{text}</p>}
-      </button>
-    </div>
+    <button
+      {...props}
+      type="submit"
+      onClick={onClick}
+      className={cx(
+        styles.button,
+        types[styletype],
+      )}
+    >
+      {icon && icon}
+      {text && <p>{text}</p>}
+    </button>
   );
 }
 

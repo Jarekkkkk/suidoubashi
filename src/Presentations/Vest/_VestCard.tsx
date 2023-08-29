@@ -116,6 +116,11 @@ const VestCardComponent = (props: Props) => {
             level={expiration}
           />
         </div>
+        <div className={cx(styles.badgeContent)}>
+          <div>Badge</div>
+          <Button disabled styletype='badge' text='AMM' onClick={() => {}} />
+          <Button disabled styletype='badge' text='Vote' onClick={() => {}}  />
+        </div>
         {!isPerviewMode && (
           <div className={styles.buttonContent}>
             {Date.parse(_nowDate) >= Date.parse(expiration) ? (

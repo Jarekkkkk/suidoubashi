@@ -267,3 +267,17 @@ export const perviewImage = css`
   border-radius: 8px;
   overflow: hidden;
 `
+
+export const badgeContent = css`
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+
+  button:nth-child(2) {
+    margin-left: 12px;
+  }
+  
+  button:nth-child(3) {
+    margin-left: 8px;
+  }
+`
