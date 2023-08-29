@@ -1,9 +1,8 @@
-import { Vsdb } from '@/Constants/API/vsdb'
 import Select from 'react-select'
 
 export interface SelectOption {
   label: string
-  value: Vsdb
+  value: any
 }
 type Props = {
   options: Array<SelectOption>
