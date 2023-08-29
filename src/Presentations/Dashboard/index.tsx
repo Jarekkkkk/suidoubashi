@@ -2,23 +2,24 @@ import { SuiWalletConnectButton } from '@/Components'
 import Image from '@/Assets/image'
 import { Icon } from '@/Assets/icon'
 
-import * as styles from './DashboardPresentation.styles'
+import * as styles from './index.styles'
 import { cx, css } from '@emotion/css'
 
 const DashboardPresentation = () => {
-  const sectionA = document.getElementById('sectionA')
-  const sectionB = document.getElementById('sectionB')
 
   window.addEventListener('wheel', (e) => {
+		const sectionA = document.getElementById('sectionA')
+		const sectionB = document.getElementById('sectionB')
+
     if (e.deltaY < 0 && sectionA) {
-      sectionA.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      sectionA.scrollIntoView({ behavior: "smooth", block: "start" })
     } else if (e.deltaY > 0 && sectionB) {
-      sectionB.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      sectionB.scrollIntoView({ behavior: "smooth", block: "start" })
     }
   })
 
   return (
-    <>
+    <div>
       <div className={styles.sectionA} id='sectionA'>
         <Image.LogoText className={styles.logo} />
         <SuiWalletConnectButton />
@@ -106,7 +107,7 @@ const DashboardPresentation = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

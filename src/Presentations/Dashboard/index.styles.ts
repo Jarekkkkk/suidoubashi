@@ -20,6 +20,7 @@ export const sectionA = css`
   background-repeat: no-repeat;
   background-image: url(${Image.BackgroundPinkA});
   overflow: hidden;
+  box-sizing: border-box;
 `
 
 export const sectionB = css`
@@ -37,6 +38,7 @@ export const sectionB = css`
   background-repeat: no-repeat;
   background-image: url(${Image.BackgroundPinkB});
   overflow: hidden;
+  box-sizing: border-box;
 `
 
 export const logo = css`
