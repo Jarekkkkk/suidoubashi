@@ -7,14 +7,16 @@ interface Props {
   placeholder: string
   leftIcon?: any
   disabled?: boolean
+  type?: string
 }
 
 const InputComponent = (props: Props) => {
-  const { placeholder, leftIcon } = props
+  const { type, placeholder, leftIcon } = props
 
   return (
     <InputGroup
       {...props}
+      type={type}
       placeholder={placeholder}
       leftIcon={leftIcon}
       className={styles.InputContent}
