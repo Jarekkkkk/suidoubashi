@@ -20,10 +20,10 @@ interface Props {
   setIsShowDepositVSDBModal?: Function
   setIsShowWithdrawVSDBModal?: Function
   expSpanValue?: {
-    experience: number,
-    required_exp: number,
-  },
-  vesdbSpanValue?: string,
+    experience: number
+    required_exp: number
+  }
+  vesdbSpanValue?: string
 }
 
 interface TextItemProps {
@@ -36,10 +36,10 @@ interface ValueItemProps {
   title: string
   value: number
   expSpanValue?: {
-    experience: number,
-    required_exp: number,
-  },
-  vesdbSpanValue?: string,
+    experience: number
+    required_exp: number
+  }
+  vesdbSpanValue?: string
 }
 
 const TextItem = (props: TextItemProps) => {
@@ -52,7 +52,7 @@ const TextItem = (props: TextItemProps) => {
   )
 }
 
-const format = (value: string | number) =>{
+const format = (value: string | number) => {
   return BigNumber(value).shiftedBy(-9).decimalPlaces(5).toFormat()
 }
 
@@ -62,7 +62,11 @@ const ValueItem = (props: ValueItemProps) => {
     <div className={styles.valueContent}>
       <div className={styles.valueTitle}>
         <div>{title}</div>
-        {expSpanValue && <span>{expSpanValue.experience} / {expSpanValue.required_exp}</span>}
+        {expSpanValue && (
+          <span>
+            {expSpanValue.experience} / {expSpanValue.required_exp}
+          </span>
+        )}
         {vesdbSpanValue && <span>{format(vesdbSpanValue)}</span>}
       </div>
       <ProgressBar
@@ -97,7 +101,8 @@ const VestCardComponent = (props: Props) => {
     unlock({ vsdb: nftId })
   }
 
-  const _nowDate = new Date().toLocaleDateString('en-ZA')
+  const _nowDate = new Date().toLocaleTimeString()
+  console.log(_nowDate)
 
   return (
     <div className={styles.vestCardContainer}>
@@ -107,7 +112,11 @@ const VestCardComponent = (props: Props) => {
       <div className={styles.cardContentSection}>
         <TextItem title='Level' level={level} />
         <ValueItem title='EXP' value={expValue} expSpanValue={expSpanValue} />
-        <ValueItem title='VeSDB' value={vesdbValue} vesdbSpanValue={vesdbSpanValue} />
+        <ValueItem
+          title='VeSDB'
+          value={vesdbValue}
+          vesdbSpanValue={vesdbSpanValue}
+        />
         <div className={styles.mulValueContent}>
           <TextItem title='Locked SDB' level={lockSdbValue} />
           <TextItem
@@ -119,11 +128,11 @@ const VestCardComponent = (props: Props) => {
         <div className={cx(styles.badgeContent)}>
           <div>Badge</div>
           <Button disabled styletype='badge' text='AMM' onClick={() => {}} />
-          <Button disabled styletype='badge' text='Vote' onClick={() => {}}  />
+          <Button disabled styletype='badge' text='Vote' onClick={() => {}} />
         </div>
         {!isPerviewMode && (
           <div className={styles.buttonContent}>
-            {Date.parse(_nowDate) >= Date.parse(expiration) ? (
+            {new Date().getTime() / 1000 >= Date.parse(expiration) ? (
               <>
                 {
                   <Button
