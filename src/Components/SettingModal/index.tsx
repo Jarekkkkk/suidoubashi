@@ -1,9 +1,8 @@
-import { Dialog, Button, Input, Select } from '@/Components'
+import { Dialog, Button, Input } from '@/Components'
 import Image from '@/Assets/image'
 import * as styles from './index.styles'
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import SettingModule from '@/Modules/Setting'
-import { Icon } from '@/Assets/icon'
 
 const options = ['0.1', '0.2', '1', '2']
 
@@ -26,7 +25,6 @@ const SettingModal = () => {
     expiration: SettingModule.getExpirationToken() ?? '30',
     slippage: SettingModule.getSlippageToken() ?? '2',
   })
-  const [radio, setRadio] = useState('0')
 
   const handleGasBudgetOnchange = (gasBudget: string) => {
     setSetting((_prev) => ({ ..._prev, gasBudget }))
@@ -97,36 +95,26 @@ const SettingModal = () => {
           <div>
             <h1>Slippage</h1>
             <div style={{ display: 'flex' }}>
-              <input type='radio' value='0' checked={radio == '0'} />
-              <label>
-                <Select
-                  options={options.map((obj) => ({
-                    label: obj + '%',
-                    value: obj,
-                  }))}
-                  onChange={({ value }) => {
-                    handleSlippageOnchange(value)
-                    setRadio('0')
-                  }}
-                  defaultValue={{ label: '2', value: '2' }}
+              {options.map((opt, idx) => (
+                <Button
+                  key={idx}
+                  styletype={setting.slippage == opt ? 'filled' : 'outlined'}
+                  text={opt + '%'}
+                  onClick={() => handleSlippageOnchange(opt)}
                 />
-              </label>
-              <input type='radio' value='0' checked={radio == '1'} />
-              <label>
-                <Input
-                  type={'number'}
-                  value={setting.slippage}
-                  //@ts-ignore
-                  min={0.01}
-                  step='0.01'
-                  onChange={(e) => {
-                    handleSlippageOnchange(e.target.value)
-                    setRadio('1')
-                  }}
-                  placeholder='Custom'
-                />
-              </label>
+              ))}
             </div>
+            <Input
+              type={'number'}
+              value={setting.slippage}
+              //@ts-ignore
+              min={0.01}
+              step='0.01'
+              onChange={(e) => {
+                handleSlippageOnchange(e.target.value)
+              }}
+              placeholder='Custom'
+            />
             <h1>Slippage</h1>
             <h1>Slippage</h1>
           </div>
