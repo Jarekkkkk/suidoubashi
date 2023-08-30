@@ -1,17 +1,37 @@
-export const SETTING_STORAGE_NAME = 'setting'
+export const GAS_BUDGET_STORAGE_NAME = 'gasBudget'
+export const EXPIRATION_STORAGE_NAME = 'expiration'
+export const SLIPPAGE_STORAGE_NAME = 'slippage'
 
-const setSettingToken = (token: string) => {
-  localStorage.setItem(SETTING_STORAGE_NAME, token)
-}
+const getGadBudgetToken = () => localStorage.getItem(GAS_BUDGET_STORAGE_NAME)
+const getExpirationToken = () => localStorage.getItem(EXPIRATION_STORAGE_NAME)
+const getSlippageToken = () => localStorage.getItem(SLIPPAGE_STORAGE_NAME)
 
-const getSettingToken = () => localStorage.getItem(SETTING_STORAGE_NAME)
+const setGadBudgetToken = (value: string) =>
+  localStorage.setItem(GAS_BUDGET_STORAGE_NAME, value)
+const setExpirationToken = (value: string) =>
+  localStorage.setItem(EXPIRATION_STORAGE_NAME, value)
+const setSlippageToken = (value: string) =>
+  localStorage.setItem(SLIPPAGE_STORAGE_NAME, value)
 
-const removeSettingToken = () => localStorage.removeItem(SETTING_STORAGE_NAME)
+const removeGasBudgetToken = () =>
+  localStorage.removeItem(GAS_BUDGET_STORAGE_NAME)
+const removeExpirationToken = () =>
+  localStorage.removeItem(EXPIRATION_STORAGE_NAME)
+const removeSlippageToken = () => localStorage.removeItem(SLIPPAGE_STORAGE_NAME)
 
 const SettingModule = {
-  getSettingToken,
-  setSettingToken,
-  removeSettingToken,
+  // get
+  getGadBudgetToken,
+  getExpirationToken,
+  getSlippageToken,
+  // set
+  setGadBudgetToken,
+  setExpirationToken,
+  setSlippageToken,
+  //remove
+  removeGasBudgetToken,
+  removeExpirationToken,
+  removeSlippageToken,
 }
 
 export default SettingModule

@@ -16,26 +16,35 @@ export interface SettingInterface {
 export const defaultSetting: SettingInterface = {
   gasBudget: '1000000',
   expiration: '30',
-  slippage: '0.2',
+  slippage: '2',
 }
 
 const SettingModal = () => {
   const [isShowSettingModal, setIsShowSettingModal] = useState(true)
-  const [setting, setSetting] = useState<SettingInterface>(defaultSetting)
+  const [setting, setSetting] = useState<SettingInterface>({
+    gasBudget: SettingModule.getGadBudgetToken() ?? '10000000',
+    expiration: SettingModule.getExpirationToken() ?? '30',
+    slippage: SettingModule.getSlippageToken() ?? '2',
+  })
   const [radio, setRadio] = useState('0')
-  console.log(setting)
 
-  const handleOnInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = parseFloat(e.target.value)
-      if (value >= 0.01) {
-        setSetting((_prev) => ({ ..._prev, slippage: value.toString() }))
-      }
-      setRadio('1')
-    },
+  const handleGasBudgetOnchange = (gasBudget: string) => {
+    setSetting((_prev) => ({ ..._prev, gasBudget }))
+    SettingModule.setGadBudgetToken(gasBudget)
+  }
 
-    [setSetting],
-  )
+  const handleExpirationOnchange = (expiration: string) => {
+    setSetting((_prev) => ({ ..._prev, expiration }))
+    SettingModule.setExpirationToken(expiration)
+  }
+  const handleSlippageOnchange = (slippage: string) => {
+    const value = parseFloat(slippage)
+    if (value >= 0.01) {
+      setSetting((_prev) => ({ ..._prev, slippage: value.toString() }))
+      SettingModule.setSlippageToken(slippage)
+    }
+  }
+
   return (
     <Dialog
       title='Setting'
@@ -52,23 +61,17 @@ const SettingModal = () => {
                 setting.gasBudget == '10000000' ? 'filled' : 'outlined'
               }
               text='0.01 SUI'
-              onClick={() =>
-                setSetting((_prev) => ({ ..._prev, gasBudget: '10000000' }))
-              }
+              onClick={() => handleGasBudgetOnchange('10000000')}
             />
             <Button
               styletype={setting.gasBudget == '5000000' ? 'filled' : 'outlined'}
               text='0.005 SUI'
-              onClick={() =>
-                setSetting((_prev) => ({ ..._prev, gasBudget: '5000000' }))
-              }
+              onClick={() => handleGasBudgetOnchange('5000000')}
             />
             <Button
               styletype={setting.gasBudget == '1000000' ? 'filled' : 'outlined'}
               text='0.001 SUI'
-              onClick={() =>
-                setSetting((_prev) => ({ ..._prev, gasBudget: '1000000' }))
-              }
+              onClick={() => handleGasBudgetOnchange('1000000')}
             />
           </div>
           <div>
@@ -77,23 +80,17 @@ const SettingModal = () => {
               <Button
                 styletype={setting.expiration == '20' ? 'filled' : 'outlined'}
                 text='20 sec'
-                onClick={() =>
-                  setSetting((_prev) => ({ ..._prev, expiration: '20' }))
-                }
+                onClick={() => handleExpirationOnchange('20')}
               />
               <Button
                 styletype={setting.expiration == '30' ? 'filled' : 'outlined'}
                 text='30 sec'
-                onClick={() =>
-                  setSetting((_prev) => ({ ..._prev, expiration: '30' }))
-                }
+                onClick={() => handleExpirationOnchange('30')}
               />
               <Button
                 styletype={setting.expiration == '60' ? 'filled' : 'outlined'}
                 text='1 min'
-                onClick={() =>
-                  setSetting((_prev) => ({ ..._prev, expiration: '60' }))
-                }
+                onClick={() => handleExpirationOnchange('60')}
               />
             </div>
           </div>
@@ -108,12 +105,10 @@ const SettingModal = () => {
                     value: obj,
                   }))}
                   onChange={({ value }) => {
-                    setSetting((_prev) => ({
-                      ..._prev,
-                      slippage: value,
-                    }))
+                    handleSlippageOnchange(value)
                     setRadio('0')
                   }}
+                  defaultValue={{ label: '2', value: '2' }}
                 />
               </label>
               <input type='radio' value='0' checked={radio == '1'} />
@@ -124,7 +119,10 @@ const SettingModal = () => {
                   //@ts-ignore
                   min={0.01}
                   step='0.01'
-                  onChange={handleOnInputChange}
+                  onChange={(e) => {
+                    handleSlippageOnchange(e.target.value)
+                    setRadio('1')
+                  }}
                   placeholder='Custom'
                 />
               </label>
