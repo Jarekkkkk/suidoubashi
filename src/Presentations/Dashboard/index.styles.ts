@@ -31,7 +31,6 @@ export const sectionContainer = css`
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: center;
   margin: 0 auto;
   max-width: 1480px;
   width: 100%;
@@ -40,6 +39,7 @@ export const sectionContainer = css`
 
 export const logo = css`
   position: relative;
+  margin-top: 200px;
   width: 100%;
   height: 240px;
   z-index: 1;
