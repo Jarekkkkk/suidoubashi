@@ -4,20 +4,30 @@ import { cx } from '@emotion/css';
 
 interface Props {
   text: string,
-  path: string,
+  path?: string,
   icon?: any,
   active: boolean,
+  onClick?: () => void,
 }
 
 const SidebarButton = (props: Props) => {
-  const { text, icon, path, active } = props;
+  const { text, icon, path, active, onClick } = props;
 
   return (
-    <div className={cx(styles.sidebarButton, { [styles.active]: active })}>
-      <Link to={path}>
-        {icon && icon}
-        <span>{text}</span>
-      </Link>
+    <div className={cx(styles.sidebarButton, { [styles.active]: active })} onClick={onClick}>
+      {
+        path ? (
+          <Link className={styles.sidebarButtonContent} to={path}>
+            {icon && icon}
+            <span>{text}</span>
+          </Link>
+        ) : (
+          <div className={styles.sidebarButtonContent}>
+            {icon && icon}
+            <span>{text}</span>
+          </div>
+        )
+      }
     </div>
   );
 };

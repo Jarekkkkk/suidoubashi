@@ -24,6 +24,11 @@ export const logoItem = css`
   width: 84px;
 `
 
+export const sidebarButtonContent = css`
+  display: flex;
+  align-items: center;
+`
+
 export const sidebarButton = css`
   display: block;
   align-items: center;
@@ -34,7 +39,7 @@ export const sidebarButton = css`
   font-weight: bold;
   line-height: 1;
 
-  a {
+  a, span {
     display: flex;
     align-items: center;
     color: #595959;
@@ -55,7 +60,9 @@ export const sidebarButton = css`
   }
 
   &:hover {
-    a {
+    cursor: pointer;
+
+    a, span {
       color: #2977EC;
     }
 
@@ -68,7 +75,7 @@ export const sidebarButton = css`
 `;
 
 export const active  = css`
-  a {
+  a, span {
     color: #2977EC;
   }
 

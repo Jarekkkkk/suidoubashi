@@ -18,8 +18,13 @@ export const defaultSetting: SettingInterface = {
   slippage: '2',
 }
 
-const SettingModal = () => {
-  const [isShowSettingModal, setIsShowSettingModal] = useState(true)
+interface Props {
+  isSettingOpen: boolean
+  setIsSettingOpen: Function
+}
+
+const SettingModal = (props: Props) => {
+  const { isSettingOpen, setIsSettingOpen } = props
   const [setting, setSetting] = useState<SettingInterface>({
     gasBudget: SettingModule.getGadBudgetToken() ?? '10000000',
     expiration: SettingModule.getExpirationToken() ?? '30',
@@ -47,8 +52,8 @@ const SettingModal = () => {
     <Dialog
       title='Setting'
       titleImg={Image.setting}
-      isShow={isShowSettingModal}
-      setIsShow={setIsShowSettingModal}
+      isShow={isSettingOpen}
+      setIsShow={setIsSettingOpen}
     >
       <div className={styles.settingContainer}>
         <div>

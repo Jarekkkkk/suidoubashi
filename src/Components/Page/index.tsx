@@ -8,7 +8,7 @@ import UserModule from '@/Modules/User'
 import { useWalletKit } from '@mysten/wallet-kit'
 
 import { Coins } from '@/Constants/coin'
-import { Sidebar, ControlBar } from '@/Components'
+import { Sidebar, ControlBar, SettingModal } from '@/Components'
 import * as styles from './index.styles'
 import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 
@@ -47,6 +47,8 @@ const PageComponent = (props: Props) => {
   const { data: lPList, isLoading: isLpDataLoading } =
     useGetAllLP(walletAddress)
 
+  const [isSettingOpen, setIsSettingOpen] = useState(false)
+
   const handleFetchNFTData = (mode: string) => {
     if (vsdbList && vsdbList.length > 0 && currentVsdbId < vsdbList.length) {
       if (mode === 'next') {
@@ -65,7 +67,7 @@ const PageComponent = (props: Props) => {
         {isConnected && (
           <div className={styles.dashboardMainContent}>
             <div className={styles.sidebarContent}>
-              <Sidebar />
+              <Sidebar isSettingOpen={isSettingOpen} setIsSettingOpen={setIsSettingOpen} />
             </div>
           </div>
         )}
@@ -78,7 +80,7 @@ const PageComponent = (props: Props) => {
     walletAddress && (
       <div className={styles.layoutContainer}>
         <div className={styles.mainContent}>
-          <Sidebar />
+          <Sidebar isSettingOpen={isSettingOpen} setIsSettingOpen={setIsSettingOpen} />
           <div className={styles.content}>{children}</div>
           <ControlBar
             isPrevBtnDisplay={currentVsdbId !== 0}
@@ -95,6 +97,7 @@ const PageComponent = (props: Props) => {
             isCoinDataLoading={isCoinDataLoading}
             isPoolDataLoading={pools.isLoading}
           />
+          <SettingModal isSettingOpen={isSettingOpen} setIsSettingOpen={setIsSettingOpen} />
         </div>
       </div>
     )

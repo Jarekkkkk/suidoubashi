@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 import { generateSideBarLinks } from '@/Constants'
@@ -8,7 +8,13 @@ import { Icon } from '@/Assets/icon'
 import SidebarButton from './_SidebarButton'
 import * as styles from './index.styles'
 
-const SidebarComponent = () => {
+interface Props {
+  isSettingOpen: boolean
+  setIsSettingOpen: Function
+}
+
+const SidebarComponent = (props: Props) => {
+  const { isSettingOpen, setIsSettingOpen } = props
   let location = useLocation()
   const links = useMemo(() => generateSideBarLinks(), [])
 
@@ -31,6 +37,12 @@ const SidebarComponent = () => {
             />
           ),
       )}
+      <SidebarButton
+        active={isSettingOpen}
+        text="Setting"
+        icon={<Icon.SettingIcon />}
+        onClick={() => setIsSettingOpen(!isSettingOpen)}
+      />
       <div className={styles.footerContent}>
         <div className={styles.footerIconBlock}>
           <Link to='/'>

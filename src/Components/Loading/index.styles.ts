@@ -25,7 +25,7 @@ export const fishContent = css`
   position: relative;
   width: 100px;
   height: 80px;
-  animation: ${swimUp} 5s linear infinite;
+  animation: ${swimUp} 2s linear infinite;
 `
 
 export const fishDown = css`

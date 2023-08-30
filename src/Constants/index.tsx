@@ -64,14 +64,6 @@ export const generateSideBarLinks = () => [
     icon: <Icon.BridgeIcon />,
     isHidden: false,
   },
-  {
-    key: 'Setting',
-    path: '/setting',
-    element: <Setting />,
-    title: 'Setting',
-    icon: <Icon.SettingIcon />,
-    isHidden: false,
-  },
 ]
 
 export const generateLinks = () => [
@@ -116,12 +108,6 @@ export const generateLinks = () => [
     path: '/bridge',
     element: <Bridge />,
     title: 'Bridge',
-  },
-  {
-    key: 'Setting',
-    path: '/setting',
-    element: <Setting />,
-    title: 'Setting',
   },
 ]
 
