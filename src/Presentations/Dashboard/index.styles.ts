@@ -7,38 +7,35 @@ export const buttonStyle = css`
 
 export const sectionA = css`
   position: relative;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: center;
-  margin: 0 auto;
-  width: 100%;
-  max-width: 1480px;
-  height: 100vh;
-  background-size: cover;
-  background-position: center;
+  background-size: 150%;
+  background-position: bottom center;
   background-repeat: no-repeat;
   background-image: url(${Image.BackgroundPinkA});
   overflow: hidden;
   box-sizing: border-box;
+  height: 100vh;
 `
 
 export const sectionB = css`
+  position: relative;
+  background-size: 150%;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-image: url(${Image.BackgroundPinkB});
+  overflow: hidden;
+  box-sizing: border-box;
+`
+
+export const sectionContainer = css`
   position: relative;
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
   margin: 0 auto;
-  width: 100%;
   max-width: 1480px;
-  height: 100vh;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-image: url(${Image.BackgroundPinkB});
-  overflow: hidden;
-  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
 `
 
 export const logo = css`
@@ -50,79 +47,55 @@ export const logo = css`
 
 export const sectionBContent = css`
   position: relative;
-  margin: 0 auto;
-  width: 100%;
-  max-width: 1480px;
-  height: calc(100vh - 28px);
-`
-export const sectionContent = css`
-  position: relative;
-  margin: 0 auto;
-  max-width: 880px;
-  height: 100%;
-  overflow: scroll;
-  overscroll-behavior: auto;
+  width: 580px;
 `
 
-export const twinsContent = css`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-
-  > span {
-    width: calc(100% - 15rem);
-  }
-`
-
-export const block = css`
-  display: flex;
-  flex-direction: column;
-  margin-top: 24px;
-  margin-left: 24px;
-`
-
-export const titleBlock = css`
-  display: flex;
-  flex-direction: column;
-  width: 15rem;
-
-  svg {
-    margin: 0 auto;
-    width: 80px;
-    height: 80px;
-  }
-`
-
-export const sloganTitle = css`
-  display: block;
-  margin-bottom: 36px;
-  color: #2977EC;
-  font-size: 22px;
+export const TitleGreen = css`
+  margin-top: 80px;
+  color: #07456C;
+  text-align: center;
+  text-shadow: 0px -4px 6px rgba(255, 255, 255, 0.70);
+  font-size: 40px;
   font-weight: bold;
-  text-align: left;
   line-height: 1;
 `
 
-export const contentTitle = css`
-  color: #000;
-  font-size: 18px;
+export const TitleWhite = css`
+  margin-top: 80px;
+  color: #EDFEFF;
+  text-align: center;
+  text-shadow: 0px -4px 6px rgba(229, 254, 255, 0.65);
+  font-size: 40px;
   font-weight: bold;
-  text-align: left;
   line-height: 1;
 `
 
-export const contentText = css`
-  color: #455A5F;
-  font-size: 18px;
-  line-height: 1.5;
-  text-align: left;
+export const SecondTitleGreen = css`
+  color: #07456C;
+  font-size: 28px;
+  font-weight: bold;
+  line-height: 1;
 `
 
-export const contentBlock = css`
-  margin: 80px auto;
-  padding: 32px 28px;
-  max-width: 850px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.60);
-  backdrop-filter: blur(8px);
+export const SecondTitleWhite = css`
+  color: #D6FDFF;
+  font-size: 28px;
+  font-weight: bold;
+  line-height: 1;
+`
+
+export const ContentGreen = css`
+  margin-top: 8px;
+  color: #07456C;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1;
+`
+
+export const ContentWhite = css`
+  margin-top: 8px;
+  color: #D6FDFF;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1;
 `

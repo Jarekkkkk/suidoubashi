@@ -16,6 +16,8 @@ import { ReactComponent as LogoIcon } from '@/Assets/icon/icon_logo.svg'
 import { ReactComponent as BridgeIcon } from '@/Assets/icon/icon_wormhole.svg'
 import { ReactComponent as SettingIcon } from '@/Assets/icon/icon_setting.svg'
 import { ReactComponent as InformationIcon } from '@/Assets/icon/icon_information.svg'
+import { ReactComponent as SwapGreenIcon } from '@/Assets/icon/icon_swap_green.svg'
+import { ReactComponent as DefiGreenIcon } from '@/Assets/icon/icon_defi_green.svg'
 
 export const Icon = {
   SwapIcon,
@@ -36,6 +38,8 @@ export const Icon = {
   BridgeIcon,
   SettingIcon,
   InformationIcon,
+  SwapGreenIcon,
+  DefiGreenIcon,
 }
 
 import { ReactComponent as BTCIcon } from '@/Assets/icon/coin/btc.svg'
