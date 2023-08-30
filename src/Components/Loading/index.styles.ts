@@ -23,8 +23,8 @@ const swimUp = keyframes`
 
 export const fishContent = css`
   position: relative;
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 80px;
   animation: ${swimUp} 5s linear infinite;
 `
 
