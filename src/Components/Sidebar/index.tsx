@@ -48,7 +48,7 @@ const SidebarComponent = (props: Props) => {
           <Link to='/'>
             <Icon.BookIcon />
           </Link>
-          <Link to='/'>
+          <Link to='https://twitter.com/suidoubashi_io' target="_blank">
             <Icon.TwitterIcon />
           </Link>
         </div>
