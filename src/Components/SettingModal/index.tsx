@@ -3,6 +3,7 @@ import Image from '@/Assets/image'
 import * as styles from './index.styles'
 import { useState } from 'react'
 import SettingModule from '@/Modules/Setting'
+import { Icon } from '@/Assets/icon'
 
 const options = ['0.1', '0.2', '1', '2']
 
@@ -54,33 +55,43 @@ const SettingModal = (props: Props) => {
       titleImg={Image.setting}
       isShow={isSettingOpen}
       setIsShow={setIsSettingOpen}
-      type="setting"
+      type='setting'
     >
       <div className={styles.settingContainer}>
-        <div>
-          <h1>Gas Budget</h1>
-          <div style={{ display: 'flex' }}>
-            <Button
-              styletype={
-                setting.gasBudget == '10000000' ? 'filled' : 'outlined'
-              }
-              text='0.01 SUI'
-              onClick={() => handleGasBudgetOnchange('10000000')}
-            />
-            <Button
-              styletype={setting.gasBudget == '5000000' ? 'filled' : 'outlined'}
-              text='0.005 SUI'
-              onClick={() => handleGasBudgetOnchange('5000000')}
-            />
-            <Button
-              styletype={setting.gasBudget == '1000000' ? 'filled' : 'outlined'}
-              text='0.001 SUI'
-              onClick={() => handleGasBudgetOnchange('1000000')}
-            />
-          </div>
-          <div>
-            <h1>Expiration</h1>
-            <div style={{ display: 'flex' }}>
+        <div className={styles.settingLayout}>
+          <div className={styles.settingSection}>
+            <div className={styles.settingTitle}>
+              <h1>Gas Budget</h1>
+              <Icon.InformationIcon className={styles.informationIcon} />
+            </div>
+            <div className={styles.settingButtons}>
+              <Button
+                styletype={
+                  setting.gasBudget == '10000000' ? 'filled' : 'outlined'
+                }
+                text='0.01 SUI'
+                onClick={() => handleGasBudgetOnchange('10000000')}
+              />
+              <Button
+                styletype={
+                  setting.gasBudget == '5000000' ? 'filled' : 'outlined'
+                }
+                text='0.005 SUI'
+                onClick={() => handleGasBudgetOnchange('5000000')}
+              />
+              <Button
+                styletype={
+                  setting.gasBudget == '1000000' ? 'filled' : 'outlined'
+                }
+                text='0.001 SUI'
+                onClick={() => handleGasBudgetOnchange('1000000')}
+              />
+            </div>
+            <div className={styles.settingTitle}>
+              <h1>Expiration</h1>
+              <Icon.InformationIcon className={styles.informationIcon} />
+            </div>
+            <div className={styles.settingButtons}>
               <Button
                 styletype={setting.expiration == '20' ? 'filled' : 'outlined'}
                 text='20 sec'
@@ -97,10 +108,11 @@ const SettingModal = (props: Props) => {
                 onClick={() => handleExpirationOnchange('60')}
               />
             </div>
-          </div>
-          <div>
-            <h1>Slippage</h1>
-            <div style={{ display: 'flex' }}>
+            <div className={styles.settingTitle}>
+              <h1>Slippage</h1>
+              <Icon.InformationIcon className={styles.informationIcon} />
+            </div>
+            <div className={styles.settingButtons}>
               {options.map((opt, idx) => (
                 <Button
                   key={idx}
@@ -121,8 +133,6 @@ const SettingModal = (props: Props) => {
               }}
               placeholder='Custom'
             />
-            <h1>Slippage</h1>
-            <h1>Slippage</h1>
           </div>
         </div>
       </div>
