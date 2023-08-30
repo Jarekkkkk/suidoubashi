@@ -6,6 +6,7 @@ export const controlContainer = css`
 
 export const buttonSection = css`
   display: flex;
+  gap: 10px;
   flex-direction: row;
   justify-content: right;
   padding: 20px 18px 0;
@@ -48,7 +49,7 @@ export const vestCardContainer = css`
   flex-direction: row;
   padding: 12px;
   border-radius: 12px;
-  background-color: #FFF;
+  background-color: #fff;
   box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
 
   &:not(:nth-last-child(1)) {
@@ -98,8 +99,8 @@ export const textContent = css`
     align-items: center;
     margin-left: 12px;
     border-radius: 8px;
-    color: #2977EC;
-    background: #E4F7FE;
+    color: #2977ec;
+    background: #e4f7fe;
   }
 `
 
@@ -159,10 +160,10 @@ export const vsdbCountContainer = css`
   flex-direction: row;
   justify-content: space-between;
   padding: 14px 45px;
-  border: 1px solid #A4A8B3;
+  border: 1px solid #a4a8b3;
   border-radius: 8px;
-  background-color: #FFF;
-  color: #A4A8B3;
+  background-color: #fff;
+  color: #a4a8b3;
   font-size: 13px;
   font-weight: normal;
   line-height: 1;
@@ -182,7 +183,7 @@ export const vsdbCountBlock = css`
   }
 
   span {
-    color: #FFD24D;
+    color: #ffd24d;
     font-weight: bold;
   }
 `
@@ -191,7 +192,7 @@ export const vsdbCountContent = css`
   margin-top: 4px;
   font-size: 32px;
   font-weight: bold;
-  color: #2977EC !important;
+  color: #2977ec !important;
   line-height: 1;
 `
 
@@ -214,11 +215,11 @@ export const vsdbDepositCountBlock = css`
   align-items: center;
   margin-top: 28px;
   padding-top: 28px;
-  border-top: 1px solid #A4A8B3;
+  border-top: 1px solid #a4a8b3;
 `
 export const vsdbDepositCount = css`
   padding: 22px 35px;
-  border: 1px solid #A4A8B3;
+  border: 1px solid #a4a8b3;
   border-radius: 8px;
 `
 
@@ -249,7 +250,7 @@ export const perviewCard = css`
   max-width: 140px;
 
   div {
-    color: #A4A8B3;
+    color: #a4a8b3;
     font-size: 13px;
     font-weight: normal;
     line-height: 1.5;
@@ -263,7 +264,7 @@ export const perviewCard = css`
 
 export const perviewImage = css`
   margin-top: 12px;
-  border: 1px solid #2977EC;
+  border: 1px solid #2977ec;
   border-radius: 8px;
   overflow: hidden;
 `
@@ -276,7 +277,7 @@ export const badgeContent = css`
   button:nth-child(2) {
     margin-left: 12px;
   }
-  
+
   button:nth-child(3) {
     margin-left: 8px;
   }

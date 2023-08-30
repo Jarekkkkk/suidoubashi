@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { PageContainer, Button, Loading, Empty } from '@/Components'
 import { VestContext } from '@/Containers/Vest'
 import Image from '@/Assets/image'
-import { CoinIcon, Icon } from '@/Assets/icon'
+import { Icon } from '@/Assets/icon'
 import { required_exp } from '@/Utils/game'
 
 import VestCardComponent from './_VestCard'
@@ -134,7 +134,7 @@ const TestMintSDBButton = () => {
     <Button
       styletype='filled'
       text='Mint 100 SDB'
-      icon={<CoinIcon.SDBIcon />}
+      icon={<Icon.LogoIcon />}
       onClick={() => mint()}
     />
   )

@@ -1,4 +1,4 @@
-import { useQueries, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { Coin, CoinInterface, Coins } from '@/Constants/coin'
 import { useMemo } from 'react'
@@ -48,4 +48,3 @@ export function useGetAllBalance(
     },
   )
 }
-

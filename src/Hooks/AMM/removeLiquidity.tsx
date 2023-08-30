@@ -1,10 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import {
-  TransactionBlock,
-  getExecutionStatusType,
-} from '@mysten/sui.js'
+import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import {
   LP,
@@ -13,8 +10,8 @@ import {
   remove_liquidity,
   LiquidityRemoved,
 } from '@/Constants/API/pool'
-import { SettingInterface } from '@/Constants/setting'
 import { queryClient } from '@/App'
+import { SettingInterface } from '@/Components/SettingModal'
 
 type AddLiquidityMutationArgs = {
   pool_id: string

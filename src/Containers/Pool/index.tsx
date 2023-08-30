@@ -2,19 +2,13 @@ import { Button } from '@/Components'
 import { Coin } from '@/Constants/coin'
 import { useRemoveLiquidity } from '@/Hooks/AMM/removeLiquidity'
 import { useAddLiquidity } from '@/Hooks/AMM/useAddLiquidity'
-import { useGetAllLP, useGetLP } from '@/Hooks/AMM/useGetLP'
+import { useGetLP } from '@/Hooks/AMM/useGetLP'
 import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import { useSwap } from '@/Hooks/AMM/useSwap'
 import { useZap } from '@/Hooks/AMM/useZap'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { useWalletKit } from '@mysten/wallet-kit'
-import React, {
-  useState,
-  useContext,
-  PropsWithChildren,
-  useMemo,
-  useCallback,
-} from 'react'
+import React, { useState, useContext, PropsWithChildren, useMemo } from 'react'
 
 const PoolContext = React.createContext<PoolContext>({
   data: null,
@@ -34,23 +28,11 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   // balance
   const balance_x = useGetBalance(Coin.SDB, currentAccount?.address)
   // LP
-  const { data: lps } = useGetAllLP(currentAccount?.address)
+  //const { data: lps } = useGetAllLP(currentAccount?.address)
 
   // ipnut
-  const [input, setInput] = useState<string>('')
-  const handleOnInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      let value = e.target.value
-      const isValid = /^-?\d*\.?\d*$/.test(value)
-      if (!isValid) {
-        value = value.slice(0, -1)
-      }
-      setInput(value)
-    },
-    [setInput],
-  )
-  const [coinInput, setCoinInput] = useState<Coin>(Coin.USDC)
-  const [coinInput2, setCoinInput2] = useState<Coin>(Coin.SDB)
+  const [coinInput, _setCoinInput] = useState<Coin>(Coin.USDC)
+  const [coinInput2, _setCoinInput2] = useState<Coin>(Coin.SDB)
 
   // find corresponding PoolContext
   const pool = useMemo(() => {

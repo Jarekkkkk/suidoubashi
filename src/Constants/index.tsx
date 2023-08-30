@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-import { Dashboard, Swap, Pool, Vest, Vote, Rewards, Bridge, Setting } from '@/Scenes'
+import { Dashboard, Swap, Pool, Vest, Vote, Rewards, Bridge } from '@/Scenes'
 
 import { Icon } from '@/Assets/icon'
 

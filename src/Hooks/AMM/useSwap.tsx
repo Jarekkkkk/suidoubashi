@@ -9,9 +9,9 @@ import {
 import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
 import { Swap, amm_package, swap_for_x, swap_for_y } from '@/Constants/API/pool'
-import { SettingInterface } from '@/Constants/setting'
 import { queryClient } from '@/App'
 import { calculate_slippage } from '@/Utils/calculateAPR'
+import { SettingInterface } from '@/Components/SettingModal'
 
 type SwapMutationArgs = {
   pool_id: string

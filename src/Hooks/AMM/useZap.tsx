@@ -1,18 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import { SettingInterface } from '@/Constants/setting'
 import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
 import {
   create_lp,
   get_output,
-  quote_add_liquidity,
   zap_optimized_input_,
   zap_x,
   zap_y,
 } from '@/Constants/API/pool'
+import { SettingInterface } from '@/Components/SettingModal'
 
 type ZapMutationArgs = {
   pool_id: string

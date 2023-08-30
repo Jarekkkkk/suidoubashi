@@ -3,7 +3,7 @@ import Image from '@/Assets/image'
 import { Icon } from '@/Assets/icon'
 
 import * as styles from './index.styles'
-import { cx, css } from '@emotion/css'
+import { css } from '@emotion/css'
 
 interface SectionProps {
   positon?: string

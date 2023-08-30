@@ -10,8 +10,8 @@ import {
 import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
 import { add_liquidity, amm_package, create_lp } from '@/Constants/API/pool'
-import { SettingInterface } from '@/Constants/setting'
 import { queryClient } from '@/App'
+import { SettingInterface } from '@/Components/SettingModal'
 
 type AddLiquidityMutationArgs = {
   pool_id: string
