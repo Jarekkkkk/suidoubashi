@@ -32,6 +32,11 @@ export const button = css`
   }
 `
 
+export const smallButton = css`
+  min-width: 60px;
+  
+`
+
 export const filled = css`
   background-color: #2977EC;
 

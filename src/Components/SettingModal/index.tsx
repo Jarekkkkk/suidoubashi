@@ -119,20 +119,21 @@ const SettingModal = (props: Props) => {
                   styletype={setting.slippage == opt ? 'filled' : 'outlined'}
                   text={opt + '%'}
                   onClick={() => handleSlippageOnchange(opt)}
+                  small
                 />
               ))}
+              <Input
+                type='number'
+                value={setting.slippage}
+                //@ts-ignore
+                min={0.01}
+                step='0.01'
+                onChange={(e) => {
+                  handleSlippageOnchange(e.target.value)
+                }}
+                placeholder='Custom'
+              />
             </div>
-            <Input
-              type={'number'}
-              value={setting.slippage}
-              //@ts-ignore
-              min={0.01}
-              step='0.01'
-              onChange={(e) => {
-                handleSlippageOnchange(e.target.value)
-              }}
-              placeholder='Custom'
-            />
           </div>
         </div>
       </div>

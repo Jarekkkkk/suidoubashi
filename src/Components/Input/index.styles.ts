@@ -10,7 +10,7 @@ export const InputContent = css`
     margin: 0;
     padding: 0 10px;
     width: 100%;
-    height: 48px;
+    height: 40px;
     border-radius: 8px;
     border: 1px solid #606266;
     background-color: #fff;

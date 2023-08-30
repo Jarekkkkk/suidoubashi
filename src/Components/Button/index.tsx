@@ -7,11 +7,12 @@ interface Props {
   onClick: () => void,
   icon?: any,
   disabled?: boolean,
+  small?: boolean, // small
 }
 
 const BasicButton = (props: Props) => {
   const {
-    styletype, text, onClick, icon,
+    styletype, text, onClick, icon, small,
   } = props;
 
   return (
@@ -22,6 +23,9 @@ const BasicButton = (props: Props) => {
       className={cx(
         styles.button,
         types[styletype],
+        {
+          [styles.smallButton]: small,
+        }
       )}
     >
       {icon && icon}
