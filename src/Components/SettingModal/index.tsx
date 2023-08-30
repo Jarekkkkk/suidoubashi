@@ -54,6 +54,7 @@ const SettingModal = (props: Props) => {
       titleImg={Image.setting}
       isShow={isSettingOpen}
       setIsShow={setIsSettingOpen}
+      type="setting"
     >
       <div className={styles.settingContainer}>
         <div>

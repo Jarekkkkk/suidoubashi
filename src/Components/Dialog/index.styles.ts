@@ -28,6 +28,7 @@ export const body = css`
   border-top: 1px solid #e8e8e8;
   border-bottom: 1px solid #e8e8e8;
   overflow: auto;
+
 `
 export const titleSection = css`
   position: relative;
@@ -74,4 +75,13 @@ export const closeButton = css`
   &:hover {
     opacity: 0.9;
   }
+`
+
+export const settingTitle = css`
+  background: none;
+`
+
+export const settingImg = css`
+  left: 0;
+  width: 100%;
 `

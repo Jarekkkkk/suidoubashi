@@ -69,6 +69,7 @@ const PageComponent = (props: Props) => {
             <div className={styles.sidebarContent}>
               <Sidebar isSettingOpen={isSettingOpen} setIsSettingOpen={setIsSettingOpen} />
             </div>
+            <SettingModal isSettingOpen={isSettingOpen} setIsSettingOpen={setIsSettingOpen} />
           </div>
         )}
         {children}
