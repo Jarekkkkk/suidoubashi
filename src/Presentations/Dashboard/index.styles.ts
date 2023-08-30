@@ -39,7 +39,7 @@ export const sectionContainer = css`
 
 export const logo = css`
   position: relative;
-  margin-top: 200px;
+  margin-top: 150px;
   width: 100%;
   height: 240px;
   z-index: 1;
