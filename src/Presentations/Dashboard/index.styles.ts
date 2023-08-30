@@ -48,13 +48,16 @@ export const logo = css`
 export const sectionBContent = css`
   position: relative;
   width: 580px;
+  @media screen and (max-width: 768px) {
+    max-width: 320px;
+  }
 `
 
 export const TitleGreen = css`
   margin-top: 80px;
-  color: #07456C;
+  color: #07456c;
   text-align: center;
-  text-shadow: 0px -4px 6px rgba(255, 255, 255, 0.70);
+  text-shadow: 0px -4px 6px rgba(255, 255, 255, 0.7);
   font-size: 40px;
   font-weight: bold;
   line-height: 1;
@@ -62,7 +65,7 @@ export const TitleGreen = css`
 
 export const TitleWhite = css`
   margin-top: 80px;
-  color: #EDFEFF;
+  color: #edfeff;
   text-align: center;
   text-shadow: 0px -4px 6px rgba(229, 254, 255, 0.65);
   font-size: 40px;
@@ -71,14 +74,14 @@ export const TitleWhite = css`
 `
 
 export const SecondTitleGreen = css`
-  color: #07456C;
+  color: #07456c;
   font-size: 28px;
   font-weight: bold;
   line-height: 1;
 `
 
 export const SecondTitleWhite = css`
-  color: #D6FDFF;
+  color: #d6fdff;
   font-size: 28px;
   font-weight: bold;
   line-height: 1;
@@ -86,7 +89,7 @@ export const SecondTitleWhite = css`
 
 export const ContentGreen = css`
   margin-top: 8px;
-  color: #07456C;
+  color: #07456c;
   font-size: 14px;
   font-weight: normal;
   line-height: 1;
@@ -94,7 +97,7 @@ export const ContentGreen = css`
 
 export const ContentWhite = css`
   margin-top: 8px;
-  color: #D6FDFF;
+  color: #d6fdff;
   font-size: 14px;
   font-weight: normal;
   line-height: 1;
