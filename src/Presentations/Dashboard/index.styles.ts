@@ -51,6 +51,12 @@ export const logo = css`
   width: 100%;
   height: 240px;
   z-index: 1;
+
+
+  @media screen and (max-width: 768px) {
+    margin-top: 0;
+    justify-content: center;
+  }
 `
 
 export const sectionBContent = css`
