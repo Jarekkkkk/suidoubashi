@@ -43,6 +43,11 @@ export const sectionContainer = css`
   max-width: 1480px;
   width: 100%;
   height: 100%;
+
+
+  @media screen and (max-width: 768px) {
+    justify-content: center;
+  }
 `
 
 export const logo = css`
@@ -55,7 +60,6 @@ export const logo = css`
 
   @media screen and (max-width: 768px) {
     margin-top: 0;
-    justify-content: center;
   }
 `
 
