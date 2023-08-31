@@ -14,6 +14,10 @@ export const sectionA = css`
   overflow: hidden;
   box-sizing: border-box;
   height: 100vh;
+
+  @media screen and (max-width: 768px) {
+    background-size: cover;
+  }
 `
 
 export const sectionB = css`
@@ -24,6 +28,10 @@ export const sectionB = css`
   background-image: url(${Image.BackgroundPinkB});
   overflow: hidden;
   box-sizing: border-box;
+
+  @media screen and (max-width: 768px) {
+    background-size: cover;
+  }
 `
 
 export const sectionContainer = css`
@@ -48,6 +56,7 @@ export const logo = css`
 export const sectionBContent = css`
   position: relative;
   width: 580px;
+
   @media screen and (max-width: 768px) {
     max-width: 320px;
   }
