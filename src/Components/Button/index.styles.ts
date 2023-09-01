@@ -30,11 +30,21 @@ export const button = css`
     width: 24px;
     height: 24px;
   }
+
+  div[class*='bp5-spinner'] {
+    margin-left: 5px;
+    width: 16px;
+    height: 16px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
 `
 
 export const smallButton = css`
   min-width: 60px;
-  
 `
 
 export const filled = css`

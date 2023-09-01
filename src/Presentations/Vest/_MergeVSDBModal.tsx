@@ -166,7 +166,7 @@ const MergeVSDBModal = (props: Props) => {
       />
       <div className={styles.vsdbModalbutton}>
         <Button
-          disabled={isLoading}
+          isLoading={isLoading}
           text='Merge'
           styletype='filled'
           onClick={handleMerge}

@@ -77,6 +77,14 @@ export const closeButton = css`
   }
 `
 
+export const disableButton = css`
+  opacity: 0.8;
+
+  path {
+    fill: #a4a8b2;
+  }
+`
+
 export const settingTitle = css`
   background: none;
 `

@@ -1,4 +1,5 @@
 import { cx } from '@emotion/css'
+import { Spinner } from '@blueprintjs/core'
 import * as styles from './index.styles';
 import { types } from './index.styles';
 interface Props {
@@ -8,11 +9,12 @@ interface Props {
   icon?: any,
   disabled?: boolean,
   small?: boolean, // small
+  isLoading?: boolean,
 }
 
 const BasicButton = (props: Props) => {
   const {
-    styletype, text, onClick, icon, small,
+    styletype, text, onClick, icon, small, isLoading, disabled,
   } = props;
 
   return (
@@ -27,9 +29,11 @@ const BasicButton = (props: Props) => {
           [styles.smallButton]: small,
         }
       )}
+      disabled={isLoading || disabled}
     >
       {icon && icon}
       {text && <p>{text}</p>}
+      {isLoading && <Spinner />}
     </button>
   );
 }

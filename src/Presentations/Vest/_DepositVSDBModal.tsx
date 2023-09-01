@@ -67,7 +67,7 @@ const DepositVSDBModal = (props: Props) => {
   }
 
   const handleOnChange = (date: string) => {
-    if(increase_unlock_time_isLoading) return 
+    if(increase_unlock_time_isLoading) return
     setEndDate(date)
   }
 
@@ -171,7 +171,8 @@ const DepositVSDBModal = (props: Props) => {
           {error}
           <div className={styles.vsdbModalbutton}>
             <Button
-              disabled={!!error || incrase_amount_isLoading}
+              disabled={!!error}
+              isLoading={incrase_amount_isLoading}
               text='Increase SDB'
               styletype='filled'
               onClick={handleIncreaseAmount}
@@ -230,7 +231,8 @@ const DepositVSDBModal = (props: Props) => {
                 </div>
                 <div className={styles.vsdbModalbutton}>
                   <Button
-                    disabled={increase_unlock_time_isLoading}
+                    disabled={!!error}
+                    isLoading={increase_unlock_time_isLoading}
                     text='Increase Duration'
                     styletype='filled'
                     onClick={handleIncreaseDuration}
