@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import {
   Dialog,
   InputSection,
@@ -67,7 +67,7 @@ const DepositVSDBModal = (props: Props) => {
   }
 
   const handleOnChange = (date: string) => {
-    if(increase_unlock_time_isLoading) return
+    if (increase_unlock_time_isLoading) return
     setEndDate(date)
   }
 
@@ -172,7 +172,7 @@ const DepositVSDBModal = (props: Props) => {
           <div className={styles.vsdbModalbutton}>
             <Button
               disabled={!!error}
-              isLoading={incrase_amount_isLoading}
+              isloading={incrase_amount_isLoading}
               text='Increase SDB'
               styletype='filled'
               onClick={handleIncreaseAmount}
@@ -232,7 +232,7 @@ const DepositVSDBModal = (props: Props) => {
                 <div className={styles.vsdbModalbutton}>
                   <Button
                     disabled={!!error}
-                    isLoading={increase_unlock_time_isLoading}
+                    isloading={increase_unlock_time_isLoading}
                     text='Increase Duration'
                     styletype='filled'
                     onClick={handleIncreaseDuration}
