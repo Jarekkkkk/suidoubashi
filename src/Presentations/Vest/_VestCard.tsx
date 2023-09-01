@@ -6,6 +6,8 @@ import Image from '@/Assets/image'
 import * as styles from './index.styles'
 import { useUnlock } from '@/Hooks/VSDB/useUnlock'
 import BigNumber from 'bignumber.js'
+import useRegisterAMMState from '@/Hooks/AMM/useRegisterAMMState'
+import { initialize_amm } from '@/Constants/API/pool'
 
 interface Props {
   nftId: string
@@ -97,8 +99,14 @@ const VestCardComponent = (props: Props) => {
   } = props
 
   const { mutate: unlock } = useUnlock()
+  const { mutate: initialize_amm } = useRegisterAMMState()
+
   const handleUnlock = (nftId: string) => {
     unlock({ vsdb: nftId })
+  }
+
+  const handleInitializeAMM = () => {
+    initialize_amm({ vsdb: nftId })
   }
 
   return (
@@ -124,7 +132,12 @@ const VestCardComponent = (props: Props) => {
         </div>
         <div className={cx(styles.badgeContent)}>
           <div>Badge</div>
-          <Button disabled styletype='badge' text='AMM' onClick={() => {}} />
+          <Button
+            disabled
+            styletype='badge'
+            text='AMM'
+            onClick={handleInitializeAMM}
+          />
           <Button disabled styletype='badge' text='Vote' onClick={() => {}} />
         </div>
         {!isPerviewMode && (

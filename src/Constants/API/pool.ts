@@ -11,6 +11,7 @@ import {
 } from '@mysten/sui.js'
 import { bcs_registry } from '../bcs'
 import { sqrt } from '@/Utils/bigint_math'
+import { vsdb_reg } from './vsdb'
 
 export const amm_package = import.meta.env.VITE_AMM_PACKAGE_TESTNET as string
 export const pool_reg = import.meta.env.VITE_POOL_REG_TESTNET as string
@@ -531,4 +532,11 @@ export async function get_claimable_y(
   })
 
   return res?.results?.[0]?.returnValues ?? 0
+}
+
+export async function initialize_amm(txb: TransactionBlock, vsdb: string) {
+  txb.moveCall({
+    target: `${amm_package}::pool::initialize`,
+    arguments: [txb.object(vsdb_reg), txb.object(vsdb)],
+  })
 }

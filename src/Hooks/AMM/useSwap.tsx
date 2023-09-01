@@ -61,8 +61,6 @@ export const useSwap = () => {
         swap_for_x(txb, pool_id, pool_type_x, pool_type_y, coin, output_min)
       }
 
-      console.log(txb)
-
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,

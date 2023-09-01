@@ -7,7 +7,7 @@ import {
   getObjectDisplay,
   getObjectId,
 } from '@mysten/sui.js'
-import { AMMState } from './pool'
+import { AMMState, amm_package } from './pool'
 import { VotingState } from './vote'
 import { bcs_registry } from '../bcs'
 
@@ -49,6 +49,9 @@ enum Display {
   PROJECT_URL = 'project_url',
 }
 
+const vsdb_dynamic_key = (vsdb_key_type: string) =>
+  `${vsdb_package}::vsdb::VSDBKey<${vsdb_key_type}>`
+
 export async function get_vsdb(
   rpc: JsonRpcProvider,
   address: string,
@@ -65,6 +68,16 @@ export async function get_vsdb(
   const { balance, level, end, experience, modules } = getObjectFields(res)
   id = getObjectId(res)
   const display = getObjectDisplay(res).data as Record<Display, string>
+  // dynamic state
+  const amm_state = await rpc.getDynamicFieldObject({
+    parentId: id,
+    name: {
+      type: vsdb_dynamic_key(`${amm_package}::pool::VSDB`),
+      value: { dummy_field: false },
+    },
+    //name: df.data[0].name,
+  })
+
   const vesdb = await voting_weight(rpc, address, id)
   return {
     id,
@@ -75,6 +88,7 @@ export async function get_vsdb(
     vesdb,
     modules: modules.fields.contents,
     display,
+    amm_state: getObjectFields(amm_state)?.value?.fields,
   } as Vsdb
 }
 
