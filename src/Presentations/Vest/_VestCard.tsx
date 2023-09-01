@@ -133,7 +133,6 @@ const VestCardComponent = (props: Props) => {
         <div className={cx(styles.badgeContent)}>
           <div>Badge</div>
           <Button
-            disabled
             styletype='badge'
             text='AMM'
             onClick={handleInitializeAMM}

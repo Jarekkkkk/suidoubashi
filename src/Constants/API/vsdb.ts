@@ -8,7 +8,7 @@ import {
   getObjectId,
 } from '@mysten/sui.js'
 import { AMMState, amm_package } from './pool'
-import { VotingState } from './vote'
+import { VotingState, vote_package } from './vote'
 import { bcs_registry } from '../bcs'
 
 //export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE as string
@@ -77,6 +77,14 @@ export async function get_vsdb(
     },
     //name: df.data[0].name,
   })
+  //  const voting_state = await rpc.getDynamicFieldObject({
+  //    parentId: id,
+  //    name: {
+  //      type: vsdb_dynamic_key(`${vote_package}::voter::VSDB`),
+  //      value: { dummy_field: false },
+  //    },
+  //    //name: df.data[0].name,
+  //  })
 
   const vesdb = await voting_weight(rpc, address, id)
   return {
