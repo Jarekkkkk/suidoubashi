@@ -9,6 +9,7 @@ interface Props {
     label: string
     value: string
   }>
+  disabled?: boolean
 }
 
 const RadioGroupComponent = (props: Props) => {

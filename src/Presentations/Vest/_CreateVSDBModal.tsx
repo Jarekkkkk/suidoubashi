@@ -98,6 +98,7 @@ const CreateVSDBModal = (props: Props) => {
               value={input}
               onChange={handleOnInputChange}
               placeholder='Increase Unlocked Amount'
+              disabled={isLoading}
             />
           </>
         }
@@ -119,11 +120,13 @@ const CreateVSDBModal = (props: Props) => {
             <DatePicker
               endDate={new Date(endDate)}
               handleOnChange={handleOnChange}
+              disabled={isLoading}
             />
             <RadioGroup
               selectedValue={endDate}
               options={vsdbTimeSettingOptions}
               onChange={handleOnChange}
+              disabled={isLoading}
             />
           </>
         }
@@ -161,7 +164,7 @@ const CreateVSDBModal = (props: Props) => {
       <span>{error}</span>
       <div className={styles.vsdbModalbutton}>
         <Button
-          disabled={!!error}
+          disabled={!!error || isLoading}
           text='Lock'
           styletype='filled'
           onClick={handleLock}

@@ -16,4 +16,9 @@ export const datePickerComponent = css`
   :focus-visible {
     border-color: #2977EC;
   }
+
+  &:disabled {
+    color: #5f6b7c99;
+    background: #d3d8de80;
+  }
 `

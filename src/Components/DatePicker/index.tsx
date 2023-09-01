@@ -6,6 +6,7 @@ import * as styles from './index.styles'
 interface Props {
   endDate: Date | null
   handleOnChange: (date: any) => void
+  disabled?: boolean
 }
 
 function addDays(theDate: Date, days: number) {

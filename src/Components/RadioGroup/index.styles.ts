@@ -66,4 +66,8 @@ export const radioGroupComponent = css`
       box-sizing: border-box;
     }
   }
+
+  input[type="radio"]:checked:disabled + span {
+    background: transparent;
+  }
 `
