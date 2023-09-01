@@ -49,7 +49,7 @@ const MergeVSDBModal = (props: Props) => {
     return _mergedVsdb
   }, [secondVsdb, currentVsdb])
 
-  const { mutate: merge } = useMerge(setIsShowMergeVSDBModal)
+  const { mutate: merge, isLoading } = useMerge(setIsShowMergeVSDBModal)
 
   const handleMerge = async () => {
     if (!currentVsdb || !secondVsdb) return null
@@ -63,6 +63,7 @@ const MergeVSDBModal = (props: Props) => {
       titleImg={Image.pageBackground_2}
       isShow={isShowMergeVSDBModal}
       setIsShow={setIsShowMergeVSDBModal}
+      disabled={isLoading}
     >
       <div className={styles.perviewContainer}>
         <div className={styles.perviewCardBlock}>
@@ -78,6 +79,7 @@ const MergeVSDBModal = (props: Props) => {
               setCurrentVsdb(value)
               setSecondVsdb(undefined)
             }}
+            isDisabled={isLoading}
           />
           <div className={styles.perviewCard}>
             <div>{currentVsdb ? formatDate(currentVsdb.end) : '---'}</div>
@@ -115,6 +117,7 @@ const MergeVSDBModal = (props: Props) => {
                 : null
             }
             onChange={({ value }: SelectOption) => setSecondVsdb(value)}
+            isDisabled={isLoading}
           />
           <div className={styles.perviewCard}>
             <div>{secondVsdb ? formatDate(secondVsdb.end) : '---'}</div>
@@ -162,7 +165,12 @@ const MergeVSDBModal = (props: Props) => {
         }
       />
       <div className={styles.vsdbModalbutton}>
-        <Button text='Merge' styletype='filled' onClick={handleMerge} />
+        <Button
+          disabled={isLoading}
+          text='Merge'
+          styletype='filled'
+          onClick={handleMerge}
+        />
       </div>
     </Dialog>
   )

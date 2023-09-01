@@ -13,6 +13,7 @@ type Props = {
   isShow: boolean
   setIsShow: Function
   type?: string
+  disabled?: boolean
 }
 
 const DialogComponent = (props: Props) => {
@@ -23,6 +24,7 @@ const DialogComponent = (props: Props) => {
     className,
     isShow,
     setIsShow,
+    disabled,
     type,
     ...nextProps
   } = props
@@ -34,15 +36,22 @@ const DialogComponent = (props: Props) => {
       className={cx(styles.dialogComponent, className)}
     >
       <div className={styles.titleSection}>
-        <div className={cx(styles.title,{
-          [styles.settingTitle]: type === 'setting'
-        })}>{title}</div>
-        <img className={cx(styles.titleImg, {
-          [styles.settingImg]: type === 'setting'
-        })} src={titleImg} />
+        <div
+          className={cx(styles.title, {
+            [styles.settingTitle]: type === 'setting',
+          })}
+        >
+          {title}
+        </div>
+        <img
+          className={cx(styles.titleImg, {
+            [styles.settingImg]: type === 'setting',
+          })}
+          src={titleImg}
+        />
         <Icon.CrossIcon
           className={styles.closeButton}
-          onClick={() => setIsShow(false)}
+          onClick={() => !disabled && setIsShow(false)}
         />
       </div>
       <div className={cx(styles.body, props.bodyClassname)}>{children}</div>

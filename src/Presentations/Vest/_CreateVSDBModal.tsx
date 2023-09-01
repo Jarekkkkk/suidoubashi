@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import {
   Dialog,
   Input,
@@ -35,25 +35,31 @@ const CreateVSDBModal = (props: Props) => {
   const balance = useGetBalance(Coin.SDB, walletAddress)
 
   const [input, setInput] = useState<string>('')
+  const [error, setError] = useState<string>()
 
   const handleOnChange = (date: string) => {
+    if (isLoading) return
     setEndDate(date)
   }
 
-  const { mutate: lock, isLoading: _ } = useLock(setIsShowCreateVSDBModal)
+  const { mutate: lock, isLoading } = useLock(setIsShowCreateVSDBModal)
 
-  const handleOnInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      let value = e.target.value
-      const isValid = /^-?\d*\.?\d*$/.test(value)
-      if (!isValid) {
-        value = value.slice(0, -1)
+  const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isLoading) return
+    let value = e.target.value
+    const isValid = /^-?\d*\.?\d*$/.test(value)
+    if (!isValid) {
+      value = value.slice(0, -1)
+    }
+    setInput(value)
+    if (balance?.totalBalance) {
+      if (parseFloat(value) * Math.pow(10, 9) > Number(balance.totalBalance)) {
+        setError('Insufficient Balance')
+      } else {
+        setError('')
       }
-      setInput(value)
-    },
-
-    [setInput],
-  )
+    }
+  }
 
   const handleLock = () => {
     const extended_duration =
@@ -77,6 +83,7 @@ const CreateVSDBModal = (props: Props) => {
       titleImg={Image.pageBackground_3}
       isShow={isShowCreateVSDBModal}
       setIsShow={setIsShowCreateVSDBModal}
+      disabled = {isLoading}
     >
       <InputSection
         titleChildren={
@@ -151,8 +158,14 @@ const CreateVSDBModal = (props: Props) => {
           </div>
         </div>
       </div>
+      <span>{error}</span>
       <div className={styles.vsdbModalbutton}>
-        <Button text='Lock' styletype='filled' onClick={handleLock} />
+        <Button
+          disabled={!!error}
+          text='Lock'
+          styletype='filled'
+          onClick={handleLock}
+        />
       </div>
     </Dialog>
   )

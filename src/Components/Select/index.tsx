@@ -9,6 +9,7 @@ type Props = {
   onChange: (v: any) => void
   value?: SelectOption | null
   defaultValue?: SelectOption
+  isDisabled?: boolean
 }
 
 const SelectCompoonent = (props: Props) => {
@@ -28,6 +29,7 @@ const SelectCompoonent = (props: Props) => {
   return (
     <Select
       {...props}
+      isDisabled = {props.isDisabled}
       defaultValue={props.defaultValue}
       onChange={onChange}
       styles={customStyles}

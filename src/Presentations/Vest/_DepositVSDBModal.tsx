@@ -45,27 +45,36 @@ const DepositVSDBModal = (props: Props) => {
   const { data: vsdb } = useGetVsdb(walletAddress, currentVSDBId)
 
   const [input, setInput] = useState<string>()
-  const handleOnInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      let value = e.target.value
-      const isValid = /^-?\d*\.?\d{0,9}$/.test(value)
+  const [error, setError] = useState<string>()
 
-      if (!isValid) {
-        value = value.slice(0, -1)
+  const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (incrase_amount_isLoading) return
+    let value = e.target.value
+    const isValid = /^-?\d*\.?\d{0,9}$/.test(value)
+
+    if (!isValid) {
+      value = value.slice(0, -1)
+    }
+
+    setInput(value)
+    if (balance?.totalBalance) {
+      if (parseFloat(value) * Math.pow(10, 9) > Number(balance.totalBalance)) {
+        setError('Insufficient Balance')
+      } else {
+        setError('')
       }
+    }
+  }
 
-      setInput(value)
-    },
-
-    [setInput],
-  )
   const handleOnChange = (date: string) => {
+    if(increase_unlock_time_isLoading) return 
     setEndDate(date)
   }
 
-  const { mutate: increase_unlocked_amount } = useIncreaseUnlockAmount(
-    setIsShowDepositVSDBModal,
-  )
+  const {
+    mutate: increase_unlocked_amount,
+    isLoading: incrase_amount_isLoading,
+  } = useIncreaseUnlockAmount(setIsShowDepositVSDBModal)
   const handleIncreaseAmount = () => {
     if (!input) return null
 
@@ -75,10 +84,13 @@ const DepositVSDBModal = (props: Props) => {
     })
   }
 
-  const { mutate: increase_unlocked_time } = useIncreaseUnlockTime(
-    setIsShowDepositVSDBModal,
-  )
+  const {
+    mutate: increase_unlocked_time,
+    isLoading: increase_unlock_time_isLoading,
+  } = useIncreaseUnlockTime(setIsShowDepositVSDBModal)
+
   const handleIncreaseDuration = () => {
+    if (increase_unlock_time_isLoading) return
     const extended_duration =
       (new Date(endDate).getTime() -
         moment().startOf('day').toDate().getTime()) /
@@ -156,8 +168,10 @@ const DepositVSDBModal = (props: Props) => {
               </span>
             </div>
           </div>
+          {error}
           <div className={styles.vsdbModalbutton}>
             <Button
+              disabled={!!error || incrase_amount_isLoading}
               text='Increase SDB'
               styletype='filled'
               onClick={handleIncreaseAmount}
@@ -216,6 +230,7 @@ const DepositVSDBModal = (props: Props) => {
                 </div>
                 <div className={styles.vsdbModalbutton}>
                   <Button
+                    disabled={increase_unlock_time_isLoading}
                     text='Increase Duration'
                     styletype='filled'
                     onClick={handleIncreaseDuration}
@@ -236,8 +251,13 @@ const DepositVSDBModal = (props: Props) => {
       titleImg={Image.pageBackground_1}
       isShow={isShowDepositVSDBModal}
       setIsShow={setIsShowDepositVSDBModal}
+      disabled={increase_unlock_time_isLoading || incrase_amount_isLoading}
     >
-      <Tabs links={tabDataKeys} styletype='ellipse' />
+      <Tabs
+        isLoading={incrase_amount_isLoading || increase_unlock_time_isLoading}
+        links={tabDataKeys}
+        styletype='ellipse'
+      />
     </Dialog>
   )
 }

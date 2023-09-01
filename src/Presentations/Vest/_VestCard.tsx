@@ -101,9 +101,6 @@ const VestCardComponent = (props: Props) => {
     unlock({ vsdb: nftId })
   }
 
-  const _nowDate = new Date().toLocaleTimeString()
-  console.log(_nowDate)
-
   return (
     <div className={styles.vestCardContainer}>
       <div className={styles.imgSection}>
