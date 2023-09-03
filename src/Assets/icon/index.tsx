@@ -1,3 +1,4 @@
+
 import { ReactComponent as SwapIcon } from './icon_swap.svg'
 import { ReactComponent as PoolIcon } from '@/Assets/icon/icon_pool.svg'
 import { ReactComponent as VestIcon } from '@/Assets/icon/icon_vest.svg'
@@ -18,6 +19,7 @@ import { ReactComponent as SettingIcon } from '@/Assets/icon/icon_setting.svg'
 import { ReactComponent as InformationIcon } from '@/Assets/icon/icon_information.svg'
 import { ReactComponent as SwapGreenIcon } from '@/Assets/icon/icon_swap_green.svg'
 import { ReactComponent as DefiGreenIcon } from '@/Assets/icon/icon_defi_green.svg'
+import { ReactComponent as WarningSignIcon } from '@/Assets/icon/icon_warning_sign.svg'
 
 export const Icon = {
   SwapIcon,
@@ -40,6 +42,7 @@ export const Icon = {
   InformationIcon,
   SwapGreenIcon,
   DefiGreenIcon,
+  WarningSignIcon,
 }
 
 import { ReactComponent as BTCIcon } from '@/Assets/icon/coin/btc.svg'

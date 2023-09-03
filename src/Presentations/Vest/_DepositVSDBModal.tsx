@@ -7,6 +7,7 @@ import {
   RadioGroup,
   Tabs,
   Button,
+  Error,
 } from '@/Components'
 import Image from '@/Assets/image'
 import { CoinIcon, Icon } from '@/Assets/icon'
@@ -148,6 +149,7 @@ const DepositVSDBModal = (props: Props) => {
                   value={input}
                   onChange={handleOnInputChange}
                   placeholder='Increase Unlocked Amount'
+                  disabled={incrase_amount_isLoading}
                 />
               </>
             }
@@ -168,11 +170,11 @@ const DepositVSDBModal = (props: Props) => {
               </span>
             </div>
           </div>
-          {error}
+          {error &&  <Error errorText={error} />}
           <div className={styles.vsdbModalbutton}>
             <Button
               disabled={!!error}
-              isloading={incrase_amount_isLoading}
+              isLoading={incrase_amount_isLoading}
               text='Increase SDB'
               styletype='filled'
               onClick={handleIncreaseAmount}
@@ -198,11 +200,13 @@ const DepositVSDBModal = (props: Props) => {
                 <DatePicker
                   endDate={new Date(endDate)}
                   handleOnChange={handleOnChange}
+                  disabled={increase_unlock_time_isLoading}
                 />
                 <RadioGroup
                   selectedValue={endDate}
                   options={vsdbTimeSettingOptions}
                   onChange={handleOnChange}
+                  disabled={increase_unlock_time_isLoading}
                 />
                 <div className={styles.vsdbDepositCountBlock}>
                   <div
@@ -229,10 +233,11 @@ const DepositVSDBModal = (props: Props) => {
                     </span>
                   </div>
                 </div>
+                {error &&  <Error errorText={error} />}
                 <div className={styles.vsdbModalbutton}>
                   <Button
                     disabled={!!error}
-                    isloading={increase_unlock_time_isLoading}
+                    isLoading={increase_unlock_time_isLoading}
                     text='Increase Duration'
                     styletype='filled'
                     onClick={handleIncreaseDuration}

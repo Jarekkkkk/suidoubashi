@@ -6,6 +6,7 @@ import {
   DatePicker,
   RadioGroup,
   Button,
+  Error,
 } from '@/Components'
 import Image from '@/Assets/image'
 import { CoinIcon, Icon } from '@/Assets/icon'
@@ -161,7 +162,7 @@ const CreateVSDBModal = (props: Props) => {
           </div>
         </div>
       </div>
-      <span>{error}</span>
+      {error &&  <Error errorText={error} />}
       <div className={styles.vsdbModalbutton}>
         <Button
           disabled={!!error}
