@@ -6,6 +6,7 @@ export const errorContent = css`
   justify-content: center;
   margin-top: 28px;
   border-radius: 8px;
+  min-height: calc(28px + 16px);
 
   span {
     color: #F56C6C;

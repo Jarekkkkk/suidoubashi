@@ -27,7 +27,11 @@ export const InputContent = css`
     }
 
     &::placeholder {
-      color: #606266;
+      padding-left: 10px;
+      color: #A4A8B3;
+      text-align: left;
+      font-weight: normal;
+      font-size: 24px;
     }
   }
 `

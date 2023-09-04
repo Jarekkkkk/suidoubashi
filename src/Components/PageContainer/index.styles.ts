@@ -13,6 +13,7 @@ export const titleSection = css`
   position: relative;
   width: 100%;
   height: 140px;
+  min-height: 140px;
   overflow: hidden;
 `
 

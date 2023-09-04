@@ -9,6 +9,7 @@ export function get_balance_key(type: Coin, address: string) {
 
 export type Balance = {
   coinType: string
+  coinName: string
   totalBalance: string
 }
 
@@ -39,8 +40,8 @@ export function useGetAllBalance(
       res.forEach((r) => objs.set(r.coinType, r.totalBalance))
       return coin_types.map((c) =>
         objs.has(c.type)
-          ? { coinType: c.type, totalBalance: objs.get(c.type) }
-          : { coinType: c.type, totalBalance: '0' },
+          ? { coinType: c.type, coinName: c.name, totalBalance: objs.get(c.type) }
+          : { coinType: c.type, coinName: c.name, totalBalance: '0' },
       )
     },
     {

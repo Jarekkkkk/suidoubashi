@@ -10,8 +10,12 @@ const Error = (props: Props) => {
 
   return (
     <div className={styles.errorContent}>
-      <Icon.WarningSignIcon />
-      <span>{errorText}</span>
+      {errorText &&
+        <>
+          <Icon.WarningSignIcon />
+          <span>{errorText}</span>
+        </>
+      }
     </div>
   );
 };

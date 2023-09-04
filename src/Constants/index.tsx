@@ -22,7 +22,7 @@ export const generateSideBarLinks = () => [
     element: <Swap />,
     title: 'Swap',
     icon: <Icon.SwapIcon />,
-    isHidden: true,
+    isHidden: false,
   },
   {
     key: 'Pool',
