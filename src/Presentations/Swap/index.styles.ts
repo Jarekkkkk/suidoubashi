@@ -11,6 +11,11 @@ export const swapContainer = css`
   max-width: 500px;
 `
 
+export const slognContent = css`
+  margin: 30px auto;
+  text-align: center;
+`
+
 export const coinButton = css`
   display: flex;
   align-items: center;
@@ -51,14 +56,17 @@ export const searchInputIcon = css`
 `
 
 export const coinContent = css`
+  border-bottom: 1px solid #A4A8B3;
+`
+
+export const coinBlock = css`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   margin: 0 auto;
-  padding: 28px 0;
   max-width: 400px;
-  border-bottom: 1px solid #A4A8B3;
+  padding: 28px 0;
 `
 
 export const banlaceContent = css`
@@ -120,6 +128,8 @@ export const infoText = css`
   line-height: 2;
 
   span {
+    display: flex;
+    align-items: center;
     font-size: 16px;
     font-weight: normal;
   }

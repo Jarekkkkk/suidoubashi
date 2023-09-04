@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import BigNumber from 'bignumber.js'
 import {
   Dialog,
   Input,
@@ -9,7 +10,6 @@ import {
 } from '@/Components'
 import Image from '@/Assets/image'
 import { CoinIcon, Icon } from '@/Assets/icon'
-import { formatBalance } from '@/Utils/format'
 import { Balance } from '@/Hooks/Coin/useGetBalance'
 import { Coins } from '@/Constants/coin'
 import * as styles from './index.styles'
@@ -97,26 +97,28 @@ const SelectCoinModal = (props: Props) => {
           />
         </div>
         <div className={styles.coinContent}>
-          {
-            _coinList.map((coin) => {
-              const _coinData = _coinsData?.filter((item => item.coinName === coin.text))[0];
-              const _coinIdx = _coinData && fetchIcon(_coinData.coinType);
+          <div className={styles.coinBlock}>
+            {
+              _coinList.map((coin) => {
+                const _coinData = _coinsData?.filter((item => item.coinName === coin.text))[0];
+                const _coinIdx = _coinData && fetchIcon(_coinData.coinType);
 
-              return (
-                <Button
-                  onClick={() => {
-                    setCoinType(_coinIdx);
-                    setIsShow(false);
-                  }}
-                  styletype="outlined"
-                  text={coin.text}
-                  icon={coin.icon}
-                  key={coin.id}
-                  disabled={!_coinData}
-                  medium
-                />
-            )})
-          }
+                return (
+                  <Button
+                    onClick={() => {
+                      setCoinType(_coinIdx);
+                      setIsShow(false);
+                    }}
+                    styletype="outlined"
+                    text={coin.text}
+                    icon={coin.icon}
+                    key={coin.id}
+                    disabled={!_coinData}
+                    medium
+                  />
+              )})
+            }
+          </div>
         </div>
         <div className={styles.banlaceContent}>
           {
@@ -140,10 +142,11 @@ const SelectCoinModal = (props: Props) => {
                       <Coincard
                         coinXIcon={_coinIdx!.logo}
                         coinXName={_coinIdx!.name}
-                        coinXValue={formatBalance(
-                          balance.totalBalance,
-                          _coinIdx!.decimals,
-                        )}
+                        coinXValue={new BigNumber(balance.totalBalance
+                          .toString())
+                          .shiftedBy(-1 * _coinIdx!.decimals)
+                          .toFormat()
+                        }
                       />
                     </div>
                   )

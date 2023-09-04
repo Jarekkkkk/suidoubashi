@@ -12,6 +12,7 @@ import { useGetAllBalance, Balance } from '@/Hooks/Coin/useGetBalance';
 const SwapContext = React.createContext<SwapContext>({
 	coinData: undefined,
 	isCoinDataLoading: false,
+	error: undefined,
 	coinInputFirst: '',
 	coinTypeFirst: {
 		type: Coin.SUI,
@@ -32,10 +33,13 @@ const SwapContext = React.createContext<SwapContext>({
 	setIsShowSelectModal: () => {},
 	setCoinTypeFirst: () => {},
 	setCoinTypeSecond: () => {},
+	setError: () => {},
+	walletAddress: null,
 });
 export const useSwapContext = () => useContext(SwapContext);
 
 const SwapContainer = ({ children }: PropsWithChildren) => {
+  const [error, setError] = useState<string>()
 	const [coinInputFirst, setCoinInputFirst] = useState<string>('');
 	const [coinTypeFirst, setCoinTypeFirst] = useState<CoinInterface>(Coins.filter((coin) => coin.name === 'SUI')[0]);
 	const [coinInputSecond, setCoinInputSecond] = useState<string>('');
@@ -87,6 +91,9 @@ const SwapContainer = ({ children }: PropsWithChildren) => {
 				setIsShowSelectModal,
 				setCoinTypeFirst,
 				setCoinTypeSecond,
+				error,
+				setError,
+				walletAddress,
 			}}
 		>
 			{children}
@@ -97,6 +104,7 @@ const SwapContainer = ({ children }: PropsWithChildren) => {
 interface SwapContext {
 	readonly coinData: Balance[] | undefined,
 	readonly isCoinDataLoading: boolean,
+	readonly error: string | undefined,
 	coinInputFirst: string,
 	coinTypeFirst: CoinInterface | undefined,
 	coinInputSecond: string,
@@ -107,6 +115,8 @@ interface SwapContext {
 	setIsShowSelectModal: Function,
 	setCoinTypeFirst: Function,
 	setCoinTypeSecond: Function,
+	setError: Function,
+	walletAddress: string | null,
 }
 
 export default SwapContainer;
