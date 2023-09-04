@@ -6,6 +6,7 @@ import {
 	Input,
 	Button,
 	Loading,
+	Empty,
 } from '@/Components'
 import { useSwapContext } from '@/Containers/Swap'
 import Image from '@/Assets/image'
@@ -24,18 +25,10 @@ const SwapPresentation = () => {
 		handleOnCoinInputFirstChange, handleOnCoinInputSecondChange,
 	} = useSwapContext();
 
-	if (!coinData || !coinTypeFirst || !coinTypeSecond) return (
-		<PageContainer title='Swap' titleImg={Image.pageBackground_1}>
-			<div className={styles.swapContainer}>
-				<Loading />
-			</div>
-		</PageContainer>
-	);
-
 	const [isSecond, setIsSecond] = useState<boolean>(false);
-	const _coinTypeFirstTotalBalance = coinData.filter((coin) => coin.coinName === coinTypeFirst.name)[0].totalBalance;
-	const _coinTypeSecondTotalBalance = coinData.filter((coin) => coin.coinName === coinTypeSecond.name)[0].totalBalance;
-	const _coinData = coinData.filter((coin) => {
+	const _coinTypeFirstTotalBalance = coinData?.filter((coin) => coin.coinName === coinTypeFirst?.name)[0].totalBalance;
+	const _coinTypeSecondTotalBalance = coinData?.filter((coin) => coin.coinName === coinTypeSecond?.name)[0].totalBalance;
+	const _coinData = coinData?.filter((coin) => {
 		switch (coin.coinName) {
 			case coinTypeFirst!.name:
 				return false;
@@ -47,6 +40,16 @@ const SwapPresentation = () => {
 		}
 	})
 
+
+	if (isCoinDataLoading) return (
+		<PageContainer title='Swap' titleImg={Image.pageBackground_1}>
+			<div className={styles.swapContainer}>
+				<Loading />
+			</div>
+		</PageContainer>
+	);
+
+	if (!coinTypeFirst || !coinTypeSecond) return <Empty content='Oops!' />
 
 	return (
 		<PageContainer title='Swap' titleImg={Image.pageBackground_1}>
