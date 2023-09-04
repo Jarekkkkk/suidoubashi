@@ -93,10 +93,10 @@ export const cardLoadingContent = css`
 `
 
 export const coincardContent = css`
-    > div {
-      transition: 0.3s;
-      cursor: pointer;
-    }
+  > div {
+    transition: 0.3s;
+    cursor: pointer;
+  }
 
   &:hover {
     > div {
@@ -138,5 +138,14 @@ export const infoText = css`
     align-items: center;
     font-size: 16px;
     font-weight: normal;
+  }
+`
+
+export const switchPriceSortButton = css`
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    opacity: 0.7;
   }
 `

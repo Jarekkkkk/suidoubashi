@@ -14,6 +14,7 @@ import { Icon } from '@/Assets/icon'
 
 import SelectCoinModal from './_SelectCoinModal'
 import * as styles from './index.styles'
+import { Coins } from '@/Constants/coin';
 import useGetBalance from '@/Hooks/Coin/useGetBalance';
 import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool';
 import { useSwap } from '@/Hooks/AMM/useSwap'
@@ -30,6 +31,7 @@ const SwapPresentation = () => {
 	} = useSwapContext();
 
 	const [isSecond, setIsSecond] = useState<boolean>(false);
+	const [isFetchPriceSortDesc, setIsFetchPriceSortDesc] = useState<boolean>(true);
 	const _coinTypeFirstTotalBalance = coinData?.filter((coin) => coin.coinName === coinTypeFirst?.name)[0].totalBalance;
 	const _coinTypeSecondTotalBalance = coinData?.filter((coin) => coin.coinName === coinTypeSecond?.name)[0].totalBalance;
 
@@ -70,6 +72,24 @@ const SwapPresentation = () => {
 				return true;
 		}
 	})
+
+	const _fetchPrice = (sort: boolean) => {
+		if (sort) {
+			return (
+				`
+					1 ${Coins.filter((coin) => coin.type === pool?.type_x)[0]?.name} =
+					${(Number(pool?.reserve_x) / Number(pool?.reserve_y)).toFixed(5)} ${Coins.filter((coin) => coin.type === pool?.type_y)[0]?.name}
+				`
+			)
+		} else {
+			return (
+				`
+					1 ${Coins.filter((coin) => coin.type === pool?.type_y)[0]?.name} =
+					${(Number(pool?.reserve_y) / Number(pool?.reserve_x)).toFixed(5)} ${Coins.filter((coin) => coin.type === pool?.type_x)[0]?.name}
+				`
+			)
+		}
+	}
 
 
 	if (isCoinDataLoading) return (
@@ -177,7 +197,10 @@ const SwapPresentation = () => {
 					<div className={styles.bonusText}>Bonus  label<span>12%</span></div>
 					<div className={styles.infoText}>
 						Price
-						<span>1 USDC = 0.77 SUI <Icon.SwapCircleIcon /></span>
+						<span>
+							{_fetchPrice(isFetchPriceSortDesc)}
+							<Icon.SwapCircleIcon className={styles.switchPriceSortButton} onClick={() => setIsFetchPriceSortDesc(!isFetchPriceSortDesc)} />
+						</span>
 					</div>
 					<div className={styles.infoText}>Minimum Received<span>1 SUI</span></div>
 				</div>
