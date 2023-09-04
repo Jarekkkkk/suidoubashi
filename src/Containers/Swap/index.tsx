@@ -3,11 +3,15 @@ import React, {
 	useContext,
 	PropsWithChildren,
 	useCallback,
+	useMemo,
 } from 'react';
 import UserModule from '@/Modules/User';
 import { CoinIcon } from '@/Assets/icon'
 import { Coins, Coin, CoinInterface } from '@/Constants/coin';
+import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool';
+import { Pool } from '@/Constants/API/pool'
 import { useGetAllBalance, Balance } from '@/Hooks/Coin/useGetBalance';
+import { useSwap } from '@/Hooks/AMM/useSwap'
 
 const SwapContext = React.createContext<SwapContext>({
 	coinData: undefined,
@@ -35,6 +39,9 @@ const SwapContext = React.createContext<SwapContext>({
 	setCoinTypeSecond: () => {},
 	setError: () => {},
 	walletAddress: null,
+	handleSwap: () => {},
+	fetchPrice: () => {},
+	pool: null,
 });
 export const useSwapContext = () => useContext(SwapContext);
 
@@ -51,6 +58,45 @@ const SwapContainer = ({ children }: PropsWithChildren) => {
     Coins,
     walletAddress,
   )
+
+	// pools
+	const {data:pool_ids} = useGetPoolIDs()
+	const {data: pools} = useGetMulPool(pool_ids)
+	const pool = useMemo(()=>pools?.find((p)=>p.type_x == coinTypeFirst?.type && p.type_y == coinTypeSecond?.type || p.type_x == coinTypeSecond?.type && p.type_y == coinTypeFirst?.type) ?? null,[coinTypeFirst?.type, coinTypeSecond?.type])
+	//
+
+	const swap = useSwap();
+
+	const handleSwap = () => {
+		if (pool && coinTypeFirst?.type) {
+			swap.mutate({
+				pool_id: pool.id,
+				pool_type_x: pool.type_x,
+				pool_type_y: pool.type_y,
+				is_type_x: pool.type_x == coinTypeFirst.type,
+				input_value: coinInputFirst,
+				output_value: coinInputSecond,
+			})
+		}
+	};
+
+	const fetchPrice = (sort: boolean) => {
+		if (sort) {
+			return (
+				`
+					1 ${Coins.filter((coin) => coin.type === pool?.type_x)[0]?.name} =
+					${(Number(pool?.reserve_x) / Number(pool?.reserve_y)).toFixed(5)} ${Coins.filter((coin) => coin.type === pool?.type_y)[0]?.name}
+				`
+			)
+		} else {
+			return (
+				`
+					1 ${Coins.filter((coin) => coin.type === pool?.type_y)[0]?.name} =
+					${(Number(pool?.reserve_y) / Number(pool?.reserve_x)).toFixed(5)} ${Coins.filter((coin) => coin.type === pool?.type_x)[0]?.name}
+				`
+			)
+		}
+	}
 
 	const handleOnCoinInputFirstChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,6 +140,9 @@ const SwapContainer = ({ children }: PropsWithChildren) => {
 				error,
 				setError,
 				walletAddress,
+				handleSwap,
+				fetchPrice,
+				pool,
 			}}
 		>
 			{children}
@@ -117,6 +166,9 @@ interface SwapContext {
 	setCoinTypeSecond: Function,
 	setError: Function,
 	walletAddress: string | null,
+	handleSwap: () => void,
+	fetchPrice: Function,
+	pool: Pool | null,
 }
 
 export default SwapContainer;

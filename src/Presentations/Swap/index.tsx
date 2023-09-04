@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import BigNumber from 'bignumber.js'
 import {
 	PageContainer,
@@ -14,10 +14,7 @@ import { Icon } from '@/Assets/icon'
 
 import SelectCoinModal from './_SelectCoinModal'
 import * as styles from './index.styles'
-import { Coins } from '@/Constants/coin';
 import useGetBalance from '@/Hooks/Coin/useGetBalance';
-import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool';
-import { useSwap } from '@/Hooks/AMM/useSwap'
 
 const SwapPresentation = () => {
 	const {
@@ -27,6 +24,7 @@ const SwapPresentation = () => {
 		coinTypeFirst, coinTypeSecond,
 		setCoinTypeFirst, setCoinTypeSecond,
 		isShowSelectModal, setIsShowSelectModal,
+		handleSwap, fetchPrice, pool,
 		handleOnCoinInputFirstChange, handleOnCoinInputSecondChange,
 	} = useSwapContext();
 
@@ -35,31 +33,8 @@ const SwapPresentation = () => {
 	const _coinTypeFirstTotalBalance = coinData?.filter((coin) => coin.coinName === coinTypeFirst?.name)[0].totalBalance;
 	const _coinTypeSecondTotalBalance = coinData?.filter((coin) => coin.coinName === coinTypeSecond?.name)[0].totalBalance;
 
-	// pools
-	const {data:pool_ids} = useGetPoolIDs()
-	const {data: pools} = useGetMulPool(pool_ids)
-	const pool = useMemo(()=>pools?.find((p)=>p.type_x == coinTypeFirst?.type && p.type_y == coinTypeSecond?.type || p.type_x == coinTypeSecond?.type && p.type_y == coinTypeFirst?.type) ?? null,[coinTypeFirst?.type, coinTypeSecond?.type])
-	//
-
 	const coinTypeFirstBalance = coinTypeFirst && useGetBalance(coinTypeFirst.type, walletAddress)
 	const coinTypeSecondBalance = coinTypeSecond && useGetBalance(coinTypeSecond.type, walletAddress)
-
-  const swap = useSwap();
-
-	const handleSwap = () => {
-    if (pool && coinTypeFirst?.type) {
-      swap.mutate({
-        pool_id: pool.id,
-        pool_type_x: pool.type_x,
-        pool_type_y: pool.type_y,
-        is_type_x: pool.type_x == coinTypeFirst.type,
-        input_value: coinInputFirst,
-        output_value: coinInputSecond,
-      })
-    }
-  };
-
-	console.log('pool', pool);
 
 	const _coinData = coinData?.filter((coin) => {
 		switch (coin.coinName) {
@@ -72,25 +47,6 @@ const SwapPresentation = () => {
 				return true;
 		}
 	})
-
-	const _fetchPrice = (sort: boolean) => {
-		if (sort) {
-			return (
-				`
-					1 ${Coins.filter((coin) => coin.type === pool?.type_x)[0]?.name} =
-					${(Number(pool?.reserve_x) / Number(pool?.reserve_y)).toFixed(5)} ${Coins.filter((coin) => coin.type === pool?.type_y)[0]?.name}
-				`
-			)
-		} else {
-			return (
-				`
-					1 ${Coins.filter((coin) => coin.type === pool?.type_y)[0]?.name} =
-					${(Number(pool?.reserve_y) / Number(pool?.reserve_x)).toFixed(5)} ${Coins.filter((coin) => coin.type === pool?.type_x)[0]?.name}
-				`
-			)
-		}
-	}
-
 
 	if (isCoinDataLoading) return (
 		<PageContainer title='Swap' titleImg={Image.pageBackground_1}>
@@ -197,10 +153,12 @@ const SwapPresentation = () => {
 					<div className={styles.bonusText}>Bonus  label<span>12%</span></div>
 					<div className={styles.infoText}>
 						Price
-						<span>
-							{_fetchPrice(isFetchPriceSortDesc)}
-							<Icon.SwapCircleIcon className={styles.switchPriceSortButton} onClick={() => setIsFetchPriceSortDesc(!isFetchPriceSortDesc)} />
-						</span>
+						{pool &&
+							<span>
+								{fetchPrice(isFetchPriceSortDesc)}
+								<Icon.SwapCircleIcon className={styles.switchPriceSortButton} onClick={() => setIsFetchPriceSortDesc(!isFetchPriceSortDesc)} />
+							</span>
+						}
 					</div>
 					<div className={styles.infoText}>Minimum Received<span>1 SUI</span></div>
 				</div>
