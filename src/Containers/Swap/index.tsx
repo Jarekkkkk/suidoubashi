@@ -3,7 +3,6 @@ import React, {
 	useContext,
 	PropsWithChildren,
 	useCallback,
-	useEffect,
 } from 'react';
 import UserModule from '@/Modules/User';
 import { CoinIcon } from '@/Assets/icon'
@@ -38,9 +37,9 @@ export const useSwapContext = () => useContext(SwapContext);
 
 const SwapContainer = ({ children }: PropsWithChildren) => {
 	const [coinInputFirst, setCoinInputFirst] = useState<string>('');
-	const [coinTypeFirst, setCoinTypeFirst] = useState<CoinInterface>();
+	const [coinTypeFirst, setCoinTypeFirst] = useState<CoinInterface>(Coins.filter((coin) => coin.name === 'SUI')[0]);
 	const [coinInputSecond, setCoinInputSecond] = useState<string>('');
-	const [coinTypeSecond, setCoinTypeSecond] = useState<CoinInterface>();
+	const [coinTypeSecond, setCoinTypeSecond] = useState<CoinInterface>(Coins.filter((coin) => coin.name === 'SDB')[0]);
 	const [isShowSelectModal, setIsShowSelectModal]= useState<boolean>(false)
 
   const walletAddress = UserModule.getUserToken()
@@ -72,14 +71,6 @@ const SwapContainer = ({ children }: PropsWithChildren) => {
     },
     [setCoinInputSecond],
   )
-
-	useEffect(() => {
-		const _SUI = Coins.filter((coin) => coin.name === 'SUI')[0];
-		const _SDB = Coins.filter((coin) => coin.name === 'SDB')[0];
-
-		setCoinTypeFirst(_SUI);
-		setCoinTypeSecond(_SDB);
-	}, []);
 
 	return (
 		<SwapContext.Provider

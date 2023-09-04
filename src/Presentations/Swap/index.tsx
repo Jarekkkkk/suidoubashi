@@ -49,7 +49,7 @@ const SwapPresentation = () => {
 		</PageContainer>
 	);
 
-	if (!coinTypeFirst || !coinTypeSecond) return <Empty content='Oops!' />
+	if (!coinData || !coinTypeFirst || !coinTypeSecond) return <Empty content='Oops!' />
 
 	return (
 		<PageContainer title='Swap' titleImg={Image.pageBackground_1}>
