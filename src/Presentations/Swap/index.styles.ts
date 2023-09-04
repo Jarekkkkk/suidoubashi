@@ -77,3 +77,16 @@ export const cardLoadingContent = css`
   min-height: 300px;
   margin-bottom: 4px;
 `
+
+export const coincardContent = css`
+    > div {
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+  &:hover {
+    > div {
+      background-color: #E4F7FE;
+    }
+  }
+`

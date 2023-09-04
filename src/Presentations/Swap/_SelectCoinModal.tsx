@@ -22,6 +22,8 @@ type Props = {
   setCoinType: Function,
 };
 
+const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
+
 const _coinList = [
   {
     id: 0,
@@ -47,9 +49,18 @@ const _coinList = [
 
 const SelectCoinModal = (props: Props) => {
   const { coinData, isCoinDataLoading, isShow, setIsShow, setCoinType } = props;
-  const [input, setInput] = useState<string>('')
-  const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
-  const _coinsData = coinData?.filter((coin) => new RegExp(input, 'ig').test(coin.coinName))
+  const [input, setInput] = useState<string>('');
+  const _coinsData = coinData?.filter((coin) => new RegExp(input, 'ig').test(coin.coinName))?.sort((prev, next) => {
+    const _prevIdx = fetchIcon(prev.coinType)!.decimals
+    const _nextIdx = fetchIcon(next.coinType)!.decimals
+
+    return Number(
+      BigInt(next.totalBalance) *
+        BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
+        BigInt(prev.totalBalance) *
+          BigInt('10') ** BigInt((9 - _prevIdx).toString()),
+    )
+  });
 
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,16 +98,24 @@ const SelectCoinModal = (props: Props) => {
         </div>
         <div className={styles.coinContent}>
           {
-            _coinList.map((coin) => (
-              <Button
-                onClick={() => {}}
-                styletype="outlined"
-                text={coin.text}
-                icon={coin.icon}
-                key={coin.id}
-                medium
-              />
-            ))
+            _coinList.map((coin) => {
+              const _coinData = _coinsData?.filter((item => item.coinName === coin.text))[0];
+              const _coinIdx = _coinData && fetchIcon(_coinData.coinType);
+
+              return (
+                <Button
+                  onClick={() => {
+                    setCoinType(_coinIdx);
+                    setIsShow(false);
+                  }}
+                  styletype="outlined"
+                  text={coin.text}
+                  icon={coin.icon}
+                  key={coin.id}
+                  disabled={!_coinData}
+                  medium
+                />
+            )})
           }
         </div>
         <div className={styles.banlaceContent}>
@@ -106,20 +125,9 @@ const SelectCoinModal = (props: Props) => {
                 <Loading />
               </div>
             ) : _coinsData && !!_coinsData.length ? (
-              _coinsData
-                ?.sort((prev, next) => {
-                  const _prevIdx = fetchIcon(prev.coinType)!.decimals
-                  const _nextIdx = fetchIcon(next.coinType)!.decimals
-
-                  return Number(
-                    BigInt(next.totalBalance) *
-                      BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
-                      BigInt(prev.totalBalance) *
-                        BigInt('10') ** BigInt((9 - _prevIdx).toString()),
-                  )
-                })
-                .map((balance, idx) => {
+              _coinsData.map((balance, idx) => {
                   const _coinIdx = fetchIcon(balance.coinType)
+
                   return (
                     <div
                       key={idx}
@@ -127,6 +135,7 @@ const SelectCoinModal = (props: Props) => {
                         setCoinType(_coinIdx);
                         setIsShow(false);
                       }}
+                      className={styles.coincardContent}
                     >
                       <Coincard
                         coinXIcon={_coinIdx!.logo}
