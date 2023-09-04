@@ -90,3 +90,37 @@ export const coincardContent = css`
     }
   }
 `
+
+export const infoContent = css`
+  margin: 0 auto 28px auto;
+  min-width: 350px;
+`
+
+export const bonusText = css`
+  margin-bottom: 28px;
+  color:  #606266;
+  font-size: 12px;
+  text-align: center;
+  font-weight: normal;
+  line-height: 1;
+
+  span {
+    margin-left: 20px;
+    color: #7FDF7D;
+    font-size: 16px;
+  }
+`
+
+export const infoText = css`
+  display: flex;
+  justify-content: space-between;
+  color:  #303133;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 2;
+
+  span {
+    font-size: 16px;
+    font-weight: normal;
+  }
+`

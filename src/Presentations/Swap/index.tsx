@@ -113,6 +113,11 @@ const SwapPresentation = () => {
 						</>
 					}
 				/>
+				<div className={styles.infoContent}>
+					<div className={styles.bonusText}>Bonus  label<span>12%</span></div>
+					<div className={styles.infoText}>Price<span>1 USDC = 0.77 SUI</span></div>
+					<div className={styles.infoText}>Minimum Received<span>1 SUI</span></div>
+				</div>
 				<div className={styles.swapButton}>
 					<Button
 						text='Swap'
