@@ -127,7 +127,13 @@ const SwapPresentation = () => {
 						</>
 					}
 				/>
-				<Icon.ArrowDownIcon className={styles.arrowDownIcon} />
+				<Icon.ArrowDownIcon
+					className={styles.arrowDownIcon}
+					onClick={() => {
+						setCoinTypeFirst(coinTypeSecond);
+						setCoinTypeSecond(coinTypeFirst);
+					}}
+				/>
 				<InputSection
 					balance={
 						_coinTypeSecondTotalBalance

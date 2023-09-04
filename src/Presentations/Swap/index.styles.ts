@@ -35,6 +35,12 @@ export const coinButton = css`
 
 export const arrowDownIcon = css`
   margin: 0 auto 30px auto;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    transform: rotate(180deg);
+  }
 `
 
 export const swapButton = css`
