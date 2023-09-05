@@ -43,7 +43,7 @@ const SettingModal = (props: Props) => {
   }
   const handleSlippageOnchange = (slippage: string) => {
     const value = parseFloat(slippage)
-    if (value >= 0.01) {
+    if (value >= 0.01 && value <= 100) {
       setSetting((_prev) => ({ ..._prev, slippage: value.toString() }))
       SettingModule.setSlippageToken(slippage)
     }

@@ -17,7 +17,7 @@ import * as styles from './index.styles'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { get_output } from '@/Constants/API/pool'
 import useRpc from '@/Hooks/useRpc'
-import SettingModule from '@/Modules/Setting'
+import { SLIPPAGE_STORAGE_NAME } from '@/Modules/Setting'
 
 const SwapPresentation = () => {
   const {
@@ -68,14 +68,14 @@ const SwapPresentation = () => {
         return true
     }
   })
-  const slippage = SettingModule.getSlippageToken() ?? '0'
+  const [slippage, setSlippage] = useState('')
   const minimum_received = useMemo(
-    () => ((1 - parseFloat(slippage) / 100) * Number(coinInputSecond)).toFixed(coinTypeSecond?.decimals),
+    () =>
+      ((1 - parseFloat(slippage) / 100) * Number(coinInputSecond)).toFixed(
+        coinTypeSecond?.decimals,
+      ),
     [slippage, coinInputSecond],
   )
-
-  console.log(slippage)
-
   const [isLoading, setisLoading] = useState(false)
   useEffect(() => {
     async function get_output_() {
@@ -95,6 +95,7 @@ const SwapPresentation = () => {
       }
     }
     get_output_()
+    setSlippage(localStorage.getItem(SLIPPAGE_STORAGE_NAME) || '')
   }, [pool, walletAddress, coinTypeFirst, coinInputFirst])
 
   if (isCoinDataLoading)
