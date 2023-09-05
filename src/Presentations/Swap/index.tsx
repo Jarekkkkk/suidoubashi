@@ -19,6 +19,7 @@ import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { get_output } from '@/Constants/API/pool'
 import useRpc from '@/Hooks/useRpc'
 import { SLIPPAGE_STORAGE_NAME } from '@/Modules/Setting'
+import { useSwap } from '@/Hooks/AMM/useSwap'
 
 const SwapPresentation = () => {
   const {
@@ -35,16 +36,13 @@ const SwapPresentation = () => {
     setCoinTypeSecond,
     isShowSelectModal,
     setIsShowSelectModal,
-    handleSwap,
     fetchPrice,
     pool,
     handleOnCoinInputFirstChange,
     handleOnCoinInputSecondChange,
-  } = useSwapContext();
+  } = useSwapContext()
 
-  const { currentNFTInfo } = usePageContext();
-
-  console.log('currentNFTInfo', currentNFTInfo)
+  const { currentNFTInfo } = usePageContext()
 
   const rpc = useRpc()
   const [isSecond, setIsSecond] = useState<boolean>(false)
@@ -75,16 +73,14 @@ const SwapPresentation = () => {
   })
   const [slippage, setSlippage] = useState('')
   const minimum_received = useMemo(
-    () =>
-      ((1 - parseFloat(slippage) / 100) * Number(coinInputSecond)).toFixed(
-        coinTypeSecond?.decimals,
-      ),
+    () => (1 - parseFloat(slippage) / 100) * Number(coinInputSecond),
     [slippage, coinInputSecond],
   )
+
   const [isLoading, setisLoading] = useState(false)
   useEffect(() => {
     async function get_output_() {
-      if (pool && walletAddress && coinTypeFirst) {
+      if (pool && walletAddress && coinTypeFirst && coinTypeSecond) {
         setisLoading(true)
         const res = await get_output(
           rpc,
@@ -93,16 +89,37 @@ const SwapPresentation = () => {
           pool?.type_x,
           pool?.type_y,
           coinTypeFirst?.type,
-          coinInputFirst,
+          Math.round(
+            parseFloat(coinInputFirst) * 10 ** coinTypeFirst.decimals,
+          ).toString(),
         )
         setisLoading(false)
-        handleOnCoinInputSecondChange(res)
+        handleOnCoinInputSecondChange(
+          (parseInt(res) / 10 ** coinTypeSecond.decimals).toString(),
+        )
       }
     }
     get_output_()
     setSlippage(localStorage.getItem(SLIPPAGE_STORAGE_NAME) || '')
   }, [pool, walletAddress, coinTypeFirst, coinInputFirst])
 
+  const swap = useSwap()
+  const handleSwap = () => {
+    if (pool && coinTypeFirst && coinTypeSecond) {
+      swap.mutate({
+        pool_id: pool.id,
+        pool_type_x: pool.type_x,
+        pool_type_y: pool.type_y,
+        is_type_x: pool.type_x == coinTypeFirst.type,
+        input_value: Math.round(
+          parseFloat(coinInputFirst) * 10 ** coinTypeFirst.decimals,
+        ).toString(),
+        output_value: Math.round(
+          minimum_received * 10 ** coinTypeSecond.decimals,
+        ).toString(),
+      })
+    }
+  }
   if (isCoinDataLoading)
     return (
       <PageContainer title='Swap' titleImg={Image.pageBackground_1}>
@@ -150,7 +167,8 @@ const SwapPresentation = () => {
 
                   if (coinTypeFirstBalance?.totalBalance) {
                     if (
-                      parseFloat(e.target.value) * Math.pow(10, 9) >
+                      parseFloat(e.target.value) *
+                        Math.pow(10, coinTypeFirst.decimals) >
                       Number(coinTypeFirstBalance.totalBalance)
                     ) {
                       setError('Insufficient Balance')
@@ -232,7 +250,11 @@ const SwapPresentation = () => {
           </div>
           <div className={styles.infoText}>
             Minimum Received
-            <span>{minimum_received + ' ' + coinTypeSecond.name}</span>
+            <span>
+              {minimum_received.toFixed(coinTypeSecond.decimals) +
+                ' ' +
+                coinTypeSecond.name}
+            </span>
           </div>
         </div>
         <div className={styles.swapButton}>

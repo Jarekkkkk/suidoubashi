@@ -10,8 +10,6 @@ import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
 import { Swap, amm_package, swap_for_x, swap_for_y } from '@/Constants/API/pool'
 import { queryClient } from '@/App'
-import { calculate_slippage } from '@/Utils/calculateAPR'
-import { SettingInterface } from '@/Components/SettingModal'
 
 type SwapMutationArgs = {
   pool_id: string
@@ -25,12 +23,6 @@ type SwapMutationArgs = {
 export const useSwap = () => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
-  // TODO
-  const setting: SettingInterface = {
-    gasBudget: '1000000',
-    expiration: '30',
-    slippage: '200',
-  }
 
   return useMutation({
     mutationFn: async ({
@@ -53,12 +45,11 @@ export const useSwap = () => {
       })
       const coin = payCoin(txb, coins, input_value, input_type)
 
-      const output_min = calculate_slippage(setting.slippage, output_value)
 
       if (is_type_x) {
-        swap_for_y(txb, pool_id, pool_type_x, pool_type_y, coin, output_min)
+        swap_for_y(txb, pool_id, pool_type_x, pool_type_y, coin, output_value)
       } else {
-        swap_for_x(txb, pool_id, pool_type_x, pool_type_y, coin, output_min)
+        swap_for_x(txb, pool_id, pool_type_x, pool_type_y, coin, output_value)
       }
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })

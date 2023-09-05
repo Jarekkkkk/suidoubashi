@@ -71,6 +71,7 @@ const PageComponent = (props: Props) => {
       }
     }
   }
+
   if (isDashboard) {
     return (
       <>
