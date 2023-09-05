@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import {
   PageContainer,
@@ -17,6 +17,7 @@ import * as styles from './index.styles'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { get_output } from '@/Constants/API/pool'
 import useRpc from '@/Hooks/useRpc'
+import SettingModule from '@/Modules/Setting'
 
 const SwapPresentation = () => {
   const {
@@ -67,6 +68,13 @@ const SwapPresentation = () => {
         return true
     }
   })
+  const slippage = SettingModule.getSlippageToken() ?? '0'
+  const minimum_received = useMemo(
+    () => ((1 - parseFloat(slippage) / 100) * Number(coinInputSecond)).toFixed(coinTypeSecond?.decimals),
+    [slippage, coinInputSecond],
+  )
+
+  console.log(slippage)
 
   const [isLoading, setisLoading] = useState(false)
   useEffect(() => {
@@ -83,13 +91,11 @@ const SwapPresentation = () => {
           coinInputFirst,
         )
         setisLoading(false)
-        console.log(res)
+        handleOnCoinInputSecondChange(res)
       }
     }
-
     get_output_()
   }, [pool, walletAddress, coinTypeFirst, coinInputFirst])
-  console.log(isLoading)
 
   if (isCoinDataLoading)
     return (
@@ -185,8 +191,6 @@ const SwapPresentation = () => {
               <Input
                 value={coinInputSecond}
                 onChange={(e) => {
-                  handleOnCoinInputSecondChange(e)
-
                   if (coinTypeSecondBalance?.totalBalance) {
                     if (
                       parseFloat(e.target.value) * Math.pow(10, 9) >
@@ -221,7 +225,8 @@ const SwapPresentation = () => {
             )}
           </div>
           <div className={styles.infoText}>
-            Minimum Received<span>1 SUI</span>
+            Minimum Received
+            <span>{minimum_received + ' ' + coinTypeSecond.name}</span>
           </div>
         </div>
         <div className={styles.swapButton}>
