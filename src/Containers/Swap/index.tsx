@@ -43,6 +43,7 @@ const SwapContext = React.createContext<SwapContext>({
 	fetchPrice: () => {},
 	pool: null,
 });
+
 export const useSwapContext = () => useContext(SwapContext);
 
 const SwapContainer = ({ children }: PropsWithChildren) => {

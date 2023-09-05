@@ -9,6 +9,7 @@ import {
   Empty,
 } from '@/Components'
 import { useSwapContext } from '@/Containers/Swap'
+import { usePageContext } from '@/Components/Page'
 import Image from '@/Assets/image'
 import { Icon } from '@/Assets/icon'
 
@@ -39,7 +40,11 @@ const SwapPresentation = () => {
     pool,
     handleOnCoinInputFirstChange,
     handleOnCoinInputSecondChange,
-  } = useSwapContext()
+  } = useSwapContext();
+
+  const { currentNFTInfo } = usePageContext();
+
+  console.log('currentNFTInfo', currentNFTInfo)
 
   const rpc = useRpc()
   const [isSecond, setIsSecond] = useState<boolean>(false)

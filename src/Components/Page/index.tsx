@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, createContext, useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import { useGetAllBalance } from '@/Hooks/Coin/useGetBalance'
 import { useGetVsdb, useGetVsdbIDs } from '@/Hooks/VSDB/useGetVSDB'
+import { Vsdb } from '@/Constants/API/vsdb'
 import { useGetAllLP } from '@/Hooks/AMM/useGetLP'
 import UserModule from '@/Modules/User'
 import { useWalletKit } from '@mysten/wallet-kit'
@@ -11,6 +12,15 @@ import { Coins } from '@/Constants/coin'
 import { Sidebar, ControlBar, SettingModal } from '@/Components'
 import * as styles from './index.styles'
 import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
+
+const PageContext = createContext<PageContext>({
+  currentNFTInfo: {
+    data: null,
+    isLoading: false,
+  },
+})
+
+export const usePageContext = () => useContext(PageContext)
 
 interface Props {
   children: any
@@ -82,7 +92,13 @@ const PageComponent = (props: Props) => {
       <div className={styles.layoutContainer}>
         <div className={styles.mainContent}>
           <Sidebar isSettingOpen={isSettingOpen} setIsSettingOpen={setIsSettingOpen} />
-          <div className={styles.content}>{children}</div>
+          <PageContext.Provider
+            value={{
+              currentNFTInfo: currentNFTInfo,
+            }}
+          >
+            <div className={styles.content}>{children}</div>
+          </PageContext.Provider>
           <ControlBar
             isPrevBtnDisplay={currentVsdbId !== 0}
             isNextBtnDisplay={
@@ -104,4 +120,11 @@ const PageComponent = (props: Props) => {
     )
   )
 }
+interface PageContext {
+	readonly currentNFTInfo: {
+    data: Vsdb | undefined | null
+    isLoading: boolean
+  },
+}
+
 export default PageComponent
