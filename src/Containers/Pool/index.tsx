@@ -8,11 +8,14 @@ import { useSwap } from '@/Hooks/AMM/useSwap'
 import { useZap } from '@/Hooks/AMM/useZap'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { useWalletKit } from '@mysten/wallet-kit'
-import React, { useState, useContext, PropsWithChildren, useMemo } from 'react'
+import React, { useState, useContext, PropsWithChildren, useMemo, ChangeEvent } from 'react'
 
 const PoolContext = React.createContext<PoolContext>({
   data: null,
   fetching: false,
+  searchInput: '',
+  setSearchInput: Function,
+  handleOnInputChange: () => {},
 })
 
 export const usePoolContext = () => useContext(PoolContext)
@@ -20,6 +23,7 @@ export const usePoolContext = () => useContext(PoolContext)
 const PoolContainer = ({ children }: PropsWithChildren) => {
   const [data, _setData] = useState(null)
   const [fetching, _setFetching] = useState(false)
+  const [searchInput, setSearchInput] = useState('')
 
   const { currentAccount } = useWalletKit()
   // pool
@@ -109,11 +113,18 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
     }
   }
 
+  const handleOnInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
+    setSearchInput(e.target.value);
+  };
+
   return (
     <PoolContext.Provider
       value={{
         data,
         fetching,
+        searchInput,
+        setSearchInput,
+        handleOnInputChange,
       }}
     >
       <Button
@@ -137,6 +148,9 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
 interface PoolContext {
   readonly data: [] | null
   readonly fetching: boolean
+  searchInput: string,
+  setSearchInput: Function,
+  handleOnInputChange: (e: ChangeEvent<HTMLInputElement>) => void,
 }
 
 export default PoolContainer

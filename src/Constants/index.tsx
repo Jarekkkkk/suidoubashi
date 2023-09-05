@@ -30,7 +30,7 @@ export const generateSideBarLinks = () => [
     element: <Pool />,
     title: 'Pool',
     icon: <Icon.PoolIcon />,
-    isHidden: true,
+    isHidden: false,
   },
   {
     key: 'Vest',
