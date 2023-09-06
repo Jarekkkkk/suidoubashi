@@ -26,6 +26,7 @@ interface Props {
     required_exp: number
   }
   vesdbSpanValue?: string
+  amm_label: boolean
 }
 
 interface TextItemProps {
@@ -96,6 +97,7 @@ const VestCardComponent = (props: Props) => {
     setIsShowWithdrawVSDBModal,
     expSpanValue,
     vesdbSpanValue,
+    amm_label,
   } = props
 
   const { mutate: unlock } = useUnlock()
@@ -132,11 +134,7 @@ const VestCardComponent = (props: Props) => {
         </div>
         <div className={cx(styles.badgeContent)}>
           <div>Badge</div>
-          <Button
-            styletype='badge'
-            text='AMM'
-            onClick={handleInitializeAMM}
-          />
+          <Button styletype='badge' text='AMM' onClick={handleInitializeAMM} />
           <Button disabled styletype='badge' text='Vote' onClick={() => {}} />
         </div>
         {!isPerviewMode && (
@@ -147,7 +145,7 @@ const VestCardComponent = (props: Props) => {
                   <Button
                     styletype='outlined'
                     text='Unlock'
-                    onClick={() => handleUnlock(nftId)}
+                    onClick={() => !amm_label && handleUnlock(nftId)}
                   />
                 }
                 {setIsShowWithdrawVSDBModal && (

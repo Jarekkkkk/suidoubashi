@@ -14,6 +14,7 @@ import DepositVSDBModal from './_DepositVSDBModal'
 import * as styles from './index.styles'
 import BigNumber from 'bignumber.js'
 import { useMintSDB } from '@/Hooks/VSDB/useMintSDB'
+import { it } from 'node:test'
 
 const VestPresentation = () => {
   const {
@@ -84,6 +85,7 @@ const VestPresentation = () => {
                     setCurrentVSDBId={setCurrentVSDBId}
                     setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
                     setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
+                    amm_label={!!item.amm_state}
                   />
                 )
               })
