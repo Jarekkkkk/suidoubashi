@@ -234,7 +234,7 @@ const SwapPresentation = () => {
         />
         <div className={styles.infoContent}>
           <div className={styles.bonusText}>
-            Bonus label<span>12%</span>
+            Fee Percentage Discount<span>{currentNFTInfo.data?.level ?? 0 * 0.01} %</span>
           </div>
           <div className={styles.infoText}>
             Price
