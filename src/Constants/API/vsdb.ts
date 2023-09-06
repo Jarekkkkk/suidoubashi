@@ -8,7 +8,7 @@ import {
   getObjectId,
 } from '@mysten/sui.js'
 import { AMMState, amm_package } from './pool'
-import { VotingState, vote_package } from './vote'
+import { VotingState } from './vote'
 import { bcs_registry } from '../bcs'
 
 //export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE as string

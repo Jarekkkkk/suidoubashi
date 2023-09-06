@@ -12,12 +12,14 @@ import { Coins } from '@/Constants/coin'
 import { Sidebar, ControlBar, SettingModal } from '@/Components'
 import * as styles from './index.styles'
 import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
+import { SettingInterface, defaultSetting } from '../SettingModal'
 
 const PageContext = createContext<PageContext>({
   currentNFTInfo: {
     data: null,
     isLoading: false,
   },
+  setting: defaultSetting,
 })
 
 export const usePageContext = () => useContext(PageContext)
@@ -71,6 +73,8 @@ const PageComponent = (props: Props) => {
       }
     }
   }
+  // setting
+  const [setting, setSetting] = useState<SettingInterface>(defaultSetting)
 
   if (isDashboard) {
     return (
@@ -78,9 +82,17 @@ const PageComponent = (props: Props) => {
         {isConnected && (
           <div className={styles.dashboardMainContent}>
             <div className={styles.sidebarContent}>
-              <Sidebar isSettingOpen={isSettingOpen} setIsSettingOpen={setIsSettingOpen} />
+              <Sidebar
+                isSettingOpen={isSettingOpen}
+                setIsSettingOpen={setIsSettingOpen}
+              />
             </div>
-            <SettingModal isSettingOpen={isSettingOpen} setIsSettingOpen={setIsSettingOpen} />
+            <SettingModal
+              setting={setting}
+              handleSetting={(s) => setSetting(s)}
+              isSettingOpen={isSettingOpen}
+              setIsSettingOpen={setIsSettingOpen}
+            />
           </div>
         )}
         {children}
@@ -92,10 +104,14 @@ const PageComponent = (props: Props) => {
     walletAddress && (
       <div className={styles.layoutContainer}>
         <div className={styles.mainContent}>
-          <Sidebar isSettingOpen={isSettingOpen} setIsSettingOpen={setIsSettingOpen} />
+          <Sidebar
+            isSettingOpen={isSettingOpen}
+            setIsSettingOpen={setIsSettingOpen}
+          />
           <PageContext.Provider
             value={{
               currentNFTInfo: currentNFTInfo,
+              setting: setting
             }}
           >
             <div className={styles.content}>{children}</div>
@@ -115,17 +131,23 @@ const PageComponent = (props: Props) => {
             isCoinDataLoading={isCoinDataLoading}
             isPoolDataLoading={pools.isLoading}
           />
-          <SettingModal isSettingOpen={isSettingOpen} setIsSettingOpen={setIsSettingOpen} />
+          <SettingModal
+            setting={setting}
+            handleSetting={(s) => setSetting(s)}
+            isSettingOpen={isSettingOpen}
+            setIsSettingOpen={setIsSettingOpen}
+          />
         </div>
       </div>
     )
   )
 }
 interface PageContext {
-	readonly currentNFTInfo: {
+  readonly currentNFTInfo: {
     data: Vsdb | undefined | null
     isLoading: boolean
-  },
+  }
+  readonly setting: SettingInterface
 }
 
 export default PageComponent

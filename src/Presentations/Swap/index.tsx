@@ -18,7 +18,6 @@ import * as styles from './index.styles'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { get_output } from '@/Constants/API/pool'
 import useRpc from '@/Hooks/useRpc'
-import { SLIPPAGE_STORAGE_NAME } from '@/Modules/Setting'
 import { useSwap } from '@/Hooks/AMM/useSwap'
 
 const SwapPresentation = () => {
@@ -42,7 +41,7 @@ const SwapPresentation = () => {
     handleOnCoinInputSecondChange,
   } = useSwapContext()
 
-  const { currentNFTInfo } = usePageContext()
+  const { currentNFTInfo, setting } = usePageContext()
 
   const rpc = useRpc()
   const [isSecond, setIsSecond] = useState<boolean>(false)
@@ -71,16 +70,21 @@ const SwapPresentation = () => {
         return true
     }
   })
-  const [slippage, setSlippage] = useState('')
   const minimum_received = useMemo(
-    () => (1 - parseFloat(slippage) / 100) * Number(coinInputSecond),
-    [slippage, coinInputSecond],
+    () => (1 - parseFloat(setting.slippage) / 100) * Number(coinInputSecond),
+    [setting.slippage, coinInputSecond],
   )
 
   const [isLoading, setisLoading] = useState(false)
   useEffect(() => {
     async function get_output_() {
-      if (pool && walletAddress && coinTypeFirst && coinTypeSecond) {
+      if (
+        pool &&
+        walletAddress &&
+        coinInputFirst &&
+        coinTypeFirst &&
+        coinTypeSecond
+      ) {
         setisLoading(true)
         const res = await get_output(
           rpc,
@@ -100,7 +104,6 @@ const SwapPresentation = () => {
       }
     }
     get_output_()
-    setSlippage(localStorage.getItem(SLIPPAGE_STORAGE_NAME) || '')
   }, [pool, walletAddress, coinTypeFirst, coinInputFirst])
 
   const swap = useSwap()
@@ -234,7 +237,8 @@ const SwapPresentation = () => {
         />
         <div className={styles.infoContent}>
           <div className={styles.bonusText}>
-            Fee Percentage Discount<span>{currentNFTInfo.data?.level ?? 0 * 0.01} %</span>
+            Fee Percentage Discount
+            <span>{currentNFTInfo.data?.level ?? 0 * 0.01} %</span>
           </div>
           <div className={styles.infoText}>
             Price
@@ -263,7 +267,7 @@ const SwapPresentation = () => {
             styletype='filled'
             onClick={handleSwap}
             disabled={!!error || !coinInputFirst || !coinInputSecond}
-            // isLoading={isLoading}
+            isLoading={swap.isLoading}
           />
         </div>
       </div>

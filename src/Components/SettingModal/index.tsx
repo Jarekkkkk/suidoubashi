@@ -22,29 +22,26 @@ export const defaultSetting: SettingInterface = {
 interface Props {
   isSettingOpen: boolean
   setIsSettingOpen: Function
+  setting: SettingInterface
+  handleSetting: (setting: SettingInterface) => void
 }
 
 const SettingModal = (props: Props) => {
-  const { isSettingOpen, setIsSettingOpen } = props
-  const [setting, setSetting] = useState<SettingInterface>({
-    gasBudget: SettingModule.getGadBudgetToken() ?? '10000000',
-    expiration: SettingModule.getExpirationToken() ?? '30',
-    slippage: SettingModule.getSlippageToken() ?? '2',
-  })
+  const { isSettingOpen, setIsSettingOpen, setting, handleSetting } = props
 
   const handleGasBudgetOnchange = (gasBudget: string) => {
-    setSetting((_prev) => ({ ..._prev, gasBudget }))
+    handleSetting({ ...setting, gasBudget })
     SettingModule.setGadBudgetToken(gasBudget)
   }
 
   const handleExpirationOnchange = (expiration: string) => {
-    setSetting((_prev) => ({ ..._prev, expiration }))
+    handleSetting({ ...setting, expiration })
     SettingModule.setExpirationToken(expiration)
   }
   const handleSlippageOnchange = (slippage: string) => {
     const value = parseFloat(slippage)
     if (value >= 0.01 && value <= 100) {
-      setSetting((_prev) => ({ ..._prev, slippage: value.toString() }))
+      handleSetting({ ...setting, slippage })
       SettingModule.setSlippageToken(slippage)
     }
   }
