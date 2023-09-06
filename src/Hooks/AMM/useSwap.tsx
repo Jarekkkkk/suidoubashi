@@ -45,7 +45,6 @@ export const useSwap = () => {
       })
       const coin = payCoin(txb, coins, input_value, input_type)
 
-
       if (is_type_x) {
         swap_for_y(txb, pool_id, pool_type_x, pool_type_y, coin, output_value)
       } else {
@@ -66,53 +65,13 @@ export const useSwap = () => {
         throw new Error('Vesting Vsdb Tx fail')
       }
 
-      console.log(res)
-
       return res.events?.find((e) =>
         e.type.startsWith(`${amm_package}::event::Swap`),
       )?.parsedJson as Swap
     },
-    onSuccess: ({ input, output }, { is_type_x, pool_type_x, pool_type_y }) => {
-      console.log(input)
-      console.log(output)
-      //ipnut
-      queryClient.setQueryData(
-        [
-          'get-balance',
-          currentAccount!.address,
-          is_type_x ? pool_type_x : pool_type_y,
-        ],
-        (balance?: CoinBalance) =>
-          balance && {
-            ...balance,
-            totalBalance: (
-              BigInt(balance.totalBalance) - BigInt(input)
-            ).toString(),
-          },
-      )
-      //output
-      queryClient.setQueryData(
-        [
-          'get-balance',
-          currentAccount!.address,
-          is_type_x ? pool_type_y : pool_type_x,
-        ],
-        (balance?: CoinBalance) =>
-          balance
-            ? {
-                ...balance,
-                totalBalance: (
-                  BigInt(balance.totalBalance) + BigInt(output)
-                ).toString(),
-              }
-            : ({
-                totalBalance: output,
-                coinType: is_type_x ? pool_type_y : pool_type_x,
-                coinObjectCount: 1,
-                lockedBalance: {},
-              } as CoinBalance),
-      )
-
+    onSuccess: (_, params) => {
+      queryClient.invalidateQueries(['balance'])
+      queryClient.invalidateQueries(['pool', params.pool_id])
       toast.success('Swap Success!')
     },
     onError: (err: Error) => {

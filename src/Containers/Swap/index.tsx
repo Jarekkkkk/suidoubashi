@@ -11,7 +11,6 @@ import { Coins, Coin, CoinInterface } from '@/Constants/coin'
 import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import { Pool } from '@/Constants/API/pool'
 import { useGetAllBalance, Balance } from '@/Hooks/Coin/useGetBalance'
-import { useSwap } from '@/Hooks/AMM/useSwap'
 
 const SwapContext = React.createContext<SwapContext>({
   coinData: undefined,
