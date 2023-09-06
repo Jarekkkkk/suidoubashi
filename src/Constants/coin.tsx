@@ -26,7 +26,7 @@ export const Coins: CoinInterface[] = [
   {
     type: Coin.ETH,
     logo: <CoinIcon.WETHIcon />,
-    decimals: 9,
+    decimals: 8,
     name: 'ETH',
   },
   {
