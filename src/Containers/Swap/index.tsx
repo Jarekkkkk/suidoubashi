@@ -77,25 +77,18 @@ const SwapContainer = ({ children }: PropsWithChildren) => {
     [coinTypeFirst?.type, coinTypeSecond?.type, pools],
   )
 
-
   const fetchPrice = (sort: boolean) => {
-    if (sort) {
-      const price = Number(pool?.reserve_x) / Number(pool?.reserve_y)
-      return `
-					1 ${Coins.filter((coin) => coin.type === pool?.type_x)[0]?.name} =
-					${isNaN(price) ? '0' : price.toFixed(5)} ${Coins.filter(
-            (coin) => coin.type === pool?.type_y,
-          )[0]?.name}
-				`
-    } else {
-      const price = Number(pool?.reserve_y) / Number(pool?.reserve_x)
-      return `
-					1 ${Coins.filter((coin) => coin.type === pool?.type_y)[0]?.name} =
-${isNaN(price) ? '0' : price.toFixed(5)} ${Coins.filter(
-        (coin) => coin.type === pool?.type_x,
-      )[0]?.name}
-				`
-    }
+    const coin_x = Coins.find((c) => c.type === pool?.type_x)
+    const coin_y = Coins.find((c) => c.type === pool?.type_y)
+
+    if (pool!.reserve_x == '0' || pool!.reserve_y == '0') return 'No Liquidity'
+    const price =
+      (Number(pool?.reserve_y) / Number(pool?.reserve_x)) *
+      10 ** (coin_x!.decimals - coin_y!.decimals)
+
+    return sort
+      ? `1${coin_x?.name} = ${price.toFixed(5)} ${coin_y?.name}`
+      : `1${coin_y?.name} = ${(1 / price).toFixed(5)} ${coin_x?.name}`
   }
 
   const handleOnCoinInputFirstChange = useCallback(
