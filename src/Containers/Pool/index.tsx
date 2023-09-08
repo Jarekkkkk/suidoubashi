@@ -1,17 +1,19 @@
 import { Button } from '@/Components'
-import { Coin } from '@/Constants/coin'
+import { Pool } from '@/Constants/API/pool'
+import { Coin, Coins } from '@/Constants/coin'
 import { useRemoveLiquidity } from '@/Hooks/AMM/removeLiquidity'
 import { useAddLiquidity } from '@/Hooks/AMM/useAddLiquidity'
 import { useGetLP } from '@/Hooks/AMM/useGetLP'
 import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import { useSwap } from '@/Hooks/AMM/useSwap'
 import { useZap } from '@/Hooks/AMM/useZap'
-import useGetBalance from '@/Hooks/Coin/useGetBalance'
+import useGetBalance, { useGetAllBalance, Balance } from '@/Hooks/Coin/useGetBalance'
 import { useWalletKit } from '@mysten/wallet-kit'
 import React, { useState, useContext, PropsWithChildren, useMemo, ChangeEvent } from 'react'
 
 const PoolContext = React.createContext<PoolContext>({
-  data: null,
+  poolsData: null,
+  allBalanceData: undefined,
   fetching: false,
   searchInput: '',
   setSearchInput: Function,
@@ -31,6 +33,13 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   const { data: pools } = useGetMulPool(pool_ids?.data)
   // balance
   const balance_x = useGetBalance(Coin.SDB, currentAccount?.address)
+
+  // Balance
+  const { data: allBalance, isLoading: isAllBalanceLoading } = useGetAllBalance(
+    Coins,
+    currentAccount?.address,
+  )
+
   // LP
   //const { data: lps } = useGetAllLP(currentAccount?.address)
 
@@ -120,7 +129,8 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   return (
     <PoolContext.Provider
       value={{
-        data,
+        poolsData: pools,
+        allBalanceData: allBalance,
         fetching,
         searchInput,
         setSearchInput,
@@ -146,7 +156,8 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
 }
 
 interface PoolContext {
-  readonly data: [] | null
+  readonly poolsData: Pool[] | null
+  readonly allBalanceData: Balance[] | undefined
   readonly fetching: boolean
   searchInput: string,
   setSearchInput: Function,
