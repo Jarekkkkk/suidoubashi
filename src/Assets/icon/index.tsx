@@ -22,6 +22,7 @@ import { ReactComponent as DefiGreenIcon } from '@/Assets/icon/icon_defi_green.s
 import { ReactComponent as WarningSignIcon } from '@/Assets/icon/icon_warning_sign.svg'
 import { ReactComponent as ArrowDownIcon } from '@/Assets/icon/icon_arrow_down.svg'
 import { ReactComponent as SwapCircleIcon } from '@/Assets/icon/icon_swap_circle.svg'
+import { ReactComponent as PrevIcon  } from '@/Assets/icon/icon_prev.svg'
 
 export const Icon = {
   SwapIcon,
@@ -47,6 +48,7 @@ export const Icon = {
   WarningSignIcon,
   ArrowDownIcon,
   SwapCircleIcon,
+  PrevIcon,
 }
 
 import { ReactComponent as BTCIcon } from '@/Assets/icon/coin/btc.svg'

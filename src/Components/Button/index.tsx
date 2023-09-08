@@ -5,7 +5,7 @@ import { types } from './index.styles';
 interface Props {
   styletype: string, // filled | outlined | tonal
   text: string,
-  onClick: () => void,
+  onClick?: () => void,
   icon?: any,
   disabled?: boolean,
   small?: boolean, // small

@@ -1,6 +1,7 @@
+
+import { Link } from 'react-router-dom'
 import {
   PageContainer,
-  InputSection,
   Input,
   Button,
   Loading,
@@ -21,14 +22,21 @@ const fetchBalance = (BalanceData: Balance[] | undefined, coinName: string) => B
 
 const PoolPresentation = () => {
 	const {
+		fetching,
 		poolsData, allBalanceData,
-		searchInput, setSearchInput, handleOnInputChange,
+		searchInput, handleOnInputChange,
 	} = usePoolContext();
 
-	if (!(poolsData && poolsData.length)) return (
+	if (fetching) return (
 		<PageContainer title='Pool' titleImg={Image.pageBackground_2}>
-			<Loading />
+			<div className={styles.poolpContainer}>
+				<Loading />
+			</div>
 		</PageContainer>
+	)
+
+	if (!(poolsData && poolsData.length)) return (
+		<Empty content='Oops! No Data.' />
 	)
 
 	const columns = [
@@ -56,6 +64,11 @@ const PoolPresentation = () => {
 			Header: 'APR',
 			width: 110,
 		},
+		{
+			id: 'manage',
+			name: 'manage',
+			Header: 'Manage',
+		}
 	];
 
 
@@ -112,6 +125,15 @@ const PoolPresentation = () => {
 					case 'apr':
 						return (
 							<div key={idx}>12.34 %</div>
+						)
+					case 'manage':
+						return (
+							<Link to='/pool/Liquidity'>
+								<Button
+									styletype='outlined'
+									text='Manage'
+								/>
+							</Link>
 						)
 					default:
 						return null;

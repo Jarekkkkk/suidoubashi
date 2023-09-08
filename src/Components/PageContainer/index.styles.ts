@@ -35,9 +35,9 @@ export const title = css`
 
 export const titleImg = css`
   position: absolute;
-  top: 0;
+  bottom: 0;
   right: 0;
-  width: auto;
+  width: 100%;
   height: 100%;
   z-index: 0;
 `

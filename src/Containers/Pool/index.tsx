@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { Button } from '@/Components'
 import { Pool } from '@/Constants/API/pool'
 import { Coin, Coins } from '@/Constants/coin'
@@ -12,7 +13,7 @@ import { useWalletKit } from '@mysten/wallet-kit'
 import React, { useState, useContext, PropsWithChildren, useMemo, ChangeEvent } from 'react'
 
 const PoolContext = React.createContext<PoolContext>({
-  poolsData: null,
+  poolsData: undefined,
   allBalanceData: undefined,
   fetching: false,
   searchInput: '',
@@ -23,14 +24,13 @@ const PoolContext = React.createContext<PoolContext>({
 export const usePoolContext = () => useContext(PoolContext)
 
 const PoolContainer = ({ children }: PropsWithChildren) => {
-  const [data, _setData] = useState(null)
   const [fetching, _setFetching] = useState(false)
   const [searchInput, setSearchInput] = useState('')
 
   const { currentAccount } = useWalletKit()
   // pool
   const pool_ids = useGetPoolIDs()
-  const { data: pools } = useGetMulPool(pool_ids?.data)
+  const { data: pools, isLoading: isAllPoolLoading } = useGetMulPool(pool_ids?.data)
   // balance
   const balance_x = useGetBalance(Coin.SDB, currentAccount?.address)
 
@@ -64,6 +64,8 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   const zap = useZap()
   const withdraw = useRemoveLiquidity()
   const swap = useSwap()
+
+  const _poolsData = pools?.filter((pool) => new RegExp(searchInput, 'ig').test(pool.name));
 
   const handleAddLiquidity = () => {
     if (pool && lp !== undefined) {
@@ -122,18 +124,26 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
     }
   }
 
-  const handleOnInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
-    setSearchInput(e.target.value);
-  };
+  const handleOnInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value
+      const isValid = /^-?\D*\.?\D*$/.test(value)
+      if (!isValid) {
+        value = value.slice(0, -1)
+      }
+      setSearchInput(value.toUpperCase())
+    },
+    [setSearchInput],
+  )
+
 
   return (
     <PoolContext.Provider
       value={{
-        poolsData: pools,
+        poolsData: _poolsData,
         allBalanceData: allBalance,
-        fetching,
+        fetching: isAllPoolLoading || isAllBalanceLoading,
         searchInput,
-        setSearchInput,
         handleOnInputChange,
       }}
     >
@@ -156,11 +166,10 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
 }
 
 interface PoolContext {
-  readonly poolsData: Pool[] | null
+  readonly poolsData: Pool[] | undefined
   readonly allBalanceData: Balance[] | undefined
   readonly fetching: boolean
   searchInput: string,
-  setSearchInput: Function,
   handleOnInputChange: (e: ChangeEvent<HTMLInputElement>) => void,
 }
 
