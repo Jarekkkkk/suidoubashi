@@ -40,7 +40,6 @@ export const coninvalue = css`
   font-weight: bold;
   color: #000;
   line-height: 1;
-  text-align: right;
 
   span {
     width: 100%;
