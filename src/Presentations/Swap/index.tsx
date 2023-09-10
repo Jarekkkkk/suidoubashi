@@ -20,6 +20,8 @@ import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { get_output } from '@/Constants/API/pool'
 import useRpc from '@/Hooks/useRpc'
 import { useSwap } from '@/Hooks/AMM/useSwap'
+import { useGetFarmIDs, useGetMulFarm } from '@/Hooks/Farm/useGetFarm'
+import { get_farm_stake_balance } from '@/Constants/API/farm'
 
 const SwapPresentation = () => {
   const {
@@ -97,6 +99,8 @@ const SwapPresentation = () => {
 
   const [getOutputIsLoading, setGetOutpuIsLoading] = useState(false)
 
+  const {data: farm_ids} = useGetFarmIDs()
+  const farms = useGetMulFarm(farm_ids)
   const [getOutput, setGetOutput] = useState('')
 
   useEffect(() => {
@@ -125,6 +129,7 @@ const SwapPresentation = () => {
         handleOnCoinInputSecondChange(
           (parseInt(res) / 10 ** coinTypeSecond.decimals).toString(),
         )
+
       }
     }
     get_output_()
