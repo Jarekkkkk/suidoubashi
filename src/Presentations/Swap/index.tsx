@@ -74,8 +74,9 @@ const SwapPresentation = () => {
     () => (1 - parseFloat(setting.slippage) / 100) * Number(coinInputSecond),
     [setting.slippage, coinInputSecond],
   )
+  
 
-  const [isLoading, setisLoading] = useState(false)
+  const [getOutputIsLoading, setGetOutpuIsLoading] = useState(false)
 
   useEffect(() => {
     async function get_output_() {
@@ -86,7 +87,7 @@ const SwapPresentation = () => {
         coinTypeFirst &&
         coinTypeSecond
       ) {
-        setisLoading(true)
+        setGetOutpuIsLoading(true)
         const res = await get_output(
           rpc,
           walletAddress,
@@ -98,7 +99,7 @@ const SwapPresentation = () => {
             parseFloat(coinInputFirst) * 10 ** coinTypeFirst.decimals,
           ).toString(),
         )
-        setisLoading(false)
+        setGetOutpuIsLoading(false)
         handleOnCoinInputSecondChange(
           (parseInt(res) / 10 ** coinTypeSecond.decimals).toString(),
         )
