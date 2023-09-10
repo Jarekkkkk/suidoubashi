@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import BigNumber from 'bignumber.js'
+import { Coins } from '@/Constants/coin'
 import {
   PageContainer,
   InputSection,
@@ -35,7 +36,6 @@ const SwapPresentation = () => {
     setCoinTypeSecond,
     isShowSelectModal,
     setIsShowSelectModal,
-    fetchPrice,
     pool,
     handleOnCoinInputFirstChange,
     handleOnCoinInputSecondChange,
@@ -74,9 +74,30 @@ const SwapPresentation = () => {
     () => (1 - parseFloat(setting.slippage) / 100) * Number(coinInputSecond),
     [setting.slippage, coinInputSecond],
   )
-  
+
+  const fetchPrice = (sort: boolean) => {
+    const coin_x = Coins.find((c) => c.type === coinTypeFirst?.type)
+    const coin_y = Coins.find((c) => c.type === coinTypeSecond?.type)
+    let price = 0
+    if (coinInputFirst && getOutput) {
+      if (getOutput === '0') {
+        return 'No Liquidity'
+      } else {
+        price =
+          (Number(getOutput) /
+            (Number(coinInputFirst) * 10 ** coin_x!.decimals)) *
+          10 ** (coin_x!.decimals - coin_y!.decimals)
+      }
+    }
+
+    return sort
+      ? `1${coin_x?.name} = ${price.toFixed(5)} ${coin_y?.name}`
+      : `1${coin_y?.name} = ${(price == 0 ? 0 : 1/ price).toFixed(5)} ${coin_x?.name}`
+  }
 
   const [getOutputIsLoading, setGetOutpuIsLoading] = useState(false)
+
+  const [getOutput, setGetOutput] = useState('')
 
   useEffect(() => {
     async function get_output_() {
@@ -100,6 +121,7 @@ const SwapPresentation = () => {
           ).toString(),
         )
         setGetOutpuIsLoading(false)
+        setGetOutput(res)
         handleOnCoinInputSecondChange(
           (parseInt(res) / 10 ** coinTypeSecond.decimals).toString(),
         )
@@ -268,7 +290,7 @@ const SwapPresentation = () => {
             text='Swap'
             styletype='filled'
             onClick={handleSwap}
-            disabled={!!error || !coinInputFirst || !coinInputSecond}
+            disabled={!!error || !coinInputFirst || !coinInputSecond || getOutput === "0"}
             isLoading={swap.isLoading}
           />
         </div>
