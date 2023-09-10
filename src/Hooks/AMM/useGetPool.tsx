@@ -28,7 +28,6 @@ export function useGetPoolIDs() {
     },
   )
 }
-
 export const useGetMulPool = (pool_ids?: (string | undefined)[]) => {
   const rpc = useRpc()
   const pools = useQueries({

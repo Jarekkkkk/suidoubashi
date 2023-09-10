@@ -87,20 +87,11 @@ export const useAddLiquidity = () => {
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
-        options: {
-          showObjectChanges: true,
-          showEvents: true,
-        },
       })
 
       if (getExecutionStatusType(res) == 'failure') {
         throw new Error('Vesting Vsdb Tx fail')
       }
-
-      return getObjectChanges(res)?.find(
-        (obj) =>
-          obj.type == 'created' && obj.objectType == `${amm_package}::pool::LP`,
-      ) as SuiObjectChangeCreated
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['LP'])
