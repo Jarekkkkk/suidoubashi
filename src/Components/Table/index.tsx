@@ -9,7 +9,7 @@ type TableProps = {
 
 const Table = (props: TableProps) => {
   const { columns, renderRow } = props;
-  console.log('renderRow', renderRow)
+  
   return (
     <div className={styles.TableWrapper}>
       <table>

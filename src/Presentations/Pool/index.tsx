@@ -80,6 +80,7 @@ const PoolPresentation = () => {
 			const _walletCoinX = fetchBalance(allBalanceData, _poolCoins[0])!.totalBalance;
 			const _walletCoinY = fetchBalance(allBalanceData, _poolCoins[1])!.totalBalance;
 
+			console.log('pool', pool.id)
 
 			return columns.map((column, idx) => {
 				switch (column.id) {
@@ -128,7 +129,7 @@ const PoolPresentation = () => {
 						)
 					case 'manage':
 						return (
-							<Link to='/pool/Liquidity'>
+							<Link to={`/pool/Liquidity?${pool.id}`} key={idx}>
 								<Button
 									styletype='outlined'
 									text='Manage'

@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { Button } from '@/Components'
 import { Pool } from '@/Constants/API/pool'
 import { Coin, Coins } from '@/Constants/coin'
+import UserModule from '@/Modules/User'
 import { useRemoveLiquidity } from '@/Hooks/AMM/removeLiquidity'
 import { useAddLiquidity } from '@/Hooks/AMM/useAddLiquidity'
 import { useGetLP } from '@/Hooks/AMM/useGetLP'
@@ -9,7 +10,6 @@ import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import { useSwap } from '@/Hooks/AMM/useSwap'
 import { useZap } from '@/Hooks/AMM/useZap'
 import useGetBalance, { useGetAllBalance, Balance } from '@/Hooks/Coin/useGetBalance'
-import { useWalletKit } from '@mysten/wallet-kit'
 import React, { useState, useContext, PropsWithChildren, useMemo, ChangeEvent } from 'react'
 
 const PoolContext = React.createContext<PoolContext>({
@@ -17,7 +17,6 @@ const PoolContext = React.createContext<PoolContext>({
   allBalanceData: undefined,
   fetching: false,
   searchInput: '',
-  setSearchInput: Function,
   handleOnInputChange: () => {},
 })
 
@@ -27,17 +26,19 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   const [fetching, _setFetching] = useState(false)
   const [searchInput, setSearchInput] = useState('')
 
-  const { currentAccount } = useWalletKit()
+  const walletAddress = UserModule.getUserToken()
+  if (!walletAddress) return null
+
   // pool
   const pool_ids = useGetPoolIDs()
   const { data: pools, isLoading: isAllPoolLoading } = useGetMulPool(pool_ids?.data)
   // balance
-  const balance_x = useGetBalance(Coin.SDB, currentAccount?.address)
+  const balance_x = useGetBalance(Coin.SDB, walletAddress)
 
   // Balance
   const { data: allBalance, isLoading: isAllBalanceLoading } = useGetAllBalance(
     Coins,
-    currentAccount?.address,
+    walletAddress,
   )
 
   // LP
@@ -58,7 +59,7 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
     )
   }, [coinInput, coinInput2, pools])
   // find corresponding LP
-  const lp = useGetLP(currentAccount?.address, pool?.type_x, pool?.type_y)
+  const lp = useGetLP(walletAddress, pool?.type_x, pool?.type_y)
   //mutation
   const add_liquidity = useAddLiquidity()
   const zap = useZap()
@@ -149,12 +150,12 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
     >
       <Button
         styletype='filled'
-        text='USDC/USDT LP'
+        text='USDC/USDT LP pair Deposit'
         onClick={handleAddLiquidity}
       />
       <Button
         styletype='filled'
-        text={zap.isLoading ? '...' : 'Zap'}
+        text={zap.isLoading ? '...' : 'Zap single Deposit'}
         disabled={zap.isLoading}
         onClick={handleZap}
       />

@@ -55,7 +55,7 @@ export const ellipseTabTitle = css`
 
 export const ellipseActiveTab = css`
   color: #FFF !important;
-  background-color: #FFD24D !important;
+  background-color: #2977EC  !important;
   transition: 0.3s;
 `;
 
