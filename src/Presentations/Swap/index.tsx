@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import BigNumber from 'bignumber.js'
+import { Spinner } from '@blueprintjs/core'
 import { Coins } from '@/Constants/coin'
 import {
   PageContainer,
@@ -21,7 +22,6 @@ import { get_output } from '@/Constants/API/pool'
 import useRpc from '@/Hooks/useRpc'
 import { useSwap } from '@/Hooks/AMM/useSwap'
 import { useGetFarmIDs, useGetMulFarm } from '@/Hooks/Farm/useGetFarm'
-import { get_farm_stake_balance } from '@/Constants/API/farm'
 
 const SwapPresentation = () => {
   const {
@@ -100,7 +100,6 @@ const SwapPresentation = () => {
   const [getOutputIsLoading, setGetOutpuIsLoading] = useState(false)
 
   const {data: farm_ids} = useGetFarmIDs()
-  const farms = useGetMulFarm(farm_ids)
   const [getOutput, setGetOutput] = useState('')
 
   useEffect(() => {
@@ -244,23 +243,31 @@ const SwapPresentation = () => {
           }
           inputChildren={
             <>
-              <Input
-                value={coinInputSecond}
-                onChange={(e) => {
-                  if (coinTypeSecondBalance?.totalBalance) {
-                    if (
-                      parseFloat(e.target.value) * Math.pow(10, 9) >
-                      Number(coinTypeSecondBalance.totalBalance)
-                    ) {
-                      setError('Insufficient Balance')
-                    } else {
-                      setError('')
-                    }
-                  }
-                }}
-                placeholder={`${coinTypeSecond.name} Value`}
-                // disabled={isLoading}
-              />
+              {
+                getOutputIsLoading ? (
+                  <div className={styles.inputAnimation}>
+                    <Spinner size={20} />
+                  </div>
+                ) : (
+                  <Input
+                    value={coinInputSecond}
+                    onChange={(e) => {
+                      if (coinTypeSecondBalance?.totalBalance) {
+                        if (
+                          parseFloat(e.target.value) * Math.pow(10, 9) >
+                          Number(coinTypeSecondBalance.totalBalance)
+                        ) {
+                          setError('Insufficient Balance')
+                        } else {
+                          setError('')
+                        }
+                      }
+                    }}
+                    placeholder={`${coinTypeSecond.name} Value`}
+                    disabled={getOutputIsLoading}
+                  />
+                )
+              }
             </>
           }
         />

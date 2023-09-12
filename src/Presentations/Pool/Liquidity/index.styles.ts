@@ -15,17 +15,25 @@ export const liquidityContainer = css`
   height: calc(100% - 150px);
 
   @media screen and (max-width: 1240px) {
-    flex-wrap: wrap;
+    flex-direction: column-reverse;
   }
 `
 
 export const leftContent = css`
   flex: 1 1 40%;
+
+  @media screen and (max-width: 1240px) {
+    width: 100%;
+  }
 `
 
 export const rightContent = css`
   flex: 1 1 60%;
   height: 100%;
+  
+  @media screen and (max-width: 1240px) {
+    width: 100%;
+  }
 `
 
 export const shadowContent = css`

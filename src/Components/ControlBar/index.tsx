@@ -152,7 +152,7 @@ const ControlBarComponent = (props: Props) => {
           handleFetchNFTData={handleFetchNFTData}
         />
       )}
-      <Tabs links={tabDataKeys} />
+      <Tabs links={tabDataKeys} styletype="default" />
     </div>
   )
 }

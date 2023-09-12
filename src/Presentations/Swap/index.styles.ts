@@ -149,3 +149,16 @@ export const switchPriceSortButton = css`
     opacity: 0.7;
   }
 `
+
+export const inputAnimation = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0 10px;
+  width: 100%;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid #606266;
+  background: #fff;
+`

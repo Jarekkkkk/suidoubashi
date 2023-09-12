@@ -11,12 +11,12 @@ type Tabprops = {
 
 type Props = {
   links: Array<Tabprops>
-  styletype?: string // default\ellipse
+  styletype: string // default\ellipse
   isLoading: boolean
 }
 
 const Tabs = (props: Props) => {
-  const { links, styletype = 'default', isLoading } = props
+  const { links, styletype, isLoading } = props
   const [currTabId, setCurrTabId] = useState(0)
 
   return (
