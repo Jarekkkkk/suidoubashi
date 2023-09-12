@@ -139,7 +139,7 @@ const VestCardComponent = (props: Props) => {
         </div>
         {!isPerviewMode && (
           <div className={styles.buttonContent}>
-            {new Date().getTime() / 1000 >= Date.parse(expiration) ? (
+            {new Date().getTime() >= Date.parse(expiration) ? (
               <>
                 {
                   <Button
