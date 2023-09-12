@@ -302,7 +302,7 @@ const SwapPresentation = () => {
             text='Swap'
             styletype='filled'
             onClick={handleSwap}
-            disabled={!!error || !coinInputFirst || !coinInputSecond || getOutput === "0"}
+            disabled={!!error || !coinInputFirst || !coinInputSecond || getOutput === "0" || getOutputIsLoading}
             isLoading={swap.isLoading}
           />
         </div>
