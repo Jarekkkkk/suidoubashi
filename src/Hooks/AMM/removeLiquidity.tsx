@@ -4,11 +4,9 @@ import { useWalletKit } from '@mysten/wallet-kit'
 import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import {
-  LP,
+    delete_lp,
   quote_remove_liquidity,
-  amm_package,
   remove_liquidity,
-  LiquidityRemoved,
 } from '@/Constants/API/pool'
 import { queryClient } from '@/App'
 import { SettingInterface } from '@/Components/SettingModal'
@@ -26,7 +24,7 @@ export const useRemoveLiquidity = () => {
   const { signTransactionBlock, currentAccount } = useWalletKit()
   // TODO
   const setting: SettingInterface = {
-    gasBudget: '1000000',
+    gasBudget: '10000000',
     expiration: '30',
     slippage: '200',
   }
@@ -53,61 +51,40 @@ export const useRemoveLiquidity = () => {
         withdrawl,
       )
 
+      const lp = txb.pure(lp_id)
+
       remove_liquidity(
         txb,
         pool_id,
         pool_type_x,
         pool_type_y,
-        txb.pure(lp_id),
+        lp,
         withdrawl,
         quote[0],
         quote[1],
       )
+      
+      // LP should withdraw all the fee revenue before burn it
+      delete_lp(txb, lp, pool_type_x, pool_type_y)
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
-        options: {
-          showObjectChanges: true,
-          showEvents: true,
-        },
       })
 
       if (getExecutionStatusType(res) == 'failure') {
         throw new Error('Vesting Vsdb Tx fail')
       }
-
-      console.log(res)
-
-      return res.events?.find((e) =>
-        e.type.startsWith(`${amm_package}::event::LiquidityRemoved`),
-      )?.parsedJson as LiquidityRemoved
     },
-    onSuccess: ({ withdrawl_x: _, withdrawl_y: __, lp_token }, params) => {
-      queryClient.setQueryData(
-        ['LP', currentAccount!.address],
-        (lp_ids?: LP[]) => {
-          let lps = lp_ids ?? []
-          const lp_id = lps.findIndex((lp) => lp.id == params.lp_id)
-
-          if (lp_id > -1) {
-            let _bal = BigInt(lps[lp_id].lp_balance) - BigInt(lp_token)
-            if (_bal == BigInt('0')) {
-              lps.splice(lp_id, 1)
-            } else {
-              lps[lp_id].lp_balance = _bal.toString()
-            }
-          } else {
-            throw new Error('No LP')
-          }
-          return lps
-        },
-      )
-
+    onSuccess: (_, params) => {
+      queryClient.invalidateQueries()
+      queryClient.invalidateQueries(['LP'])
+      queryClient.invalidateQueries(['pool', params.pool_id])
       toast.success('Remove Liquidity Success!')
     },
-    onError: (_: Error) => {
+    onError: (err: Error) => {
+      console.error(err)
       toast.error('Oops! Have some error')
     },
   })

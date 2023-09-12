@@ -358,8 +358,6 @@ export async function quote_remove_liquidity(
     transactionBlock: txb,
   })
 
-  console.log(res)
-
   return (
     res?.results?.[0]?.returnValues?.map((returnValue) => {
       if (!returnValue) {
@@ -488,11 +486,16 @@ export const create_lp = (
   })
 }
 
-export function delete_lp(txb: TransactionBlock, lp: LP) {
+export function delete_lp(
+  txb: TransactionBlock,
+  lp: any,
+  type_x: string,
+  type_y: string,
+) {
   txb.moveCall({
     target: `${amm_package}::pool::delete_lp`,
-    typeArguments: [lp.type_x, lp.type_y] ?? [],
-    arguments: [txb.object(lp.id)],
+    typeArguments: [type_x, type_y],
+    arguments: [lp],
   })
 }
 

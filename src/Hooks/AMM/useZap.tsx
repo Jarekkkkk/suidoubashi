@@ -128,8 +128,10 @@ export const useZap = () => {
         throw new Error('Vesting Vsdb Tx fail')
       }
     },
-    onSuccess: () => {
+    onSuccess: (_, params) => {
       queryClient.invalidateQueries(['LP'])
+      queryClient.invalidateQueries(['balance'])
+      queryClient.invalidateQueries(['pool', params.pool_id])
       toast.success('Success!')
     },
     onError: (_err: Error) => {

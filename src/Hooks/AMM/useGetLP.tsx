@@ -5,7 +5,7 @@ import { getObjectFields, getObjectType } from '@mysten/sui.js'
 import { useMemo } from 'react'
 
 export const useGetLP = (
-  address?: string,
+  address?: string | null,
   type_x?: string,
   type_y?: string,
 ) => {
