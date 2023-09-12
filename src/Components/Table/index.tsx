@@ -1,5 +1,7 @@
-
+import { Empty } from '@/Components'
 import * as styles from './index.styles'
+import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from 'react';
+import { JSX } from 'react/jsx-runtime';
 
 type TableProps = {
   data: Array<any>,
@@ -8,31 +10,36 @@ type TableProps = {
 }
 
 const Table = (props: TableProps) => {
-  const { columns, renderRow } = props;
-  
+  const { data, columns, renderRow } = props;
+
+  console.log('data', data)
   return (
-    <div className={styles.TableWrapper}>
-      <table>
-        <thead>
-          <tr>
-            {columns.map(column => (
-              <th  key={column.id}>{column.Header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {renderRow.map(row => (
-            <tr key={row.id}>
-              {
-                row.map((rowValue) => (
-                  <td>{rowValue}</td>
-                ))
-              }
+    !data.length ? (
+      <Empty content='Oops! No Data.' />
+    ) : (
+      <div className={styles.TableWrapper}>
+        <table>
+          <thead>
+            <tr>
+              {columns.map((column: { id: Key | null | undefined; Header: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }) => (
+                <th  key={column.id}>{column.Header}</th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {renderRow.map((row: { id: Key | null | undefined; map: (arg0: (rowValue: any) => JSX.Element) => string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }) => (
+              <tr key={row.id}>
+                {
+                  row.map((rowValue: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined) => (
+                    <td>{rowValue}</td>
+                  ))
+                }
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
   );
 };
 

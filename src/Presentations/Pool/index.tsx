@@ -35,8 +35,12 @@ const PoolPresentation = () => {
 		</PageContainer>
 	)
 
-	if (!(poolsData && poolsData.length)) return (
-		<Empty content='Oops! No Data.' />
+	if (!poolsData) return (
+		<PageContainer title='Pool' titleImg={Image.pageBackground_2}>
+			<div className={styles.poolpContainer}>
+				<Empty content='Oops! No Data.' />
+			</div>
+		</PageContainer>
 	)
 
 	const columns = [
@@ -79,8 +83,6 @@ const PoolPresentation = () => {
 			const _poolCoinY = fetchIcon(_poolCoins[1]);
 			const _walletCoinX = fetchBalance(allBalanceData, _poolCoins[0])!.totalBalance;
 			const _walletCoinY = fetchBalance(allBalanceData, _poolCoins[1])!.totalBalance;
-
-			console.log('pool', pool.id)
 
 			return columns.map((column, idx) => {
 				switch (column.id) {
