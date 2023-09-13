@@ -30,6 +30,7 @@ export const defaultTabTitle = css`
 export const defaultActiveTab = css`
   color: #FFF;
   background-color: rgba(96, 98, 102, 0.90) !important;
+  transition: 0.3s;
 `;
 
 export const ellipseTabList = css`

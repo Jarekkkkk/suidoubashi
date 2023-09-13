@@ -30,7 +30,7 @@ export const leftContent = css`
 export const rightContent = css`
   flex: 1 1 60%;
   height: 100%;
-  
+
   @media screen and (max-width: 1240px) {
     width: 100%;
   }

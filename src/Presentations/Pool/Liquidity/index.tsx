@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { cx, css } from '@emotion/css'
 
@@ -13,7 +13,6 @@ import {
   Error,
 } from '@/Components'
 import { useLiquidityContext } from '@/Containers/Pool/Liquidity'
-import { Coins, CoinInterface } from '@/Constants/coin'
 import { Icon } from '@/Assets/icon'
 import Image from '@/Assets/image'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
@@ -32,8 +31,6 @@ import { useDepoistAndStake } from '@/Hooks/Farm/useDepositAndStake'
 import { useZapAndStake } from '@/Hooks/Farm/useZapAndStake'
 import { useUnStakeAndWithdraw } from '@/Hooks/Farm/useUnstakeAndWithdraw'
 
-const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
-
 const LiquidityPresentation = () => {
   const {
     walletAddress,
@@ -42,80 +39,71 @@ const LiquidityPresentation = () => {
     error,
     setError,
     farmData: farm,
+    coinInputX,
+    coinTypeX,
+    coinInputY,
+    coinTypeY,
+    coinInputSingle,
+    setCoinInputX,
+    setCoinInputY,
+    setCoinInputSingle,
+    setCoinTypeX,
+    setCoinTypeY,
   } = useLiquidityContext()
 
-  if (fetching)
-    return (
-      <PageContainer title='Liquidity' titleImg={Image.pageBackground_1}>
-        <div className={poolStyles.poolpContainer}>
-          <Loading />
-        </div>
-      </PageContainer>
-    )
-
-  if (!poolData) return <Empty content='Oops! No Data.' />
-
-  const _coins = poolData?.name.split('-')
-
-  const [coinInputFirst, setCoinInputFirst] = useState<string>('')
-  const [coinTypeFirst, setCoinTypeFirst] = useState<CoinInterface>(
-    Coins.filter((coin) => coin.name === _coins[0])[0],
-  )
-  const [coinInputSecond, setCoinInputSecond] = useState<string>('')
-  const [coinTypeSecond, setCoinTypeSecond] = useState<CoinInterface>(
-    Coins.filter((coin) => coin.name === _coins[1])[0],
+  if (fetching) return (
+    <PageContainer title='Liquidity' titleImg={Image.pageBackground_1}>
+      <div className={poolStyles.poolpContainer}>
+        <Loading />
+      </div>
+    </PageContainer>
   )
 
-  const [coinInputSingle, setCoinInputSingle] = useState('')
+  if (!poolData || !coinTypeX || !coinTypeY) return <Empty content='Oops! No Data.' />
 
-  const coinTypeFirstBalance =
-    coinTypeFirst && useGetBalance(coinTypeFirst.type, walletAddress)
-  const coinTypeSecondBalance =
-    coinTypeSecond && useGetBalance(coinTypeSecond.type, walletAddress)
+  const coinTypeXBalance = useGetBalance(coinTypeX.type, walletAddress)
+  const coinTypeYBalance =  useGetBalance(coinTypeY.type, walletAddress)
 
-  const _poolCoinX = fetchIcon(poolData.type_x)
-  const _poolCoinY = fetchIcon(poolData.type_y)
-
-  const handleOnCoinInputFirstChange = useCallback(
+  const handleOnCoinInputXChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
       const isValid = /^-?\d*\.?\d*$/.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }
-      setCoinInputFirst(value)
+      setCoinInputX(value)
       if (poolData.reserve_x == '0') {
-        setCoinInputSecond(value)
+        setCoinInputY(value)
       } else {
         const price =
           (Number(poolData.reserve_y) / Number(poolData.reserve_x)) *
-          10 ** (coinTypeFirst.decimals - coinTypeSecond.decimals) *
+          10 ** (coinTypeX.decimals - coinTypeY.decimals) *
           parseFloat(value)
-        setCoinInputSecond(isNaN(price) ? '' : price.toFixed(6))
+        setCoinInputY(isNaN(price) ? '' : price.toFixed(6))
       }
     },
-    [setCoinInputFirst],
+    [setCoinInputX],
   )
 
-  const handleOnCoinInputSecondChange = useCallback(
+  const handleOnCoinInputYChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
       const isValid = /^-?\d*\.?\d*$/.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }
-      setCoinInputSecond(value)
+      setCoinInputY(value)
       if (poolData.reserve_x == '0') {
-        setCoinInputFirst(value)
+        setCoinInputX(value)
       } else {
         const price =
           (Number(poolData.reserve_x) / Number(poolData.reserve_y)) *
-          10 ** (coinTypeSecond.decimals - coinTypeFirst.decimals) *
+          10 ** (coinTypeY.decimals - coinTypeX.decimals) *
           parseFloat(value)
-        setCoinInputFirst(isNaN(price) ? '' : price.toFixed(6))
+        setCoinInputX(isNaN(price) ? '' : price.toFixed(6))
       }
     },
-    [setCoinInputSecond],
+    [setCoinInputY],
   )
 
   const handleOnCoinInputSingleChange = useCallback(
@@ -142,12 +130,12 @@ const LiquidityPresentation = () => {
         pool_type_y: poolData.type_y,
         lp_id: lp ? lp.id : null,
         input_x_value: (
-          Number(coinInputFirst) *
-          10 ** coinTypeFirst.decimals
+          Number(coinInputX) *
+          10 ** coinTypeX.decimals
         ).toString(),
         input_y_value: (
-          Number(coinInputSecond) *
-          10 ** coinTypeSecond.decimals
+          Number(coinInputY) *
+          10 ** coinTypeY.decimals
         ).toString(),
       })
     }
@@ -174,10 +162,10 @@ const LiquidityPresentation = () => {
         stable,
         fee: fee_percentage,
         lp_id: lp ? lp.id : null,
-        input_type: coinTypeFirst.type,
+        input_type: coinTypeX.type,
         input_value: (
           Number(coinInputSingle) *
-          10 ** coinTypeFirst.decimals
+          10 ** coinTypeX.decimals
         ).toString(),
       })
     }
@@ -193,12 +181,12 @@ const LiquidityPresentation = () => {
         farm_id: farm.id,
         lp_id: lp ? lp.id : null,
         input_x_value: (
-          Number(coinInputFirst) *
-          10 ** coinTypeFirst.decimals
+          Number(coinInputX) *
+          10 ** coinTypeX.decimals
         ).toString(),
         input_y_value: (
-          Number(coinInputSecond) *
-          10 ** coinTypeSecond.decimals
+          Number(coinInputY) *
+          10 ** coinTypeY.decimals
         ).toString(),
       })
     }
@@ -226,10 +214,10 @@ const LiquidityPresentation = () => {
         fee: fee_percentage,
         farm_id: farm.id,
         lp_id: lp ? lp.id : null,
-        input_type: coinTypeFirst.type,
+        input_type: coinTypeX.type,
         input_value: (
           Number(coinInputSingle) *
-          10 ** coinTypeFirst.decimals
+          10 ** coinTypeX.decimals
         ).toString(),
       })
     }
@@ -269,8 +257,6 @@ const LiquidityPresentation = () => {
     lp?.id,
   )
 
-  console.log('stake_bal', stake_bal)
-
   const stake = useStakeFarm()
   const handleStake = () => {
     if (poolData && lp && farm) {
@@ -301,9 +287,7 @@ const LiquidityPresentation = () => {
     {
       id: 0,
       title: 'Pair',
-      children: !poolData ? (
-        <Loading />
-      ) : (
+      children: (
         <>
           <div className={poolStyles.lightGreyText}>
             <Icon.NoticeIcon />
@@ -333,7 +317,7 @@ const LiquidityPresentation = () => {
                         }),
                       )}
                     >
-                      {_poolCoinX!.name}
+                      {coinTypeX!.name}
                     </div>
                   </div>
                   <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
@@ -348,7 +332,7 @@ const LiquidityPresentation = () => {
                         }),
                       )}
                     >
-                      {_poolCoinY!.name}
+                      {coinTypeY!.name}
                     </div>
                   </div>
                 </div>
@@ -363,30 +347,30 @@ const LiquidityPresentation = () => {
             <div className={styles.inputContent}>
               <InputSection
                 balance={
-                  coinTypeFirstBalance
+                  coinTypeXBalance
                     ? formatBalance(
-                        coinTypeFirstBalance.totalBalance,
-                        coinTypeFirst.decimals,
+                        coinTypeXBalance.totalBalance,
+                        coinTypeX.decimals,
                       )
                     : '...'
                 }
                 titleChildren={
                   <div>
-                    {coinTypeFirst.logo}
-                    <span>{coinTypeFirst.name}</span>
+                    {coinTypeX.logo}
+                    <span>{coinTypeX.name}</span>
                   </div>
                 }
                 inputChildren={
                   <>
                     <Input
-                      value={coinInputFirst}
+                      value={coinInputX}
                       onChange={(e) => {
-                        if (coinTypeFirstBalance?.totalBalance) {
-                          handleOnCoinInputFirstChange(e)
+                        if (coinTypeXBalance?.totalBalance) {
+                          handleOnCoinInputXChange(e)
                           if (
                             parseFloat(e.target.value) *
-                              Math.pow(10, coinTypeFirst.decimals) >
-                            Number(coinTypeFirstBalance.totalBalance)
+                              Math.pow(10, coinTypeX.decimals) >
+                            Number(coinTypeXBalance.totalBalance)
                           ) {
                             setError('Insufficient Balance')
                           } else {
@@ -394,7 +378,7 @@ const LiquidityPresentation = () => {
                           }
                         }
                       }}
-                      placeholder={`${coinTypeFirst.name} Value`}
+                      placeholder={`${coinTypeX.name} Value`}
                       // disabled={isLoading}
                     />
                   </>
@@ -402,29 +386,29 @@ const LiquidityPresentation = () => {
               />
               <InputSection
                 balance={
-                  coinTypeSecondBalance
+                  coinTypeYBalance
                     ? formatBalance(
-                        coinTypeSecondBalance.totalBalance,
-                        coinTypeSecond.decimals,
+                        coinTypeYBalance.totalBalance,
+                        coinTypeY.decimals,
                       )
                     : '...'
                 }
                 titleChildren={
                   <div>
-                    {coinTypeSecond.logo}
-                    <span>{coinTypeSecond.name}</span>
+                    {coinTypeY.logo}
+                    <span>{coinTypeY.name}</span>
                   </div>
                 }
                 inputChildren={
                   <>
                     <Input
-                      value={coinInputSecond}
+                      value={coinInputY}
                       onChange={(e) => {
-                        if (coinTypeSecondBalance?.totalBalance) {
-                          handleOnCoinInputSecondChange(e)
+                        if (coinTypeYBalance?.totalBalance) {
+                          handleOnCoinInputYChange(e)
                           if (
                             parseFloat(e.target.value) * Math.pow(10, 9) >
-                            Number(coinTypeSecondBalance.totalBalance)
+                            Number(coinTypeYBalance.totalBalance)
                           ) {
                             setError('Insufficient Balance')
                           } else {
@@ -432,7 +416,7 @@ const LiquidityPresentation = () => {
                           }
                         }
                       }}
-                      placeholder={`${coinTypeSecond.name} Value`}
+                      placeholder={`${coinTypeY.name} Value`}
                       // disabled={isLoading}
                     />
                   </>
@@ -460,9 +444,7 @@ const LiquidityPresentation = () => {
     {
       id: 1,
       title: 'Single',
-      children: !coinTypeFirst ? (
-        <Loading />
-      ) : (
+      children: (
         <>
           <div className={poolStyles.lightGreyText}>
             <Icon.NoticeIcon />
@@ -471,22 +453,22 @@ const LiquidityPresentation = () => {
           <div className={styles.inputContent}>
             <InputSection
               balance={
-                coinTypeFirstBalance
+                coinTypeXBalance
                   ? formatBalance(
-                      coinTypeFirstBalance.totalBalance,
-                      coinTypeFirst.decimals,
+                      coinTypeXBalance.totalBalance,
+                      coinTypeX.decimals,
                     )
                   : '...'
               }
               titleChildren={
                 <div>
-                  {coinTypeFirst.logo}
-                  <span>{coinTypeFirst.name}</span>
+                  {coinTypeX.logo}
+                  <span>{coinTypeX.name}</span>
                   <Icon.SwapIcon
                     className={styles.icon}
                     onClick={() => {
-                      setCoinTypeFirst(coinTypeSecond)
-                      setCoinTypeSecond(coinTypeFirst)
+                      setCoinTypeX(coinTypeY)
+                      setCoinTypeY(coinTypeX)
                     }}
                   />
                 </div>
@@ -496,12 +478,12 @@ const LiquidityPresentation = () => {
                   <Input
                     value={coinInputSingle}
                     onChange={(e) => {
-                      if (coinTypeFirstBalance?.totalBalance) {
+                      if (coinTypeXBalance?.totalBalance) {
                         handleOnCoinInputSingleChange(e)
                         if (
                           parseFloat(e.target.value) *
-                            Math.pow(10, coinTypeFirst.decimals) >
-                          Number(coinTypeFirstBalance.totalBalance)
+                            Math.pow(10, coinTypeX.decimals) >
+                          Number(coinTypeXBalance.totalBalance)
                         ) {
                           setError('Insufficient Balance')
                         } else {
@@ -509,7 +491,7 @@ const LiquidityPresentation = () => {
                         }
                       }
                     }}
-                    placeholder={`${coinTypeFirst.name} Value`}
+                    placeholder={`${coinTypeX.name} Value`}
                     // disabled={isLoading}
                   />
                 </>
@@ -552,18 +534,18 @@ const LiquidityPresentation = () => {
             <div className={styles.coinContent}>
               <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
                 <span className={poolStyles.boldText}>
-                  {_poolCoinX?.logo}
+                  {coinTypeX.logo}
                   <span className={styles.textMarginLeft}>
-                    {_poolCoinX!.name}
+                    {coinTypeX.name}
                   </span>
                 </span>
                 <div className={poolStyles.boldText}>{poolData.reserve_x}</div>
               </div>
               <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
                 <span className={poolStyles.boldText}>
-                  {_poolCoinY?.logo}
+                  {coinTypeY.logo}
                   <span className={styles.textMarginLeft}>
-                    {_poolCoinY!.name}
+                    {coinTypeY.name}
                   </span>
                 </span>
                 <div className={poolStyles.boldText}>{poolData.reserve_y}</div>
@@ -600,18 +582,18 @@ const LiquidityPresentation = () => {
             <div className={styles.coinContent}>
               <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
                 <span className={poolStyles.boldText}>
-                  {_poolCoinX?.logo}
+                  {coinTypeX.logo}
                   <span className={styles.textMarginLeft}>
-                    {_poolCoinX!.name}
+                    {coinTypeX.name}
                   </span>
                 </span>
                 <div className={poolStyles.boldText}>{poolData.reserve_x}</div>
               </div>
               <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
                 <span className={poolStyles.boldText}>
-                  {_poolCoinY?.logo}
+                  {coinTypeY.logo}
                   <span className={styles.textMarginLeft}>
-                    {_poolCoinY!.name}
+                    {coinTypeY.name}
                   </span>
                 </span>
                 <div className={poolStyles.boldText}>{poolData.reserve_y}</div>

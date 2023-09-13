@@ -1,13 +1,11 @@
-import React, { useState, useContext, PropsWithChildren, useMemo } from 'react'
+import React, { useState, useContext, PropsWithChildren, useMemo, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import UserModule from '@/Modules/User'
 
-import { useRemoveLiquidity } from '@/Hooks/AMM/removeLiquidity'
-import { useAddLiquidity } from '@/Hooks/AMM/useAddLiquidity'
 import { useGetPool } from '@/Hooks/AMM/useGetPool'
-import { useGetLP } from '@/Hooks/AMM/useGetLP'
 import { Pool } from '@/Constants/API/pool'
+import { Coins, CoinInterface } from '@/Constants/coin'
 import { useGetFarmIDs, useGetMulFarm } from '@/Hooks/Farm/useGetFarm'
 import { Farm } from '@/Constants/API/farm'
 
@@ -18,13 +16,24 @@ const LiquidityContext = React.createContext<LiquidityContext>({
   fetching: false,
   error: undefined,
   setError: () => {},
+  coinInputX: '',
+  coinTypeX: undefined,
+  coinInputY: '',
+  coinTypeY: undefined,
+  coinInputSingle: '',
+  setCoinInputX: () => {},
+  setCoinInputY: () => {},
+  setCoinInputSingle: () => {},
+  setCoinTypeX: () => {},
+  setCoinTypeY: () => {},
 })
 
 export const useLiquidityContext = () => useContext(LiquidityContext)
 
+const fetchIcon = (type: string | undefined) => Coins.find((coin) => coin.type === type)
+
 const LiquidityContainer = ({ children }: PropsWithChildren) => {
   const [error, setError] = useState<string>()
-  const [fetching, _setFetching] = useState(false)
   const location = useLocation()
   const _poolId = location.search.split('?')[1]
 
@@ -33,6 +42,12 @@ const LiquidityContainer = ({ children }: PropsWithChildren) => {
   if (!walletAddress) return null
 
   const { data: poolData, isLoading: isPoolDataLoading } = useGetPool(_poolId)
+
+  const [coinInputX, setCoinInputX] = useState<string>('')
+  const [coinTypeX, setCoinTypeX] = useState<CoinInterface | undefined>()
+  const [coinInputY, setCoinInputY] = useState<string>('')
+  const [coinTypeY, setCoinTypeY] = useState<CoinInterface | undefined>()
+  const [coinInputSingle, setCoinInputSingle] = useState('')
 
   // find farm
   const { data: farmIds } = useGetFarmIDs()
@@ -47,6 +62,11 @@ const LiquidityContainer = ({ children }: PropsWithChildren) => {
     [farmData, poolData],
   )
 
+  useEffect(() => {
+    setCoinTypeX(fetchIcon(poolData?.type_x))
+    setCoinTypeY(fetchIcon(poolData?.type_y))
+  }, [poolData])
+
   return (
     <LiquidityContext.Provider
       value={{
@@ -56,6 +76,16 @@ const LiquidityContainer = ({ children }: PropsWithChildren) => {
         fetching: isPoolDataLoading || isFarmDataLoading,
         error,
         setError,
+        coinInputX,
+        coinTypeX,
+        coinInputY,
+        coinTypeY,
+        coinInputSingle,
+        setCoinInputX,
+        setCoinInputY,
+        setCoinTypeX,
+        setCoinTypeY,
+        setCoinInputSingle,
       }}
     >
       {children}
@@ -70,6 +100,16 @@ interface LiquidityContext {
   readonly error: string | undefined
   walletAddress: string | null
   setError: Function
+  coinInputX: string,
+  coinTypeX: CoinInterface | undefined,
+  coinInputY: string,
+  coinTypeY: CoinInterface | undefined,
+  coinInputSingle: string,
+  setCoinInputX: Function,
+  setCoinInputY: Function,
+  setCoinInputSingle: Function,
+  setCoinTypeX: Function,
+  setCoinTypeY: Function,
 }
 
 export default LiquidityContainer
