@@ -19,22 +19,30 @@ import Image from '@/Assets/image'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { formatBalance } from '@/Utils/format'
 
-
 import * as styles from './index.styles'
 import * as poolStyles from '../index.styles'
 import { useAddLiquidity } from '@/Hooks/AMM/useAddLiquidity'
-import { useRemoveLiquidity } from '@/Hooks/AMM/removeLiquidity'
+import { useRemoveLiquidity } from '@/Hooks/AMM/useRemoveLiquidity'
 import { useGetLP } from '@/Hooks/AMM/useGetLP'
 import { useZap } from '@/Hooks/AMM/useZap'
 import { useStakeFarm } from '@/Hooks/Farm/useStake'
 import { useGetStake } from '@/Hooks/Farm/useGetStake'
 import { useUnStakeFarm } from '@/Hooks/Farm/useUnstake'
+import { useDepoistAndStake } from '@/Hooks/Farm/useDepositAndStake'
+import { useZapAndStake } from '@/Hooks/Farm/useZapAndStake'
+import { useUnStakeAndWithdraw } from '@/Hooks/Farm/useUnstakeAndWithdraw'
 
 const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
 
 const LiquidityPresentation = () => {
-  const { walletAddress, poolData, fetching, error, setError, farmData:farm} =
-    useLiquidityContext()
+  const {
+    walletAddress,
+    poolData,
+    fetching,
+    error,
+    setError,
+    farmData: farm,
+  } = useLiquidityContext()
 
   if (fetching)
     return (
@@ -175,6 +183,58 @@ const LiquidityPresentation = () => {
     }
   }
 
+  const deposit_and_stake = useDepoistAndStake()
+  const handleDepositAndStake = () => {
+    if (poolData && farm) {
+      deposit_and_stake.mutate({
+        pool_id: poolData.id,
+        pool_type_x: poolData.type_x,
+        pool_type_y: poolData.type_y,
+        farm_id: farm.id,
+        lp_id: lp ? lp.id : null,
+        input_x_value: (
+          Number(coinInputFirst) *
+          10 ** coinTypeFirst.decimals
+        ).toString(),
+        input_y_value: (
+          Number(coinInputSecond) *
+          10 ** coinTypeSecond.decimals
+        ).toString(),
+      })
+    }
+  }
+
+  const zap_and_stake = useZapAndStake()
+  const handleZapAndStake = () => {
+    if (poolData && farm) {
+      const {
+        id,
+        type_x,
+        type_y,
+        reserve_x,
+        reserve_y,
+        stable,
+        fee: { fee_percentage },
+      } = poolData
+      zap_and_stake.mutate({
+        pool_id: id,
+        pool_type_x: type_x,
+        pool_type_y: type_y,
+        reserve_x: reserve_x,
+        reserve_y: reserve_y,
+        stable,
+        fee: fee_percentage,
+        farm_id: farm.id,
+        lp_id: lp ? lp.id : null,
+        input_type: coinTypeFirst.type,
+        input_value: (
+          Number(coinInputSingle) *
+          10 ** coinTypeFirst.decimals
+        ).toString(),
+      })
+    }
+  }
+
   const withdraw = useRemoveLiquidity()
   const handleWithdraw = () => {
     if (poolData && lp) {
@@ -188,13 +248,32 @@ const LiquidityPresentation = () => {
     }
   }
 
-  const {data: stake_bal} = useGetStake(farm?.id, farm?.type_x, farm?.type_y, lp?.id)
+  const unstake_and_withdraw = useUnStakeAndWithdraw()
+  const handleUnstakeAndWithdraw = () => {
+    if (poolData && lp && farm) {
+      unstake_and_withdraw.mutate({
+        pool_id: poolData.id,
+        pool_type_x: poolData.type_x,
+        pool_type_y: poolData.type_y,
+        farm_id: farm.id,
+        lp_id: lp.id,
+        withdrawl: lp.lp_balance,
+      })
+    }
+  }
 
-  console.log('stake_bal',stake_bal)
+  const { data: stake_bal } = useGetStake(
+    farm?.id,
+    farm?.type_x,
+    farm?.type_y,
+    lp?.id,
+  )
+
+  console.log('stake_bal', stake_bal)
 
   const stake = useStakeFarm()
-  const handleStake = ()=>{
-    if(poolData && lp && farm){
+  const handleStake = () => {
+    if (poolData && lp && farm) {
       stake.mutate({
         pool_id: poolData.id,
         farm_id: farm.id,
@@ -206,8 +285,8 @@ const LiquidityPresentation = () => {
   }
 
   const unstake = useUnStakeFarm()
-  const handleUnstake = ()=>{
-    if(poolData && lp && farm){
+  const handleUnstake = () => {
+    if (poolData && lp && farm) {
       unstake.mutate({
         pool_id: poolData.id,
         farm_id: farm.id,
@@ -218,15 +297,13 @@ const LiquidityPresentation = () => {
     }
   }
 
-
   const tabDataKeys = [
     {
       id: 0,
       title: 'Pair',
-      children:
-        !poolData ? (
-          <Loading />
-        ): (
+      children: !poolData ? (
+        <Loading />
+      ) : (
         <>
           <div className={poolStyles.lightGreyText}>
             <Icon.NoticeIcon />
@@ -248,9 +325,14 @@ const LiquidityPresentation = () => {
                     <div className={poolStyles.boldText}>
                       {formatBalance(poolData.reserve_x, poolData.decimal_x)}
                     </div>
-                    <div className={cx(poolStyles.lightGreyText, css({
-                      marginLeft: '5px',
-                    }))}>
+                    <div
+                      className={cx(
+                        poolStyles.lightGreyText,
+                        css({
+                          marginLeft: '5px',
+                        }),
+                      )}
+                    >
                       {_poolCoinX!.name}
                     </div>
                   </div>
@@ -258,9 +340,14 @@ const LiquidityPresentation = () => {
                     <div className={poolStyles.boldText}>
                       {formatBalance(poolData.reserve_y, poolData.decimal_y)}
                     </div>
-                    <div className={cx(poolStyles.lightGreyText, css({
-                      marginLeft: '5px',
-                    }))}>
+                    <div
+                      className={cx(
+                        poolStyles.lightGreyText,
+                        css({
+                          marginLeft: '5px',
+                        }),
+                      )}
+                    >
                       {_poolCoinY!.name}
                     </div>
                   </div>
@@ -277,7 +364,10 @@ const LiquidityPresentation = () => {
               <InputSection
                 balance={
                   coinTypeFirstBalance
-                    ? formatBalance(coinTypeFirstBalance.totalBalance, coinTypeFirst.decimals)
+                    ? formatBalance(
+                        coinTypeFirstBalance.totalBalance,
+                        coinTypeFirst.decimals,
+                      )
                     : '...'
                 }
                 titleChildren={
@@ -313,7 +403,10 @@ const LiquidityPresentation = () => {
               <InputSection
                 balance={
                   coinTypeSecondBalance
-                    ? formatBalance(coinTypeSecondBalance.totalBalance, coinTypeSecond.decimals)
+                    ? formatBalance(
+                        coinTypeSecondBalance.totalBalance,
+                        coinTypeSecond.decimals,
+                      )
                     : '...'
                 }
                 titleChildren={
@@ -346,7 +439,7 @@ const LiquidityPresentation = () => {
                 }
               />
             </div>
-            {error &&  <Error errorText={error} />}
+            {error && <Error errorText={error} />}
             <div className={styles.buttonContent}>
               <Button
                 styletype='filled'
@@ -355,9 +448,9 @@ const LiquidityPresentation = () => {
               />
               <Button
                 styletype='filled'
-                disabled={true}
+                disabled={!farm}
                 text='Deposit & Stake'
-                onClick={() => handleAddLiquidity()}
+                onClick={() => handleDepositAndStake()}
               />
             </div>
           </div>
@@ -367,77 +460,74 @@ const LiquidityPresentation = () => {
     {
       id: 1,
       title: 'Single',
-      children:
-        !coinTypeFirst ? (
-          <Loading />
-        ) : (
-          <>
-            <div className={poolStyles.lightGreyText}>
-              <Icon.NoticeIcon />
-              Deposit Liquidity to earn rewards.
-            </div>
-            <div className={styles.inputContent}>
-              <InputSection
-                balance={
-                  coinTypeFirstBalance
-                    ? formatBalance(coinTypeFirstBalance.totalBalance, coinTypeFirst.decimals)
-                    : '...'
-                }
-                titleChildren={
-                  <div>
-                    {coinTypeFirst.logo}
-                    <span>{coinTypeFirst.name}</span>
-                    <Icon.SwapIcon
-                      className={styles.icon}
-                      onClick={() => {
-                        setCoinTypeFirst(coinTypeSecond)
-                        setCoinTypeSecond(coinTypeFirst)
-                      }}
-                    />
-                  </div>
-                }
-                inputChildren={
-                  <>
-                    <Input
-                      value={coinInputSingle}
-                      onChange={(e) => {
-                        if (coinTypeFirstBalance?.totalBalance) {
-                          handleOnCoinInputSingleChange(e)
-                          if (
-                            parseFloat(e.target.value) *
-                              Math.pow(10, coinTypeFirst.decimals) >
-                            Number(coinTypeFirstBalance.totalBalance)
-                          ) {
-                            setError('Insufficient Balance')
-                          } else {
-                            setError('')
-                          }
+      children: !coinTypeFirst ? (
+        <Loading />
+      ) : (
+        <>
+          <div className={poolStyles.lightGreyText}>
+            <Icon.NoticeIcon />
+            Deposit Liquidity to earn rewards.
+          </div>
+          <div className={styles.inputContent}>
+            <InputSection
+              balance={
+                coinTypeFirstBalance
+                  ? formatBalance(
+                      coinTypeFirstBalance.totalBalance,
+                      coinTypeFirst.decimals,
+                    )
+                  : '...'
+              }
+              titleChildren={
+                <div>
+                  {coinTypeFirst.logo}
+                  <span>{coinTypeFirst.name}</span>
+                  <Icon.SwapIcon
+                    className={styles.icon}
+                    onClick={() => {
+                      setCoinTypeFirst(coinTypeSecond)
+                      setCoinTypeSecond(coinTypeFirst)
+                    }}
+                  />
+                </div>
+              }
+              inputChildren={
+                <>
+                  <Input
+                    value={coinInputSingle}
+                    onChange={(e) => {
+                      if (coinTypeFirstBalance?.totalBalance) {
+                        handleOnCoinInputSingleChange(e)
+                        if (
+                          parseFloat(e.target.value) *
+                            Math.pow(10, coinTypeFirst.decimals) >
+                          Number(coinTypeFirstBalance.totalBalance)
+                        ) {
+                          setError('Insufficient Balance')
+                        } else {
+                          setError('')
                         }
-                      }}
-                      placeholder={`${coinTypeFirst.name} Value`}
-                      // disabled={isLoading}
-                    />
-                  </>
-                }
-              />
-            </div>
-            {error &&  <Error errorText={error} />}
-            <div className={styles.buttonContent}>
-              <Button
-                styletype='filled'
-                text='Deposit'
-                onClick={() => handleZap()}
-              />
-              <Button
-                disabled={true}
-                styletype='filled'
-                text='Deposit & Stake'
-                onClick={() => {}}
-              />
-            </div>
-          </>
-        )
-      ,
+                      }
+                    }}
+                    placeholder={`${coinTypeFirst.name} Value`}
+                    // disabled={isLoading}
+                  />
+                </>
+              }
+            />
+          </div>
+          {error && <Error errorText={error} />}
+          <div className={styles.buttonContent}>
+            <Button styletype='filled' text='Zap' onClick={() => handleZap()} />
+            <Button
+              disabled={!farm}
+              styletype='filled'
+              text='Zap & Stake'
+              onClick={() => handleZapAndStake()}
+            />
+          </div>
+        </>
+      ),
     },
   ]
 
@@ -482,13 +572,14 @@ const LiquidityPresentation = () => {
                 <Button
                   styletype='filled'
                   text='Withdraw'
+                  disabled={parseInt(stake_bal ?? '0') == 0}
                   onClick={() => handleWithdraw()}
                 />
                 <Button
                   styletype='filled'
                   text='Stake'
                   onClick={() => handleStake()}
-                  disabled = {!farm || (lp?.lp_balance??"0") == "0"}
+                  disabled={!farm || (lp?.lp_balance ?? '0') == '0'}
                 />
               </div>
             </div>
@@ -537,15 +628,15 @@ const LiquidityPresentation = () => {
               <div className={styles.buttonContent}>
                 <Button
                   styletype='filled'
-                  disabled={parseInt(stake_bal ?? "0") == 0}
+                  disabled={parseInt(stake_bal ?? '0') == 0}
                   text='Unstake'
                   onClick={() => handleUnstake()}
                 />
                 <Button
                   styletype='filled'
                   text='Unstake & Withdraw'
-                  onClick={() => {}}
-                  disabled
+                  onClick={() => handleUnstakeAndWithdraw()}
+                  disabled={parseInt(stake_bal ?? '0') == 0 || !farm}
                 />
               </div>
             </div>

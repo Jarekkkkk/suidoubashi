@@ -1,26 +1,25 @@
 import { useMutation } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import {
-  TransactionBlock,
-  getExecutionStatusType,
-} from '@mysten/sui.js'
+import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
-import { add_liquidity,  create_lp } from '@/Constants/API/pool'
+import { add_liquidity, create_lp } from '@/Constants/API/pool'
 import { queryClient } from '@/App'
 import { SettingInterface } from '@/Components/SettingModal'
+import { stake_all } from '@/Constants/API/farm'
 
-type AddLiquidityMutationArgs = {
+type MutationArgs = {
   pool_id: string
   pool_type_x: string
   pool_type_y: string
+  farm_id: string
   lp_id: string | null
   input_x_value: string
   input_y_value: string
 }
 
-export const useAddLiquidity = () => {
+export const useDepoistAndStake = () => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
   // TODO
@@ -36,9 +35,10 @@ export const useAddLiquidity = () => {
       pool_type_x,
       pool_type_y,
       lp_id,
+      farm_id,
       input_x_value,
       input_y_value,
-    }: AddLiquidityMutationArgs) => {
+    }: MutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       const txb = new TransactionBlock()
 
@@ -76,6 +76,9 @@ export const useAddLiquidity = () => {
         deposit_x_min,
         deposit_y_min,
       )
+
+      stake_all(txb, farm_id, pool_id, pool_type_x, pool_type_y, lp)
+
       // return id first time deposit
       if (lp_id == null) {
         txb.transferObjects([lp], txb.pure(currentAccount.address))
@@ -92,9 +95,11 @@ export const useAddLiquidity = () => {
       }
     },
     onSuccess: (_, params) => {
-      queryClient.invalidateQueries(['LP'])
       queryClient.invalidateQueries(['pool', params.pool_id])
-      toast.success('Add Liquidity Success!')
+      queryClient.invalidateQueries(['LP'])
+      queryClient.invalidateQueries(['farm',params.farm_id])
+      queryClient.invalidateQueries(['stake-balance',params.farm_id])
+      toast.success('Add Liquidity and Stake Success!')
     },
     onError: (_err: Error) => {
       console.log(_err)

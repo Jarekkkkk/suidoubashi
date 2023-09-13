@@ -76,7 +76,7 @@ export function stake_all(
   pool_id: string,
   farm_type_x: string,
   farm_type_y: string,
-  lp: string,
+  lp: any,
 ) {
   txb.moveCall({
     target: `${farm_package}::farm::stake_all`,
@@ -85,7 +85,7 @@ export function stake_all(
       txb.object(farm_reg),
       txb.object(farm_id),
       txb.object(pool_id),
-      txb.object(lp),
+      lp,
       txb.object(SUI_CLOCK_OBJECT_ID),
     ],
   })

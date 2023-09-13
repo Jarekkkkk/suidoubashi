@@ -4,14 +4,13 @@ import { useWalletKit } from '@mysten/wallet-kit'
 import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import {
-    delete_lp,
+  delete_lp,
   quote_remove_liquidity,
   remove_liquidity,
 } from '@/Constants/API/pool'
 import { queryClient } from '@/App'
-import { SettingInterface } from '@/Components/SettingModal'
 
-type AddLiquidityMutationArgs = {
+type MutationArgs = {
   pool_id: string
   pool_type_x: string
   pool_type_y: string
@@ -22,12 +21,6 @@ type AddLiquidityMutationArgs = {
 export const useRemoveLiquidity = () => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
-  // TODO
-  const setting: SettingInterface = {
-    gasBudget: '10000000',
-    expiration: '30',
-    slippage: '200',
-  }
 
   return useMutation({
     mutationFn: async ({
@@ -36,11 +29,10 @@ export const useRemoveLiquidity = () => {
       pool_type_y,
       lp_id,
       withdrawl,
-    }: AddLiquidityMutationArgs) => {
+    }: MutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       // should refacotr
       const txb = new TransactionBlock()
-      txb.setGasBudget(BigInt(setting.gasBudget))
 
       const quote = await quote_remove_liquidity(
         rpc,
@@ -51,7 +43,7 @@ export const useRemoveLiquidity = () => {
         withdrawl,
       )
 
-      const lp = txb.pure(lp_id)
+      const lp = txb.object(lp_id)
 
       remove_liquidity(
         txb,
@@ -63,7 +55,7 @@ export const useRemoveLiquidity = () => {
         quote[0],
         quote[1],
       )
-      
+
       // LP should withdraw all the fee revenue before burn it
       delete_lp(txb, lp, pool_type_x, pool_type_y)
 
