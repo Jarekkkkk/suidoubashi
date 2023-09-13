@@ -9,6 +9,7 @@ import {
   Button,
   Loading,
   Empty,
+  Error,
 } from '@/Components'
 import { useSwapContext } from '@/Containers/Swap'
 import { usePageContext } from '@/Components/Page'
@@ -21,7 +22,6 @@ import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { get_output } from '@/Constants/API/pool'
 import useRpc from '@/Hooks/useRpc'
 import { useSwap } from '@/Hooks/AMM/useSwap'
-import { useGetFarmIDs, useGetMulFarm } from '@/Hooks/Farm/useGetFarm'
 
 const SwapPresentation = () => {
   const {
@@ -99,7 +99,6 @@ const SwapPresentation = () => {
 
   const [getOutputIsLoading, setGetOutpuIsLoading] = useState(false)
 
-  const {data: farm_ids} = useGetFarmIDs()
   const [getOutput, setGetOutput] = useState('')
 
   useEffect(() => {
@@ -297,6 +296,7 @@ const SwapPresentation = () => {
             </span>
           </div>
         </div>
+        {error &&  <Error errorText={error} />}
         <div className={styles.swapButton}>
           <Button
             text='Swap'

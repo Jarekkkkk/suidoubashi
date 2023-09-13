@@ -6,6 +6,7 @@ import {
   DatePicker,
   RadioGroup,
   Button,
+  Error,
 } from '@/Components'
 import Image from '@/Assets/image'
 import { CoinIcon, Icon } from '@/Assets/icon'
@@ -41,9 +42,10 @@ const WithdrawVSDBModal = (props: Props) => {
 
   const walletAddress = UserModule.getUserToken()
   const balance = useGetBalance(Coin.SDB, walletAddress)
-  const { data: vsdb } = useGetVsdb(walletAddress, currentVSDBId)
+  const { data: vsdb, isLoading: isGetVsdbLoading } = useGetVsdb(walletAddress, currentVSDBId)
 
   const [input, setInput] = useState<string>('')
+  const [error, setError] = useState<string>()
 
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,12 +55,21 @@ const WithdrawVSDBModal = (props: Props) => {
         value = value.slice(0, -1)
       }
       setInput(value)
+
+      if (balance?.totalBalance) {
+        if (parseFloat(value) * Math.pow(10, 9) > Number(balance.totalBalance)) {
+          setError('Insufficient Balance')
+        } else {
+          setError('')
+        }
+      }
     },
 
     [setInput],
   )
 
-  const { mutate: revive } = useRevive()
+  const { mutate: revive, isLoading: isReviveLoading } = useRevive()
+
   const handleRevive = () => {
     const extended_duration =
       (new Date(endDate).getTime() -
@@ -98,6 +109,7 @@ const WithdrawVSDBModal = (props: Props) => {
               value={input}
               onChange={handleOnInputChange}
               placeholder='Increase Unlocked Amount'
+              disabled={isReviveLoading}
             />
           </>
         }
@@ -119,11 +131,13 @@ const WithdrawVSDBModal = (props: Props) => {
             <DatePicker
               endDate={new Date(endDate)}
               handleOnChange={handleOnChange}
+              disabled={isReviveLoading}
             />
             <RadioGroup
               selectedValue={endDate}
               options={vsdbTimeSettingOptions}
               onChange={handleOnChange}
+              disabled={isReviveLoading}
             />
           </>
         }
@@ -151,8 +165,14 @@ const WithdrawVSDBModal = (props: Props) => {
           </span>
         </div>
       </div>
+      {error &&  <Error errorText={error} />}
       <div className={styles.vsdbModalbutton}>
-        <Button text='Claim' styletype='filled' onClick={handleRevive} />
+        <Button
+          text='Claim'
+          styletype='filled'
+          onClick={handleRevive}
+          disabled={!!error}
+        />
       </div>
     </Dialog>
   )

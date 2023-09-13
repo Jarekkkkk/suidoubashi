@@ -4,9 +4,8 @@ export const errorContent = css`
   display: flex;
   align-items: end;
   justify-content: center;
-  margin-top: 28px;
+  margin: 28px 0;
   border-radius: 8px;
-  min-height: calc(28px + 16px);
 
   span {
     color: #F56C6C;

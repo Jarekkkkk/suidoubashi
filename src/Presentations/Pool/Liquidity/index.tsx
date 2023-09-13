@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { cx, css } from '@emotion/css'
-import BigNumber from 'bignumber.js'
 
 import {
   PageContainer,
@@ -11,12 +10,15 @@ import {
   Button,
   Loading,
   Empty,
+  Error,
 } from '@/Components'
 import { useLiquidityContext } from '@/Containers/Pool/Liquidity'
 import { Coins, CoinInterface } from '@/Constants/coin'
 import { Icon } from '@/Assets/icon'
 import Image from '@/Assets/image'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
+import { formatBalance } from '@/Utils/format'
+
 
 import * as styles from './index.styles'
 import * as poolStyles from '../index.styles'
@@ -118,7 +120,9 @@ const LiquidityPresentation = () => {
   )
 
   const lp = useGetLP(walletAddress, poolData?.type_x, poolData?.type_y)
+
   const add_liquidity = useAddLiquidity()
+
   const handleAddLiquidity = () => {
     if (poolData && lp !== undefined) {
       add_liquidity.mutate({
@@ -139,6 +143,7 @@ const LiquidityPresentation = () => {
   }
 
   const zap = useZap()
+
   const handleZap = () => {
     if (poolData && lp) {
       const {
@@ -169,6 +174,7 @@ const LiquidityPresentation = () => {
   }
 
   const withdraw = useRemoveLiquidity()
+
   const handleWithdraw = () => {
     if (poolData && lp) {
       withdraw.mutate({
@@ -208,7 +214,7 @@ const LiquidityPresentation = () => {
                 <div>
                   <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
                     <div className={poolStyles.boldText}>
-                      {poolData.reserve_x}
+                      {formatBalance(poolData.reserve_x, poolData.decimal_x)}
                     </div>
                     <div className={cx(poolStyles.lightGreyText, css({
                       marginLeft: '5px',
@@ -218,12 +224,12 @@ const LiquidityPresentation = () => {
                   </div>
                   <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
                     <div className={poolStyles.boldText}>
-                      {poolData.reserve_x}
+                      {formatBalance(poolData.reserve_y, poolData.decimal_y)}
                     </div>
                     <div className={cx(poolStyles.lightGreyText, css({
                       marginLeft: '5px',
                     }))}>
-                      {_poolCoinX!.name}
+                      {_poolCoinY!.name}
                     </div>
                   </div>
                 </div>
@@ -239,9 +245,7 @@ const LiquidityPresentation = () => {
               <InputSection
                 balance={
                   coinTypeFirstBalance
-                    ? BigNumber(coinTypeFirstBalance.totalBalance)
-                        .shiftedBy(-coinTypeFirst.decimals)
-                        .toFormat()
+                    ? formatBalance(coinTypeFirstBalance.totalBalance, coinTypeFirst.decimals)
                     : '...'
                 }
                 titleChildren={
@@ -277,9 +281,7 @@ const LiquidityPresentation = () => {
               <InputSection
                 balance={
                   coinTypeSecondBalance
-                    ? BigNumber(coinTypeSecondBalance.totalBalance)
-                        .shiftedBy(-coinTypeSecond.decimals)
-                        .toFormat()
+                    ? formatBalance(coinTypeSecondBalance.totalBalance, coinTypeSecond.decimals)
                     : '...'
                 }
                 titleChildren={
@@ -312,6 +314,7 @@ const LiquidityPresentation = () => {
                 }
               />
             </div>
+            {error &&  <Error errorText={error} />}
             <div className={styles.buttonContent}>
               <Button
                 styletype='filled'
@@ -345,9 +348,7 @@ const LiquidityPresentation = () => {
               <InputSection
                 balance={
                   coinTypeFirstBalance
-                    ? BigNumber(coinTypeFirstBalance.totalBalance)
-                        .shiftedBy(-coinTypeFirst.decimals)
-                        .toFormat()
+                    ? formatBalance(coinTypeFirstBalance.totalBalance, coinTypeFirst.decimals)
                     : '...'
                 }
                 titleChildren={
@@ -388,6 +389,7 @@ const LiquidityPresentation = () => {
                 }
               />
             </div>
+            {error &&  <Error errorText={error} />}
             <div className={styles.buttonContent}>
               <Button styletype='filled' text='Zap' onClick={() => handleZap()} />
               <Button
