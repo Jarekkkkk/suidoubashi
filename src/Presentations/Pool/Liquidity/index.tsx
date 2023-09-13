@@ -318,7 +318,7 @@ const LiquidityPresentation = () => {
             <div className={styles.buttonContent}>
               <Button
                 styletype='filled'
-                text='USDC/USDT LP  Deposit'
+                text='Deposit'
                 onClick={() => handleAddLiquidity()}
               />
               <Button
@@ -391,12 +391,16 @@ const LiquidityPresentation = () => {
             </div>
             {error &&  <Error errorText={error} />}
             <div className={styles.buttonContent}>
-              <Button styletype='filled' text='Zap' onClick={() => handleZap()} />
+              <Button
+                styletype='filled'
+                text='Deposit'
+                onClick={() => handleZap()}
+              />
               <Button
                 disabled={true}
                 styletype='filled'
-                text='Zap & Stake'
-                onClick={() => ({})}
+                text='Deposit & Stake'
+                onClick={() => handleZap()}
               />
             </div>
           </>
