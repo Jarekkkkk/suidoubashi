@@ -26,11 +26,14 @@ import { useAddLiquidity } from '@/Hooks/AMM/useAddLiquidity'
 import { useRemoveLiquidity } from '@/Hooks/AMM/removeLiquidity'
 import { useGetLP } from '@/Hooks/AMM/useGetLP'
 import { useZap } from '@/Hooks/AMM/useZap'
+import { useStakeFarm } from '@/Hooks/Farm/useStake'
+import { useGetStake } from '@/Hooks/Farm/useGetStake'
+import { useUnStakeFarm } from '@/Hooks/Farm/useUnstake'
 
 const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
 
 const LiquidityPresentation = () => {
-  const { walletAddress, poolData, fetching, error, setError } =
+  const { walletAddress, poolData, fetching, error, setError, farmData:farm} =
     useLiquidityContext()
 
   if (fetching)
@@ -143,7 +146,6 @@ const LiquidityPresentation = () => {
   }
 
   const zap = useZap()
-
   const handleZap = () => {
     if (poolData && lp) {
       const {
@@ -174,7 +176,6 @@ const LiquidityPresentation = () => {
   }
 
   const withdraw = useRemoveLiquidity()
-
   const handleWithdraw = () => {
     if (poolData && lp) {
       withdraw.mutate({
@@ -186,6 +187,37 @@ const LiquidityPresentation = () => {
       })
     }
   }
+
+  const {data: stake_bal} = useGetStake(farm?.id, farm?.type_x, farm?.type_y, lp?.id)
+
+  console.log('stake_bal',stake_bal)
+
+  const stake = useStakeFarm()
+  const handleStake = ()=>{
+    if(poolData && lp && farm){
+      stake.mutate({
+        pool_id: poolData.id,
+        farm_id: farm.id,
+        pool_type_x: farm.type_x,
+        pool_type_y: farm.type_y,
+        lp_id: lp.id,
+      })
+    }
+  }
+
+  const unstake = useUnStakeFarm()
+  const handleUnstake = ()=>{
+    if(poolData && lp && farm){
+      unstake.mutate({
+        pool_id: poolData.id,
+        farm_id: farm.id,
+        pool_type_x: poolData.type_x,
+        pool_type_y: poolData.type_y,
+        lp_id: lp.id,
+      })
+    }
+  }
+
 
   const tabDataKeys = [
     {
@@ -400,7 +432,7 @@ const LiquidityPresentation = () => {
                 disabled={true}
                 styletype='filled'
                 text='Deposit & Stake'
-                onClick={() => handleZap()}
+                onClick={() => {}}
               />
             </div>
           </>
@@ -455,8 +487,8 @@ const LiquidityPresentation = () => {
                 <Button
                   styletype='filled'
                   text='Stake'
-                  onClick={() => handleWithdraw()}
-                  disabled
+                  onClick={() => handleStake()}
+                  disabled = {!farm || (lp?.lp_balance??"0") == "0"}
                 />
               </div>
             </div>
@@ -505,14 +537,14 @@ const LiquidityPresentation = () => {
               <div className={styles.buttonContent}>
                 <Button
                   styletype='filled'
-                  disabled={true}
+                  disabled={parseInt(stake_bal ?? "0") == 0}
                   text='Unstake'
-                  onClick={() => handleWithdraw()}
+                  onClick={() => handleUnstake()}
                 />
                 <Button
                   styletype='filled'
                   text='Unstake & Withdraw'
-                  onClick={() => handleWithdraw()}
+                  onClick={() => {}}
                   disabled
                 />
               </div>

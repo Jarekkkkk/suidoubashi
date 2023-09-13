@@ -72,14 +72,35 @@ export async function get_farm_stake_balance(
 
 export function stake_all(
   txb: TransactionBlock,
-  pool_id: string,
   farm_id: string,
+  pool_id: string,
   farm_type_x: string,
   farm_type_y: string,
   lp: string,
 ) {
   txb.moveCall({
     target: `${farm_package}::farm::stake_all`,
+    typeArguments: [farm_type_x, farm_type_y],
+    arguments: [
+      txb.object(farm_reg),
+      txb.object(farm_id),
+      txb.object(pool_id),
+      txb.object(lp),
+      txb.object(SUI_CLOCK_OBJECT_ID),
+    ],
+  })
+}
+
+export function unstake_all(
+  txb: TransactionBlock,
+  farm_id: string,
+  pool_id: string,
+  farm_type_x: string,
+  farm_type_y: string,
+  lp: string,
+) {
+  txb.moveCall({
+    target: `${farm_package}::farm::unstake_all`,
     typeArguments: [farm_type_x, farm_type_y],
     arguments: [
       txb.object(farm_reg),

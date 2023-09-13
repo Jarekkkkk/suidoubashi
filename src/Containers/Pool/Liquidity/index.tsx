@@ -1,4 +1,4 @@
-import React, { useState, useContext, PropsWithChildren } from 'react'
+import React, { useState, useContext, PropsWithChildren, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import UserModule from '@/Modules/User'
@@ -8,10 +8,13 @@ import { useAddLiquidity } from '@/Hooks/AMM/useAddLiquidity'
 import { useGetPool } from '@/Hooks/AMM/useGetPool'
 import { useGetLP } from '@/Hooks/AMM/useGetLP'
 import { Pool } from '@/Constants/API/pool'
+import { useGetFarmIDs, useGetMulFarm } from '@/Hooks/Farm/useGetFarm'
+import { Farm } from '@/Constants/API/farm'
 
 const LiquidityContext = React.createContext<LiquidityContext>({
   walletAddress: null,
   poolData: null,
+  farmData: null,
   fetching: false,
   error: undefined,
   setError: () => {},
@@ -31,12 +34,26 @@ const LiquidityContainer = ({ children }: PropsWithChildren) => {
 
   const { data: poolData, isLoading: isPoolDataLoading } = useGetPool(_poolId)
 
+  // find farm
+  const { data: farmIds } = useGetFarmIDs()
+  const { data: farmData, isLoading: isFarmDataLoading } =
+    useGetMulFarm(farmIds)
+
+  const farm = useMemo(
+    () =>
+      farmData?.find(
+        (f) => f.type_x == poolData?.type_x && f.type_y == poolData.type_y,
+      ) ?? null,
+    [farmData, poolData],
+  )
+
   return (
     <LiquidityContext.Provider
       value={{
         walletAddress,
         poolData: poolData,
-        fetching: isPoolDataLoading,
+        farmData: farm,
+        fetching: isPoolDataLoading || isFarmDataLoading,
         error,
         setError,
       }}
@@ -47,11 +64,12 @@ const LiquidityContainer = ({ children }: PropsWithChildren) => {
 }
 
 interface LiquidityContext {
-  readonly poolData: Pool | null | undefined,
-  readonly fetching: boolean,
-  readonly error: string | undefined,
-  walletAddress: string | null,
-  setError: Function,
+  readonly poolData: Pool | null | undefined
+  readonly farmData: Farm | null
+  readonly fetching: boolean
+  readonly error: string | undefined
+  walletAddress: string | null
+  setError: Function
 }
 
 export default LiquidityContainer
