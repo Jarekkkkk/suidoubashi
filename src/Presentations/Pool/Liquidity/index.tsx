@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { cx, css } from '@emotion/css'
 
@@ -9,10 +9,9 @@ import {
   Tabs,
   Button,
   Loading,
-  Empty,
   Error,
 } from '@/Components'
-import { useLiquidityContext } from '@/Containers/Pool/Liquidity'
+import { LiquidityContext } from '@/Containers/Pool/Liquidity'
 import { Icon } from '@/Assets/icon'
 import Image from '@/Assets/image'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
@@ -30,6 +29,7 @@ import { useUnStakeFarm } from '@/Hooks/Farm/useUnstake'
 import { useDepoistAndStake } from '@/Hooks/Farm/useDepositAndStake'
 import { useZapAndStake } from '@/Hooks/Farm/useZapAndStake'
 import { useUnStakeAndWithdraw } from '@/Hooks/Farm/useUnstakeAndWithdraw'
+
 
 const LiquidityPresentation = () => {
   const {
@@ -49,23 +49,15 @@ const LiquidityPresentation = () => {
     setCoinInputSingle,
     setCoinTypeX,
     setCoinTypeY,
-  } = useLiquidityContext()
+  } = useContext(LiquidityContext)
 
-  if (fetching) return (
-    <PageContainer title='Liquidity' titleImg={Image.pageBackground_1}>
-      <div className={poolStyles.poolpContainer}>
-        <Loading />
-      </div>
-    </PageContainer>
-  )
-
-  if (!poolData || !coinTypeX || !coinTypeY) return <Empty content='Oops! No Data.' />
 
   const coinTypeXBalance = useGetBalance(coinTypeX.type, walletAddress)
   const coinTypeYBalance =  useGetBalance(coinTypeY.type, walletAddress)
 
   const handleOnCoinInputXChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      if(!poolData || !coinTypeX || !coinTypeY) return 
       let value = e.target.value
       const isValid = /^-?\d*\.?\d*$/.test(value)
       if (!isValid) {
@@ -87,6 +79,7 @@ const LiquidityPresentation = () => {
 
   const handleOnCoinInputYChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      if(!poolData) return 
       let value = e.target.value
       const isValid = /^-?\d*\.?\d*$/.test(value)
       if (!isValid) {
@@ -121,7 +114,6 @@ const LiquidityPresentation = () => {
   const lp = useGetLP(walletAddress, poolData?.type_x, poolData?.type_y)
 
   const add_liquidity = useAddLiquidity()
-
   const handleAddLiquidity = () => {
     if (poolData && lp !== undefined) {
       add_liquidity.mutate({
@@ -307,7 +299,7 @@ const LiquidityPresentation = () => {
                 <div>
                   <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
                     <div className={poolStyles.boldText}>
-                      {formatBalance(poolData.reserve_x, poolData.decimal_x)}
+                      {formatBalance(poolData?.reserve_x ??"0", poolData?.decimal_x ?? 0)}
                     </div>
                     <div
                       className={cx(
@@ -322,7 +314,7 @@ const LiquidityPresentation = () => {
                   </div>
                   <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
                     <div className={poolStyles.boldText}>
-                      {formatBalance(poolData.reserve_y, poolData.decimal_y)}
+                      {formatBalance(poolData?.reserve_y ?? "0", poolData?.decimal_y ?? 0)}
                     </div>
                     <div
                       className={cx(
@@ -339,7 +331,7 @@ const LiquidityPresentation = () => {
                 <div>
                   <div className={poolStyles.lightGreyText}>APY</div>
                   <div className={poolStyles.boldText}>
-                    {poolData.reserve_x}
+                    {poolData?.reserve_x ?? "..."}
                   </div>
                 </div>
               </div>
@@ -513,6 +505,14 @@ const LiquidityPresentation = () => {
     },
   ]
 
+  if (fetching) return (
+    <PageContainer title='Liquidity' titleImg={Image.pageBackground_1}>
+      <div className={poolStyles.poolpContainer}>
+        <Loading />
+      </div>
+    </PageContainer>
+  )
+
   return (
     <PageContainer
       title='Liquidity'
@@ -539,7 +539,7 @@ const LiquidityPresentation = () => {
                     {coinTypeX.name}
                   </span>
                 </span>
-                <div className={poolStyles.boldText}>{poolData.reserve_x}</div>
+                <div className={poolStyles.boldText}>{poolData?.reserve_x ?? "..."}</div>
               </div>
               <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
                 <span className={poolStyles.boldText}>
@@ -548,7 +548,7 @@ const LiquidityPresentation = () => {
                     {coinTypeY.name}
                   </span>
                 </span>
-                <div className={poolStyles.boldText}>{poolData.reserve_y}</div>
+                <div className={poolStyles.boldText}>{poolData?.reserve_y ?? "..."}</div>
               </div>
               <div className={styles.buttonContent}>
                 <Button
@@ -576,7 +576,7 @@ const LiquidityPresentation = () => {
             <div className={poolStyles.greyText}>
               Your Balance
               <div className={cx(poolStyles.boldText, styles.textMarginLeft)}>
-                {poolData.reserve_x}
+                {poolData?.reserve_x ?? "..."}
               </div>
             </div>
             <div className={styles.coinContent}>
@@ -587,7 +587,7 @@ const LiquidityPresentation = () => {
                     {coinTypeX.name}
                   </span>
                 </span>
-                <div className={poolStyles.boldText}>{poolData.reserve_x}</div>
+                <div className={poolStyles.boldText}>{poolData?.reserve_x ?? "..."}</div>
               </div>
               <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
                 <span className={poolStyles.boldText}>
@@ -596,7 +596,7 @@ const LiquidityPresentation = () => {
                     {coinTypeY.name}
                   </span>
                 </span>
-                <div className={poolStyles.boldText}>{poolData.reserve_y}</div>
+                <div className={poolStyles.boldText}>{poolData?.reserve_y ?? "..."}</div>
               </div>
               <div className={styles.infoContent}>
                 <div className={poolStyles.lightGreyText}>

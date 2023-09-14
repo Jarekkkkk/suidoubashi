@@ -1,4 +1,10 @@
-import React, { useState, useContext, PropsWithChildren, useMemo, useEffect } from 'react'
+import React, {
+  useState,
+  useContext,
+  PropsWithChildren,
+  useMemo,
+  useEffect,
+} from 'react'
 import { useLocation } from 'react-router-dom'
 
 import UserModule from '@/Modules/User'
@@ -9,7 +15,7 @@ import { Coins, CoinInterface } from '@/Constants/coin'
 import { useGetFarmIDs, useGetMulFarm } from '@/Hooks/Farm/useGetFarm'
 import { Farm } from '@/Constants/API/farm'
 
-const LiquidityContext = React.createContext<LiquidityContext>({
+export const LiquidityContext = React.createContext<LiquidityContext>({
   walletAddress: null,
   poolData: null,
   farmData: null,
@@ -17,9 +23,9 @@ const LiquidityContext = React.createContext<LiquidityContext>({
   error: undefined,
   setError: () => {},
   coinInputX: '',
-  coinTypeX: undefined,
+  coinTypeX: Coins[0],
   coinInputY: '',
-  coinTypeY: undefined,
+  coinTypeY: Coins[1],
   coinInputSingle: '',
   setCoinInputX: () => {},
   setCoinInputY: () => {},
@@ -30,7 +36,8 @@ const LiquidityContext = React.createContext<LiquidityContext>({
 
 export const useLiquidityContext = () => useContext(LiquidityContext)
 
-const fetchIcon = (type: string | undefined) => Coins.find((coin) => coin.type === type)
+const fetchIcon = (type: string | undefined) =>
+  Coins.find((coin) => coin.type === type) ?? Coins[0]
 
 const LiquidityContainer = ({ children }: PropsWithChildren) => {
   const [error, setError] = useState<string>()
@@ -44,9 +51,9 @@ const LiquidityContainer = ({ children }: PropsWithChildren) => {
   const { data: poolData, isLoading: isPoolDataLoading } = useGetPool(_poolId)
 
   const [coinInputX, setCoinInputX] = useState<string>('')
-  const [coinTypeX, setCoinTypeX] = useState<CoinInterface | undefined>()
+  const [coinTypeX, setCoinTypeX] = useState<CoinInterface>(Coins[0])
   const [coinInputY, setCoinInputY] = useState<string>('')
-  const [coinTypeY, setCoinTypeY] = useState<CoinInterface | undefined>()
+  const [coinTypeY, setCoinTypeY] = useState<CoinInterface>(Coins[1])
   const [coinInputSingle, setCoinInputSingle] = useState('')
 
   // find farm
@@ -100,16 +107,16 @@ interface LiquidityContext {
   readonly error: string | undefined
   walletAddress: string | null
   setError: Function
-  coinInputX: string,
-  coinTypeX: CoinInterface | undefined,
-  coinInputY: string,
-  coinTypeY: CoinInterface | undefined,
-  coinInputSingle: string,
-  setCoinInputX: Function,
-  setCoinInputY: Function,
-  setCoinInputSingle: Function,
-  setCoinTypeX: Function,
-  setCoinTypeY: Function,
+  coinInputX: string
+  coinTypeX: CoinInterface
+  coinInputY: string
+  coinTypeY: CoinInterface
+  coinInputSingle: string
+  setCoinInputX: Function
+  setCoinInputY: Function
+  setCoinInputSingle: Function
+  setCoinTypeX: Function
+  setCoinTypeY: Function
 }
 
 export default LiquidityContainer
