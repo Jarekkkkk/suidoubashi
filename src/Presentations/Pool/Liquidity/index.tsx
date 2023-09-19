@@ -81,7 +81,7 @@ const LiquidityPresentation = () => {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if(!poolData) return
       let value = e.target.value
-      const isValid = /^-?\D*\.?\D*$/.test(value)
+      const isValid = /^-?\d*\.?\d*$/.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }
@@ -102,7 +102,7 @@ const LiquidityPresentation = () => {
   const handleOnCoinInputSingleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
-      const isValid = /^-?\D*\.?\D*$/.test(value)
+      const isValid = /^-?\d*\.?\d*$/.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }
