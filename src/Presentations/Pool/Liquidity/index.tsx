@@ -63,6 +63,7 @@ const LiquidityPresentation = () => {
       if (!isValid) {
         value = value.slice(0, -1)
       }
+
       setCoinInputX(value)
       if (poolData.reserve_x == '0') {
         setCoinInputY(value)
@@ -74,7 +75,8 @@ const LiquidityPresentation = () => {
         setCoinInputY(isNaN(price) ? '' : price.toFixed(6))
       }
     },
-    [setCoinInputX],
+    [setCoinInputX, poolData],
+
   )
 
   const handleOnCoinInputYChange = useCallback(
@@ -96,7 +98,7 @@ const LiquidityPresentation = () => {
         setCoinInputX(isNaN(price) ? '' : price.toFixed(6))
       }
     },
-    [setCoinInputY],
+    [setCoinInputY, poolData],
   )
 
   const handleOnCoinInputSingleChange = useCallback(
