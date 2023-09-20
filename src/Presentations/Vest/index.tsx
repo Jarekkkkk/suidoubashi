@@ -84,7 +84,7 @@ const VestPresentation = () => {
                     setCurrentVSDBId={setCurrentVSDBId}
                     setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
                     setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
-                    amm_label={!!item.amm_state}
+                    amm_state={item.amm_state}
                   />
                 )
               })
