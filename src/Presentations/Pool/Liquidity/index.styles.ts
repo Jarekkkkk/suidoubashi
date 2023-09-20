@@ -101,7 +101,3 @@ export const infoContent = css`
 export const textMarginLeft = css`
   margin-left: 5px;
 `
-
-export const icon = css`
-
-`

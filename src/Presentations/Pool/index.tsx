@@ -7,18 +7,16 @@ import {
   Loading,
   Empty,
 	ReactTable,
+	CoinCombin,
 } from '@/Components'
-import { Balance } from '@/Hooks/Coin/useGetBalance'
-import { Coins } from '@/Constants/coin'
 import { usePoolContext } from '@/Containers/Pool'
 import Image from '@/Assets/image'
 import { Icon } from '@/Assets/icon'
 
+import { fetchIcon, fetchBalance } from '@/Constants/index'
+import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 import { cx } from '@emotion/css'
-
-const fetchIcon = (name: string) => Coins.find((coin) => coin.name === name)
-const fetchBalance = (BalanceData: Balance[] | undefined, coinName: string) => BalanceData?.find((balance) => balance.coinName === coinName)
 
 const PoolPresentation = () => {
 	const {
@@ -29,7 +27,7 @@ const PoolPresentation = () => {
 
 	if (fetching) return (
 		<PageContainer title='Pool' titleImg={Image.pageBackground_2}>
-			<div className={styles.poolpContainer}>
+			<div className={constantsStyles.LoadingContainer}>
 				<Loading />
 			</div>
 		</PageContainer>
@@ -37,7 +35,7 @@ const PoolPresentation = () => {
 
 	if (!poolsData) return (
 		<PageContainer title='Pool' titleImg={Image.pageBackground_2}>
-			<div className={styles.poolpContainer}>
+			<div className={constantsStyles.LoadingContainer}>
 				<Empty content='Oops! No Data.' />
 			</div>
 		</PageContainer>
@@ -46,35 +44,25 @@ const PoolPresentation = () => {
 	const columns = [
 		{
 			id: 'pool',
-			name: 'pool',
 			Header: 'Pool',
-			width: 110,
 		},
 		{
 			id: 'wallet',
-			name: 'wallet',
 			Header: 'Wallet',
-			width: 110,
 		},
 		{
 			id: 'pool_amount',
-			name: 'pool_amount',
 			Header: 'Total Pool Amount',
-			width: 110,
 		},
 		{
 			id: 'apr',
-			name: 'apr',
 			Header: 'APR',
-			width: 110,
 		},
 		{
 			id: 'manage',
-			name: 'manage',
 			Header: 'Manage',
 		}
 	];
-
 
   const renderRow = (cell: { columns: any; poolsData: any; allBalanceData: any }) => {
 		return poolsData.map((pool) => {
@@ -88,40 +76,31 @@ const PoolPresentation = () => {
 				switch (column.id) {
 					case 'pool':
 						return (
-							<div key={idx} className={cx(styles.rowContent, styles.poolContent)}>
-								<div className={styles.coinCombin}>
-									{_poolCoinX!.logo && _poolCoinX!.logo}
-									{_poolCoinY!.logo && _poolCoinY!.logo}
-								</div>
-								<div className={styles.columnContent}>
-									<span className={styles.boldText}>{_poolCoinX!.name}/{_poolCoinY!.name}</span>
-									<span className={styles.greyText}>Stable Pool</span>
-								</div>
-							</div>
+							<CoinCombin key={idx} poolCoinX={_poolCoinX} poolCoinY={_poolCoinY} />
 						)
 					case 'wallet':
 						return (
-							<div key={idx} className={cx(styles.columnContent, styles.coinContent)}>
-								<div className={styles.rowContent}>
-									<div className={styles.boldText}>{_walletCoinX}</div>
-									<span className={styles.greyText}>{_poolCoinX!.name}</span>
+							<div key={idx} className={cx(constantsStyles.columnContent, styles.coinContent)}>
+								<div className={constantsStyles.rowContent}>
+									<div className={constantsStyles.boldText}>{_walletCoinX}</div>
+									<span className={constantsStyles.greyText}>{_poolCoinX!.name}</span>
 								</div>
-								<div className={styles.rowContent}>
-									<div className={styles.boldText}>{_walletCoinY}</div>
-									<span className={styles.greyText}>{_poolCoinY!.name}</span>
+								<div className={constantsStyles.rowContent}>
+									<div className={constantsStyles.boldText}>{_walletCoinY}</div>
+									<span className={constantsStyles.greyText}>{_poolCoinY!.name}</span>
 								</div>
 							</div>
 						)
 					case 'pool_amount':
 						return (
-							<div key={idx} className={cx(styles.columnContent, styles.coinContent)}>
-								<div className={styles.rowContent}>
-									<div className={styles.boldText}>{pool.reserve_x}</div>
-									<span className={styles.greyText}>{_poolCoinX!.name}</span>
+							<div key={idx} className={cx(constantsStyles.columnContent, styles.coinContent)}>
+								<div className={constantsStyles.rowContent}>
+									<div className={constantsStyles.boldText}>{pool.reserve_x}</div>
+									<span className={constantsStyles.greyText}>{_poolCoinX!.name}</span>
 								</div>
-								<div className={styles.rowContent}>
-									<div className={styles.boldText}>{pool.reserve_y}</div>
-									<span className={styles.greyText}>{_poolCoinY!.name}</span>
+								<div className={constantsStyles.rowContent}>
+									<div className={constantsStyles.boldText}>{pool.reserve_y}</div>
+									<span className={constantsStyles.greyText}>{_poolCoinY!.name}</span>
 								</div>
 							</div>
 						)
@@ -150,7 +129,7 @@ const PoolPresentation = () => {
 			<div className={styles.slognContent}>
 				Provide Liquidity to SuiDoBashi ecosystem and earn weekly rewards
 			</div>
-			<div className={styles.poolpContainer}>
+			<div className={constantsStyles.LoadingContainer}>
 				<Input
 					value={searchInput}
 					onChange={handleOnInputChange}

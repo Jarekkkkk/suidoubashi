@@ -3,6 +3,8 @@ import moment from 'moment'
 import { Dashboard, Swap, Pool, Vest, Vote, Rewards, Bridge } from '@/Scenes'
 
 import { Icon } from '@/Assets/icon'
+import { Balance } from '@/Hooks/Coin/useGetBalance'
+import { Coins } from '@/Constants/coin'
 
 export const END_POINT_OPTIONS = {
   fullnode: 'https://fullnode.devnet.vincagame.com',
@@ -46,7 +48,7 @@ export const generateSideBarLinks = () => [
     element: <Vote />,
     title: 'Vote',
     icon: <Icon.VoteIcon />,
-    isHidden: true,
+    isHidden: false,
   },
   {
     key: 'Rewards',
@@ -129,3 +131,8 @@ export const vsdbTimeSettingOptions = [
     value: moment().add(168, 'days').toDate().toDateString(),
   },
 ]
+
+
+export const fetchIcon = (name: string) => Coins.find((coin) => coin.name === name);
+
+export const fetchBalance = (BalanceData: Balance[] | undefined, coinName: string) => BalanceData?.find((balance) => balance.coinName === coinName);

@@ -20,3 +20,4 @@ export { default as Empty } from './Empty';
 export { default as SettingModal } from './SettingModal'
 export { default as Error } from './Error'
 export { default as ReactTable } from './Table'
+export { default as CoinCombin } from './CoinCombin'

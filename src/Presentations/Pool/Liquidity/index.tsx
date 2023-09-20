@@ -18,7 +18,7 @@ import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { formatBalance } from '@/Utils/format'
 
 import * as styles from './index.styles'
-import * as poolStyles from '../index.styles'
+import * as constantsStyles from '@/Constants/constants.styles'
 import { useAddLiquidity } from '@/Hooks/AMM/useAddLiquidity'
 import { useRemoveLiquidity } from '@/Hooks/AMM/useRemoveLiquidity'
 import { useGetLP } from '@/Hooks/AMM/useGetLP'
@@ -283,29 +283,29 @@ const LiquidityPresentation = () => {
       title: 'Pair',
       children: (
         <>
-          <div className={poolStyles.lightGreyText}>
+          <div className={constantsStyles.lightGreyText}>
             <Icon.NoticeIcon />
             Deposit pair of Coins into Pool.
           </div>
           <div>
             <div
               className={cx(
-                poolStyles.columnContent,
+                constantsStyles.columnContent,
                 css({
                   marginTop: '25px',
                 }),
               )}
             >
-              <div className={poolStyles.greyText}>Liquidity</div>
-              <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
+              <div className={constantsStyles.greyText}>Liquidity</div>
+              <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
                 <div>
-                  <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
-                    <div className={poolStyles.boldText}>
+                  <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
+                    <div className={constantsStyles.boldText}>
                       {formatBalance(poolData?.reserve_x ??"0", poolData?.decimal_x ?? 0)}
                     </div>
                     <div
                       className={cx(
-                        poolStyles.lightGreyText,
+                        constantsStyles.lightGreyText,
                         css({
                           marginLeft: '5px',
                         }),
@@ -314,13 +314,13 @@ const LiquidityPresentation = () => {
                       {coinTypeX!.name}
                     </div>
                   </div>
-                  <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
-                    <div className={poolStyles.boldText}>
+                  <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
+                    <div className={constantsStyles.boldText}>
                       {formatBalance(poolData?.reserve_y ?? "0", poolData?.decimal_y ?? 0)}
                     </div>
                     <div
                       className={cx(
-                        poolStyles.lightGreyText,
+                        constantsStyles.lightGreyText,
                         css({
                           marginLeft: '5px',
                         }),
@@ -331,8 +331,8 @@ const LiquidityPresentation = () => {
                   </div>
                 </div>
                 <div>
-                  <div className={poolStyles.lightGreyText}>APY</div>
-                  <div className={poolStyles.boldText}>
+                  <div className={constantsStyles.lightGreyText}>APY</div>
+                  <div className={constantsStyles.boldText}>
                     {poolData?.reserve_x ?? "..."}
                   </div>
                 </div>
@@ -440,7 +440,7 @@ const LiquidityPresentation = () => {
       title: 'Single',
       children: (
         <>
-          <div className={poolStyles.lightGreyText}>
+          <div className={constantsStyles.lightGreyText}>
             <Icon.NoticeIcon />
             Deposit Liquidity to earn rewards.
           </div>
@@ -459,7 +459,6 @@ const LiquidityPresentation = () => {
                   {coinTypeX.logo}
                   <span>{coinTypeX.name}</span>
                   <Icon.SwapIcon
-                    className={styles.icon}
                     onClick={() => {
                       setCoinTypeX(coinTypeY)
                       setCoinTypeY(coinTypeX)
@@ -509,7 +508,7 @@ const LiquidityPresentation = () => {
 
   if (fetching) return (
     <PageContainer title='Liquidity' titleImg={Image.pageBackground_1}>
-      <div className={poolStyles.poolpContainer}>
+      <div className={constantsStyles.LoadingContainer}>
         <Loading />
       </div>
     </PageContainer>
@@ -525,32 +524,32 @@ const LiquidityPresentation = () => {
         </Link>
       }
     >
-      <div className={cx(poolStyles.rowContent, styles.liquidityContainer)}>
-        <div className={cx(poolStyles.columnContent, styles.leftContent)}>
-          <div className={cx(styles.shadowContent, poolStyles.columnContent)}>
-            <div className={cx(poolStyles.boldText, styles.title)}>
+      <div className={cx(constantsStyles.rowContent, styles.liquidityContainer)}>
+        <div className={cx(constantsStyles.columnContent, styles.leftContent)}>
+          <div className={cx(styles.shadowContent, constantsStyles.columnContent)}>
+            <div className={cx(constantsStyles.boldText, styles.title)}>
               <Icon.PoolIcon />
               <span>Pool</span>
             </div>
-            <div className={poolStyles.lightGreyText}>Your Coins in Pool.</div>
+            <div className={constantsStyles.lightGreyText}>Your Coins in Pool.</div>
             <div className={styles.coinContent}>
-              <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
-                <span className={poolStyles.boldText}>
+              <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
+                <span className={constantsStyles.boldText}>
                   {coinTypeX.logo}
                   <span className={styles.textMarginLeft}>
                     {coinTypeX.name}
                   </span>
                 </span>
-                <div className={poolStyles.boldText}>{poolData?.reserve_x ?? "..."}</div>
+                <div className={constantsStyles.boldText}>{poolData?.reserve_x ?? "..."}</div>
               </div>
-              <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
-                <span className={poolStyles.boldText}>
+              <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
+                <span className={constantsStyles.boldText}>
                   {coinTypeY.logo}
                   <span className={styles.textMarginLeft}>
                     {coinTypeY.name}
                   </span>
                 </span>
-                <div className={poolStyles.boldText}>{poolData?.reserve_y ?? "..."}</div>
+                <div className={constantsStyles.boldText}>{poolData?.reserve_y ?? "..."}</div>
               </div>
               <div className={styles.buttonContent}>
                 <Button
@@ -568,44 +567,44 @@ const LiquidityPresentation = () => {
               </div>
             </div>
           </div>
-          <div className={cx(styles.shadowContent, poolStyles.columnContent)}>
-            <div className={cx(poolStyles.boldText, styles.title)}>
+          <div className={cx(styles.shadowContent, constantsStyles.columnContent)}>
+            <div className={cx(constantsStyles.boldText, styles.title)}>
               <Icon.StakeIcon />
               <span>Stake</span>
             </div>
-            <div className={poolStyles.lightGreyText}>Staked Liquidity.</div>
+            <div className={constantsStyles.lightGreyText}>Staked Liquidity.</div>
             <br />
-            <div className={poolStyles.greyText}>
+            <div className={constantsStyles.greyText}>
               Your Balance
-              <div className={cx(poolStyles.boldText, styles.textMarginLeft)}>
+              <div className={cx(constantsStyles.boldText, styles.textMarginLeft)}>
                 {poolData?.reserve_x ?? "..."}
               </div>
             </div>
             <div className={styles.coinContent}>
-              <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
-                <span className={poolStyles.boldText}>
+              <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
+                <span className={constantsStyles.boldText}>
                   {coinTypeX.logo}
                   <span className={styles.textMarginLeft}>
                     {coinTypeX.name}
                   </span>
                 </span>
-                <div className={poolStyles.boldText}>{poolData?.reserve_x ?? "..."}</div>
+                <div className={constantsStyles.boldText}>{poolData?.reserve_x ?? "..."}</div>
               </div>
-              <div className={cx(poolStyles.rowContent, styles.coinBlock)}>
-                <span className={poolStyles.boldText}>
+              <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
+                <span className={constantsStyles.boldText}>
                   {coinTypeY.logo}
                   <span className={styles.textMarginLeft}>
                     {coinTypeY.name}
                   </span>
                 </span>
-                <div className={poolStyles.boldText}>{poolData?.reserve_y ?? "..."}</div>
+                <div className={constantsStyles.boldText}>{poolData?.reserve_y ?? "..."}</div>
               </div>
               <div className={styles.infoContent}>
-                <div className={poolStyles.lightGreyText}>
+                <div className={constantsStyles.lightGreyText}>
                   To receive underlying pair of coins from your staked pool,
                   please unstake and withdraw.
                 </div>
-                <div className={poolStyles.greyText}>
+                <div className={constantsStyles.greyText}>
                   Make sure to claim any rewards before withdrawing.
                 </div>
               </div>
@@ -626,12 +625,12 @@ const LiquidityPresentation = () => {
             </div>
           </div>
         </div>
-        <div className={cx(poolStyles.columnContent, styles.rightContent)}>
-          <div className={cx(styles.shadowContent, poolStyles.columnContent)}>
-            <div className={cx(poolStyles.boldText, styles.title)}>
+        <div className={cx(constantsStyles.columnContent, styles.rightContent)}>
+          <div className={cx(styles.shadowContent, constantsStyles.columnContent)}>
+            <div className={cx(constantsStyles.boldText, styles.title)}>
               <span>Deposit</span>
             </div>
-            <div className={poolStyles.greyText}>
+            <div className={constantsStyles.greyText}>
               Deposit Liquidity to earn rewards.
             </div>
             <Tabs
