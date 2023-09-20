@@ -17,6 +17,20 @@ export const TableWrapper = css`
   thead {
     color: #606266;
     font-size: 12px;
+
+    tr > th {
+      position: relative;
+
+      :after {
+        content: '';
+        position: absolute;
+        left: -5px;
+        display: flex;
+        padding-top: 5px;
+        width: calc(100% + 5px);
+        border-bottom: 1px solid #A4A8B3;
+      }
+    }
   }
 
   td {
