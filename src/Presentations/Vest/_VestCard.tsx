@@ -7,7 +7,7 @@ import * as styles from './index.styles'
 import { useUnlock } from '@/Hooks/VSDB/useUnlock'
 import BigNumber from 'bignumber.js'
 import useRegisterAMMState from '@/Hooks/AMM/useRegisterAMMState'
-import { initialize_amm } from '@/Constants/API/pool'
+import { AMMState, initialize_amm } from '@/Constants/API/pool'
 
 interface Props {
   nftId: string
@@ -26,7 +26,7 @@ interface Props {
     required_exp: number
   }
   vesdbSpanValue?: string
-  amm_label: boolean
+  amm_state?: AMMState
 }
 
 interface TextItemProps {
@@ -97,7 +97,7 @@ const VestCardComponent = (props: Props) => {
     setIsShowWithdrawVSDBModal,
     expSpanValue,
     vesdbSpanValue,
-    amm_label,
+    amm_state,
   } = props
 
   const { mutate: unlock } = useUnlock()
@@ -108,8 +108,10 @@ const VestCardComponent = (props: Props) => {
   }
 
   const handleInitializeAMM = () => {
-    initialize_amm({ vsdb: nftId })
+    if (!amm_state) initialize_amm({ vsdb: nftId })
   }
+
+  console.log(amm_state)
 
   return (
     <div className={styles.vestCardContainer}>
@@ -134,7 +136,12 @@ const VestCardComponent = (props: Props) => {
         </div>
         <div className={cx(styles.badgeContent)}>
           <div>Badge</div>
-          <Button styletype='badge' text='AMM' onClick={handleInitializeAMM} />
+          <Button
+            styletype='badge'
+            disabled={!!amm_state}
+            text='AMM'
+            onClick={handleInitializeAMM}
+          />
           <Button disabled styletype='badge' text='Vote' onClick={() => {}} />
         </div>
         {!isPerviewMode && (
@@ -145,7 +152,7 @@ const VestCardComponent = (props: Props) => {
                   <Button
                     styletype='outlined'
                     text='Unlock'
-                    onClick={() => !amm_label && handleUnlock(nftId)}
+                    onClick={() => !amm_state && handleUnlock(nftId)}
                   />
                 }
                 {setIsShowWithdrawVSDBModal && (
