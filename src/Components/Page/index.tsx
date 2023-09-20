@@ -8,6 +8,7 @@ import { useGetAllLP } from '@/Hooks/AMM/useGetLP'
 import UserModule from '@/Modules/User'
 import { useWalletKit } from '@mysten/wallet-kit'
 
+import { generateSideBarLinks } from '@/Constants'
 import { Coins } from '@/Constants/coin'
 import { Sidebar, ControlBar, SettingModal } from '@/Components'
 import * as styles from './index.styles'
@@ -31,10 +32,12 @@ const PageComponent = (props: Props) => {
   const { children } = props
   const location = useLocation()
   const isDashboard = location.pathname === '/'
+  const isHiddenPage = generateSideBarLinks.filter((link) => link.path === location.pathname)[0]?.isHidden
+
   // Wallet
   const { isConnected } = useWalletKit()
   const walletAddress = UserModule.getUserToken()
-  if (!walletAddress && !isDashboard) {
+  if (isHiddenPage || (!walletAddress && !isDashboard)) {
     window.location.href = '/'
   }
   // Vsdb

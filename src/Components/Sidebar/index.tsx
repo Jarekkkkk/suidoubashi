@@ -16,7 +16,7 @@ interface Props {
 const SidebarComponent = (props: Props) => {
   const { isSettingOpen, setIsSettingOpen } = props
   let location = useLocation()
-  const links = useMemo(() => generateSideBarLinks(), [])
+  const links = useMemo(() => generateSideBarLinks, [])
 
   return (
     <div className={styles.sidebarContainer}>

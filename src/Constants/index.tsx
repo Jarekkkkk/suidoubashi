@@ -17,7 +17,7 @@ export const localnetConnection = {
   faucet: 'http://127.0.0.1:9123/gas',
 }
 
-export const generateSideBarLinks = () => [
+export const generateSideBarLinks = [
   {
     key: 'Swap',
     path: '/swap',
@@ -36,7 +36,7 @@ export const generateSideBarLinks = () => [
   },
   {
     key: 'Vest',
-    path: '/vest/',
+    path: '/vest',
     element: <Vest />,
     title: 'Vest',
     icon: <Icon.VestIcon />,
@@ -68,7 +68,7 @@ export const generateSideBarLinks = () => [
   },
 ]
 
-export const generateLinks = () => [
+export const generateLinks = [
   {
     key: 'Dashboard',
     path: '/',
