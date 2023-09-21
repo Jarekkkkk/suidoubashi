@@ -16,16 +16,23 @@ export enum Network {
   TESTNET = 'TESTNET',
   MAINNET = 'MAINNET',
 }
-// const vincagame_options = {
-//   fullnode: 'https://fullnode.devnet.vincagame.com',
-//   websocket: 'https://fullnode.devnet.vincagame.com',
-//   faucet: 'https://fullnode.devnet.vincagame.com/gas',
-// }
+const blast_testnet = {
+   fullnode: 'https://sui-testnet.public.blastapi.io',
+   websocket: 'wss://sui-testnet.public.blastapi.io',
+   faucet: 'https://sui-testnet.public.blastapi.io/gas',
+ }
+
+export const api_key = import.meta.env.VITE_NETWORK_KEY as string
+const blockvision = {
+  fullnode: `https://sui-testnet.blockvision.org/v1/${api_key}`,
+  Websocket:`wss://sui-testnet.blockvision.org/v1/${api_key}`,
+  faucet: `https://sui-testnet.public.blastapi.io/${api_key}/gas`
+}
 
 const ENDPOINTS: Record<Network, Connection> = {
-  [Network.LOCAL]: localnetConnection,
-  [Network.DEVNET]: devnetConnection,
-  [Network.TESTNET]: testnetConnection,
+  [Network.LOCAL]: new Connection(blast_testnet),
+  [Network.DEVNET]: new Connection(blockvision),
+  [Network.TESTNET]:  new Connection(blast_testnet),
   [Network.MAINNET]: mainnetConnection,
 }
 
