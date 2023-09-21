@@ -3,9 +3,6 @@ import { useContext, useMemo } from 'react'
 import {
   Connection,
   JsonRpcProvider,
-  devnetConnection,
-  localnetConnection,
-  testnetConnection,
   mainnetConnection,
 } from '@mysten/sui.js'
 import { createContext, useState } from 'react'
