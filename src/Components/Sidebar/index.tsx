@@ -46,7 +46,7 @@ const SidebarComponent = (props: Props) => {
       />
       <div className={styles.footerContent}>
         <div className={styles.footerIconBlock}>
-          <Link to='/'>
+          <Link to='https://suidoubashi-1.gitbook.io/suidoubashi/' target="_blank">
             <BlueIcon icon="git-repo" />
           </Link>
           <Link to='https://twitter.com/suidoubashi_io' target="_blank">
