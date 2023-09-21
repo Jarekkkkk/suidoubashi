@@ -17,7 +17,7 @@ import moment from 'moment'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { Coin } from '@/Constants/coin'
 import BigNumber from 'bignumber.js'
-import { calculate_vesdb } from '@/Utils/calculateAPR'
+import { calculate_vesdb } from '@/Utils/vsdb'
 import UserModule from '@/Modules/User'
 
 type Props = {

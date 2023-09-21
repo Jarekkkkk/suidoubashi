@@ -24,7 +24,7 @@ import { Coin } from '@/Constants/coin'
 import { useIncreaseUnlockTime } from '@/Hooks/VSDB/useIncreaseUnlockTime'
 import { useIncreaseUnlockAmount } from '@/Hooks/VSDB/useIncreaseUnlockAmount'
 import { useGetVsdb } from '@/Hooks/VSDB/useGetVSDB'
-import { calculate_vesdb } from '@/Utils/calculateAPR'
+import { calculate_vesdb } from '@/Utils/vsdb'
 
 type Props = {
   currentVSDBId: string

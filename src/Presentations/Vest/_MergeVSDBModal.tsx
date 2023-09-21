@@ -10,7 +10,7 @@ import { formatBalance, formatDate, formatId } from '@/Utils/format'
 import { useMemo, useState } from 'react'
 import { SelectOption } from '@/Components/Select'
 import { useMerge } from '@/Hooks/VSDB/useMerge'
-import { calculate_vesdb } from '@/Utils/calculateAPR'
+import { calculate_vesdb } from '@/Utils/vsdb'
 
 type Props = {
   vsdbs: Vsdb[]

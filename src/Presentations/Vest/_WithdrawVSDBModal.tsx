@@ -19,9 +19,9 @@ import { Coin } from '@/Constants/coin'
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
 import { useGetVsdb } from '@/Hooks/VSDB/useGetVSDB'
-import { calculate_vesdb } from '@/Utils/calculateAPR'
 import { useRevive } from '@/Hooks/VSDB/useRevive'
 import UserModule from '@/Modules/User';
+import { calculate_vesdb } from '@/Utils/vsdb'
 
 type Props = {
   isShowWithdrawVSDBModal: boolean
