@@ -10,15 +10,23 @@ interface Props {
   poolCoinY: CoinInterface | undefined,
 }
 
+export const CoinCombinImg = (props: Props) => {
+  const { poolCoinX, poolCoinY } = props;
+
+  return (
+    <div className={styles.coinCombin}>
+      {poolCoinX!.logo && poolCoinX!.logo}
+      {poolCoinY!.logo && poolCoinY!.logo}
+    </div>
+  )
+}
+
 const CoinCombin = (props: Props) => {
   const { poolCoinX, poolCoinY } = props;
 
   return (
     <div className={cx(constantsStyles.rowContent, styles.poolContent)}>
-      <div className={styles.coinCombin}>
-        {poolCoinX!.logo && poolCoinX!.logo}
-        {poolCoinY!.logo && poolCoinY!.logo}
-      </div>
+      <CoinCombinImg poolCoinX={poolCoinX} poolCoinY={poolCoinY} />
       <div className={constantsStyles.columnContent}>
         <span className={constantsStyles.boldText}>{poolCoinX!.name}/{poolCoinY!.name}</span>
         <span className={constantsStyles.greyText}>Stable Pool</span>

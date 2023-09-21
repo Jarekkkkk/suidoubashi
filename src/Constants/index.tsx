@@ -56,7 +56,7 @@ export const generateSideBarLinks = [
     element: <Rewards />,
     title: 'Rewards',
     icon: <Icon.RewardsIcon />,
-    isHidden: true,
+    isHidden: false,
   },
   {
     key: 'Bridge',

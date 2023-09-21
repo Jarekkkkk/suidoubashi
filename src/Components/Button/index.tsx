@@ -29,7 +29,7 @@ const BasicButton = (props: Props) => {
         {
           [styles.smallButton]: small,
           [styles.mediumButton]: medium,
-        }
+        },
       )}
       disabled={isLoading || disabled}
     >
