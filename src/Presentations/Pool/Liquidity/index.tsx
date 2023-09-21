@@ -9,6 +9,7 @@ import {
   Button,
   Loading,
   Error,
+  Tabs,
 } from '@/Components'
 import { LiquidityContext } from '@/Containers/Pool/Liquidity'
 import { Icon } from '@/Assets/icon'
@@ -28,7 +29,7 @@ import { useUnStakeFarm } from '@/Hooks/Farm/useUnstake'
 import { useDepoistAndStake } from '@/Hooks/Farm/useDepositAndStake'
 import { useZapAndStake } from '@/Hooks/Farm/useZapAndStake'
 import { useUnStakeAndWithdraw } from '@/Hooks/Farm/useUnstakeAndWithdraw'
-
+import { lp_position } from '@/Utils/pool'
 
 const LiquidityPresentation = () => {
   const {
@@ -52,11 +53,11 @@ const LiquidityPresentation = () => {
 
   const [isDepositSingle, setIsDepositSingle] = useState(false)
   const coinTypeXBalance = useGetBalance(coinTypeX.type, walletAddress)
-  const coinTypeYBalance =  useGetBalance(coinTypeY.type, walletAddress)
+  const coinTypeYBalance = useGetBalance(coinTypeY.type, walletAddress)
 
   const handleOnCoinInputXChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      if(!poolData || !coinTypeX || !coinTypeY) return
+      if (!poolData || !coinTypeX || !coinTypeY) return
       let value = e.target.value
       const isValid = /^-?\d*\.?\d*$/.test(value)
       if (!isValid) {
@@ -75,12 +76,11 @@ const LiquidityPresentation = () => {
       }
     },
     [setCoinInputX, poolData],
-
   )
 
   const handleOnCoinInputYChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      if(!poolData) return
+      if (!poolData) return
       let value = e.target.value
       const isValid = /^-?\d*\.?\d*$/.test(value)
       if (!isValid) {
@@ -249,7 +249,7 @@ const LiquidityPresentation = () => {
     farm?.type_y,
     lp?.id,
   )
-console.log('stake', stake_bal);
+  console.log('stake', stake_bal)
   const stake = useStakeFarm()
   const handleStake = () => {
     if (poolData && lp && farm) {
@@ -283,6 +283,254 @@ console.log('stake', stake_bal);
       </div>
     </PageContainer>
   )
+  const tabDataKeys = [
+    {
+      id: 0,
+      title: 'Pair',
+      children: (
+        <>
+          <div className={constantsStyles.lightGreyText}>
+            <Icon.NoticeIcon />
+            Deposit pair of Coins into Pool.
+          </div>
+          <div>
+            <div
+              className={cx(
+                constantsStyles.columnContent,
+                css({
+                  marginTop: '25px',
+                }),
+              )}
+            >
+              <div className={constantsStyles.greyText}>Liquidity</div>
+              <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
+                <div>
+                  <div
+                    className={cx(constantsStyles.rowContent, styles.coinBlock)}
+                  >
+                    <div className={constantsStyles.boldText}>
+                      {formatBalance(
+                        poolData?.reserve_x ?? '0',
+                        poolData?.decimal_x ?? 0,
+                      )}
+                    </div>
+                    <div
+                      className={cx(
+                        constantsStyles.lightGreyText,
+                        css({
+                          marginLeft: '5px',
+                        }),
+                      )}
+                    >
+                      {coinTypeX!.name}
+                    </div>
+                  </div>
+                  <div
+                    className={cx(constantsStyles.rowContent, styles.coinBlock)}
+                  >
+                    <div className={constantsStyles.boldText}>
+                      {formatBalance(
+                        poolData?.reserve_y ?? '0',
+                        poolData?.decimal_y ?? 0,
+                      )}
+                    </div>
+                    <div
+                      className={cx(
+                        constantsStyles.lightGreyText,
+                        css({
+                          marginLeft: '5px',
+                        }),
+                      )}
+                    >
+                      {coinTypeY!.name}
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className={constantsStyles.lightGreyText}>APY</div>
+                  <div className={constantsStyles.boldText}>
+                    {poolData?.reserve_x ?? '...'}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className={styles.inputContent}>
+              <InputSection
+                balance={
+                  coinTypeXBalance
+                    ? formatBalance(
+                        coinTypeXBalance.totalBalance,
+                        coinTypeX.decimals,
+                      )
+                    : '...'
+                }
+                titleChildren={
+                  <div>
+                    {coinTypeX.logo}
+                    <span>{coinTypeX.name}</span>
+                  </div>
+                }
+                inputChildren={
+                  <>
+                    <Input
+                      value={coinInputX}
+                      onChange={(e) => {
+                        if (coinTypeXBalance?.totalBalance) {
+                          handleOnCoinInputXChange(e)
+                          if (
+                            parseFloat(e.target.value) *
+                              Math.pow(10, coinTypeX.decimals) >
+                            Number(coinTypeXBalance.totalBalance)
+                          ) {
+                            setError('Insufficient Balance')
+                          } else {
+                            setError('')
+                          }
+                        }
+                      }}
+                      placeholder={`${coinTypeX.name} Value`}
+                      // disabled={isLoading}
+                    />
+                  </>
+                }
+              />
+              <InputSection
+                balance={
+                  coinTypeYBalance
+                    ? formatBalance(
+                        coinTypeYBalance.totalBalance,
+                        coinTypeY.decimals,
+                      )
+                    : '...'
+                }
+                titleChildren={
+                  <div>
+                    {coinTypeY.logo}
+                    <span>{coinTypeY.name}</span>
+                  </div>
+                }
+                inputChildren={
+                  <>
+                    <Input
+                      value={coinInputY}
+                      onChange={(e) => {
+                        if (coinTypeYBalance?.totalBalance) {
+                          handleOnCoinInputYChange(e)
+                          if (
+                            parseFloat(e.target.value) * Math.pow(10, 9) >
+                            Number(coinTypeYBalance.totalBalance)
+                          ) {
+                            setError('Insufficient Balance')
+                          } else {
+                            setError('')
+                          }
+                        }
+                      }}
+                      placeholder={`${coinTypeY.name} Value`}
+                      // disabled={isLoading}
+                    />
+                  </>
+                }
+              />
+            </div>
+            {error && <Error errorText={error} />}
+            <div className={styles.buttonContent}>
+              <Button
+                styletype='filled'
+                text='Deposit'
+                onClick={() => handleAddLiquidity()}
+              />
+              <Button
+                styletype='filled'
+                disabled={!farm}
+                text='Deposit & Stake'
+                onClick={() => handleDepositAndStake()}
+              />
+            </div>
+          </div>
+        </>
+      ),
+    },
+    {
+      id: 1,
+      title: 'Single',
+      children: (
+        <>
+          <div className={constantsStyles.lightGreyText}>
+            <Icon.NoticeIcon />
+            Deposit Liquidity to earn rewards.
+          </div>
+          <div className={styles.inputContent}>
+            <InputSection
+              balance={
+                coinTypeXBalance
+                  ? formatBalance(
+                      coinTypeXBalance.totalBalance,
+                      coinTypeX.decimals,
+                    )
+                  : '...'
+              }
+              titleChildren={
+                <div>
+                  {coinTypeX.logo}
+                  <span>{coinTypeX.name}</span>
+                  <Icon.SwapIcon
+                    onClick={() => {
+                      setCoinTypeX(coinTypeY)
+                      setCoinTypeY(coinTypeX)
+                    }}
+                  />
+                </div>
+              }
+              inputChildren={
+                <>
+                  <Input
+                    value={coinInputSingle}
+                    onChange={(e) => {
+                      if (coinTypeXBalance?.totalBalance) {
+                        handleOnCoinInputSingleChange(e)
+                        if (
+                          parseFloat(e.target.value) *
+                            Math.pow(10, coinTypeX.decimals) >
+                          Number(coinTypeXBalance.totalBalance)
+                        ) {
+                          setError('Insufficient Balance')
+                        } else {
+                          setError('')
+                        }
+                      }
+                    }}
+                    placeholder={`${coinTypeX.name} Value`}
+                    // disabled={isLoading}
+                  />
+                </>
+              }
+            />
+          </div>
+          {error && <Error errorText={error} />}
+          <div className={styles.buttonContent}>
+            <Button styletype='filled' text='Zap' onClick={() => handleZap()} />
+            <Button
+              disabled={!farm}
+              styletype='filled'
+              text='Zap & Stake'
+              onClick={() => handleZapAndStake()}
+            />
+          </div>
+        </>
+      ),
+    },
+  ]
+
+  if (fetching)
+    return (
+      <PageContainer title='Liquidity' titleImg={Image.pageBackground_1}>
+        <div className={constantsStyles.LoadingContainer}>
+          <Loading />
+        </div>
+      </PageContainer>
+    )
+
 
   return (
     <PageContainer
@@ -544,13 +792,20 @@ console.log('stake', stake_bal);
             </div>
           </div>
         </div>
+      <div
+        className={cx(constantsStyles.rowContent, styles.liquidityContainer)}
+      >
         <div className={cx(constantsStyles.columnContent, styles.leftContent)}>
-          <div className={cx(styles.shadowContent, constantsStyles.columnContent)}>
+          <div
+            className={cx(styles.shadowContent, constantsStyles.columnContent)}
+          >
             <div className={cx(constantsStyles.boldText, styles.title)}>
               <Icon.PoolIcon />
               <span>Pool</span>
             </div>
-            <div className={constantsStyles.lightGreyText}>Your Coins in Pool.</div>
+            <div className={constantsStyles.lightGreyText}>
+              Your Coins in Pool.
+            </div>
             <div className={styles.coinContent}>
               <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
                 <span className={constantsStyles.boldText}>
@@ -559,7 +814,16 @@ console.log('stake', stake_bal);
                     {coinTypeX.name}
                   </span>
                 </span>
-                <div className={constantsStyles.boldText}>{poolData?.reserve_x ?? "..."}</div>
+                <div className={constantsStyles.boldText}>
+                  {(poolData && lp && coinTypeX)
+                    ? lp_position(
+                        poolData.reserve_x,
+                        poolData.lp_supply,
+                        lp.lp_balance,
+                        coinTypeX.decimals,
+                      )
+                    : '...'}
+                </div>
               </div>
               <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
                 <span className={constantsStyles.boldText}>
@@ -568,7 +832,16 @@ console.log('stake', stake_bal);
                     {coinTypeY.name}
                   </span>
                 </span>
-                <div className={constantsStyles.boldText}>{poolData?.reserve_y ?? "..."}</div>
+                <div className={constantsStyles.boldText}>
+                  {(poolData && lp && coinTypeY)
+                    ? lp_position(
+                        poolData.reserve_y,
+                        poolData.lp_supply,
+                        lp.lp_balance,
+                        coinTypeY.decimals,
+                      )
+                    : '...'}
+                </div>
               </div>
               <div className={styles.buttonContent}>
                 <Button
@@ -586,17 +859,23 @@ console.log('stake', stake_bal);
               </div>
             </div>
           </div>
-          <div className={cx(styles.shadowContent, constantsStyles.columnContent)}>
+          <div
+            className={cx(styles.shadowContent, constantsStyles.columnContent)}
+          >
             <div className={cx(constantsStyles.boldText, styles.title)}>
               <Icon.StakeIcon />
               <span>Stake</span>
             </div>
-            <div className={constantsStyles.lightGreyText}>Staked Liquidity.</div>
+            <div className={constantsStyles.lightGreyText}>
+              Staked Liquidity.
+            </div>
             <br />
             <div className={constantsStyles.greyText}>
               Your Balance
-              <div className={cx(constantsStyles.boldText, styles.textMarginLeft)}>
-                {poolData?.reserve_x ?? "..."}
+              <div
+                className={cx(constantsStyles.boldText, styles.textMarginLeft)}
+              >
+                {stake_bal ? formatBalance(stake_bal, 9):"..."}
               </div>
             </div>
             <div className={styles.coinContent}>
@@ -607,7 +886,9 @@ console.log('stake', stake_bal);
                     {coinTypeX.name}
                   </span>
                 </span>
-                <div className={constantsStyles.boldText}>{poolData?.reserve_x ?? "..."}</div>
+                <div className={constantsStyles.boldText}>
+                  {poolData?.reserve_x ?? '...'}
+                </div>
               </div>
               <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
                 <span className={constantsStyles.boldText}>
@@ -616,7 +897,9 @@ console.log('stake', stake_bal);
                     {coinTypeY.name}
                   </span>
                 </span>
-                <div className={constantsStyles.boldText}>{poolData?.reserve_y ?? "..."}</div>
+                <div className={constantsStyles.boldText}>
+                  {poolData?.reserve_y ?? '...'}
+                </div>
               </div>
               <div className={styles.infoContent}>
                 <div className={constantsStyles.lightGreyText}>
@@ -642,6 +925,23 @@ console.log('stake', stake_bal);
                 />
               </div>
             </div>
+          </div>
+        </div>
+        <div className={cx(constantsStyles.columnContent, styles.rightContent)}>
+          <div
+            className={cx(styles.shadowContent, constantsStyles.columnContent)}
+          >
+            <div className={cx(constantsStyles.boldText, styles.title)}>
+              <span>Deposit</span>
+            </div>
+            <div className={constantsStyles.greyText}>
+              Deposit Liquidity to earn rewards.
+            </div>
+            <Tabs
+              isLoading={fetching}
+              links={tabDataKeys}
+              styletype='ellipse'
+            />
           </div>
         </div>
       </div>
