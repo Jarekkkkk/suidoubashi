@@ -9,13 +9,14 @@ export const prevButton = css`
 
 export const liquidityContainer = css`
   display: flex;
+  flex-direction: row-reverse;
   align-items: start;
   padding: 10px;
   overflow: scroll;
   height: calc(100% - 150px);
 
   @media screen and (max-width: 1240px) {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 `
 
@@ -101,3 +102,35 @@ export const infoContent = css`
 export const textMarginLeft = css`
   margin-left: 5px;
 `
+
+
+export const ellipseTabList = css`
+  display: flex;
+  flex-direction: row;
+  margin: 20px 0;
+  width: 50%;
+  background-color: rgba(96, 98, 102, 0.25);
+  border-radius: 12px;
+  transition: 0.3s;
+`
+
+export const ellipseTabTitle = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  padding: 0 10px;
+  height: 40px;
+  color: #606266;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+`
+
+export const ellipseActiveTab = css`
+  color: #FFF;
+  background-color: #2977EC;
+  transition: 0.3s;
+`;

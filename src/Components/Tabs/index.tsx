@@ -22,42 +22,42 @@ const Tabs = (props: Props) => {
   return (
     <div className={styles.tabs}>
       {styletype === 'default' ? (
-        <>
-          <div className={styles.tabList}>
-            {Array.isArray(links) &&
-              links.map((item) => (
-                <span
-                  key={item.id}
-                  onClick={() => !isLoading && setCurrTabId(item.id)}
-                  className={cx(styles.defaultTabTitle, {
-                    [styles.defaultActiveTab]: item.id === currTabId,
-                  })}
-                >
-                  {item.title}
-                </span>
-              ))}
-          </div>
-          <div className={styles.defaultPanel}>{links[currTabId].children}</div>
-        </>
+        <div className={styles.tabList}>
+          {Array.isArray(links) &&
+            links.map((item) => (
+              <span
+                key={item.id}
+                onClick={() => !isLoading && setCurrTabId(item.id)}
+                className={cx(styles.defaultTabTitle, {
+                  [styles.defaultActiveTab]: item.id === currTabId,
+                })}
+              >
+                {item.title}
+              </span>
+            ))}
+        </div>
       ) : (
-        <>
-          <div className={cx(styles.tabList, styles.ellipseTabList)}>
-            {Array.isArray(links) &&
-              links.map((item) => (
-                <span
-                  key={item.id}
-                  onClick={() => !isLoading && setCurrTabId(item.id)}
-                  className={cx(styles.ellipseTabTitle, {
-                    [styles.ellipseActiveTab]: item.id === currTabId,
-                  })}
-                >
-                  {item.title}
-                </span>
-              ))}
-          </div>
-          <div className={styles.ellipsePanel}>{links[currTabId].children}</div>
-        </>
+        <div className={cx(styles.tabList, styles.ellipseTabList)}>
+          {Array.isArray(links) &&
+            links.map((item) => (
+              <span
+                key={item.id}
+                onClick={() => !isLoading && setCurrTabId(item.id)}
+                className={cx(styles.ellipseTabTitle, {
+                  [styles.ellipseActiveTab]: item.id === currTabId,
+                })}
+              >
+                {item.title}
+              </span>
+            ))}
+        </div>
       )}
+      <div className={cx(styles.ellipsePanel, {
+        [styles.defaultPanel]: styletype === 'default',
+        [styles.ellipsePanel]: styletype === 'ellipse'
+      })}>
+        {links[currTabId].children}
+      </div>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { cx, css } from '@emotion/css'
 
@@ -6,7 +6,6 @@ import {
   PageContainer,
   InputSection,
   Input,
-  Tabs,
   Button,
   Loading,
   Error,
@@ -51,7 +50,7 @@ const LiquidityPresentation = () => {
     setCoinTypeY,
   } = useContext(LiquidityContext)
 
-
+  const [isDepositSingle, setIsDepositSingle] = useState(false)
   const coinTypeXBalance = useGetBalance(coinTypeX.type, walletAddress)
   const coinTypeYBalance =  useGetBalance(coinTypeY.type, walletAddress)
 
@@ -277,235 +276,6 @@ console.log('stake', stake_bal);
     }
   }
 
-  const tabDataKeys = [
-    {
-      id: 0,
-      title: 'Pair',
-      children: (
-        <>
-          <div className={constantsStyles.lightGreyText}>
-            <Icon.NoticeIcon />
-            Deposit pair of Coins into Pool.
-          </div>
-          <div>
-            <div
-              className={cx(
-                constantsStyles.columnContent,
-                css({
-                  marginTop: '25px',
-                }),
-              )}
-            >
-              <div className={constantsStyles.greyText}>Liquidity</div>
-              <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
-                <div>
-                  <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
-                    <div className={constantsStyles.boldText}>
-                      {formatBalance(poolData?.reserve_x ??"0", poolData?.decimal_x ?? 0)}
-                    </div>
-                    <div
-                      className={cx(
-                        constantsStyles.lightGreyText,
-                        css({
-                          marginLeft: '5px',
-                        }),
-                      )}
-                    >
-                      {coinTypeX!.name}
-                    </div>
-                  </div>
-                  <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
-                    <div className={constantsStyles.boldText}>
-                      {formatBalance(poolData?.reserve_y ?? "0", poolData?.decimal_y ?? 0)}
-                    </div>
-                    <div
-                      className={cx(
-                        constantsStyles.lightGreyText,
-                        css({
-                          marginLeft: '5px',
-                        }),
-                      )}
-                    >
-                      {coinTypeY!.name}
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <div className={constantsStyles.lightGreyText}>APY</div>
-                  <div className={constantsStyles.boldText}>
-                    {poolData?.reserve_x ?? "..."}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className={styles.inputContent}>
-              <InputSection
-                balance={
-                  coinTypeXBalance
-                    ? formatBalance(
-                        coinTypeXBalance.totalBalance,
-                        coinTypeX.decimals,
-                      )
-                    : '...'
-                }
-                titleChildren={
-                  <div>
-                    {coinTypeX.logo}
-                    <span>{coinTypeX.name}</span>
-                  </div>
-                }
-                inputChildren={
-                  <>
-                    <Input
-                      value={coinInputX}
-                      onChange={(e) => {
-                        if (coinTypeXBalance?.totalBalance) {
-                          handleOnCoinInputXChange(e)
-                          if (
-                            parseFloat(e.target.value) *
-                              Math.pow(10, coinTypeX.decimals) >
-                            Number(coinTypeXBalance.totalBalance)
-                          ) {
-                            setError('Insufficient Balance')
-                          } else {
-                            setError('')
-                          }
-                        }
-                      }}
-                      placeholder={`${coinTypeX.name} Value`}
-                      // disabled={isLoading}
-                    />
-                  </>
-                }
-              />
-              <InputSection
-                balance={
-                  coinTypeYBalance
-                    ? formatBalance(
-                        coinTypeYBalance.totalBalance,
-                        coinTypeY.decimals,
-                      )
-                    : '...'
-                }
-                titleChildren={
-                  <div>
-                    {coinTypeY.logo}
-                    <span>{coinTypeY.name}</span>
-                  </div>
-                }
-                inputChildren={
-                  <>
-                    <Input
-                      value={coinInputY}
-                      onChange={(e) => {
-                        if (coinTypeYBalance?.totalBalance) {
-                          handleOnCoinInputYChange(e)
-                          if (
-                            parseFloat(e.target.value) * Math.pow(10, 9) >
-                            Number(coinTypeYBalance.totalBalance)
-                          ) {
-                            setError('Insufficient Balance')
-                          } else {
-                            setError('')
-                          }
-                        }
-                      }}
-                      placeholder={`${coinTypeY.name} Value`}
-                      // disabled={isLoading}
-                    />
-                  </>
-                }
-              />
-            </div>
-            {error && <Error errorText={error} />}
-            <div className={styles.buttonContent}>
-              <Button
-                styletype='filled'
-                text='Deposit'
-                onClick={() => handleAddLiquidity()}
-              />
-              <Button
-                styletype='filled'
-                disabled={!farm}
-                text='Deposit & Stake'
-                onClick={() => handleDepositAndStake()}
-              />
-            </div>
-          </div>
-        </>
-      ),
-    },
-    {
-      id: 1,
-      title: 'Single',
-      children: (
-        <>
-          <div className={constantsStyles.lightGreyText}>
-            <Icon.NoticeIcon />
-            Deposit Liquidity to earn rewards.
-          </div>
-          <div className={styles.inputContent}>
-            <InputSection
-              balance={
-                coinTypeXBalance
-                  ? formatBalance(
-                      coinTypeXBalance.totalBalance,
-                      coinTypeX.decimals,
-                    )
-                  : '...'
-              }
-              titleChildren={
-                <div>
-                  {coinTypeX.logo}
-                  <span>{coinTypeX.name}</span>
-                  <Icon.SwapIcon
-                    onClick={() => {
-                      setCoinTypeX(coinTypeY)
-                      setCoinTypeY(coinTypeX)
-                    }}
-                  />
-                </div>
-              }
-              inputChildren={
-                <>
-                  <Input
-                    value={coinInputSingle}
-                    onChange={(e) => {
-                      if (coinTypeXBalance?.totalBalance) {
-                        handleOnCoinInputSingleChange(e)
-                        if (
-                          parseFloat(e.target.value) *
-                            Math.pow(10, coinTypeX.decimals) >
-                          Number(coinTypeXBalance.totalBalance)
-                        ) {
-                          setError('Insufficient Balance')
-                        } else {
-                          setError('')
-                        }
-                      }
-                    }}
-                    placeholder={`${coinTypeX.name} Value`}
-                    // disabled={isLoading}
-                  />
-                </>
-              }
-            />
-          </div>
-          {error && <Error errorText={error} />}
-          <div className={styles.buttonContent}>
-            <Button styletype='filled' text='Zap' onClick={() => handleZap()} />
-            <Button
-              disabled={!farm}
-              styletype='filled'
-              text='Zap & Stake'
-              onClick={() => handleZapAndStake()}
-            />
-          </div>
-        </>
-      ),
-    },
-  ]
-
   if (fetching) return (
     <PageContainer title='Liquidity' titleImg={Image.pageBackground_1}>
       <div className={constantsStyles.LoadingContainer}>
@@ -525,6 +295,255 @@ console.log('stake', stake_bal);
       }
     >
       <div className={cx(constantsStyles.rowContent, styles.liquidityContainer)}>
+        <div className={cx(constantsStyles.columnContent, styles.rightContent)}>
+          <div className={cx(styles.shadowContent, constantsStyles.columnContent)}>
+            <div className={cx(constantsStyles.boldText, styles.title)}>
+              <span>Deposit</span>
+            </div>
+            <div className={constantsStyles.greyText}>
+              Deposit Liquidity to earn rewards.
+            </div>
+            <div className={cx(styles.ellipseTabList)}>
+              <span
+                className={cx(styles.ellipseTabTitle, {
+                  [styles.ellipseActiveTab]: !isDepositSingle,
+                })}
+                onClick={() => setIsDepositSingle(!isDepositSingle)}
+              >
+                Pair
+              </span>
+              <span
+                className={cx(styles.ellipseTabTitle, {
+                  [styles.ellipseActiveTab]: isDepositSingle,
+                })}
+                onClick={() => setIsDepositSingle(!isDepositSingle)}
+              >
+                Single
+              </span>
+            </div>
+            <div>
+              {
+                !isDepositSingle ? (
+                  <>
+                    <div className={cx(constantsStyles.lightGreyText, css({ justifyContent: 'center' }))}>
+                      <Icon.NoticeIcon />
+                      Deposit pair of Coins into Pool.
+                    </div>
+                    <div>
+                      <div
+                        className={cx(
+                          constantsStyles.columnContent,
+                          css({
+                            marginTop: '25px',
+                          }),
+                        )}
+                      >
+                        <div className={constantsStyles.greyText}>Liquidity</div>
+                        <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
+                          <div>
+                            <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
+                              <div className={constantsStyles.boldText}>
+                                {formatBalance(poolData?.reserve_x ??"0", poolData?.decimal_x ?? 0)}
+                              </div>
+                              <div
+                                className={cx(
+                                  constantsStyles.lightGreyText,
+                                  css({
+                                    marginLeft: '5px',
+                                  }),
+                                )}
+                              >
+                                {coinTypeX!.name}
+                              </div>
+                            </div>
+                            <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
+                              <div className={constantsStyles.boldText}>
+                                {formatBalance(poolData?.reserve_y ?? "0", poolData?.decimal_y ?? 0)}
+                              </div>
+                              <div
+                                className={cx(
+                                  constantsStyles.lightGreyText,
+                                  css({
+                                    marginLeft: '5px',
+                                  }),
+                                )}
+                              >
+                                {coinTypeY!.name}
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <div className={constantsStyles.lightGreyText}>APY</div>
+                            <div className={constantsStyles.boldText}>
+                              {poolData?.reserve_x ?? "..."}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className={styles.inputContent}>
+                        <InputSection
+                          balance={
+                            coinTypeXBalance
+                              ? formatBalance(
+                                  coinTypeXBalance.totalBalance,
+                                  coinTypeX.decimals,
+                                )
+                              : '...'
+                          }
+                          titleChildren={
+                            <div>
+                              {coinTypeX.logo}
+                              <span>{coinTypeX.name}</span>
+                            </div>
+                          }
+                          inputChildren={
+                            <>
+                              <Input
+                                value={coinInputX}
+                                onChange={(e) => {
+                                  if (coinTypeXBalance?.totalBalance) {
+                                    handleOnCoinInputXChange(e)
+                                    if (
+                                      parseFloat(e.target.value) *
+                                        Math.pow(10, coinTypeX.decimals) >
+                                      Number(coinTypeXBalance.totalBalance)
+                                    ) {
+                                      setError('Insufficient Balance')
+                                    } else {
+                                      setError('')
+                                    }
+                                  }
+                                }}
+                                placeholder={`${coinTypeX.name} Value`}
+                                // disabled={isLoading}
+                              />
+                            </>
+                          }
+                        />
+                        <InputSection
+                          balance={
+                            coinTypeYBalance
+                              ? formatBalance(
+                                  coinTypeYBalance.totalBalance,
+                                  coinTypeY.decimals,
+                                )
+                              : '...'
+                          }
+                          titleChildren={
+                            <div>
+                              {coinTypeY.logo}
+                              <span>{coinTypeY.name}</span>
+                            </div>
+                          }
+                          inputChildren={
+                            <>
+                              <Input
+                                value={coinInputY}
+                                onChange={(e) => {
+                                  if (coinTypeYBalance?.totalBalance) {
+                                    handleOnCoinInputYChange(e)
+                                    if (
+                                      parseFloat(e.target.value) * Math.pow(10, 9) >
+                                      Number(coinTypeYBalance.totalBalance)
+                                    ) {
+                                      setError('Insufficient Balance')
+                                    } else {
+                                      setError('')
+                                    }
+                                  }
+                                }}
+                                placeholder={`${coinTypeY.name} Value`}
+                                // disabled={isLoading}
+                              />
+                            </>
+                          }
+                        />
+                      </div>
+                      {error && <Error errorText={error} />}
+                      <div className={styles.buttonContent}>
+                        <Button
+                          styletype='filled'
+                          text='Deposit'
+                          onClick={() => handleAddLiquidity()}
+                        />
+                        <Button
+                          styletype='filled'
+                          disabled={!farm}
+                          text='Deposit & Stake'
+                          onClick={() => handleDepositAndStake()}
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={constantsStyles.lightGreyText}>
+                      <Icon.NoticeIcon />
+                      Deposit Liquidity to earn rewards.
+                    </div>
+                    <div className={styles.inputContent}>
+                      <InputSection
+                        balance={
+                          coinTypeXBalance
+                            ? formatBalance(
+                                coinTypeXBalance.totalBalance,
+                                coinTypeX.decimals,
+                              )
+                            : '...'
+                        }
+                        titleChildren={
+                          <div>
+                            {coinTypeX.logo}
+                            <span>{coinTypeX.name}</span>
+                            <Icon.SwapIcon
+                              onClick={() => {
+                                setCoinTypeX(coinTypeY)
+                                setCoinTypeY(coinTypeX)
+                              }}
+                            />
+                          </div>
+                        }
+                        inputChildren={
+                          <>
+                            <Input
+                              value={coinInputSingle}
+                              onChange={(e) => {
+                                if (coinTypeXBalance?.totalBalance) {
+                                  handleOnCoinInputSingleChange(e)
+                                  if (
+                                    parseFloat(e.target.value) *
+                                      Math.pow(10, coinTypeX.decimals) >
+                                    Number(coinTypeXBalance.totalBalance)
+                                  ) {
+                                    setError('Insufficient Balance')
+                                  } else {
+                                    setError('')
+                                  }
+                                }
+                              }}
+                              placeholder={`${coinTypeX.name} Value`}
+                              // disabled={isLoading}
+                            />
+                          </>
+                        }
+                      />
+                    </div>
+                    {error && <Error errorText={error} />}
+                    <div className={styles.buttonContent}>
+                      <Button styletype='filled' text='Zap' onClick={() => handleZap()} />
+                      <Button
+                        disabled={!farm}
+                        styletype='filled'
+                        text='Zap & Stake'
+                        onClick={() => handleZapAndStake()}
+                      />
+                    </div>
+                  </>
+                )
+              }
+            </div>
+          </div>
+        </div>
         <div className={cx(constantsStyles.columnContent, styles.leftContent)}>
           <div className={cx(styles.shadowContent, constantsStyles.columnContent)}>
             <div className={cx(constantsStyles.boldText, styles.title)}>
@@ -623,21 +642,6 @@ console.log('stake', stake_bal);
                 />
               </div>
             </div>
-          </div>
-        </div>
-        <div className={cx(constantsStyles.columnContent, styles.rightContent)}>
-          <div className={cx(styles.shadowContent, constantsStyles.columnContent)}>
-            <div className={cx(constantsStyles.boldText, styles.title)}>
-              <span>Deposit</span>
-            </div>
-            <div className={constantsStyles.greyText}>
-              Deposit Liquidity to earn rewards.
-            </div>
-            <Tabs
-              isLoading={fetching}
-              links={tabDataKeys}
-              styletype='ellipse'
-            />
           </div>
         </div>
       </div>
