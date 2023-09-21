@@ -250,7 +250,7 @@ const LiquidityPresentation = () => {
     farm?.type_y,
     lp?.id,
   )
-
+console.log('stake', stake_bal);
   const stake = useStakeFarm()
   const handleStake = () => {
     if (poolData && lp && farm) {

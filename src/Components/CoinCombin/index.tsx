@@ -8,6 +8,7 @@ import * as styles from './index.styles';
 interface Props {
   poolCoinX: CoinInterface | undefined,
   poolCoinY: CoinInterface | undefined,
+  stable: boolean
 }
 
 export const CoinCombinImg = (props: Props) => {
@@ -22,14 +23,14 @@ export const CoinCombinImg = (props: Props) => {
 }
 
 const CoinCombin = (props: Props) => {
-  const { poolCoinX, poolCoinY } = props;
+  const { poolCoinX, poolCoinY, stable } = props;
 
   return (
     <div className={cx(constantsStyles.rowContent, styles.poolContent)}>
       <CoinCombinImg poolCoinX={poolCoinX} poolCoinY={poolCoinY} />
       <div className={constantsStyles.columnContent}>
         <span className={constantsStyles.boldText}>{poolCoinX!.name}/{poolCoinY!.name}</span>
-        <span className={constantsStyles.greyText}>Stable Pool</span>
+        <span className={constantsStyles.greyText}>{stable ?'Stable ' : 'Variable'} Pool</span>
       </div>
     </div>
   )

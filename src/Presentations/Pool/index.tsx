@@ -17,6 +17,7 @@ import { fetchIcon, fetchBalance } from '@/Constants/index'
 import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 import { cx } from '@emotion/css'
+import { CoinFormat, formatBalance } from '@/Utils/format'
 
 const PoolPresentation = () => {
 	const {
@@ -76,17 +77,17 @@ const PoolPresentation = () => {
 				switch (column.id) {
 					case 'pool':
 						return (
-							<CoinCombin key={idx} poolCoinX={_poolCoinX} poolCoinY={_poolCoinY} />
+							<CoinCombin key={idx} poolCoinX={_poolCoinX} poolCoinY={_poolCoinY} stable={pool.stable} />
 						)
 					case 'wallet':
 						return (
 							<div key={idx} className={cx(constantsStyles.columnContent, styles.coinContent)}>
 								<div className={constantsStyles.rowContent}>
-									<div className={constantsStyles.boldText}>{_walletCoinX}</div>
+									<div className={constantsStyles.boldText}>{formatBalance(_walletCoinX, _poolCoinX!.decimals, CoinFormat.FULL)}</div>
 									<span className={constantsStyles.greyText}>{_poolCoinX!.name}</span>
 								</div>
 								<div className={constantsStyles.rowContent}>
-									<div className={constantsStyles.boldText}>{_walletCoinY}</div>
+									<div className={constantsStyles.boldText}>{formatBalance(_walletCoinY, _poolCoinY!.decimals, CoinFormat.FULL)}</div>
 									<span className={constantsStyles.greyText}>{_poolCoinY!.name}</span>
 								</div>
 							</div>
@@ -95,11 +96,11 @@ const PoolPresentation = () => {
 						return (
 							<div key={idx} className={cx(constantsStyles.columnContent, styles.coinContent)}>
 								<div className={constantsStyles.rowContent}>
-									<div className={constantsStyles.boldText}>{pool.reserve_x}</div>
+									<div className={constantsStyles.boldText}>{formatBalance(pool.reserve_x, _poolCoinX!.decimals, CoinFormat.FULL)}</div>
 									<span className={constantsStyles.greyText}>{_poolCoinX!.name}</span>
 								</div>
 								<div className={constantsStyles.rowContent}>
-									<div className={constantsStyles.boldText}>{pool.reserve_y}</div>
+									<div className={constantsStyles.boldText}>{formatBalance(pool.reserve_y, _poolCoinY!.decimals, CoinFormat.FULL)}</div>
 									<span className={constantsStyles.greyText}>{_poolCoinY!.name}</span>
 								</div>
 							</div>
