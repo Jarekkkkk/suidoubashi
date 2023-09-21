@@ -36,9 +36,17 @@ export const calculate_slippage = (slippage: string, output_value: string) => {
   )
 }
 
-export const calculate_vesdb = (bal: string, end: string) => {
-  const diff = Math.floor(
-    (new Date(parseInt(end) * 1000).getTime() - new Date().getTime()) / 1000,
-  )
-  return ((BigInt(diff) * BigInt(bal)) / BigInt(14515200)).toString()
+
+export const lp_position = (
+  res: string,
+  lp_supply: string,
+  lp_balance: string,
+  decimals: number,
+) => {
+  return BigNumber(res)
+    .multipliedBy(lp_balance)
+    .dividedBy(lp_supply)
+    .shiftedBy(-decimals)
+    .decimalPlaces(decimals)
+    .toFormat()
 }
