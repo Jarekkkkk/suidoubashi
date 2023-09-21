@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import {Icon as BlueIcon } from '@blueprintjs/core'
 import { Link, useLocation } from 'react-router-dom'
 
 import { generateSideBarLinks } from '@/Constants'
@@ -46,7 +47,7 @@ const SidebarComponent = (props: Props) => {
       <div className={styles.footerContent}>
         <div className={styles.footerIconBlock}>
           <Link to='/'>
-            <Icon.BookIcon />
+            <BlueIcon icon="git-repo" />
           </Link>
           <Link to='https://twitter.com/suidoubashi_io' target="_blank">
             <Icon.TwitterIcon />

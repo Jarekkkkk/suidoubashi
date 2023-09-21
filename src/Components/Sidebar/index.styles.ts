@@ -118,9 +118,13 @@ export const footerIconBlock = css`
   justify-content: space-around;
   align-items: center;
 
+  span {
+    margin: 0;
+  }
+
   svg {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     transition: 0.3s;
 
     &:hover {

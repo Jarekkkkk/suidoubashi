@@ -111,7 +111,6 @@ const VestCardComponent = (props: Props) => {
     if (!amm_state) initialize_amm({ vsdb: nftId })
   }
 
-  console.log(amm_state)
 
   return (
     <div className={styles.vestCardContainer}>
@@ -137,12 +136,17 @@ const VestCardComponent = (props: Props) => {
         <div className={cx(styles.badgeContent)}>
           <div>Badge</div>
           <Button
+            text='AMM'
             styletype='badge'
             disabled={!!amm_state}
-            text='AMM'
             onClick={handleInitializeAMM}
           />
-          <Button disabled styletype='badge' text='Vote' onClick={() => {}} />
+          <Button
+            text='Vote'
+            styletype='badge'
+            disabled={false}
+            onClick={() => {}}
+          />
         </div>
         {!isPerviewMode && (
           <div className={styles.buttonContent}>

@@ -119,7 +119,7 @@ export const badge = css`
   min-width: auto;
   height: 20px;
   border-radius: 20px;
-  background-color: var(--Yellow);
+  background-color: var(--TransparentBlack);
 
   p {
     color: var(--White);
@@ -131,7 +131,7 @@ export const badge = css`
 
   &:disabled {
     cursor: no-drop;
-    background-color: var(--TransparentBlack);
+    background-color: var(--Yellow);
   }
 `
 
