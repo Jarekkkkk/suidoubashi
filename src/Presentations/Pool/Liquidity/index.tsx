@@ -461,7 +461,7 @@ const LiquidityPresentation = () => {
                           }
                         />
                       </div>
-                      {error && <Error errorText={error} />}
+                      {error &&  <div className={styles.errorContent}><Error errorText={error} /></div>}
                       <div className={styles.buttonContent}>
                         <Button
                           styletype='filled'
@@ -530,7 +530,7 @@ const LiquidityPresentation = () => {
                         }
                       />
                     </div>
-                    {error && <Error errorText={error} />}
+                    {error &&  <div className={styles.errorContent}><Error errorText={error} /></div>}
                     <div className={styles.buttonContent}>
                       <Button styletype='filled' text='Zap' onClick={() => handleZap()} />
                       <Button

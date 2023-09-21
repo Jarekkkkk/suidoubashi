@@ -162,7 +162,7 @@ const CreateVSDBModal = (props: Props) => {
           </div>
         </div>
       </div>
-      <Error errorText={error || ''} />
+      {error &&  <div className={styles.errorContent}><Error errorText={error} /></div>}
       <div className={styles.vsdbModalbutton}>
         <Button
           disabled={!!error}

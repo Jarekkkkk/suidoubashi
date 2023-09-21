@@ -46,7 +46,11 @@ export const shadowContent = css`
 `
 
 export const inputContent = css`
-  margin: 25px 0;
+  margin: 28px 0;
+`
+
+export const errorContent = css`
+  margin-bottom: 28px;
 `
 
 export const title = css`

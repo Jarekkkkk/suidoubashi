@@ -4,7 +4,6 @@ export const errorContent = css`
   display: flex;
   align-items: end;
   justify-content: center;
-  margin: 28px 0;
   border-radius: 8px;
 
   span {

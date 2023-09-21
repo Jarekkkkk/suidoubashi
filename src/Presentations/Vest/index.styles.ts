@@ -217,6 +217,11 @@ export const vsdbDepositCountBlock = css`
   padding-top: 28px;
   border-top: 1px solid var(--LightGrey);
 `
+
+export const errorContent = css`
+  margin: 28px 0;
+`
+
 export const vsdbDepositCount = css`
   padding: 22px 35px;
   border: 1px solid var(--LightGrey);

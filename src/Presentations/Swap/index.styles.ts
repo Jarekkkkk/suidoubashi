@@ -108,10 +108,21 @@ export const coincardContent = css`
 export const infoContent = css`
   margin: 0 auto 28px auto;
   min-width: 350px;
+
+  div:nth-child(1) {
+    margin-bottom: 28px;
+  }
+
+  div:nth-child(2) {
+    margin-bottom: 14px;
+  }
+`
+
+export const errorContent = css`
+  margin-bottom: 28px;
 `
 
 export const bonusText = css`
-  margin-bottom: 28px;
   color:  var(--Grey);
   font-size: 12px;
   text-align: center;
@@ -131,7 +142,7 @@ export const infoText = css`
   color:  var(--Black);
   font-size: 20px;
   font-weight: bold;
-  line-height: 2;
+  line-height: 1;
 
   span {
     display: flex;

@@ -296,7 +296,7 @@ const SwapPresentation = () => {
             </span>
           </div>
         </div>
-        {error &&  <Error errorText={error} />}
+        {error &&  <div className={styles.errorContent}><Error errorText={error} /></div>}
         <div className={styles.swapButton}>
           <Button
             text='Swap'
