@@ -13,7 +13,7 @@ export const titleBlock = css`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 14px;
-  color: #3F4247;
+  color: var(--DarkGrey);
   font-size: 24px;
   font-weight: bold;
   line-height: 1;

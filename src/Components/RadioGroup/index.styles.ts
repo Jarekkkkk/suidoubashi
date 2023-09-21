@@ -13,7 +13,7 @@ export const radioGroupComponent = css`
     font-size: 16px;
     font-weight: 700;
     line-height: 1;
-    color: #3F4247;
+    color: var(--DarkGrey);
 
     &:not(:first-child)  {
       margin-left: 20px;
@@ -40,9 +40,9 @@ export const radioGroupComponent = css`
       left: 0;
       width: 20px;
       height: 20px;
-      border: 1px solid #DCDFE6;
+      border: 1px solid var(--LighterGrey);
       border-radius: 50%;
-      background-color: #fff !important;
+      background-color: var(--White) !important;
       box-sizing: border-box;
       box-shadow: none;
     }
@@ -60,9 +60,9 @@ export const radioGroupComponent = css`
       left: 0;
       width: 20px;
       height: 20px;
-      border: 6px solid #2977EC;
+      border: 6px solid var(--Brand);
       border-radius: 50%;
-      background-color: #fff !important;
+      background-color: var(--White) !important;
       box-sizing: border-box;
     }
   }

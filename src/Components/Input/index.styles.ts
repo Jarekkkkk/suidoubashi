@@ -12,23 +12,23 @@ export const InputContent = css`
     width: 100%;
     height: 40px;
     border-radius: 8px;
-    border: 1px solid #606266;
-    background-color: #fff;
+    border: 1px solid var(--Grey);
+    background-color: var(--White);
     box-shadow: none;
-    color: #2977EC;
+    color: var(--Brand);
     font-size: 24px;
     font-weight: bold;
     text-align: center;
 
     &:focus, &:focus-within, &:active {
-      border-color: #2977EC;
+      border-color: var(--Brand);
       box-shadow: none;
       outline: none;
     }
 
     &::placeholder {
       padding-left: 10px;
-      color: #A4A8B3;
+      color: var(--LightGrey);
       text-align: left;
       font-weight: normal;
       font-size: 24px;

@@ -8,7 +8,7 @@ export const errorContent = css`
   border-radius: 8px;
 
   span {
-    color: #F56C6C;
+    color: var(--AppleRed);
     font-size: 13px;
     font-weight: bold;
     line-height: 1;
@@ -20,7 +20,7 @@ export const errorContent = css`
     height: 16px;
 
     path {
-      fill: #F56C6C;
+      fill: var(--AppleRed);
     }
   }
 `

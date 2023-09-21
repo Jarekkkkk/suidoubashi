@@ -5,7 +5,7 @@ export const dialogComponent = css`
   padding-bottom: 0 !important;
   width: 552px !important;
   max-height: calc(100vh - 60px);
-  background: #fff !important;
+  background: var(--White) !important;
   border-radius: 12px;
   overflow: hidden;
 
@@ -16,7 +16,7 @@ export const dialogComponent = css`
     h4 {
       font-size: 17px;
       line-height: 24px;
-      color: #222;
+      color: var(--Black);
     }
   }
 `
@@ -25,8 +25,8 @@ export const body = css`
   padding: 20px;
   height: 100%;
   min-height: 200px; // for init testing
-  border-top: 1px solid #e8e8e8;
-  border-bottom: 1px solid #e8e8e8;
+  border-top: 1px solid var(--LighterGrey);
+  border-bottom: 1px solid var(--LighterGrey);
   overflow: auto;
 
 `
@@ -47,7 +47,7 @@ export const title = css`
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, #012B52 0%, rgba(1, 78, 82, 0.00) 100%);
-  color: #fff;
+  color: var(--White);
   font-size: 48px;
   font-weight: 900;
   line-height: 1;
@@ -82,7 +82,7 @@ export const disableButton = css`
   opacity: 0.8;
 
   path {
-    fill: #a4a8b2;
+    fill: var(--LightGrey);
   }
 `
 

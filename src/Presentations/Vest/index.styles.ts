@@ -38,7 +38,7 @@ export const vestCardLoadingContainer = css`
   justify-content: center;
   min-height: 300px;
   border-radius: 12px;
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
 
   &:not(:nth-last-child(1)) {
     margin-bottom: 12px;
@@ -49,8 +49,8 @@ export const vestCardContainer = css`
   flex-direction: row;
   padding: 12px;
   border-radius: 12px;
-  background-color: #fff;
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  background-color: var(--White);
+  box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
 
   &:not(:nth-last-child(1)) {
     margin-bottom: 12px;
@@ -78,7 +78,7 @@ export const cardContentSection = css`
   * {
     font-size: 16px;
     font-weight: bold;
-    color: #606266;
+    color: var(--Grey);
   }
 
   > :not(:nth-last-child(1)) {
@@ -99,8 +99,8 @@ export const textContent = css`
     align-items: center;
     margin-left: 12px;
     border-radius: 8px;
-    color: #2977ec;
-    background: #e4f7fe;
+    color: var(--Brand);
+    background: var(--BrandLight);
   }
 `
 
@@ -160,10 +160,10 @@ export const vsdbCountContainer = css`
   flex-direction: row;
   justify-content: space-between;
   padding: 14px 45px;
-  border: 1px solid #a4a8b3;
+  border: 1px solid var(--LightGrey);
   border-radius: 8px;
-  background-color: #fff;
-  color: #a4a8b3;
+  background-color: var(--White);
+  color: var(--LightGrey);
   font-size: 13px;
   font-weight: normal;
   line-height: 1;
@@ -172,10 +172,10 @@ export const vsdbCountContainer = css`
 export const vsdbCountBlock = css`
   display: flex;
   flex-direction: column;
-  color: #909399;
+  color: var(--LightGrey);
 
   div {
-    color: #909399;
+    color: var(--LightGrey);
   }
 
   div:not(:nth-last-child(1)) {
@@ -183,7 +183,7 @@ export const vsdbCountBlock = css`
   }
 
   span {
-    color: #ffd24d;
+    color: var(--Yellow);
     font-weight: bold;
   }
 `
@@ -192,7 +192,7 @@ export const vsdbCountContent = css`
   margin-top: 4px;
   font-size: 32px;
   font-weight: bold;
-  color: #2977ec !important;
+  color: var(--Brand) !important;
   line-height: 1;
 `
 
@@ -215,11 +215,11 @@ export const vsdbDepositCountBlock = css`
   align-items: center;
   margin-top: 28px;
   padding-top: 28px;
-  border-top: 1px solid #a4a8b3;
+  border-top: 1px solid var(--LightGrey);
 `
 export const vsdbDepositCount = css`
   padding: 22px 35px;
-  border: 1px solid #a4a8b3;
+  border: 1px solid var(--LightGrey);
   border-radius: 8px;
 `
 
@@ -250,7 +250,7 @@ export const perviewCard = css`
   max-width: 140px;
 
   div {
-    color: #a4a8b3;
+    color: var(--LightGrey);
     font-size: 13px;
     font-weight: normal;
     line-height: 1.5;
@@ -264,7 +264,7 @@ export const perviewCard = css`
 
 export const perviewImage = css`
   margin-top: 12px;
-  border: 1px solid #2977ec;
+  border: 1px solid var(--Brand);
   border-radius: 8px;
   overflow: hidden;
 `

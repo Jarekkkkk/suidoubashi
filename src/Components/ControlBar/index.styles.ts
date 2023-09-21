@@ -14,7 +14,7 @@ export const loadingContent = css`
   justify-content: center;
   height: 405px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.70);
+  background: var(--TransparentWhite);
   backdrop-filter: blur(8px);
 `
 

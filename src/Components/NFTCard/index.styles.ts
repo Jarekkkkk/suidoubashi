@@ -5,7 +5,7 @@ export const cardContainer = css`
   flex-direction: column;
   padding: 12px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.70);
+  background: var(--TransparentWhite);
   backdrop-filter: blur(8px);
 `
 
@@ -14,7 +14,7 @@ export const cardContent = css`
   margin-bottom: 12px;
   width: 276px;
   height: 256px;
-  background: rgba(255, 255, 255, 0.70);
+  background: var(--TransparentWhite);
   backdrop-filter: blur(8px);
   border-radius: 8px 8px 0px 0px;
   overflow: hidden;
@@ -33,7 +33,7 @@ export const cardPrev = css`
   align-items: center;
   width: 20px;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: var(--TransparentBlack);
   z-index: 1;
   transition: 0.3s;
   cursor: pointer;
@@ -44,7 +44,7 @@ export const cardPrev = css`
     height: 0;
     border-style: solid;
     border-width: 7px 8px 7px 0;
-    border-color: transparent #ffffff80 transparent transparent;
+    border-color: transparent var(--TransparentWhite) transparent transparent;
   }
 
   &:hover {
@@ -60,7 +60,7 @@ export const cardNext = css`
   align-items: center;
   width: 20px;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: var(--TransparentBlack);
   z-index: 1;
   transition: 0.3s;
   cursor: pointer;
@@ -71,7 +71,7 @@ export const cardNext = css`
     height: 0;
     border-style: solid;
     border-width: 7px 0 7px 8px;
-    border-color: transparent transparent transparent #ffffff80;
+    border-color: transparent transparent transparent var(--TransparentWhite);
   }
 
   &:hover {
@@ -92,7 +92,7 @@ export const infoContent = css`
   width: 80%;
 
   span {
-    color: #2977EC;
+    color: var(--Brand);
     font-size: 28px;
     font-weight: bold;
     line-height: 1;
@@ -107,7 +107,7 @@ export const valueText = css`
   width: 3rem;
   font-size: 12px;
   font-weight: bold;
-  color: #303133;
+  color: var(--Black);
   margin-right: 14px;
 `
 
@@ -122,7 +122,7 @@ export const addressContent = css`
   flex-direction: row;
   margin: 0 auto;
   width: 80%;
-  color: #2977EC;
+  color: var(--Brand);
   font-size: 10px;
   width: 100%;
   overflow: hidden;

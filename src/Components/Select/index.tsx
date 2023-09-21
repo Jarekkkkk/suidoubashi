@@ -22,7 +22,7 @@ const SelectCompoonent = (props: Props) => {
     }),
     option: (styles: any) => ({
       ...styles,
-      borderColor: '#2977EC',
+      borderColor: 'var(--Brand)',
     }),
   }
 

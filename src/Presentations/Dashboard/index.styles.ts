@@ -2,7 +2,7 @@ import { css } from '@emotion/css'
 import Image from '@/Assets/image'
 
 export const buttonStyle = css`
-  background-color: #333;
+  background-color: var(--Black);
 `
 
 export const sectionA = css`
@@ -74,7 +74,7 @@ export const sectionBContent = css`
 
 export const TitleGreen = css`
   margin-top: 80px;
-  color: #07456c;
+  color: var(--BrandDark);
   text-align: center;
   text-shadow: 0px -4px 6px rgba(255, 255, 255, 0.7);
   font-size: 40px;
@@ -84,7 +84,7 @@ export const TitleGreen = css`
 
 export const TitleWhite = css`
   margin-top: 80px;
-  color: #edfeff;
+  color: var(--BrandLight);
   text-align: center;
   text-shadow: 0px -4px 6px rgba(229, 254, 255, 0.65);
   font-size: 40px;
@@ -93,14 +93,14 @@ export const TitleWhite = css`
 `
 
 export const SecondTitleGreen = css`
-  color: #07456c;
+  color: var(--BrandDark);
   font-size: 28px;
   font-weight: bold;
   line-height: 1;
 `
 
 export const SecondTitleWhite = css`
-  color: #d6fdff;
+  color: var(--BrandLight);
   font-size: 28px;
   font-weight: bold;
   line-height: 1;
@@ -108,7 +108,7 @@ export const SecondTitleWhite = css`
 
 export const ContentGreen = css`
   margin-top: 8px;
-  color: #07456c;
+  color: var(--BrandDark);
   font-size: 14px;
   font-weight: normal;
   line-height: 1;
@@ -116,7 +116,7 @@ export const ContentGreen = css`
 
 export const ContentWhite = css`
   margin-top: 8px;
-  color: #d6fdff;
+  color: var(--BrandLight);
   font-size: 14px;
   font-weight: normal;
   line-height: 1;

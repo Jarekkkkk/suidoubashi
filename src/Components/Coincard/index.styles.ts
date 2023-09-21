@@ -10,7 +10,7 @@ export const coincardContainer = css`
   max-width: 100%;
   background: rgba(255, 255, 255, 0.90);
   border-radius: 12px;
-  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 2px 0px var(--TransparentBlack);
 
   svg {
     width: 32px;
@@ -26,7 +26,7 @@ export const coinname = css`
   width: 5rem;
   font-size: 16px;
   font-weight: bold;
-  color: #000;
+  color: var(--Black);
   line-height: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -38,7 +38,7 @@ export const coninvalue = css`
   width: calc(100% - 5rem);
   font-size: 20px;
   font-weight: bold;
-  color: #000;
+  color: var(--Black);
   line-height: 1;
 
   span {
@@ -53,7 +53,7 @@ export const coninvalue = css`
     display: inline-block;
     position: absolute;
     top: -13px;
-    color: #A4A8B2;
+    color: var(--LightGrey);
     font-size: 12px;
     font-weight: normal;
     line-height: 1;
@@ -75,7 +75,7 @@ export const lpName = css`
   width: 6rem;
   font-size: 16px;
   font-weight: bold;
-  color: #000;
+  color: var(--Black);
   line-height: 1;
 `
 
@@ -89,13 +89,13 @@ export const lpvalueContent = css`
     position: relative;
     font-size: 20px;
     font-weight: bold;
-    color: #000;
+    color: var(--Black);
   }
 
   span {
     font-size: 12px;
     font-weight: normal;
-    color: #A4A8B2;
+    color: var(--LightGrey);
     line-height: 1;
 
     &:nth-child(3) {

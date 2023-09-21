@@ -21,7 +21,7 @@ export const columnContent = css`
 export const boldText = css`
   display: flex;
   align-items: center;
-  color: #303133;
+  color: var(--Black);
   font-size: 16px;
   font-weight: bold;
   line-height: 1;
@@ -30,7 +30,7 @@ export const boldText = css`
 export const greyText = css`
   display: flex;
   align-items: center;
-  color: #606266;
+  color: var(--Grey);
   font-size: 12px;
   font-weight: normal;
   line-height: 1;
@@ -39,7 +39,7 @@ export const greyText = css`
 export const lightGreyText = css`
   display: flex;
   align-items: center;
-  color: #A4A8B2;
+  color: var(--LightGrey);
   font-size: 12px;
   font-weight: normal;
   line-height: 1;

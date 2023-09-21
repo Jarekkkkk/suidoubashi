@@ -6,8 +6,8 @@ export const TableWrapper = css`
   margin-top: 12px;
   max-height: calc(100vh - 350px);
   border-radius: 12px;
-  background: #FFF;
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  background: var(--White);
+  box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
   overflow: auto;
 
   table {
@@ -15,7 +15,7 @@ export const TableWrapper = css`
   }
 
   thead {
-    color: #606266;
+    color: var(--Grey);
     font-size: 12px;
 
     tr > th {
@@ -28,7 +28,7 @@ export const TableWrapper = css`
         display: flex;
         padding-top: 5px;
         width: calc(100% + 5px);
-        border-bottom: 1px solid #A4A8B3;
+        border-bottom: 1px solid var(--LightGrey);
       }
     }
   }

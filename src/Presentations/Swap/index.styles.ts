@@ -27,7 +27,7 @@ export const coinButton = css`
     width: 0;
     height: 0;
     margin: 5px;
-    border-top: 10px solid #3F4247;
+    border-top: 10px solid var(--DarkGrey);
     border-left: 7px solid transparent;
     border-right: 7px solid transparent;
   }
@@ -62,7 +62,7 @@ export const searchInputIcon = css`
 `
 
 export const coinContent = css`
-  border-bottom: 1px solid #A4A8B3;
+  border-bottom: 1px solid var(--LightGrey);
 `
 
 export const coinBlock = css`
@@ -100,7 +100,7 @@ export const coincardContent = css`
 
   &:hover {
     > div {
-      background-color: #E4F7FE;
+      background-color: var(--BrandLight);
     }
   }
 `
@@ -112,7 +112,7 @@ export const infoContent = css`
 
 export const bonusText = css`
   margin-bottom: 28px;
-  color:  #606266;
+  color:  var(--Grey);
   font-size: 12px;
   text-align: center;
   font-weight: normal;
@@ -120,7 +120,7 @@ export const bonusText = css`
 
   span {
     margin-left: 20px;
-    color: #7FDF7D;
+    color: var(--AppleGreen);
     font-size: 16px;
   }
 `
@@ -128,7 +128,7 @@ export const bonusText = css`
 export const infoText = css`
   display: flex;
   justify-content: space-between;
-  color:  #303133;
+  color:  var(--Black);
   font-size: 20px;
   font-weight: bold;
   line-height: 2;
@@ -159,6 +159,6 @@ export const inputAnimation = css`
   width: 100%;
   height: 40px;
   border-radius: 8px;
-  border: 1px solid #606266;
-  background: #fff;
+  border: 1px solid var(--Grey);
+  background: var(--White);
 `

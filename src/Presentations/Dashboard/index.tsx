@@ -36,9 +36,9 @@ const Section = (props: SectionProps) => {
             padding: '2px 6px',
             justifyContent: 'center',
             alignItems: 'center',
-            color: '#fff',
+            color: 'var(--White)',
             borderRadius: '8px',
-            background: '#0A5A7D',
+            background: 'var(--BrandDark)',
           })}
         >
           {number}
@@ -49,9 +49,9 @@ const Section = (props: SectionProps) => {
             marginLeft: '8px',
             padding: '2px 16px',
             alignItems: 'center',
-            color: '#fff',
+            color: 'var(--White)',
             borderRadius: '8px',
-            background: '#0A5A7D',
+            background: 'var(--BrandDark)',
           })}
         >
           {title}
@@ -61,7 +61,7 @@ const Section = (props: SectionProps) => {
         className={css({
           marginTop: '5px',
           padding: '8px',
-          color: '#07456C',
+          color: 'var(--BrandDark)',
           fontSize: '14px',
           fontWeight: 'normal',
           lineHeight: 1,

@@ -4,8 +4,8 @@ export const datePickerComponent = css`
   padding: 1px 8px;
   width: 100%;
   height: 48px;
-  color: #2977EC;
-  border: 1px solid #606266;
+  color: var(--Brand);
+  border: 1px solid var(--Grey);
   border-radius: 8px;
   font-size: 24px;
   font-weight: bold;
@@ -14,11 +14,11 @@ export const datePickerComponent = css`
   outline: none;
 
   :focus-visible {
-    border-color: #2977EC;
+    border-color: var(--Brand);
   }
 
   &:disabled {
-    color: #5f6b7c99;
-    background: #d3d8de80;
+    color: var(--TransparentBlack);
+    background: var(--TransparentWhite);
   }
 `

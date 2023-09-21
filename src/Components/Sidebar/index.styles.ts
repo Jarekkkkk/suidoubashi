@@ -11,8 +11,8 @@ export const sidebarContainer = css`
   border-radius: 12px;
   backdrop-filter: blur(8px);
   box-sizing: border-box;
-  box-shadow: 0px 0px 10px 5px #00000014;
-  background-color: rgba(255, 255, 255, 0.70);
+  box-shadow: 0px 0px 10px 5px var(--TransparentBlack);
+  background-color: var(--TransparentWhite);
 
   &.sidebarWide {
     width: 140px;
@@ -42,7 +42,7 @@ export const sidebarButton = css`
   a, span {
     display: flex;
     align-items: center;
-    color: #595959;
+    color: var(--Grey);
     text-decoration-line: unset;
     transition: 0.3s;
     outline: none !important;
@@ -54,7 +54,7 @@ export const sidebarButton = css`
     height: 24px;
 
     path {
-      fill: #595959;
+      fill: var(--Grey);
       transition: 0.3s;
     }
   }
@@ -63,12 +63,12 @@ export const sidebarButton = css`
     cursor: pointer;
 
     a, span {
-      color: #2977EC;
+      color: var(--Brand);
     }
 
     svg {
       path {
-        fill: #2977EC;
+        fill: var(--Brand);
       }
     }
   }
@@ -76,12 +76,12 @@ export const sidebarButton = css`
 
 export const active  = css`
   a, span {
-    color: #2977EC;
+    color: var(--Brand);
   }
 
   svg {
     path {
-      fill: #2977EC;
+      fill: var(--Brand);
     }
   }
 `;
@@ -109,7 +109,7 @@ export const footerContent = css`
     margin-top: 20px;
     width: 100%;
     text-align: center;
-    color: #2977EC;
+    color: var(--Brand);
   }
 `
 

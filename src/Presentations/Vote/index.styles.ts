@@ -47,9 +47,9 @@ export const infoContent = css`
   padding: 20px;
   width: 45%;
   border-radius: 8px;
-  background: #3F4247;
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
-  color: #FFF;
+  background: var(--DarkGrey);
+  box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
+  color: var(--White);
   text-align: right;
   font-size: 13px;
   font-weight: 600;
@@ -62,14 +62,14 @@ export const infoContent = css`
 `
 
 export const infoTitle = css`
-  color: #fff;
+  color: var(--White);
   font-size: 28px;
   font-weight: bold;
   line-height: 1;
 `
 
 export const yellowText = css`
-  color: #FFD24D;
+  color: var(--Yellow);
   font-size: 20px;
 `
 
@@ -96,12 +96,12 @@ export const bottomVoteContent = css`
   margin: auto auto 0;
   padding: 16px 20px;
   border-radius: 8px;
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
 `
 
 export const bottomVoteTitle = css`
   margin-right: 10px;
-  color: #000;
+  color: var(--Black);
   font-size: 16px;
   font-weight: normal;
   line-height: 1;
@@ -109,7 +109,7 @@ export const bottomVoteTitle = css`
 
 export const bottomVotePercent = css`
   margin-right: 20px;
-  color: #7FDF7D;
+  color: var(--AppleGreen);
   font-size: 28px;
   font-weight: bold;
   line-height: 1;

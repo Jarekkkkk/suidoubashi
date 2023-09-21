@@ -17,7 +17,7 @@ export const stakeContainer = css`
   height: 100%;
   width: calc(50% - 10px);
   border-radius: 12px;
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
 
 `
 
@@ -31,7 +31,7 @@ export const votingContainer = css`
   height: 100%;
   width: calc(50% - 10px);
   border-radius: 12px;
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
 
 `
 
@@ -39,7 +39,7 @@ export const title = css`
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  color: #3F4247;
+  color: var(--DarkGrey);
   font-size: 20px;
   font-weight: bold;
   line-height: 1;
@@ -48,7 +48,7 @@ export const title = css`
     width: 32px;
 
     path {
-      fill: #2977EC;
+      fill: var(--Brand);
     }
   }
 `
@@ -61,8 +61,8 @@ export const rewardsCard = css`
   padding: 10px 12px;
   width: 100%;
   border-radius: 12px;
-  background-color: #FFF;
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  background-color: var(--White);
+  box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
 
   @media screen and (max-width: 1180px) {
     flex-direction: column;
@@ -83,7 +83,7 @@ export const bridesText = css`
   align-items: center;
   justify-content: center;
   margin-bottom: 8px;
-  color: #3F4247;
+  color: var(--DarkGrey);
   font-size: 16px;
   font-weight: bold;
   line-height: 1;

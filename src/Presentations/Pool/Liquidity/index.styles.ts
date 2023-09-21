@@ -42,7 +42,7 @@ export const shadowContent = css`
   align-items: center;
   padding: 16px 40px;
   border-radius: 8px;
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
 `
 
 export const inputContent = css`
@@ -62,7 +62,7 @@ export const title = css`
     height: 32px;
 
     path {
-      fill: #2977EC;
+      fill: var(--Brand);
     }
   }
 `
@@ -121,7 +121,7 @@ export const ellipseTabTitle = css`
   flex: 1 1 auto;
   padding: 0 10px;
   height: 40px;
-  color: #606266;
+  color: var(--Grey);
   font-size: 20px;
   font-weight: bold;
   border-radius: 12px;
@@ -130,7 +130,7 @@ export const ellipseTabTitle = css`
 `
 
 export const ellipseActiveTab = css`
-  color: #FFF;
-  background-color: #2977EC;
+  color: var(--White);
+  background-color: var(--Brand);
   transition: 0.3s;
 `;

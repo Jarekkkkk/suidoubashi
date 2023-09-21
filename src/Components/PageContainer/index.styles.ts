@@ -4,7 +4,7 @@ export const pageContainer = css`
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--White);
   border-radius: 12px;
   overflow: hidden;
 `
@@ -26,7 +26,7 @@ export const title = css`
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, #012B52 0%, rgba(1, 78, 82, 0.00) 100%);
-  color: #fff;
+  color: var(--White);
   font-size: 48px;
   font-weight: 900;
   line-height: 1;

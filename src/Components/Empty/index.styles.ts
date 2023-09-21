@@ -13,7 +13,7 @@ export const emptyContainer = css`
 
   span {
     margin-top: 30px;
-    color: #6F7175;
+    color: var(--Grey);
     font-size: 12px;
     font-weight: bold;
   }

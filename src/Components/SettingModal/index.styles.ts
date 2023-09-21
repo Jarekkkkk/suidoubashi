@@ -19,7 +19,7 @@ export const settingSection = css`
   align-items: flex-start;
   gap: 16px;
   h1 {
-    color: #000;
+    color: var(--Black);
     font-family: Aileron;
     font-size: 24px;
     font-style: normal;
