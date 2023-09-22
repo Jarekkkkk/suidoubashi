@@ -77,7 +77,7 @@ const PoolPresentation = () => {
 				switch (column.id) {
 					case 'pool':
 						return (
-							<CoinCombin key={idx} poolCoinX={_poolCoinX} poolCoinY={_poolCoinY} stable={pool.stable} />
+							<CoinCombin key={idx} poolCoinX={_poolCoinX} poolCoinY={_poolCoinY} isPool stable={pool.stable} />
 						)
 					case 'wallet':
 						return (

@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-import { Dashboard, Swap, Pool, Vest, Vote, Rewards, Bridge } from '@/Scenes'
+import { Dashboard, Swap, Pool, Vest, Vote, Rewards, Bridge, Bribe } from '@/Scenes'
 
 import { Icon } from '@/Assets/icon'
 import { Balance } from '@/Hooks/Coin/useGetBalance'
@@ -59,6 +59,14 @@ export const generateSideBarLinks = [
     isHidden: false,
   },
   {
+    key: 'Bribe',
+    path: '/bribe',
+    element: <Bribe />,
+    title: 'Bribe',
+    icon: <Icon.StakeIcon />,
+    isHidden: false,
+  },
+  {
     key: 'Bridge',
     path: '/bridge',
     element: <Bridge />,
@@ -104,6 +112,12 @@ export const generateLinks = [
     path: '/rewards/:action?',
     element: <Rewards />,
     title: 'Rewards',
+  },
+  {
+    key: 'Bribe',
+    path: '/bribe',
+    element: <Bribe />,
+    title: 'Bribe',
   },
   {
     key: 'Bridge',

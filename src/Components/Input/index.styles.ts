@@ -29,9 +29,9 @@ export const InputContent = css`
     &::placeholder {
       padding-left: 10px;
       color: var(--LightGrey);
-      text-align: left;
       font-weight: normal;
-      font-size: 24px;
+      font-size: 16px;
+      vertical-align: middle;
     }
   }
 `

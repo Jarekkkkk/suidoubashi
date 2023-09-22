@@ -51,7 +51,7 @@ const VotePresentation = () => {
 				switch (column.id) {
 					case 'pool':
 						return (
-							<CoinCombin key={idx} poolCoinX={fetchIcon('ETH')} poolCoinY={fetchIcon('SUI')} />
+							<CoinCombin key={idx} poolCoinX={fetchIcon('ETH')} poolCoinY={fetchIcon('SUI')} isPool stable={false} />
 						)
 					case 'totalVotes':
 						return (

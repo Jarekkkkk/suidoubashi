@@ -8,10 +8,11 @@ interface Props {
   leftIcon?: any
   disabled?: boolean
   type?: string
+  rightElement?: any
 }
 
 const InputComponent = (props: Props) => {
-  const { type, placeholder, leftIcon } = props
+  const { type, placeholder, leftIcon, rightElement } = props
 
   return (
     <InputGroup
@@ -20,6 +21,7 @@ const InputComponent = (props: Props) => {
       placeholder={placeholder}
       leftIcon={leftIcon}
       className={styles.InputContent}
+      rightElement={rightElement}
     />
   )
 }
