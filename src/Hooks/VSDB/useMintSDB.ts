@@ -22,7 +22,7 @@ export const useMintSDB = () => {
         throw new Error('no wallet address')
 
       const txb = new TransactionBlock()
-      mint_sdb(txb, currentAccount.address)
+      mint_sdb(txb)
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,

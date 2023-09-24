@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { Coin, CoinInterface, Coins } from '@/Constants/coin'
 import { useMemo } from 'react'
+import { SUI_TYPE_ARG, normalizeStructTag, normalizeSuiAddress } from '@mysten/sui.js'
 
 export function get_balance_key(type: Coin, address: string) {
   return ['get-balance', address, type]
@@ -37,10 +38,16 @@ export function useGetAllBalance(
       if (!res.length) return []
 
       const objs = new Map()
-      res.forEach((r) => objs.set(r.coinType, r.totalBalance))
+      res.forEach((r) =>
+        objs.set(normalizeStructTag(r.coinType), r.totalBalance),
+      )
       return coin_types.map((c) =>
         objs.has(c.type)
-          ? { coinType: c.type, coinName: c.name, totalBalance: objs.get(c.type) }
+          ? {
+              coinType: c.type,
+              coinName: c.name,
+              totalBalance: objs.get(c.type),
+            }
           : { coinType: c.type, coinName: c.name, totalBalance: '0' },
       )
     },
