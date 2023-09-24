@@ -20,15 +20,9 @@ type AddLiquidityMutationArgs = {
   input_y_value: string
 }
 
-export const useAddLiquidity = () => {
+export const useAddLiquidity = (setting:SettingInterface) => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
-  // TODO
-  const setting: SettingInterface = {
-    gasBudget: '1000000',
-    expiration: '30',
-    slippage: '200',
-  }
 
   return useMutation({
     mutationFn: async ({
@@ -41,6 +35,7 @@ export const useAddLiquidity = () => {
     }: AddLiquidityMutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       const txb = new TransactionBlock()
+      txb.setGasBudget(Number(setting.gasBudget))
 
       // coin_x
       const coins_x = await rpc.getCoins({

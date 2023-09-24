@@ -32,7 +32,9 @@ const PageComponent = (props: Props) => {
   const { children } = props
   const location = useLocation()
   const isDashboard = location.pathname === '/'
-  const isHiddenPage = generateSideBarLinks.filter((link) => link.path === location.pathname)[0]?.isHidden
+  const isHiddenPage = generateSideBarLinks.filter(
+    (link) => link.path === location.pathname,
+  )[0]?.isHidden
 
   // Wallet
   const { isConnected } = useWalletKit()
@@ -114,7 +116,7 @@ const PageComponent = (props: Props) => {
           <PageContext.Provider
             value={{
               currentNFTInfo: currentNFTInfo,
-              setting: setting
+              setting: setting,
             }}
           >
             <div className={styles.content}>{children}</div>

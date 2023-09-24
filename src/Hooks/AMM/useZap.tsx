@@ -26,16 +26,10 @@ type ZapMutationArgs = {
   input_value: string
 }
 
-export const useZap = () => {
+export const useZap = (setting: SettingInterface) => {
   const rpc = useRpc()
   const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
-
-  const setting: SettingInterface = {
-    gasBudget: '1000000',
-    expiration: '30',
-    slippage: '10000',
-  }
 
   return useMutation({
     mutationFn: async ({
@@ -52,6 +46,8 @@ export const useZap = () => {
     }: ZapMutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       const txb = new TransactionBlock()
+      txb.setGasBudget(Number(setting.gasBudget))
+
       // coin_x
       const coins = await rpc.getCoins({
         owner: currentAccount.address,

@@ -19,15 +19,9 @@ type MutationArgs = {
   input_y_value: string
 }
 
-export const useDepoistAndStake = () => {
+export const useDepoistAndStake = (setting: SettingInterface) => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
-  // TODO
-  const setting: SettingInterface = {
-    gasBudget: '1000000',
-    expiration: '30',
-    slippage: '200',
-  }
 
   return useMutation({
     mutationFn: async ({
@@ -41,6 +35,7 @@ export const useDepoistAndStake = () => {
     }: MutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       const txb = new TransactionBlock()
+      txb.setGasBudget(Number(setting.gasBudget))
 
       // coin_x
       const coins_x = await rpc.getCoins({
@@ -97,8 +92,8 @@ export const useDepoistAndStake = () => {
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['pool', params.pool_id])
       queryClient.invalidateQueries(['LP'])
-      queryClient.invalidateQueries(['farm',params.farm_id])
-      queryClient.invalidateQueries(['stake-balance',params.farm_id])
+      queryClient.invalidateQueries(['farm', params.farm_id])
+      queryClient.invalidateQueries(['stake-balance', params.farm_id])
       toast.success('Add Liquidity and Stake Success!')
     },
     onError: (_err: Error) => {

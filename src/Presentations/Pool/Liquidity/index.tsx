@@ -29,6 +29,7 @@ import { useDepoistAndStake } from '@/Hooks/Farm/useDepositAndStake'
 import { useZapAndStake } from '@/Hooks/Farm/useZapAndStake'
 import { useUnStakeAndWithdraw } from '@/Hooks/Farm/useUnstakeAndWithdraw'
 import { lp_position } from '@/Utils/pool'
+import { usePageContext } from '@/Components/Page'
 
 const LiquidityPresentation = () => {
   const {
@@ -49,6 +50,8 @@ const LiquidityPresentation = () => {
     setCoinTypeX,
     setCoinTypeY,
   } = useContext(LiquidityContext)
+
+  const {setting} = usePageContext()
 
   const [isDepositSingle, setIsDepositSingle] = useState(false)
   const coinTypeXBalance = useGetBalance(coinTypeX.type, walletAddress)
@@ -109,7 +112,7 @@ const LiquidityPresentation = () => {
 
   const lp = useGetLP(walletAddress, poolData?.type_x, poolData?.type_y)
 
-  const add_liquidity = useAddLiquidity()
+  const add_liquidity = useAddLiquidity(setting)
   const handleAddLiquidity = () => {
     if (poolData && lp !== undefined) {
       add_liquidity.mutate({
@@ -129,7 +132,7 @@ const LiquidityPresentation = () => {
     }
   }
 
-  const zap = useZap()
+  const zap = useZap(setting)
   const handleZap = () => {
     if (poolData && lp) {
       const {
@@ -159,7 +162,7 @@ const LiquidityPresentation = () => {
     }
   }
 
-  const deposit_and_stake = useDepoistAndStake()
+  const deposit_and_stake = useDepoistAndStake(setting)
   const handleDepositAndStake = () => {
     if (poolData && farm) {
       deposit_and_stake.mutate({
@@ -180,7 +183,7 @@ const LiquidityPresentation = () => {
     }
   }
 
-  const zap_and_stake = useZapAndStake()
+  const zap_and_stake = useZapAndStake(setting)
   const handleZapAndStake = () => {
     if (poolData && farm) {
       const {
@@ -211,7 +214,7 @@ const LiquidityPresentation = () => {
     }
   }
 
-  const withdraw = useRemoveLiquidity()
+  const withdraw = useRemoveLiquidity(setting)
   const handleWithdraw = () => {
     if (poolData && lp) {
       withdraw.mutate({
@@ -512,10 +515,10 @@ const LiquidityPresentation = () => {
                     <Icon.NoticeIcon />
                     Deposit Single Type of Coins to add Liquidity.
                   </div>
-                  <div className={constantsStyles.lightGreyText}>
+                  {/**<div className={constantsStyles.lightGreyText}>
                     <Icon.NoticeIcon />
                     When depositing one type of Coins to stable pools <br/> there are some remaining coins returned !
-                  </div>
+                  </div>**/}
                   <div className={styles.inputContent}>
                     <InputSection
                       balance={

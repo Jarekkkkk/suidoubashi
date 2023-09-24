@@ -9,6 +9,7 @@ import {
   remove_liquidity,
 } from '@/Constants/API/pool'
 import { queryClient } from '@/App'
+import { SettingInterface } from '@/Components/SettingModal'
 
 type MutationArgs = {
   pool_id: string
@@ -18,7 +19,7 @@ type MutationArgs = {
   withdrawl: string
 }
 
-export const useRemoveLiquidity = () => {
+export const useRemoveLiquidity = (setting: SettingInterface) => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
@@ -33,6 +34,7 @@ export const useRemoveLiquidity = () => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       // should refacotr
       const txb = new TransactionBlock()
+      txb.setGasBudget(Number(setting.gasBudget))
 
       const quote = await quote_remove_liquidity(
         rpc,

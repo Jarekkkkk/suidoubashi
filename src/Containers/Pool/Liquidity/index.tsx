@@ -56,6 +56,7 @@ const LiquidityContainer = ({ children }: PropsWithChildren) => {
   const [coinTypeY, setCoinTypeY] = useState<CoinInterface>(Coins[1])
   const [coinInputSingle, setCoinInputSingle] = useState('')
 
+
   // find farm
   const { data: farmIds } = useGetFarmIDs()
   const { data: farmData, isLoading: isFarmDataLoading } =
