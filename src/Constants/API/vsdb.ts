@@ -8,24 +8,21 @@ import {
   getObjectId,
 } from '@mysten/sui.js'
 import { AMMState, amm_package } from './pool'
-import { VotingState } from './vote'
+import { VotingState, vote_package } from './vote'
 import { bcs_registry } from '../bcs'
+import { parseIpfsUrl } from '@/Utils/vsdb'
 
-//export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE as string
-//export const vsdb_reg = import.meta.env.VITE_VSDB_REG as string
 export const vsdb_package = import.meta.env.VITE_VSDB_PACKAGE_TESTNET as string
 export const vsdb_reg = import.meta.env.VITE_VSDB_REG_TESTNET as string
 export const vsdb_cap = import.meta.env.VITE_SDB_CAP as string
 
-export function mint_sdb(txb: TransactionBlock, address: string) {
+export const coin_list_package = import.meta.env
+  .VITE_COIN_LIST_PACKAGE as string
+export const sdb_faucet = import.meta.env.VITE_SDB_FAUCET as string
+export function mint_sdb(txb: TransactionBlock) {
   txb.moveCall({
-    target: '0x2::coin::mint_and_transfer',
-    typeArguments: [`${vsdb_package}::sdb::SDB`],
-    arguments: [
-      txb.object(vsdb_cap),
-      txb.pure(100000000000),
-      txb.pure(address),
-    ],
+    target: `${coin_list_package}::faucet::take`,
+    arguments: [txb.object(sdb_faucet)],
   })
 }
 
@@ -68,6 +65,7 @@ export async function get_vsdb(
   const { balance, level, end, experience, modules } = getObjectFields(res)
   id = getObjectId(res)
   const display = getObjectDisplay(res).data as Record<Display, string>
+  display['image_url'] = parseIpfsUrl(display['image_url'])
   // dynamic state
   const amm_state = await rpc.getDynamicFieldObject({
     parentId: id,
@@ -75,7 +73,6 @@ export async function get_vsdb(
       type: vsdb_dynamic_key(`${amm_package}::pool::VSDB`),
       value: { dummy_field: false },
     },
-    //name: df.data[0].name,
   })
   //  const voting_state = await rpc.getDynamicFieldObject({
   //    parentId: id,
