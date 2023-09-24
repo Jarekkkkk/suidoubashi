@@ -90,6 +90,8 @@ const ControlBarComponent = (props: Props) => {
           lpData.map((data, idx) => {
             const _coinXIdx = fetchIcon(data.type_x)
             const _coinYIdx = fetchIcon(data.type_y)
+
+            if (!_coinXIdx || !_coinYIdx) return
             const { lp_supply, reserve_x, reserve_y } = poolDataList.find(
               (p) => p.type_x == data.type_x && p.type_y == data.type_y,
             ) ?? { lp_supply: 0, reserve_x: 0, reserve_y: 0 }
@@ -97,23 +99,23 @@ const ControlBarComponent = (props: Props) => {
             const percentage = BigNumber(data.lp_balance).div(lp_supply)
             const x = percentage
               .multipliedBy(reserve_x)
-              .shiftedBy(-_coinXIdx!.decimals)
+              .shiftedBy(-_coinXIdx.decimals)
               .decimalPlaces(3)
               .toString()
             const y = percentage
               .multipliedBy(reserve_y)
-              .shiftedBy(-_coinYIdx!.decimals)
+              .shiftedBy(-_coinYIdx.decimals)
               .decimalPlaces(3)
               .toString()
 
             return (
               <Coincard
                 key={idx}
-                coinXIcon={_coinXIdx!.logo}
-                coinXName={_coinXIdx!.name}
+                coinXIcon={_coinXIdx.logo}
+                coinXName={_coinXIdx.name}
                 coinXValue={x}
-                coinYIcon={_coinYIdx!.logo}
-                coinYName={_coinYIdx!.name}
+                coinYIcon={_coinYIdx.logo}
+                coinYName={_coinYIdx.name}
                 coinYValue={y}
               />
             )
@@ -152,7 +154,7 @@ const ControlBarComponent = (props: Props) => {
           handleFetchNFTData={handleFetchNFTData}
         />
       )}
-      <Tabs links={tabDataKeys} styletype="default" />
+      <Tabs links={tabDataKeys} styletype='default' />
     </div>
   )
 }
