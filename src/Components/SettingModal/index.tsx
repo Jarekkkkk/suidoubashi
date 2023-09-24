@@ -1,7 +1,6 @@
 import { Dialog, Button, Input } from '@/Components'
 import Image from '@/Assets/image'
 import * as styles from './index.styles'
-import { useState } from 'react'
 import SettingModule from '@/Modules/Setting'
 import { Icon } from '@/Assets/icon'
 
