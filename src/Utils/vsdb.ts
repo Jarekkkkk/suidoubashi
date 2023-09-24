@@ -5,3 +5,8 @@ export const calculate_vesdb = (bal: string, end: string) => {
   )
   return ((BigInt(diff) * BigInt(bal)) / BigInt(14515200)).toString()
 }
+
+
+export const parseIpfsUrl = (ipfsUrl: string) =>
+  ipfsUrl.replace(/^ipfs:\/\//, 'https://ipfs.io/ipfs/')
+
