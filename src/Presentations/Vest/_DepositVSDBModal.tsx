@@ -164,7 +164,7 @@ const DepositVSDBModal = (props: Props) => {
             </div>
             <Icon.BgArrowIcon />
             <div className={cx(styles.vsdbDepositCount, styles.vsdbCountBlock)}>
-              <div>New VeSDB</div>
+              <div>~Estimated new VeSDB</div>
               <span className={styles.vsdbCountContent}>
                 {handleIncreaseSDBVesdbOnchange(input || '0')}
               </span>
