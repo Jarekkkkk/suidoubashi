@@ -15,9 +15,7 @@ import { vsdb_reg } from './vsdb'
 
 export const amm_package = import.meta.env.VITE_AMM_PACKAGE_TESTNET as string
 export const pool_reg = import.meta.env.VITE_POOL_REG_TESTNET as string
-
-export const pools_df_id =
-  '0x60211d886816e624d6860de0b15c1e1bf6daa316c0de0f41d8876a4aa643f0ec'
+export const pools_df_id = import.meta.env.VITE_POOLS_DF_ID as string
 
 export type poolReg = {
   id: ObjectId
