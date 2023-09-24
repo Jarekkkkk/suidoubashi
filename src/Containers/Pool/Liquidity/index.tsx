@@ -80,7 +80,7 @@ const LiquidityContainer = ({ children }: PropsWithChildren) => {
         walletAddress,
         poolData: poolData,
         farmData: farm,
-        fetching: isPoolDataLoading || isFarmDataLoading,
+        fetching: isPoolDataLoading,
         error,
         setError,
         coinInputX,
