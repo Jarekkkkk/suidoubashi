@@ -4,7 +4,7 @@ import { Farm, farm_reg, get_farm } from '@/Constants/API/farm'
 import { getObjectFields } from '@mysten/sui.js'
 import { useMemo } from 'react'
 
-export function useGetFarmIDs() {
+function useGetFarmIDs() {
   const rpc = useRpc()
 
   return useQuery(['get-farm-ids', farm_reg], async () => {
@@ -18,7 +18,7 @@ export function useGetFarmIDs() {
   })
 }
 
-export function useGetMulFarm(farm_ids: (undefined | string)[]) {
+function useGetMulFarm(farm_ids: (undefined | string)[]) {
   const rpc = useRpc()
   const farms = useQueries({
     queries:

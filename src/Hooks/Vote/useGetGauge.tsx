@@ -29,6 +29,7 @@ export function useGetGaugeIDs() {
     },
   )
 }
+
 export const useGetMulGauge = (gauge_ids?: (string | undefined)[]) => {
   const rpc = useRpc()
   const gauges = useQueries({
@@ -56,7 +57,7 @@ export const useGetMulGauge = (gauge_ids?: (string | undefined)[]) => {
   }, [gauges])
 }
 
-export const useGetGauge = (type_x: string, type_y: string) => {
+export const useGetGauge = (type_x?: string, type_y?: string) => {
   const { data: gauge_ids } = useGetGaugeIDs()
   const { data: gauges } = useGetMulGauge(gauge_ids)
 

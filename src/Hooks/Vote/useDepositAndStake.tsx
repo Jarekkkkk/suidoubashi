@@ -7,19 +7,19 @@ import { payCoin } from '@/Utils/payCoin'
 import { add_liquidity, create_lp } from '@/Constants/API/pool'
 import { queryClient } from '@/App'
 import { SettingInterface } from '@/Components/SettingModal'
-import { stake_all } from '@/Constants/API/farm'
+import { stake_all } from '@/Constants/API/vote'
 
 type MutationArgs = {
   pool_id: string
   pool_type_x: string
   pool_type_y: string
-  farm_id: string
+  gauge_id: string
   lp_id: string | null
   input_x_value: string
   input_y_value: string
 }
 
-const useDepoistAndStake = (setting: SettingInterface) => {
+export const useDepoistAndStake = (setting: SettingInterface) => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
@@ -29,7 +29,7 @@ const useDepoistAndStake = (setting: SettingInterface) => {
       pool_type_x,
       pool_type_y,
       lp_id,
-      farm_id,
+      gauge_id,
       input_x_value,
       input_y_value,
     }: MutationArgs) => {
@@ -72,7 +72,7 @@ const useDepoistAndStake = (setting: SettingInterface) => {
         deposit_y_min,
       )
 
-      stake_all(txb, farm_id, pool_id, pool_type_x, pool_type_y, lp)
+      stake_all(txb, gauge_id, pool_id, pool_type_x, pool_type_y, lp)
 
       // return id first time deposit
       if (lp_id == null) {
@@ -92,8 +92,8 @@ const useDepoistAndStake = (setting: SettingInterface) => {
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['pool', params.pool_id])
       queryClient.invalidateQueries(['LP'])
-      queryClient.invalidateQueries(['farm', params.farm_id])
-      queryClient.invalidateQueries(['stake-balance', params.farm_id])
+      queryClient.invalidateQueries(['gauge', params.gauge_id])
+      queryClient.invalidateQueries(['stake',params.gauge_id])
       toast.success('Add Liquidity and Stake Success!')
     },
     onError: (_err: Error) => {

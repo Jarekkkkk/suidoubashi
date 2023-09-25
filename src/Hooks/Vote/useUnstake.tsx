@@ -2,18 +2,19 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { TransactionBlock, getExecutionStatus } from '@mysten/sui.js'
-import { stake_all } from '@/Constants/API/farm'
 import { toast } from 'react-hot-toast'
+import { unstake_all } from '@/Constants/API/vote'
+import { SettingInterface } from '@/Components/SettingModal'
 
-type StakeFarmMutationArgs = {
+type UnstakeArgs = {
   pool_id: string
   pool_type_x: string
   pool_type_y: string
-  farm_id: string
+  gauge_id: string
   lp_id: string
 }
 
-const useStakeFarm = () => {
+export const useUnStake = (setting: SettingInterface) => {
   const rpc = useRpc()
   const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
@@ -23,13 +24,14 @@ const useStakeFarm = () => {
       pool_id,
       pool_type_x,
       pool_type_y,
-      farm_id,
+      gauge_id,
       lp_id,
-    }: StakeFarmMutationArgs) => {
+    }: UnstakeArgs) => {
       if (!currentAccount) throw new Error('no Wallet Account')
 
       const txb = new TransactionBlock()
-      stake_all(txb, farm_id, pool_id, pool_type_x, pool_type_y, txb.object(lp_id))
+      txb.setGasBudget(Number(setting.gasBudget))
+      unstake_all(txb, gauge_id, pool_id, pool_type_x, pool_type_y, lp_id)
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
@@ -40,11 +42,12 @@ const useStakeFarm = () => {
       if (getExecutionStatus(res)?.status == 'failure')
         throw new Error('Tx Failed')
     },
-    onSuccess: (_,params) => {
+    onSuccess: (_, params) => {
+      queryClient.invalidateQueries(['pool', params.pool_id])
       queryClient.invalidateQueries(['LP'])
-      queryClient.invalidateQueries(['farm',params.farm_id])
-      queryClient.invalidateQueries(['stake-balance',params.farm_id])
-      toast.success('Stake Liquidity Successfully')
+      queryClient.invalidateQueries(['farm', params.gauge_id])
+      queryClient.invalidateQueries(['stake-balance', params.gauge_id])
+      toast.success('Unstake Liquidity Successfully')
     },
     onError: (err) => {
       console.log(err)

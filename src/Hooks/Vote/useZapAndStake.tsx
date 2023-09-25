@@ -12,7 +12,7 @@ import {
   zap_y,
 } from '@/Constants/API/pool'
 import { SettingInterface } from '@/Components/SettingModal'
-import { stake_all } from '@/Constants/API/farm'
+import { stake_all } from '@/Constants/API/vote'
 
 type MutationArgs = {
   pool_id: string
@@ -22,13 +22,13 @@ type MutationArgs = {
   reserve_y: string
   stable: boolean
   fee: string
-  farm_id: string
+  gauge_id: string
   lp_id: string | null
   input_type: string
   input_value: string
 }
 
-const useZapAndStake = (setting: SettingInterface) => {
+export const useZapAndStake = (setting: SettingInterface) => {
   const rpc = useRpc()
   const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
@@ -42,7 +42,7 @@ const useZapAndStake = (setting: SettingInterface) => {
       reserve_y,
       stable,
       fee,
-      farm_id,
+      gauge_id,
       lp_id,
       input_type,
       input_value,
@@ -112,7 +112,7 @@ const useZapAndStake = (setting: SettingInterface) => {
         )
       }
       //stake
-      stake_all(txb, farm_id, pool_id, pool_type_x, pool_type_y, lp)
+      stake_all(txb, gauge_id, pool_id, pool_type_x, pool_type_y, lp)
 
       if (lp_id == null) {
         txb.transferObjects([lp], txb.pure(currentAccount.address))
@@ -132,8 +132,8 @@ const useZapAndStake = (setting: SettingInterface) => {
       queryClient.invalidateQueries(['LP'])
       queryClient.invalidateQueries(['balance'])
       queryClient.invalidateQueries(['pool', params.pool_id])
-      queryClient.invalidateQueries(['farm', params.farm_id])
-      queryClient.invalidateQueries(['stake-balance', params.farm_id])
+      queryClient.invalidateQueries(['gauge', params.gauge_id])
+      queryClient.invalidateQueries(['stake',params.gauge_id])
       toast.success('Success!')
     },
     onError: (_err: Error) => {
