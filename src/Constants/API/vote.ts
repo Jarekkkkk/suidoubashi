@@ -47,6 +47,12 @@ export type Gauge = {
   total_stakes: string
 }
 
+export type Stake = {
+  type_x: string
+  type_y: string
+  stakes: string
+}
+
 export type Bribe = {
   id: ObjectId
   version: string
