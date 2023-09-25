@@ -174,7 +174,7 @@ const DepositVSDBModal = (props: Props) => {
           <div className={styles.vsdbModalbutton}>
             <Button
               disabled={!!error}
-              isLoading={incrase_amount_isLoading}
+              isloading={incrase_amount_isLoading? 1 : 0}
               text='Increase SDB'
               styletype='filled'
               onClick={handleIncreaseAmount}
@@ -237,7 +237,7 @@ const DepositVSDBModal = (props: Props) => {
                 <div className={styles.vsdbModalbutton}>
                   <Button
                     disabled={!!error}
-                    isLoading={increase_unlock_time_isLoading}
+                    isloading={increase_unlock_time_isLoading? 1 : 0}
                     text='Increase Duration'
                     styletype='filled'
                     onClick={handleIncreaseDuration}

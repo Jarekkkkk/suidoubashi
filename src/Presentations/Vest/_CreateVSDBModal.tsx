@@ -166,7 +166,7 @@ const CreateVSDBModal = (props: Props) => {
       <div className={styles.vsdbModalbutton}>
         <Button
           disabled={!!error}
-          isLoading={isLoading}
+          isloading={isLoading? 1 : 0}
           text='Lock'
           styletype='filled'
           onClick={handleLock}

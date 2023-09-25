@@ -10,12 +10,12 @@ interface Props {
   disabled?: boolean,
   small?: boolean, // small
   medium?: boolean, // medium
-  isLoading?: boolean,
+  isloading?: number,
 }
 
 const BasicButton = (props: Props) => {
   const {
-    styletype, text, onClick, icon, small, isLoading, disabled, medium,
+    styletype, text, onClick, icon, small, isloading, disabled, medium,
   } = props;
 
   return (
@@ -31,11 +31,11 @@ const BasicButton = (props: Props) => {
           [styles.mediumButton]: medium,
         },
       )}
-      disabled={isLoading || disabled}
+      disabled={!!isloading || disabled}
     >
       {icon && icon}
       {text && <p>{text}</p>}
-      {isLoading && <Spinner />}
+      {!!isloading && <Spinner />}
     </button>
   );
 }
