@@ -46,35 +46,11 @@ const Table = (props: TableProps) => {
         <tbody>
           {renderRow.map(
             (row: {
-              id: Key | null | undefined
-              map: (
-                arg0: (rowValue: any) => JSX.Element,
-              ) =>
-                | string
-                | number
-                | boolean
-                | ReactElement<any, string | JSXElementConstructor<any>>
-                | Iterable<ReactNode>
-                | ReactPortal
-                | null
-                | undefined
-            }) => (
-              <tr key={row.id}>
-                {row.map(
-                  (
-                    rowValue:
-                      | string
-                      | number
-                      | boolean
-                      | ReactElement<any, string | JSXElementConstructor<any>>
-                      | Iterable<ReactNode>
-                      | ReactPortal
-                      | null
-                      | undefined,
-                  ) => (
-                    <td key={row.id}>{rowValue}</td>
-                  ),
-                )}
+              id: Key | null | undefined,
+              map(arg0: (rowValue: any, idx: any) => JSX.Element): ReactNode,
+            }, idx: Key | null | undefined) => (
+              <tr key={idx}>
+                {row.map((rowValue, idx) => <td key={idx}>{rowValue}</td>)}
               </tr>
             ),
           )}
