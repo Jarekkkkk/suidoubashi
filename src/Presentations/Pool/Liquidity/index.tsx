@@ -23,14 +23,14 @@ import { useAddLiquidity } from '@/Hooks/AMM/useAddLiquidity'
 import { useRemoveLiquidity } from '@/Hooks/AMM/useRemoveLiquidity'
 import { useGetLP } from '@/Hooks/AMM/useGetLP'
 import { useZap } from '@/Hooks/AMM/useZap'
-import { useStakeFarm } from '@/Hooks/Farm/useStake'
-import { useGetStake } from '@/Hooks/Farm/useGetStake'
-import { useUnStakeFarm } from '@/Hooks/Farm/useUnstake'
-import { useDepoistAndStake } from '@/Hooks/Farm/useDepositAndStake'
-import { useZapAndStake } from '@/Hooks/Farm/useZapAndStake'
-import { useUnStakeAndWithdraw } from '@/Hooks/Farm/useUnstakeAndWithdraw'
 import { lp_position } from '@/Utils/pool'
 import { usePageContext } from '@/Components/Page'
+import { useDepoistAndStake } from '@/Hooks/Vote/useDepositAndStake'
+import { useUnStakeAndWithdraw } from '@/Hooks/Vote/useUnstakeAndWithdraw'
+import { useGetStake } from '@/Hooks/Vote/useGetStake'
+import { useStake } from '@/Hooks/Vote/useStake'
+import { useUnStake } from '@/Hooks/Vote/useUnstake'
+import { useZapAndStake } from '@/Hooks/Vote/useZapAndStake'
 
 const LiquidityPresentation = () => {
   const {
@@ -39,7 +39,7 @@ const LiquidityPresentation = () => {
     fetching,
     error,
     setError,
-    farmData: farm,
+    gaugeData,
     coinInputX,
     coinTypeX,
     coinInputY,
@@ -50,7 +50,7 @@ const LiquidityPresentation = () => {
     setCoinInputSingle,
   } = useContext(LiquidityContext)
 
-  const {setting} = usePageContext()
+  const { setting } = usePageContext()
 
   const [isDepositSingle, setIsDepositSingle] = useState(false)
   const [singleType, setSingleType] = useState(coinTypeX)
@@ -165,12 +165,12 @@ const LiquidityPresentation = () => {
 
   const deposit_and_stake = useDepoistAndStake(setting)
   const handleDepositAndStake = () => {
-    if (poolData && farm) {
+    if (poolData && gaugeData) {
       deposit_and_stake.mutate({
         pool_id: poolData.id,
         pool_type_x: poolData.type_x,
         pool_type_y: poolData.type_y,
-        farm_id: farm.id,
+        gauge_id: gaugeData.id,
         lp_id: lp ? lp.id : null,
         input_x_value: (
           Number(coinInputX) *
@@ -186,7 +186,7 @@ const LiquidityPresentation = () => {
 
   const zap_and_stake = useZapAndStake(setting)
   const handleZapAndStake = () => {
-    if (poolData && farm) {
+    if (poolData && gaugeData) {
       const {
         id,
         type_x,
@@ -204,7 +204,7 @@ const LiquidityPresentation = () => {
         reserve_y: reserve_y,
         stable,
         fee: fee_percentage,
-        farm_id: farm.id,
+        gauge_id: gaugeData.id,
         lp_id: lp ? lp.id : null,
         input_type: singleType.type,
         input_value: (
@@ -228,14 +228,14 @@ const LiquidityPresentation = () => {
     }
   }
 
-  const unstake_and_withdraw = useUnStakeAndWithdraw()
+  const unstake_and_withdraw = useUnStakeAndWithdraw(setting)
   const handleUnstakeAndWithdraw = () => {
-    if (poolData && lp && farm) {
+    if (poolData && lp && gaugeData) {
       unstake_and_withdraw.mutate({
         pool_id: poolData.id,
         pool_type_x: poolData.type_x,
         pool_type_y: poolData.type_y,
-        farm_id: farm.id,
+        gauge_id: gaugeData?.id,
         lp_id: lp.id,
         withdrawl: lp.lp_balance,
       })
@@ -243,31 +243,31 @@ const LiquidityPresentation = () => {
   }
 
   const { data: stake_bal } = useGetStake(
-    farm?.id,
-    farm?.type_x,
-    farm?.type_y,
+    gaugeData?.id,
+    gaugeData?.type_x,
+    gaugeData?.type_y,
     lp?.id,
   )
 
-  const stake = useStakeFarm()
+  const stake = useStake(setting)
   const handleStake = () => {
-    if (poolData && lp && farm) {
+    if (poolData && lp && gaugeData) {
       stake.mutate({
         pool_id: poolData.id,
-        farm_id: farm.id,
-        pool_type_x: farm.type_x,
-        pool_type_y: farm.type_y,
+        gauge_id: gaugeData.id,
+        pool_type_x: gaugeData.type_x,
+        pool_type_y: gaugeData.type_y,
         lp_id: lp.id,
       })
     }
   }
 
-  const unstake = useUnStakeFarm()
+  const unstake = useUnStake(setting)
   const handleUnstake = () => {
-    if (poolData && lp && farm) {
+    if (poolData && lp && gaugeData) {
       unstake.mutate({
         pool_id: poolData.id,
-        farm_id: farm.id,
+        gauge_id: gaugeData.id,
         pool_type_x: poolData.type_x,
         pool_type_y: poolData.type_y,
         lp_id: lp.id,
@@ -277,7 +277,7 @@ const LiquidityPresentation = () => {
 
   useEffect(() => {
     setSingleType(coinTypeX)
-  }, [isDepositSingle]);
+  }, [isDepositSingle])
 
   if (fetching) {
     return (
@@ -509,7 +509,7 @@ const LiquidityPresentation = () => {
                       />
                       <Button
                         styletype='filled'
-                        disabled={!farm}
+                        disabled={!gaugeData}
                         text='Deposit & Stake'
                         onClick={() => handleDepositAndStake()}
                       />
@@ -543,9 +543,9 @@ const LiquidityPresentation = () => {
                           <Icon.SwapIcon
                             onClick={() => {
                               if (singleType.type === coinTypeX.type) {
-                                setSingleType(coinTypeY);
+                                setSingleType(coinTypeY)
                               } else {
-                                setSingleType(coinTypeX);
+                                setSingleType(coinTypeX)
                               }
                             }}
                           />
@@ -588,7 +588,7 @@ const LiquidityPresentation = () => {
                       onClick={() => handleZap()}
                     />
                     <Button
-                      disabled={!farm}
+                      disabled={!gaugeData}
                       styletype='filled'
                       text='Zap & Stake'
                       onClick={() => handleZapAndStake()}
@@ -658,7 +658,7 @@ const LiquidityPresentation = () => {
                   styletype='filled'
                   text='Stake'
                   onClick={() => handleStake()}
-                  disabled={!farm || (lp?.lp_balance ?? '0') == '0'}
+                  disabled={!gaugeData || (lp?.lp_balance ?? '0') == '0'}
                 />
               </div>
             </div>
@@ -739,7 +739,7 @@ const LiquidityPresentation = () => {
                   styletype='filled'
                   text='Unstake & Withdraw'
                   onClick={() => handleUnstakeAndWithdraw()}
-                  disabled={parseInt(stake_bal ?? '0') == 0 || !farm}
+                  disabled={parseInt(stake_bal ?? '0') == 0 || !gaugeData}
                 />
               </div>
             </div>
