@@ -14,7 +14,7 @@ import { LiquidityContext } from '@/Containers/Pool/Liquidity'
 import { Icon } from '@/Assets/icon'
 import Image from '@/Assets/image'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
-import { formatBalance } from '@/Utils/format'
+import { CoinFormat, formatBalance } from '@/Utils/format'
 import { regexNumber } from '@/Constants/index'
 
 import * as styles from './index.styles'
@@ -677,7 +677,7 @@ const LiquidityPresentation = () => {
               <div
                 className={cx(constantsStyles.boldText, styles.textMarginLeft)}
               >
-                {stake_bal ?? '0.00'}
+                {formatBalance(stake_bal ?? '0', 9, CoinFormat.FULL)}
               </div>
             </div>
             <div className={styles.coinContent}>
