@@ -3,7 +3,7 @@ import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { TransactionBlock, getExecutionStatus } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
-import { unstake_all } from '@/Constants/API/vote'
+import { unstake, unstake_all } from '@/Constants/API/vote'
 import { SettingInterface } from '@/Components/SettingModal'
 
 type UnstakeArgs = {
@@ -12,6 +12,7 @@ type UnstakeArgs = {
   pool_type_y: string
   gauge_id: string
   lp_id: string
+  value: string
 }
 
 export const useUnStake = (setting: SettingInterface) => {
@@ -26,12 +27,13 @@ export const useUnStake = (setting: SettingInterface) => {
       pool_type_y,
       gauge_id,
       lp_id,
+      value
     }: UnstakeArgs) => {
       if (!currentAccount) throw new Error('no Wallet Account')
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
-      unstake_all(txb, gauge_id, pool_id, pool_type_x, pool_type_y, lp_id)
+      unstake(txb, gauge_id, pool_id, pool_type_x, pool_type_y, lp_id, value)
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
@@ -46,7 +48,7 @@ export const useUnStake = (setting: SettingInterface) => {
       queryClient.invalidateQueries(['pool', params.pool_id])
       queryClient.invalidateQueries(['LP'])
       queryClient.invalidateQueries(['farm', params.gauge_id])
-      queryClient.invalidateQueries(['stake-balance', params.gauge_id])
+      queryClient.invalidateQueries(['stake', params.gauge_id])
       toast.success('Unstake Liquidity Successfully')
     },
     onError: (err) => {

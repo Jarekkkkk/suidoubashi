@@ -39,7 +39,6 @@ export const useStake = (setting: SettingInterface) => {
         pool_type_y,
         txb.object(lp_id),
       )
-
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,

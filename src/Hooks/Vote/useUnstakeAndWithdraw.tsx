@@ -4,7 +4,7 @@ import { useWalletKit } from '@mysten/wallet-kit'
 import { TransactionBlock, getExecutionStatus } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { quote_remove_liquidity, remove_liquidity } from '@/Constants/API/pool'
-import { unstake_all } from '@/Constants/API/vote'
+import { unstake, unstake_all } from '@/Constants/API/vote'
 import { SettingInterface } from '@/Components/SettingModal'
 
 type MutationArgs = {
@@ -34,7 +34,7 @@ export const useUnStakeAndWithdraw = (setting:SettingInterface) => {
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
-      unstake_all(txb, gauge_id, pool_id, pool_type_x, pool_type_y, lp_id)
+      unstake(txb, gauge_id, pool_id, pool_type_x, pool_type_y, lp_id, withdrawl)
       const quote = await quote_remove_liquidity(
         rpc,
         currentAccount.address,
