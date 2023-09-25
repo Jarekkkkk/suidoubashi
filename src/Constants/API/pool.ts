@@ -13,7 +13,6 @@ import {
 import { bcs_registry } from '../bcs'
 import { sqrt } from '@/Utils/bigint_math'
 import { vsdb_reg } from './vsdb'
-import { normalize } from 'path'
 
 export const amm_package = import.meta.env.VITE_AMM_PACKAGE_TESTNET as string
 export const pool_reg = import.meta.env.VITE_POOL_REG_TESTNET as string

@@ -3,16 +3,23 @@ import {
   ObjectId,
   SUI_CLOCK_OBJECT_ID,
   SUI_TYPE_ARG,
+  SuiAddress,
   TransactionBlock,
   getObjectFields,
   getObjectType,
   isValidSuiObjectId,
+  normalizeStructTag,
   normalizeSuiObjectId,
 } from '@mysten/sui.js'
 
 import { Vsdb, vsdb_package } from './vsdb'
+import { bcs_registry } from '../bcs'
 
 export const vote_package = import.meta.env.VITE_VOTE_PACKAGE as string
+export const gauges_df_id = import.meta.env.VITE_GAUGES_DF_ID as string
+export const pool_weights_df_id = import.meta.env
+  .VITE_POOL_WEIGHTS_DF_ID as string
+export const voter = import.meta.env.VITE_VOTER_TESTNET as string
 
 // Options for rpc calling
 export const defaultOptions = {
@@ -25,24 +32,19 @@ export const defaultOptions = {
 }
 
 export type Voter = {
-  id: ObjectId
-  version: string
-  balance: string
+  id: string
   total_weight: string
-  pool_weights: { pooL_id: ObjectId; weight: string }[]
-  registry: {
-    pool_id: ObjectId
-    members: { gauge: ObjectId; bribe: ObjectId; rewards: ObjectId }
-  }[]
+  pool_weights: { pool_id: ObjectId; weight: string }[]
 }
 
 export type Gauge = {
-  id: ObjectId
-  version: string
+  id: string
   type_x: string
   type_y: string
   is_alive: boolean
-  pool: ObjectId
+  pool: string
+  bribe: string
+  rewards: string
   total_stakes: string
 }
 
@@ -77,47 +79,26 @@ export async function get_voter(
   if (!isValidSuiObjectId(id)) return null
 
   const voter = await rpc.getObject({ id, options: defaultOptions })
-  const fields = getObjectFields(voter)
-
-  if (!fields) return null
+  const { total_weight } = getObjectFields(voter) as any
 
   // pool_weights
-  const registry_df_id = normalizeSuiObjectId(fields.registry.fields.id.id)
-  const pool_weights_df_id = normalizeSuiObjectId(fields.weights.fields.id.id)
   const pools_ = await rpc.getDynamicFields({
-    parentId: registry_df_id,
+    parentId: pool_weights_df_id,
   })
-
-  const registry_promises = pools_.data.map((df) =>
-    rpc.getDynamicFieldObject({ parentId: registry_df_id, name: df.name }),
-  )
   const weights_promises = pools_.data.map((df) =>
     rpc.getDynamicFieldObject({ parentId: pool_weights_df_id, name: df.name }),
   )
 
-  const registry = (await Promise.all(registry_promises)).map((pool) => {
-    const data = getObjectFields(pool)
-    if (!data) return null
-    return {
-      pool_id: data.name,
-      members: {
-        gauge: data.value.fields.contents[0],
-        bribe: data.value.fields.contents[1],
-        rewards: data.value.fields.contents[2],
-      },
-    }
-  })
   const pool_weights = (await Promise.all(weights_promises)).map((pool) => {
     const data = getObjectFields(pool)
     if (!data) return null
-    return { pooL_id: data.name, weight: data.value }
+    return { pool_id: data.name, weight: data.value }
   })
 
   return {
-    ...fields,
-    id: fields.id.id,
+    id,
+    total_weight,
     pool_weights,
-    registry,
   } as Voter
 }
 
@@ -127,12 +108,12 @@ export async function get_gauge(
 ): Promise<Gauge | null> {
   if (!isValidSuiObjectId(id)) return null
 
-  const bribe = await rpc.getObject({ id, options: defaultOptions })
-  const fields = getObjectFields(bribe)
+  const gauge = await rpc.getObject({ id, options: defaultOptions })
+  const { bribe, rewards, pool, total_stakes, is_alive } = getObjectFields(
+    gauge,
+  ) as any
 
-  if (!fields) return null
-
-  const objectType = fields ? getObjectType(fields!) : null
+  const objectType = getObjectType(gauge)
 
   const [X, Y] =
     objectType
@@ -141,9 +122,14 @@ export async function get_gauge(
       .map((t) => t.trim()) ?? []
 
   return {
-    ...fields,
-    type_x: X,
-    type_y: Y,
+    id,
+    type_x: normalizeStructTag(X),
+    type_y: normalizeStructTag(Y),
+    is_alive,
+    pool,
+    bribe,
+    rewards,
+    total_stakes: total_stakes.fields.lp_balance,
   } as Gauge
 }
 
@@ -281,4 +267,31 @@ export async function vote(
     target: `${vote_package}::voter::vote_exit`,
     arguments: [potato, txb.object(voter.id), txb.object(vsdb.id)],
   })
+}
+
+export async function pool_weights(
+  rpc: JsonRpcProvider,
+  sender: SuiAddress,
+  pool: string,
+  gauge_type_x: string,
+  gauge_type_y: string,
+): Promise<string> {
+  let txb = new TransactionBlock()
+  txb.moveCall({
+    target: `${vote_package}::pool::get_output`,
+    typeArguments: [gauge_type_x, gauge_type_y],
+    arguments: [txb.object(voter), txb.object(pool)],
+  })
+  let res = await rpc.devInspectTransactionBlock({
+    sender,
+    transactionBlock: txb,
+  })
+  const returnValue = res?.results?.[0]?.returnValues?.[0]
+  if (!returnValue) {
+    return '0'
+  } else {
+    const valueType = returnValue[1].toString()
+    const valueData = Uint8Array.from(returnValue[0] as Iterable<number>)
+    return bcs_registry.de(valueType, valueData, 'hex')
+  }
 }
