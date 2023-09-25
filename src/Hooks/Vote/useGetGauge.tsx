@@ -1,4 +1,3 @@
-import { get_pool } from '@/Constants/API/pool'
 import { getObjectFields } from '@mysten/sui.js'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
@@ -30,8 +29,9 @@ export function useGetGaugeIDs() {
   )
 }
 
-export const useGetMulGauge = (gauge_ids?: (string | undefined)[]) => {
+export const useGetMulGauge = () => {
   const rpc = useRpc()
+  const {data: gauge_ids} = useGetGaugeIDs()
   const gauges = useQueries({
     queries:
       gauge_ids?.map((id) => {
