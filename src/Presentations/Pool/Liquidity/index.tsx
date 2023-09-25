@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { cx, css } from '@emotion/css'
 
@@ -48,13 +48,13 @@ const LiquidityPresentation = () => {
     setCoinInputX,
     setCoinInputY,
     setCoinInputSingle,
-    setCoinTypeX,
-    setCoinTypeY,
   } = useContext(LiquidityContext)
 
   const {setting} = usePageContext()
 
   const [isDepositSingle, setIsDepositSingle] = useState(false)
+  const [singleType, setSingleType] = useState(coinTypeX)
+  const singleTypeBalance = useGetBalance(singleType.type, walletAddress)
   const coinTypeXBalance = useGetBalance(coinTypeX.type, walletAddress)
   const coinTypeYBalance = useGetBalance(coinTypeY.type, walletAddress)
 
@@ -154,10 +154,10 @@ const LiquidityPresentation = () => {
         stable,
         fee: fee_percentage,
         lp_id: lp ? lp.id : null,
-        input_type: coinTypeX.type,
+        input_type: singleType.type,
         input_value: (
           Number(coinInputSingle) *
-          10 ** coinTypeX.decimals
+          10 ** singleType.decimals
         ).toString(),
       })
     }
@@ -206,10 +206,10 @@ const LiquidityPresentation = () => {
         fee: fee_percentage,
         farm_id: farm.id,
         lp_id: lp ? lp.id : null,
-        input_type: coinTypeX.type,
+        input_type: singleType.type,
         input_value: (
           Number(coinInputSingle) *
-          10 ** coinTypeX.decimals
+          10 ** singleType.decimals
         ).toString(),
       })
     }
@@ -248,7 +248,7 @@ const LiquidityPresentation = () => {
     farm?.type_y,
     lp?.id,
   )
-  console.log('stake', stake_bal)
+
   const stake = useStakeFarm()
   const handleStake = () => {
     if (poolData && lp && farm) {
@@ -274,7 +274,12 @@ const LiquidityPresentation = () => {
       })
     }
   }
-  if (fetching)
+
+  useEffect(() => {
+    setSingleType(coinTypeX)
+  }, [isDepositSingle]);
+
+  if (fetching) {
     return (
       <PageContainer title='Liquidity' titleImg={Image.pageBackground_1}>
         <div className={constantsStyles.LoadingContainer}>
@@ -282,6 +287,7 @@ const LiquidityPresentation = () => {
         </div>
       </PageContainer>
     )
+  }
 
   return (
     <PageContainer
@@ -523,21 +529,24 @@ const LiquidityPresentation = () => {
                   <div className={styles.inputContent}>
                     <InputSection
                       balance={
-                        coinTypeXBalance
+                        singleTypeBalance
                           ? formatBalance(
-                              coinTypeXBalance.totalBalance,
-                              coinTypeX.decimals,
+                              singleTypeBalance.totalBalance,
+                              singleType.decimals,
                             )
                           : '...'
                       }
                       titleChildren={
                         <div>
-                          {coinTypeX.logo}
-                          <span>{coinTypeX.name}</span>
+                          {singleType.logo}
+                          <span>{singleType.name}</span>
                           <Icon.SwapIcon
                             onClick={() => {
-                              setCoinTypeX(coinTypeY)
-                              setCoinTypeY(coinTypeX)
+                              if (singleType.type === coinTypeX.type) {
+                                setSingleType(coinTypeY);
+                              } else {
+                                setSingleType(coinTypeX);
+                              }
                             }}
                           />
                         </div>
@@ -547,12 +556,12 @@ const LiquidityPresentation = () => {
                           <Input
                             value={coinInputSingle}
                             onChange={(e) => {
-                              if (coinTypeXBalance?.totalBalance) {
+                              if (singleTypeBalance?.totalBalance) {
                                 handleOnCoinInputSingleChange(e)
                                 if (
                                   parseFloat(e.target.value) *
-                                    Math.pow(10, coinTypeX.decimals) >
-                                  Number(coinTypeXBalance.totalBalance)
+                                    Math.pow(10, singleType.decimals) >
+                                  Number(singleTypeBalance.totalBalance)
                                 ) {
                                   setError('Insufficient Balance')
                                 } else {
@@ -560,7 +569,7 @@ const LiquidityPresentation = () => {
                                 }
                               }
                             }}
-                            placeholder={`${coinTypeX.name} Value`}
+                            placeholder={`${singleType.name} Value`}
                             // disabled={isLoading}
                           />
                         </>
