@@ -1,12 +1,17 @@
-import { PaginatedCoins, SUI_TYPE_ARG, TransactionBlock } from '@mysten/sui.js'
+import {
+  PaginatedCoins,
+  SUI_TYPE_ARG,
+  TransactionBlock,
+  normalizeStructTag,
+} from '@mysten/sui.js'
 export function payCoin(
   txb: TransactionBlock,
   coins: PaginatedCoins,
   value: string,
-  coinType: string
+  coinType: string,
 ) {
   let fundingCoin: ReturnType<TransactionBlock['splitCoins']>
-  if (coinType == SUI_TYPE_ARG) {
+  if (coinType == normalizeStructTag(SUI_TYPE_ARG)) {
     fundingCoin = txb.splitCoins(txb.gas, [txb.pure(value)])
   } else {
     const [firstCoin, ...otherCoins] = coins.data

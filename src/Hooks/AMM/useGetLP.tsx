@@ -1,7 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { LP, amm_package } from '@/Constants/API/pool'
-import { getObjectFields, getObjectType } from '@mysten/sui.js'
+import {
+  getObjectFields,
+  getObjectType,
+  normalizeStructTag,
+} from '@mysten/sui.js'
 import { useMemo } from 'react'
 
 export const useGetLP = (
@@ -48,8 +52,8 @@ export const useGetAllLP = (address?: string | null) => {
 
         return {
           id: id.id,
-          type_x: X,
-          type_y: Y,
+          type_x: normalizeStructTag(X),
+          type_y: normalizeStructTag(Y),
           lp_balance: lp_balance,
           claimable_x,
           claimable_y,

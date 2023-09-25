@@ -616,7 +616,7 @@ const LiquidityPresentation = () => {
                         lp.lp_balance,
                         coinTypeX.decimals,
                       )
-                    : '...'}
+                    : '0.00'}
                 </div>
               </div>
               <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
@@ -634,14 +634,14 @@ const LiquidityPresentation = () => {
                         lp.lp_balance,
                         coinTypeY.decimals,
                       )
-                    : '...'}
+                    : '0.00'}
                 </div>
               </div>
               <div className={styles.buttonContent}>
                 <Button
                   styletype='filled'
                   text='Withdraw'
-                  disabled={parseInt(stake_bal ?? '0') == 0}
+                  disabled={parseInt(lp?.lp_balance ?? '0') == 0}
                   onClick={() => handleWithdraw()}
                 />
                 <Button
@@ -669,7 +669,7 @@ const LiquidityPresentation = () => {
               <div
                 className={cx(constantsStyles.boldText, styles.textMarginLeft)}
               >
-                {stake_bal ?? '...'}
+                {stake_bal ?? '0.00'}
               </div>
             </div>
             <div className={styles.coinContent}>
@@ -688,7 +688,7 @@ const LiquidityPresentation = () => {
                         stake_bal,
                         coinTypeX.decimals,
                       )
-                    : '...'}
+                    : '0.00'}
                 </div>
               </div>
               <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
@@ -706,7 +706,7 @@ const LiquidityPresentation = () => {
                         stake_bal,
                         coinTypeY.decimals,
                       )
-                    : '...'}
+                    : '0.00'}
                 </div>
               </div>
               <div className={styles.infoContent}>
