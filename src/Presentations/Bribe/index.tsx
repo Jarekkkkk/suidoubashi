@@ -109,29 +109,27 @@ const BribePresentation = () => {
 							}
 						/>
 					</div>
-					<div>
-						<div className={styles.coinBlock}>
-							{
-								_coinList.map((coin) => {
-									const _coinData = coinData?.filter(((item: { coinName: string }) => item.coinName === coin.text))[0];
-									const _coinIdx = coinData && fetchIcon(coinData.coinType);
+					<div className={styles.coinBlock}>
+						{
+							_coinList.map((coin) => {
+								const _coinData = coinData?.filter(((item: { coinName: string }) => item.coinName === coin.text))[0];
+								const _coinIdx = coinData && fetchIcon(coinData.coinType);
 
-									return (
-										<Button
-											onClick={() => {
-												setCoinType(_coinIdx);
-												setIsShow(false);
-											}}
-											styletype="outlined"
-											text={coin.text}
-											icon={coin.icon}
-											key={coin.id}
-											disabled={!_coinData}
-											medium
-										/>
-								)})
-							}
-						</div>
+								return (
+									<Button
+										onClick={() => {
+											setCoinType(_coinIdx);
+											setIsShow(false);
+										}}
+										styletype="outlined"
+										text={coin.text}
+										icon={coin.icon}
+										key={coin.id}
+										disabled={!_coinData}
+										medium
+									/>
+							)})
+						}
 					</div>
 					<div className={css({ marginTop: 'auto' })}>
 						<Button

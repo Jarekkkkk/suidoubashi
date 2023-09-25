@@ -32,7 +32,9 @@ export const arrowButton = css`
 `
 
 export const inputContent = css`
-  margin-top: 30px;
+  margin: 30px auto 0;
+  width: 100%;
+  max-width: 400px;
 
   span {
     display: flex;
@@ -61,18 +63,6 @@ export const slognContent = css`
 export const coinButton = css`
   display: flex;
   align-items: center;
-  cursor: pointer;
-
-  &:after {
-    content: '';
-    display: flex;
-    width: 0;
-    height: 0;
-    margin: 5px;
-    border-top: 10px solid var(--DarkGrey);
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-  }
 `
 
 export const arrowDownIcon = css`
@@ -105,6 +95,7 @@ export const coinBlock = css`
   justify-content: space-between;
   margin: 0 auto;
   max-width: 400px;
+  width: 100%;
   padding: 28px 0;
 `
 
