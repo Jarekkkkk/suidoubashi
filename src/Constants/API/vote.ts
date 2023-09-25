@@ -9,7 +9,6 @@ import {
   getObjectType,
   isValidSuiObjectId,
   normalizeStructTag,
-  normalizeSuiObjectId,
 } from '@mysten/sui.js'
 
 import { Vsdb, vsdb_package } from './vsdb'
@@ -281,6 +280,73 @@ export async function pool_weights(
     target: `${vote_package}::pool::get_output`,
     typeArguments: [gauge_type_x, gauge_type_y],
     arguments: [txb.object(voter), txb.object(pool)],
+  })
+  let res = await rpc.devInspectTransactionBlock({
+    sender,
+    transactionBlock: txb,
+  })
+  const returnValue = res?.results?.[0]?.returnValues?.[0]
+  if (!returnValue) {
+    return '0'
+  } else {
+    const valueType = returnValue[1].toString()
+    const valueData = Uint8Array.from(returnValue[0] as Iterable<number>)
+    return bcs_registry.de(valueType, valueData, 'hex')
+  }
+}
+
+export function stake_all(
+  txb: TransactionBlock,
+  gauge_id: string,
+  pool_id: string,
+  gauge_type_x: string,
+  gauge_type_y: string,
+  lp: any,
+) {
+  txb.moveCall({
+    target: `${vote_package}::gauge::stake_all`,
+    typeArguments: [gauge_type_x, gauge_type_y],
+    arguments: [
+      txb.object(gauge_id),
+      txb.object(pool_id),
+      lp,
+      txb.object(SUI_CLOCK_OBJECT_ID),
+    ],
+  })
+}
+
+export function unstake_all(
+  txb: TransactionBlock,
+  gauge_id: string,
+  pool_id: string,
+  gauge_type_x: string,
+  gauge_type_y: string,
+  lp: string,
+) {
+  txb.moveCall({
+    target: `${vote_package}::gauge::unstake_all`,
+    typeArguments: [gauge_type_x, gauge_type_y],
+    arguments: [
+      txb.object(gauge_id),
+      txb.object(pool_id),
+      txb.object(lp),
+      txb.object(SUI_CLOCK_OBJECT_ID),
+    ],
+  })
+}
+
+export async function get_stake_balance(
+  rpc: JsonRpcProvider,
+  sender: SuiAddress,
+  farm: string,
+  type_x: string,
+  type_y: string,
+): Promise<string> {
+  let txb = new TransactionBlock()
+  txb.moveCall({
+    target: `${vote_package}::gauge::lp_stakes`,
+    typeArguments: [type_x, type_y],
+    arguments: [txb.object(farm), txb.pure(sender)],
   })
   let res = await rpc.devInspectTransactionBlock({
     sender,
