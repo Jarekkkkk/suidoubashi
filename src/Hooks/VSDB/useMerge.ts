@@ -53,7 +53,6 @@ export const useMerge = (setIsShowMergeVSDBModal: Function) => {
         queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
       })
       toast.success('Merge VSDB Successfully!')
-      setIsShowMergeVSDBModal(false)
     },
     onError: (_err: Error) => toast.error('Oops! Have some error'),
   })

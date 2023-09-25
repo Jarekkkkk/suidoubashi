@@ -300,3 +300,11 @@ export const badgeContent = css`
     margin-left: 8px;
   }
 `
+
+export const newStyleVSDBText = css`
+  margin: 0 auto 20px;
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
+  color: var(--Brand);
+`
