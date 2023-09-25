@@ -29,6 +29,7 @@ export const mainContent = css`
 export const content = css`
   margin: 0 12px;
   width: 100%;
+  min-width: 320px;
   height: calc(100vh - 28px);
   overflow: scroll;
 `

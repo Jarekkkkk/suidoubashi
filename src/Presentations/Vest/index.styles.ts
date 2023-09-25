@@ -14,6 +14,11 @@ export const buttonSection = css`
   div:not(:nth-last-child(1)) {
     margin-right: 8px;
   }
+
+  @media screen and (max-width: 1080px) {
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
 `
 
 export const contentSection = css`
@@ -21,6 +26,10 @@ export const contentSection = css`
   padding: 10px 18px;
   height: calc(100% - 212px);
   overflow: scroll;
+
+  @media screen and (max-width: 1080px) {
+    height: calc(100% - 325px);
+  }
 `
 
 export const EmptyContainer = css`
@@ -39,10 +48,6 @@ export const vestCardLoadingContainer = css`
   min-height: 300px;
   border-radius: 12px;
   box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
-
-  &:not(:nth-last-child(1)) {
-    margin-bottom: 12px;
-  }
 `
 export const vestCardContainer = css`
   display: flex;
@@ -55,6 +60,10 @@ export const vestCardContainer = css`
   &:not(:nth-last-child(1)) {
     margin-bottom: 12px;
   }
+
+  @media screen and (max-width: 1080px) {
+    flex-wrap: wrap;
+  }
 `
 
 export const imgSection = css`
@@ -66,6 +75,10 @@ export const imgSection = css`
   img {
     width: 100%;
     height: 100%;
+  }
+
+  @media screen and (max-width: 1080px) {
+    margin: 0 auto;
   }
 `
 
