@@ -7,6 +7,7 @@ import { Vsdb } from '@/Constants/API/vsdb'
 
 import * as styles from './index.styles'
 import { Balance } from '@/Hooks/Coin/useGetBalance'
+import { Stake } from '@/Constants/API/vote'
 
 interface Props {
   nftInfo: {
@@ -16,12 +17,14 @@ interface Props {
   poolDataList: Pool[] | undefined | null
   coinData: Balance[] | undefined
   lpData: LP[] | undefined
+  stakeData: Stake[] | null
   handleFetchNFTData: (e: any) => void
   isPrevBtnDisplay: boolean
   isNextBtnDisplay: boolean
   isCoinDataLoading: boolean
   isLpDataLoading: boolean
   isPoolDataLoading: boolean
+  isStakeDataLoading: boolean
 }
 
 const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
@@ -31,6 +34,7 @@ const ControlBarComponent = (props: Props) => {
     nftInfo,
     coinData,
     lpData,
+    stakeData,
     poolDataList,
     handleFetchNFTData,
     isPrevBtnDisplay,
@@ -38,6 +42,7 @@ const ControlBarComponent = (props: Props) => {
     isCoinDataLoading,
     isLpDataLoading,
     isPoolDataLoading,
+    isStakeDataLoading,
   } = props
   const tabDataKeys = [
     {
@@ -127,7 +132,50 @@ const ControlBarComponent = (props: Props) => {
     {
       id: 2,
       title: 'Stake',
-      children: <Empty content={'No Staked Liquidity'} />,
+      children:
+        isStakeDataLoading || isPoolDataLoading ? (
+          <div className={styles.cardLoadingContent}>
+            <Loading />
+          </div>
+        ) : stakeData && poolDataList && !!stakeData.length ? (
+          stakeData
+            .filter((s) => Number(s.stakes) > 0)
+            .map((data, idx) => {
+              const _coinXIdx = fetchIcon(data.type_x)
+              const _coinYIdx = fetchIcon(data.type_y)
+
+              if (!_coinXIdx || !_coinYIdx) return
+              const { lp_supply, reserve_x, reserve_y } = poolDataList.find(
+                (p) => p.type_x == data.type_x && p.type_y == data.type_y,
+              ) ?? { lp_supply: 0, reserve_x: 0, reserve_y: 0 }
+
+              const percentage = BigNumber(data.stakes).div(lp_supply)
+              const x = percentage
+                .multipliedBy(reserve_x)
+                .shiftedBy(-_coinXIdx.decimals)
+                .decimalPlaces(3)
+                .toString()
+              const y = percentage
+                .multipliedBy(reserve_y)
+                .shiftedBy(-_coinYIdx.decimals)
+                .decimalPlaces(3)
+                .toString()
+
+              return (
+                <Coincard
+                  key={idx}
+                  coinXIcon={_coinXIdx.logo}
+                  coinXName={_coinXIdx.name}
+                  coinXValue={x}
+                  coinYIcon={_coinYIdx.logo}
+                  coinYName={_coinYIdx.name}
+                  coinYValue={y}
+                />
+              )
+            })
+        ) : (
+          <Empty content={'No Deposited Liquidity'} />
+        ),
     },
   ]
 

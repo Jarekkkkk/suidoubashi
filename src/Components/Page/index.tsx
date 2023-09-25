@@ -14,6 +14,8 @@ import { Sidebar, ControlBar, SettingModal } from '@/Components'
 import * as styles from './index.styles'
 import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import { SettingInterface, defaultSetting } from '../SettingModal'
+import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
+import { useGetMulStake } from '@/Hooks/Vote/useGetStake'
 
 const PageContext = createContext<PageContext>({
   currentNFTInfo: {
@@ -78,6 +80,10 @@ const PageComponent = (props: Props) => {
       }
     }
   }
+  // gague
+  const { data: gauges } = useGetMulGauge()
+  // stake
+  const { data: stakes, isLoading: isStakeDataLoading } = useGetMulStake(gauges)
   // setting
   const [setting, setSetting] = useState<SettingInterface>(defaultSetting)
 
@@ -131,10 +137,12 @@ const PageComponent = (props: Props) => {
             nftInfo={currentNFTInfo}
             coinData={bal}
             lpData={lPList}
+            stakeData={stakes}
             handleFetchNFTData={handleFetchNFTData}
             isLpDataLoading={isLpDataLoading}
             isCoinDataLoading={isCoinDataLoading}
             isPoolDataLoading={pools.isLoading}
+            isStakeDataLoading={isStakeDataLoading}
           />
           <SettingModal
             setting={setting}
