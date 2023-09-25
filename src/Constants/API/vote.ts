@@ -14,7 +14,7 @@ import {
 import { Vsdb, vsdb_package } from './vsdb'
 import { bcs_registry } from '../bcs'
 
-export const vote_package = import.meta.env.VITE_VOTE_PACKAGE as string
+export const vote_package = import.meta.env.VITE_VOTE_PACKAGE_TESTNET as string
 export const gauges_df_id = import.meta.env.VITE_GAUGES_DF_ID as string
 export const pool_weights_df_id = import.meta.env
   .VITE_POOL_WEIGHTS_DF_ID as string
@@ -310,6 +310,28 @@ export function stake_all(
       txb.object(gauge_id),
       txb.object(pool_id),
       lp,
+      txb.object(SUI_CLOCK_OBJECT_ID),
+    ],
+  })
+}
+
+export function unstake(
+  txb: TransactionBlock,
+  gauge_id: string,
+  pool_id: string,
+  gauge_type_x: string,
+  gauge_type_y: string,
+  lp: string,
+  value: string,
+) {
+  txb.moveCall({
+    target: `${vote_package}::gauge::unstake`,
+    typeArguments: [gauge_type_x, gauge_type_y],
+    arguments: [
+      txb.object(gauge_id),
+      txb.object(pool_id),
+      txb.object(lp),
+      txb.pure(value),
       txb.object(SUI_CLOCK_OBJECT_ID),
     ],
   })
