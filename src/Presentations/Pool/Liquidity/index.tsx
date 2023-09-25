@@ -121,13 +121,11 @@ const LiquidityPresentation = () => {
         pool_type_x: poolData.type_x,
         pool_type_y: poolData.type_y,
         lp_id: lp ? lp.id : null,
-        input_x_value: (
-          Number(coinInputX) *
-          10 ** coinTypeX.decimals
+        input_x_value: Math.floor(
+          Number(coinInputX) * 10 ** coinTypeX.decimals,
         ).toString(),
-        input_y_value: (
-          Number(coinInputY) *
-          10 ** coinTypeY.decimals
+        input_y_value: Math.floor(
+          Number(coinInputY) * 10 ** coinTypeY.decimals,
         ).toString(),
       })
     }
@@ -135,7 +133,7 @@ const LiquidityPresentation = () => {
 
   const zap = useZap(setting)
   const handleZap = () => {
-    if (poolData && lp) {
+    if (poolData) {
       const {
         id,
         type_x,
@@ -215,6 +213,13 @@ const LiquidityPresentation = () => {
     }
   }
 
+  const { data: stake_bal } = useGetStake(
+    gaugeData?.id,
+    gaugeData?.type_x,
+    gaugeData?.type_y,
+    lp?.id,
+  )
+
   const withdraw = useRemoveLiquidity(setting)
   const handleWithdraw = () => {
     if (poolData && lp) {
@@ -227,28 +232,6 @@ const LiquidityPresentation = () => {
       })
     }
   }
-
-  const unstake_and_withdraw = useUnStakeAndWithdraw(setting)
-  const handleUnstakeAndWithdraw = () => {
-    if (poolData && lp && gaugeData) {
-      unstake_and_withdraw.mutate({
-        pool_id: poolData.id,
-        pool_type_x: poolData.type_x,
-        pool_type_y: poolData.type_y,
-        gauge_id: gaugeData?.id,
-        lp_id: lp.id,
-        withdrawl: lp.lp_balance,
-      })
-    }
-  }
-
-  const { data: stake_bal } = useGetStake(
-    gaugeData?.id,
-    gaugeData?.type_x,
-    gaugeData?.type_y,
-    lp?.id,
-  )
-
   const stake = useStake(setting)
   const handleStake = () => {
     if (poolData && lp && gaugeData) {
@@ -264,13 +247,28 @@ const LiquidityPresentation = () => {
 
   const unstake = useUnStake(setting)
   const handleUnstake = () => {
-    if (poolData && lp && gaugeData) {
+    if (poolData && lp && gaugeData && stake_bal) {
       unstake.mutate({
         pool_id: poolData.id,
         gauge_id: gaugeData.id,
         pool_type_x: poolData.type_x,
         pool_type_y: poolData.type_y,
         lp_id: lp.id,
+        value: stake_bal,
+      })
+    }
+  }
+
+  const unstake_and_withdraw = useUnStakeAndWithdraw(setting)
+  const handleUnstakeAndWithdraw = () => {
+    if (poolData && lp && gaugeData && stake_bal) {
+      unstake_and_withdraw.mutate({
+        pool_id: poolData.id,
+        pool_type_x: poolData.type_x,
+        pool_type_y: poolData.type_y,
+        gauge_id: gaugeData?.id,
+        lp_id: lp.id,
+        withdrawl: stake_bal,
       })
     }
   }
