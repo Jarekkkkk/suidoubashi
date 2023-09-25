@@ -34,7 +34,7 @@ const RewardsPresentation = () => {
 							<div className={constantsStyles.boldText}>12343</div>
 						</div>
 						<Button
-							small
+							size="small"
 							styletype='outlined'
 							text='Claim'
 							onClick={() => {}}
@@ -83,7 +83,7 @@ const RewardsPresentation = () => {
 							</div>
 						</div>
 						<Button
-							small
+							size="small"
 							styletype='outlined'
 							text='Claim'
 							onClick={() => {}}

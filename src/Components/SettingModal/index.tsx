@@ -115,7 +115,7 @@ const SettingModal = (props: Props) => {
                   styletype={setting.slippage == opt ? 'filled' : 'outlined'}
                   text={opt + '%'}
                   onClick={() => handleSlippageOnchange(opt)}
-                  small
+                  size="small"
                 />
               ))}
               <Input

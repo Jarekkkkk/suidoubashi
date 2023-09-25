@@ -8,14 +8,13 @@ interface Props {
   onClick?: () => void,
   icon?: any,
   disabled?: boolean,
-  small?: boolean, // small
-  medium?: boolean, // medium
+  size?: string, // small | medium
   isloading?: number,
 }
 
 const BasicButton = (props: Props) => {
   const {
-    styletype, text, onClick, icon, small, isloading, disabled, medium,
+    styletype, text, onClick, icon, size, isloading, disabled,
   } = props;
 
   return (
@@ -27,8 +26,8 @@ const BasicButton = (props: Props) => {
         styles.button,
         types[styletype],
         {
-          [styles.smallButton]: small,
-          [styles.mediumButton]: medium,
+          [styles.smallButton]: size === 'small',
+          [styles.mediumButton]: size === 'medium',
         },
       )}
       disabled={!!isloading || disabled}

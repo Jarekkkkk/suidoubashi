@@ -115,7 +115,7 @@ const SelectCoinModal = (props: Props) => {
                     icon={coin.icon}
                     key={coin.id}
                     disabled={!_coinData}
-                    medium
+                    size="medium"
                   />
               )})
             }
