@@ -11,6 +11,7 @@ export const bribrContainer = css`
   flex-direction: column;
   align-items: center;
   max-width: 580px;
+  height: 100%;
 `
 
 export const arrowButton = css`
@@ -32,6 +33,13 @@ export const arrowButton = css`
 
 export const inputContent = css`
   margin-top: 30px;
+
+  span {
+    display: flex;
+    align-items: center;
+    margin: 0 5px;
+    height: 100%;
+  }
 `
 
 export const selectContainer = css`
@@ -88,10 +96,6 @@ export const searchInputIcon = css`
   left: 2px;
   bottom: 0;
   z-index: 1;
-`
-
-export const coinContent = css`
-  border-bottom: 1px solid var(--LightGrey);
 `
 
 export const coinBlock = css`

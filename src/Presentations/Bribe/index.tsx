@@ -109,7 +109,7 @@ const BribePresentation = () => {
 							}
 						/>
 					</div>
-					<div className={styles.coinContent}>
+					<div>
 						<div className={styles.coinBlock}>
 							{
 								_coinList.map((coin) => {
@@ -132,6 +132,13 @@ const BribePresentation = () => {
 								)})
 							}
 						</div>
+					</div>
+					<div className={css({ marginTop: 'auto' })}>
+						<Button
+							styletype='filled'
+							text='Bride'
+							onClick={() => {}}
+						/>
 					</div>
 				</div>
 				<SelectPoolModal
