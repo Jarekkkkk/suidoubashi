@@ -30,9 +30,8 @@ const MergeVSDBModal = (props: Props) => {
     let _mergedVsdb = Object.assign({}, currentVsdb)
 
     if (
-      _mergedVsdb.level < secondVsdb.level ||
-      (_mergedVsdb.level == secondVsdb.level &&
-        _mergedVsdb.experience < secondVsdb.experience)
+      (secondVsdb.level > _mergedVsdb.level) ||
+      ((secondVsdb.level === _mergedVsdb.level) && (secondVsdb.experience > _mergedVsdb.experience))
     ) {
       _mergedVsdb.level = secondVsdb.level
       _mergedVsdb.experience = secondVsdb.experience

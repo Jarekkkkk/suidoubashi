@@ -133,54 +133,56 @@ const VestCardComponent = (props: Props) => {
             level={expiration}
           />
         </div>
-        <div className={cx(styles.badgeContent)}>
-          <div>Badge</div>
-          <Button
-            text='AMM'
-            styletype='badge'
-            disabled={!!amm_state}
-            onClick={handleInitializeAMM}
-          />
-          <Button
-            text='Vote'
-            styletype='badge'
-            disabled={false}
-            onClick={() => {}}
-          />
-        </div>
         {!isPerviewMode && (
-          <div className={styles.buttonContent}>
-            {new Date().getTime() >= Date.parse(expiration) ? (
-              <>
-                {
-                  <Button
-                    styletype='outlined'
-                    text='Unlock'
-                    onClick={() => !amm_state && handleUnlock(nftId)}
-                  />
-                }
-                {setIsShowWithdrawVSDBModal && (
-                  <Button
-                    styletype='outlined'
-                    text='Revival'
-                    onClick={() => {
-                      setIsShowWithdrawVSDBModal(true)
-                      setCurrentVSDBId && setCurrentVSDBId(nftId)
-                    }}
-                  />
-                )}
-              </>
-            ) : (
+          <>
+            <div className={cx(styles.badgeContent)}>
+              <div>Badge</div>
               <Button
-                styletype='outlined'
-                text='Deposit VSDB'
-                onClick={() => {
-                  setIsShowDepositVSDBModal && setIsShowDepositVSDBModal(true)
-                  setCurrentVSDBId && setCurrentVSDBId(nftId)
-                }}
+                text='AMM'
+                styletype='badge'
+                disabled={!!amm_state}
+                onClick={handleInitializeAMM}
               />
-            )}
-          </div>
+              <Button
+                text='Vote'
+                styletype='badge'
+                disabled={false}
+                onClick={() => {}}
+              />
+            </div>
+            <div className={styles.buttonContent}>
+              {new Date().getTime() >= Date.parse(expiration) ? (
+                <>
+                  {
+                    <Button
+                      styletype='outlined'
+                      text='Unlock'
+                      onClick={() => !amm_state && handleUnlock(nftId)}
+                    />
+                  }
+                  {setIsShowWithdrawVSDBModal && (
+                    <Button
+                      styletype='outlined'
+                      text='Revival'
+                      onClick={() => {
+                        setIsShowWithdrawVSDBModal(true)
+                        setCurrentVSDBId && setCurrentVSDBId(nftId)
+                      }}
+                    />
+                  )}
+                </>
+              ) : (
+                <Button
+                  styletype='outlined'
+                  text='Deposit VSDB'
+                  onClick={() => {
+                    setIsShowDepositVSDBModal && setIsShowDepositVSDBModal(true)
+                    setCurrentVSDBId && setCurrentVSDBId(nftId)
+                  }}
+                />
+              )}
+            </div>
+          </>
         )}
       </div>
     </div>
