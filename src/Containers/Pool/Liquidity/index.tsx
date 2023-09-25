@@ -2,7 +2,6 @@ import React, {
   useState,
   useContext,
   PropsWithChildren,
-  useMemo,
   useEffect,
 } from 'react'
 import { useLocation } from 'react-router-dom'
@@ -12,13 +11,13 @@ import UserModule from '@/Modules/User'
 import { useGetPool } from '@/Hooks/AMM/useGetPool'
 import { Pool } from '@/Constants/API/pool'
 import { Coins, CoinInterface } from '@/Constants/coin'
-import { useGetFarmIDs, useGetMulFarm } from '@/Hooks/Farm/useGetFarm'
-import { Farm } from '@/Constants/API/farm'
+import { useGetGauge } from '@/Hooks/Vote/useGetGauge'
+import { Gauge } from '@/Constants/API/vote'
 
 export const LiquidityContext = React.createContext<LiquidityContext>({
   walletAddress: null,
   poolData: null,
-  farmData: null,
+  gaugeData: null,
   fetching: false,
   error: undefined,
   setError: () => {},
@@ -56,19 +55,7 @@ const LiquidityContainer = ({ children }: PropsWithChildren) => {
   const [coinTypeY, setCoinTypeY] = useState<CoinInterface>(Coins[1])
   const [coinInputSingle, setCoinInputSingle] = useState('')
 
-
-  // find farm
-  const { data: farmIds } = useGetFarmIDs()
-  const { data: farmData, isLoading: isFarmDataLoading } =
-    useGetMulFarm(farmIds)
-
-  const farm = useMemo(
-    () =>
-      farmData?.find(
-        (f) => f.type_x == poolData?.type_x && f.type_y == poolData.type_y,
-      ) ?? null,
-    [farmData, poolData],
-  )
+  const gauge = useGetGauge(poolData?.type_x, poolData?.type_y)
 
   useEffect(() => {
     setCoinTypeX(fetchIcon(poolData?.type_x))
@@ -80,7 +67,7 @@ const LiquidityContainer = ({ children }: PropsWithChildren) => {
       value={{
         walletAddress,
         poolData: poolData,
-        farmData: farm,
+        gaugeData: gauge,
         fetching: isPoolDataLoading,
         error,
         setError,
@@ -103,7 +90,7 @@ const LiquidityContainer = ({ children }: PropsWithChildren) => {
 
 interface LiquidityContext {
   readonly poolData: Pool | null | undefined
-  readonly farmData: Farm | null
+  readonly gaugeData: Gauge | null
   readonly fetching: boolean
   readonly error: string | undefined
   walletAddress: string | null
