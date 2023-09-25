@@ -12,6 +12,7 @@ import Image from '@/Assets/image'
 import { CoinIcon, Icon } from '@/Assets/icon'
 import { Balance } from '@/Hooks/Coin/useGetBalance'
 import { Coins } from '@/Constants/coin'
+import { regexEn } from '@/Constants/index'
 import * as styles from './index.styles'
 
 type Props = {
@@ -42,7 +43,7 @@ const SelectPoolModal = (props: Props) => {
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
-      const isValid = /^-?\D*\.?\D*$/.test(value)
+      const isValid = regexEn.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }

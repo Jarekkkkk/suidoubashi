@@ -10,6 +10,7 @@ export const bribrContainer = css`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 auto;
   max-width: 580px;
   height: 100%;
 `
@@ -32,7 +33,7 @@ export const arrowButton = css`
 `
 
 export const inputContent = css`
-  margin: 30px auto 0;
+  margin: 30px auto;
   width: 100%;
   max-width: 400px;
 

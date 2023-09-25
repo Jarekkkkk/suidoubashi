@@ -150,3 +150,7 @@ export const vsdbTimeSettingOptions = [
 export const fetchIcon = (name: string) => Coins.find((coin) => coin.name === name);
 
 export const fetchBalance = (BalanceData: Balance[] | undefined, coinName: string) => BalanceData?.find((balance) => balance.coinName === coinName);
+
+export const regexEn = /^[A-Za-z]+$/;
+
+export const regexNumber = /^[0-9]+$/;

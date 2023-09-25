@@ -30,7 +30,6 @@ export const InputContent = css`
       padding-left: 10px;
       color: var(--LightGrey);
       font-weight: normal;
-      font-size: 16px;
       vertical-align: middle;
     }
   }

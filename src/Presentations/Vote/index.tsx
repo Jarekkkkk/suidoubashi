@@ -90,7 +90,7 @@ const VotePresentation = () => {
 	};
 
 	return (
-		<PageContainer title='Vest' titleImg={Image.pageBackground_1}>
+		<PageContainer title='Vote' titleImg={Image.pageBackground_1}>
 			<div className={styles.voteWrapper}>
 				<div className={styles.topContainer}>
 					<div className={styles.inputContent}>

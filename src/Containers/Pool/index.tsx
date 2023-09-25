@@ -1,5 +1,6 @@
 import { ChangeEvent, PropsWithChildren, useCallback, useContext, useState } from 'react'
 import { Pool } from '@/Constants/API/pool'
+import { regexEn } from '@/Constants/index'
 import UserModule from '@/Modules/User'
 import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import React from 'react'
@@ -36,7 +37,7 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
-      const isValid = /^-?\D*\.?\D*$/.test(value)
+      const isValid = regexEn.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }

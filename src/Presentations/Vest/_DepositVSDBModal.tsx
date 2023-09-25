@@ -11,7 +11,7 @@ import {
 } from '@/Components'
 import Image from '@/Assets/image'
 import { CoinIcon, Icon } from '@/Assets/icon'
-import { vsdbTimeSettingOptions } from '@/Constants/index'
+import { vsdbTimeSettingOptions, regexNumber } from '@/Constants/index'
 
 import * as styles from './index.styles'
 import { cx } from '@emotion/css'
@@ -51,7 +51,7 @@ const DepositVSDBModal = (props: Props) => {
   const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (incrase_amount_isLoading) return
     let value = e.target.value
-    const isValid = /^-?\d*\.?\d{0,9}$/.test(value)
+    const isValid = regexNumber.test(value)
 
     if (!isValid) {
       value = value.slice(0, -1)

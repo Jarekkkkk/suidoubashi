@@ -10,7 +10,7 @@ import {
 } from '@/Components'
 import Image from '@/Assets/image'
 import { CoinIcon, Icon } from '@/Assets/icon'
-import { vsdbTimeSettingOptions } from '@/Constants/index'
+import { vsdbTimeSettingOptions, regexNumber } from '@/Constants/index'
 import * as styles from './index.styles'
 import { useLock } from '@/Hooks/VSDB/useLock'
 import moment from 'moment'
@@ -48,7 +48,7 @@ const CreateVSDBModal = (props: Props) => {
   const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isLoading) return
     let value = e.target.value
-    const isValid = /^-?\d*\.?\d*$/.test(value)
+    const isValid = regexNumber.test(value)
     if (!isValid) {
       value = value.slice(0, -1)
     }

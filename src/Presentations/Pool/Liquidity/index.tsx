@@ -15,6 +15,7 @@ import { Icon } from '@/Assets/icon'
 import Image from '@/Assets/image'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { formatBalance } from '@/Utils/format'
+import { regexNumber } from '@/Constants/index'
 
 import * as styles from './index.styles'
 import * as constantsStyles from '@/Constants/constants.styles'
@@ -61,7 +62,7 @@ const LiquidityPresentation = () => {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!poolData || !coinTypeX || !coinTypeY) return
       let value = e.target.value
-      const isValid = /^-?\d*\.?\d*$/.test(value)
+      const isValid = regexNumber.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }
@@ -82,7 +83,7 @@ const LiquidityPresentation = () => {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!poolData) return
       let value = e.target.value
-      const isValid = /^-?\d*\.?\d*$/.test(value)
+      const isValid = regexNumber.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }
@@ -101,7 +102,7 @@ const LiquidityPresentation = () => {
   const handleOnCoinInputSingleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
-      const isValid = /^-?\d*\.?\d*$/.test(value)
+      const isValid = regexNumber.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }

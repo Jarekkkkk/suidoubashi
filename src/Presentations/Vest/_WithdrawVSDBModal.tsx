@@ -10,7 +10,7 @@ import {
 } from '@/Components'
 import Image from '@/Assets/image'
 import { CoinIcon, Icon } from '@/Assets/icon'
-import { vsdbTimeSettingOptions } from '@/Constants/index'
+import { vsdbTimeSettingOptions, regexNumber } from '@/Constants/index'
 
 import * as styles from './index.styles'
 import { cx } from '@emotion/css'
@@ -50,7 +50,7 @@ const WithdrawVSDBModal = (props: Props) => {
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
-      const isValid = /^-?\d*\.?\d*$/.test(value)
+      const isValid = regexNumber.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }

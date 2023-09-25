@@ -5,6 +5,7 @@ import React, {
 	PropsWithChildren,
 	ChangeEvent,
 } from 'react';
+import { regexEn } from '@/Constants/index'
 
 const VoteContext = React.createContext<VoteContext>({
 	data: null,
@@ -23,7 +24,8 @@ const VoteContainer = ({ children }: PropsWithChildren) => {
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
-      const isValid = /^-?\D*\.?\D*$/.test(value)
+
+      const isValid = regexEn.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }
