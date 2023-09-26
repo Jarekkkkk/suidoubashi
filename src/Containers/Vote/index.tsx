@@ -5,7 +5,7 @@ import React, {
   PropsWithChildren,
   ChangeEvent,
 } from 'react'
-import { regexEn } from '@/Constants/index'
+import { fetchCoinByType, regexEn } from '@/Constants/index'
 import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
 import { useGetVoter } from '@/Hooks/Vote/useGetVoter'
 import { Gauge, Rewards, Voter } from '@/Constants/API/vote'
@@ -31,6 +31,14 @@ const VoteContainer = ({ children }: PropsWithChildren) => {
     gauge.isLoading || voter.isLoading,
   )
 
+	const _gaugeData = gauge.data?.filter((data) => {
+		const _x = fetchCoinByType(data.type_x)!.name;
+		const _y = fetchCoinByType(data.type_y)!.name;
+		const coinName = _x.concat('-', _y);
+
+		return new RegExp(searchInput, 'ig').test(coinName)
+	});
+
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
@@ -47,7 +55,7 @@ const VoteContainer = ({ children }: PropsWithChildren) => {
   return (
     <VoteContext.Provider
       value={{
-        gaugeData: gauge.data,
+        gaugeData: _gaugeData,
         voterData: voter.data,
         rewardsData: rewards.data,
         fetching: gauge.isLoading || voter.isLoading || rewards.isLoading,
@@ -61,7 +69,7 @@ const VoteContainer = ({ children }: PropsWithChildren) => {
 }
 
 interface VoteContext {
-  readonly gaugeData: Gauge[] | null
+  readonly gaugeData: Gauge[] | null | undefined
   readonly fetching: boolean
   readonly voterData: Voter | null | undefined
   readonly rewardsData: Rewards[] | null

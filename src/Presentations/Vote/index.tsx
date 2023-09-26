@@ -14,7 +14,7 @@ import * as constantsStyles from '@/Constants/constants.styles'
 import { useVoteContext } from '@/Containers/Vote'
 import * as styles from './index.styles'
 import { cx } from '@emotion/css'
-import { Gauge, Voter } from '@/Constants/API/vote'
+import { Gauge, Voter, Rewards } from '@/Constants/API/vote'
 import { usePageContext } from '@/Components/Page'
 import { fetchCoinByType } from '@/Constants'
 
@@ -30,7 +30,6 @@ const VotePresentation = () => {
   } = useVoteContext()
   const { setting, currentNFTInfo } = usePageContext()
 
-  console.log('rewards', rewardsData)
   const data = [{ id: 1 }, { id: 2 }]
 
   if (fetching)
@@ -74,8 +73,8 @@ const VotePresentation = () => {
     },
   ]
 
-  const renderRow = (columns: any[], data: Gauge[], voterData: Voter) => {
-    return data.map((gauge, idx) => {
+  const renderRow = (columns: any[], gaugeData: Gauge[], voterData: Voter, rewardsData: Rewards[]) => {
+    return gaugeData.map((gauge, idx) => {
       if (!rewardsData[idx].rewards) return null
       const _rewards = rewardsData[idx].rewards
       const weight = voterData.pool_weights.find((p) => p.pool_id == gauge.pool)?.weight ?? '0'
@@ -121,7 +120,6 @@ const VotePresentation = () => {
                 <div className={constantsStyles.boldText}>$ 1,234.56</div>
                 {
                   _rewards.map((reward) => {
-                    console.log('reward', reward)
                     return (
                     <div
                       className={cx(
@@ -176,7 +174,7 @@ const VotePresentation = () => {
         <ReactTable
           data={data}
           columns={columnsList}
-          renderRow={renderRow(columnsList, gaugeData, voterData)}
+          renderRow={renderRow(columnsList, gaugeData, voterData, rewardsData)}
         />
         <div className={styles.bottomVoteContent}>
           <div className={styles.bottomVoteTitle}>VeSDB used:</div>
