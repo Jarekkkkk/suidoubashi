@@ -33,14 +33,20 @@ const VotePresentation = () => {
     rewardsData,
   } = useVoteContext()
 
-  const [totalVoting, setTotalVoting] = useState(0)
-
-  console.log('voting', totalVoting)
+  const [totalVoting, setTotalVoting] = useState<any>({})
 
   const { setting, currentNFTInfo } = usePageContext()
 
-  const handleVotingOnchange = (value: number) => {
-    setTotalVoting(value)
+  const handleVotingOnchange = (pool: string, value: number) => {
+    const value_ = Math.floor(10 * value) / 10
+    const total_ =
+      Number(((totalVoting['total'] ?? 0) + value_ - (totalVoting[pool] ?? 0)).toPrecision(2))
+    if (total_ > 1) return
+    setTotalVoting({
+      ...totalVoting,
+      total: total_,
+      [pool]: value_,
+    })
   }
 
   const data = [{ id: 1 }, { id: 2 }]
@@ -86,7 +92,12 @@ const VotePresentation = () => {
     },
   ]
 
-  const renderRow = (columns: any[], gaugeData: Gauge[], voterData: Voter, rewardsData: Rewards[]) => {
+  const renderRow = (
+    columns: any[],
+    gaugeData: Gauge[],
+    voterData: Voter,
+    rewardsData: Rewards[],
+  ) => {
     return gaugeData.map((gauge, idx) => {
       if (!rewardsData[idx].rewards) return null
       const _rewards = rewardsData[idx].rewards
@@ -108,6 +119,7 @@ const VotePresentation = () => {
           case 'totalVotes':
             return (
               <div
+                key={idx}
                 className={cx(
                   styles.VestTableContent,
                   constantsStyles.columnContent,
@@ -128,6 +140,7 @@ const VotePresentation = () => {
           case 'rewards':
             return (
               <div
+                key={idx}
                 className={cx(
                   styles.VestTableContent,
                   constantsStyles.columnContent,
@@ -154,17 +167,26 @@ const VotePresentation = () => {
               </div>
             )
           case 'apr':
-            return <div className={constantsStyles.boldText}>12.34%</div>
+            return (
+              <div key={idx} className={constantsStyles.boldText}>
+                12.34%
+              </div>
+            )
           case 'weights':
             return (
               <Slider
+                key={idx}
                 min={0}
                 stepSize={0.1}
                 labelStepSize={0.2}
                 max={1}
-                onChange={handleVotingOnchange}
+                onChange={(value) => handleVotingOnchange(gauge.pool, value)}
                 labelRenderer={renderLabel2}
-                value={totalVoting}
+                value={
+                  totalVoting[gauge.pool]
+                    ? parseFloat(totalVoting[gauge.pool])
+                    : 0
+                }
               />
             )
           default:
@@ -205,7 +227,9 @@ const VotePresentation = () => {
         />
         <div className={styles.bottomVoteContent}>
           <div className={styles.bottomVoteTitle}>VeSDB used:</div>
-          <div className={styles.bottomVotePercent}>90%</div>
+          <div className={styles.bottomVotePercent}>
+            {(totalVoting['total'] ?? 0) * 100}%
+          </div>
           <Button styletype='filled' text='Vote' onClick={() => {}} />
         </div>
       </div>
