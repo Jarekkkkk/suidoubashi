@@ -8,6 +8,8 @@ import { useUnlock } from '@/Hooks/VSDB/useUnlock'
 import BigNumber from 'bignumber.js'
 import useRegisterAMMState from '@/Hooks/AMM/useRegisterAMMState'
 import { AMMState, initialize_amm } from '@/Constants/API/pool'
+import useRegisterVotingState from '@/Hooks/Vote/useRegisterVotingState'
+import { VotingState } from '@/Constants/API/vote'
 
 interface Props {
   nftId: string
@@ -27,6 +29,7 @@ interface Props {
   }
   vesdbSpanValue?: string
   amm_state?: AMMState
+  voting_state?: VotingState
 }
 
 interface TextItemProps {
@@ -98,6 +101,7 @@ const VestCardComponent = (props: Props) => {
     expSpanValue,
     vesdbSpanValue,
     amm_state,
+    voting_state
   } = props
 
   const { mutate: unlock } = useUnlock()
@@ -109,6 +113,11 @@ const VestCardComponent = (props: Props) => {
 
   const handleInitializeAMM = () => {
     if (!amm_state) initialize_amm({ vsdb: nftId })
+  }
+
+  const { mutate: initialize_voting_state } = useRegisterVotingState()
+  const handleInitializeVotingState= ()=>{
+    if(!voting_state) initialize_voting_state({vsdb:nftId})
   }
 
 
@@ -146,8 +155,8 @@ const VestCardComponent = (props: Props) => {
               <Button
                 text='Vote'
                 styletype='badge'
-                disabled={false}
-                onClick={() => {}}
+                disabled={!!voting_state}
+                onClick={handleInitializeVotingState}
               />
             </div>
             <div className={styles.buttonContent}>

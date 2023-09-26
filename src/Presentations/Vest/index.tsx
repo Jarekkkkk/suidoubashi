@@ -85,6 +85,7 @@ const VestPresentation = () => {
                     setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
                     setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
                     amm_state={item.amm_state}
+                    voting_state={item.voting_state}
                   />
                 )
               })
