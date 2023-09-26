@@ -47,6 +47,7 @@ export const inputContent = css`
 
 export const selectContainer = css`
   max-height: 550px;
+  min-height: 550px;
 `
 
 export const swapContainer = css`

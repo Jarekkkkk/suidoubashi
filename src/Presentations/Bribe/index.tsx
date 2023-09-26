@@ -1,5 +1,5 @@
 import Image from '@/Assets/image'
-import { PageContainer, Input, Button, InputSection } from '@/Components'
+import { PageContainer, Input, Button, InputSection, Empty, Loading } from '@/Components'
 import { fetchCoinByType } from '@/Constants/index'
 import * as constantsStyles from '@/Constants/constants.styles'
 
@@ -15,21 +15,21 @@ import { useBribe } from '@/Hooks/Vote/useBribe'
 import { usePageContext } from '@/Components/Page'
 
 const BribePresentation = () => {
-  const [isShow, setIsShow] = useState(false)
-  const [coinType, setCoinType] = useState<CoinInterface>(Coins[0])
-  const balance = useGetBalance(coinType.type)
-
-  const { rewardsData, handleInputOnchange, coinInput } = useBribeContext()
+  const { rewardsData, handleInputOnchange, coinInput, fetching } = useBribeContext()
   const { setting } = usePageContext()
 
+  const [isShow, setIsShow] = useState(false)
+  const [coinType, setCoinType] = useState<CoinInterface>(Coins[0])
   const [rewardsId, setRewardsId] = useState('')
+  const balance = useGetBalance(coinType.type)
+  const bribe = useBribe(setting)
+
   const selectedReward = useMemo(() => {
-    if (!rewardsData) return
+    if (!rewardsData) return null
     if (!rewardsId) return rewardsData[0]
     return rewardsData?.find((r) => r.id == rewardsId)
   }, [rewardsId, rewardsData])
 
-  const bribe = useBribe(setting)
   const handleBribe = () => {
     if (selectedReward && coinType) {
       bribe.mutate({
@@ -43,6 +43,34 @@ const BribePresentation = () => {
       })
     }
   }
+
+	const _fetchCoinByType = () => {
+		if (selectedReward) {
+			const _x = fetchCoinByType(selectedReward.type_x)!.name;
+			const _y = fetchCoinByType(selectedReward.type_y)!.name;
+			const coinName = _x.concat('-', _y);
+
+			return coinName;
+		}
+	}
+
+  if (fetching)
+    return (
+      <PageContainer title='Bribe' titleImg={Image.pageBackground_2}>
+        <div className={constantsStyles.LoadingContainer}>
+          <Loading />
+        </div>
+      </PageContainer>
+    )
+
+  if (!rewardsData)
+    return (
+      <PageContainer title='Bribe' titleImg={Image.pageBackground_2}>
+        <div className={constantsStyles.LoadingContainer}>
+          <Empty content='Oops! No Data.' />
+        </div>
+      </PageContainer>
+    )
 
   return (
     <PageContainer title='Bribe' titleImg={Image.pageBackground_1}>
@@ -61,7 +89,7 @@ const BribePresentation = () => {
           </div>
           <div className={styles.inputContent}>
             <Input
-              value={'123'}
+              value={_fetchCoinByType()}
               onChange={(e) => {}}
               placeholder='Choose Pool'
               rightElement={

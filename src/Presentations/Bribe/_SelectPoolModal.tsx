@@ -19,8 +19,7 @@ type Props = {
 const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
 
 const SelectPoolModal = (props: Props) => {
-  const { rewardsData, setRewardsId, isCoinDataLoading, isShow, setIsShow } =
-    props
+  const { rewardsData, setRewardsId, isCoinDataLoading, isShow, setIsShow } = props
   const [input, setInput] = useState<string>('')
   const _coinsData =
     rewardsData?.filter((reward) =>

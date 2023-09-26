@@ -7,7 +7,6 @@ import React, {
   useContext,
   PropsWithChildren,
   useCallback,
-  useMemo,
 } from 'react'
 
 export const BribeContext = React.createContext<BribeContext>({
@@ -20,10 +19,8 @@ export const BribeContext = React.createContext<BribeContext>({
 export const useBribeContext = () => useContext(BribeContext)
 
 export const BribeContainer = ({ children }: PropsWithChildren) => {
-  const [fetching, _setFetching] = useState(false)
-
   const gauge = useGetMulGauge()
-  const { data: rewardsData } = useGetMulRewards(
+  const { data: rewardsData, isLoading: isRewardsDataLoading } = useGetMulRewards(
     gauge.data?.map((g) => g.rewards) ?? [],
     gauge.isLoading,
   )
@@ -44,8 +41,8 @@ export const BribeContainer = ({ children }: PropsWithChildren) => {
   return (
     <BribeContext.Provider
       value={{
+				fetching: isRewardsDataLoading || gauge.isLoading,
         rewardsData,
-        fetching,
         coinInput,
         handleInputOnchange,
       }}
