@@ -13,7 +13,6 @@ import {
 import { fetchIcon, fetchBalance } from '@/Constants/index'
 import * as constantsStyles from '@/Constants/constants.styles'
 import { useVoteContext } from '@/Containers/Vote'
-
 import * as styles from './index.styles'
 import { cx } from '@emotion/css'
 import { Gauge, Voter } from '@/Constants/API/vote'

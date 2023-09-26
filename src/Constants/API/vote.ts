@@ -12,12 +12,14 @@ import {
 
 import { Vsdb, vsdb_package, vsdb_reg } from './vsdb'
 import { bcs_registry } from '../bcs'
+import exp from 'constants'
 
 export const vote_package = import.meta.env.VITE_VOTE_PACKAGE_TESTNET as string
 export const gauges_df_id = import.meta.env.VITE_GAUGES_DF_ID as string
 export const pool_weights_df_id = import.meta.env
   .VITE_POOL_WEIGHTS_DF_ID as string
 export const voter = import.meta.env.VITE_VOTER_TESTNET as string
+export const minter = import.meta.env.VITE_MINTER_TESTNET as string
 
 // Options for rpc calling
 export const defaultOptions = {
@@ -267,13 +269,20 @@ export async function get_rewards(
   //    rpc.getDynamicFieldObject({ parentId: id, name: e }),
   //  )
   const ts = Math.floor(Date.now() / 1000)
-  const promises = rewards_type.map((r) =>
-    rewards_per_epoch(rpc, sender, id, X, Y, r, ts.toString()),
-  )
+  let rewards = []
 
-  const rewards = (await Promise.all(promises)).map((value, idx) => {
-    return { type: rewards_type[idx], value }
-  })
+  for (const type of rewards_type) {
+    const value = await rewards_per_epoch(
+      rpc,
+      sender,
+      id,
+      X,
+      Y,
+      type,
+      ts.toString(),
+    )
+    rewards.push({ type, value })
+  }
 
   return {
     id,
@@ -283,48 +292,93 @@ export async function get_rewards(
   } as Rewards
 }
 
-// Voting Actions
-export async function vote(
+export function voting_entry(txb: TransactionBlock, vsdb: string) {
+  return txb.moveCall({
+    target: `${vote_package}::voter::voting_entry`,
+    arguments: [txb.object(vsdb), txb.object(SUI_CLOCK_OBJECT_ID)],
+  })
+}
+
+export function reset_(
   txb: TransactionBlock,
-  voter: Voter,
-  vsdb: Vsdb,
+  potato: any,
+  vsdb: string,
+  gauge: string,
+  bribe: string,
+  type_x: string,
+  type_y: string,
+) {
+  return txb.moveCall({
+    target: `${vote_package}::voter::reset_`,
+    typeArguments: [type_x, type_y],
+    arguments: [
+      potato,
+      txb.object(voter),
+      txb.object(minter),
+      txb.object(vsdb),
+      txb.object(gauge),
+      txb.object(bribe),
+      txb.object(SUI_CLOCK_OBJECT_ID),
+    ],
+  })
+}
+export function reset_exit(txb: TransactionBlock, potato: any, vsdb: string) {
+  txb.moveCall({
+    target: `${vote_package}::voter::reset_exit`,
+    arguments: [potato, txb.object(voter), txb.object(vsdb)],
+  })
+}
+
+export function vote_entry(
+  txb: TransactionBlock,
+  potato: any,
+  vsdb: string,
   pools: string[],
   weights: string[],
-  gauges: Gauge[],
-  _bribes: Bribe[],
 ) {
-  let potato = txb.moveCall({
-    target: `${vote_package}::voter::voting_entry`,
-    arguments: [txb.object(vsdb.id), txb.object(SUI_CLOCK_OBJECT_ID)],
-  })
-
-  potato = txb.moveCall({
+  if (pools.length != weights.length) throw new Error('pools length unmatched ')
+  return txb.moveCall({
     target: `${vote_package}::voter::vote_entry`,
     arguments: [
       potato,
-      txb.object(voter.id),
+      txb.object(voter),
+      txb.object(vsdb),
       txb.pure(pools, 'vector<address>'),
       txb.pure(weights, 'vector<u64>'),
     ],
   })
+}
 
-  const member = voter.registry[0].members
-  potato = txb.moveCall({
-    target: `${vote_package}::voter::vote_`,
-    typeArguments: [gauges[0].type_x, gauges[0].type_y],
-    arguments: [
-      potato,
-      txb.object(voter.id),
-      txb.object(vsdb.id),
-      txb.object(member.gauge),
-      txb.object(member.bribe),
-      txb.object(SUI_CLOCK_OBJECT_ID),
-    ],
-  })
-
+export function vote_exit(txb: TransactionBlock, potato: any, vsdb: string) {
   txb.moveCall({
     target: `${vote_package}::voter::vote_exit`,
-    arguments: [potato, txb.object(voter.id), txb.object(vsdb.id)],
+    arguments: [potato, txb.object(voter), txb.object(vsdb)],
+  })
+}
+
+export function vote_(
+  txb: TransactionBlock,
+  potato: any,
+  vsdb: string,
+  gauge: string,
+  bribe: string,
+  rewards: string,
+  type_x: string,
+  type_y: string,
+) {
+  return txb.moveCall({
+    target: `${vote_package}::voter::vote_`,
+    typeArguments: [type_x, type_y],
+    arguments: [
+      potato,
+      txb.object(voter),
+      txb.object(minter),
+      txb.object(vsdb),
+      txb.object(gauge),
+      txb.object(bribe),
+      txb.object(rewards),
+      txb.object(SUI_CLOCK_OBJECT_ID),
+    ],
   })
 }
 

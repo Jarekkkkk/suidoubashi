@@ -28,7 +28,7 @@ const VoteContainer = ({ children }: PropsWithChildren) => {
   const voter = useGetVoter()
   const rewards = useGetMulRewards(
     gauge.data?.map((g) => g.rewards) ?? [],
-    gauge.isLoading,
+    gauge.isLoading || voter.isLoading,
   )
 
   const handleOnInputChange = useCallback(

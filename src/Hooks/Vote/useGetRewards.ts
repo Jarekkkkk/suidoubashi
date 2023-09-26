@@ -17,7 +17,6 @@ export const useGetMulRewards = (
           queryKey: ['rewards', id],
           queryFn: () => get_rewards(rpc, currentAccount!.address, id),
           enabled: !!id && !!currentAccount?.address && !gaugeIsLoading,
-          retry: false,
         }
       }) ?? [],
   })
