@@ -1,6 +1,6 @@
 import { Slider } from '@blueprintjs/core'
 import Image from '@/Assets/image'
-import { Icon, CoinIcon } from '@/Assets/icon'
+import { Icon } from '@/Assets/icon'
 import {
   PageContainer,
   ReactTable,
@@ -17,7 +17,11 @@ import { cx } from '@emotion/css'
 import { Gauge, Voter, Rewards } from '@/Constants/API/vote'
 import { usePageContext } from '@/Components/Page'
 import { fetchCoinByType } from '@/Constants'
+import { useState } from 'react'
 
+const renderLabel2 = (val: number) => {
+  return `${Math.round(val * 100)}%`
+}
 
 const VotePresentation = () => {
   const {
@@ -28,7 +32,16 @@ const VotePresentation = () => {
     fetching,
     rewardsData,
   } = useVoteContext()
+
+  const [totalVoting, setTotalVoting] = useState(0)
+
+  console.log('voting', totalVoting)
+
   const { setting, currentNFTInfo } = usePageContext()
+
+  const handleVotingOnchange = (value: number) => {
+    setTotalVoting(value)
+  }
 
   const data = [{ id: 1 }, { id: 2 }]
 
@@ -77,7 +90,9 @@ const VotePresentation = () => {
     return gaugeData.map((gauge, idx) => {
       if (!rewardsData[idx].rewards) return null
       const _rewards = rewardsData[idx].rewards
-      const weight = voterData.pool_weights.find((p) => p.pool_id == gauge.pool)?.weight ?? '0'
+      const weight =
+        voterData.pool_weights.find((p) => p.pool_id == gauge.pool)?.weight ??
+        '0'
 
       return columns.map((column: { id: string }, idx) => {
         switch (column.id) {
@@ -105,7 +120,8 @@ const VotePresentation = () => {
                         (Number(weight) / Number(voterData.total_weight)) *
                         100
                       ).toFixed(2)
-                    : '0.00'}%
+                    : '0.00'}
+                  %
                 </div>
               </div>
             )
@@ -140,7 +156,17 @@ const VotePresentation = () => {
           case 'apr':
             return <div className={constantsStyles.boldText}>12.34%</div>
           case 'weights':
-            return <Slider />
+            return (
+              <Slider
+                min={0}
+                stepSize={0.1}
+                labelStepSize={0.2}
+                max={1}
+                onChange={handleVotingOnchange}
+                labelRenderer={renderLabel2}
+                value={totalVoting}
+              />
+            )
           default:
             return null
         }
