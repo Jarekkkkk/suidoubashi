@@ -1,35 +1,43 @@
-import React, {
-    useState,
-    useContext,
-    PropsWithChildren,
-} from 'react';
+import { Rewards, Stake } from '@/Constants/API/vote'
+import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
+import { useGetMulRewards, useGetRewards } from '@/Hooks/Vote/useGetRewards'
+import { useGetMulStake } from '@/Hooks/Vote/useGetStake'
+import React, { useState, useContext, PropsWithChildren } from 'react'
 
 const RewardsContext = React.createContext<RewardsContext>({
-    data: null,
-    fetching: false
-});
-export const useRewardsContext = () => useContext(RewardsContext);
+  rewardsData: null,
+  stakeData: null,
+  fetching: false,
+})
+export const useRewardsContext = () => useContext(RewardsContext)
 
 const RewardsContainer = ({ children }: PropsWithChildren) => {
-    const [data, _setData] = useState(null);
-    const [fetching, _setFetching] = useState(false);
+  const [fetching, _setFetching] = useState(false)
 
-    return (
-        <RewardsContext.Provider
-            value={{
-                data,
-                fetching,
-            }}
-        >
-            {children}
-        </RewardsContext.Provider>
-    );
-};
+  const gauge = useGetMulGauge()
+  const stakes = useGetMulStake(gauge.data)
+  const rewards = useGetMulRewards(
+    gauge.data?.map((g) => g.rewards) ?? [],
+    gauge.isLoading,
+  )
 
-interface RewardsContext {
-    readonly data: [] | null,
-    readonly fetching: boolean,
-
+  return (
+    <RewardsContext.Provider
+      value={{
+        rewardsData: rewards.data,
+        stakeData: stakes.data,
+        fetching: stakes.isLoading ||rewards.isLoading,
+      }}
+    >
+      {children}
+    </RewardsContext.Provider>
+  )
 }
 
-export default RewardsContainer;
+interface RewardsContext {
+  readonly rewardsData: Rewards[] | null
+  readonly stakeData: Stake[] | null
+  readonly fetching: boolean
+}
+
+export default RewardsContainer

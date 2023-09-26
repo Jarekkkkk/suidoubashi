@@ -10,16 +10,15 @@ import {
   Empty,
   CoinCombin,
 } from '@/Components'
-import { fetchIcon, fetchBalance } from '@/Constants/index'
 import * as constantsStyles from '@/Constants/constants.styles'
 import { useVoteContext } from '@/Containers/Vote'
 import * as styles from './index.styles'
 import { cx } from '@emotion/css'
 import { Gauge, Voter } from '@/Constants/API/vote'
 import { Coins } from '@/Constants/coin'
+import { usePageContext } from '@/Components/Page'
+import { fetchCoinByType } from '@/Constants'
 
-export const fetchCoinByType = (type: string) =>
-  Coins.find((coin) => coin.type === type)
 
 const VotePresentation = () => {
   const {
@@ -30,6 +29,7 @@ const VotePresentation = () => {
     fetching,
     rewardsData,
   } = useVoteContext()
+  const { setting, currentNFTInfo } = usePageContext()
 
   const data = [{ id: 1 }, { id: 2 }]
 

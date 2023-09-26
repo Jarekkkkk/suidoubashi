@@ -148,6 +148,8 @@ export const vsdbTimeSettingOptions = [
 
 
 export const fetchIcon = (name: string) => Coins.find((coin) => coin.name === name);
+export const fetchCoinByType = (type: string) =>
+  Coins.find((coin) => coin.type === type)
 
 export const fetchBalance = (BalanceData: Balance[] | undefined, coinName: string) => BalanceData?.find((balance) => balance.coinName === coinName);
 
