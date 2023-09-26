@@ -15,7 +15,6 @@ import { useVoteContext } from '@/Containers/Vote'
 import * as styles from './index.styles'
 import { cx } from '@emotion/css'
 import { Gauge, Voter } from '@/Constants/API/vote'
-import { Coins } from '@/Constants/coin'
 import { usePageContext } from '@/Components/Page'
 import { fetchCoinByType } from '@/Constants'
 

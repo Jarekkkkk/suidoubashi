@@ -1,6 +1,5 @@
 import { regexNumber } from '@/Constants'
 import { Rewards } from '@/Constants/API/vote'
-import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
 import { useGetMulRewards } from '@/Hooks/Vote/useGetRewards'
 import React, {
@@ -8,6 +7,7 @@ import React, {
   useContext,
   PropsWithChildren,
   useCallback,
+  useMemo,
 } from 'react'
 
 export const BribeContext = React.createContext<BribeContext>({

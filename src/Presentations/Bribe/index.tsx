@@ -1,72 +1,47 @@
-import { Popover } from '@blueprintjs/core'
 import Image from '@/Assets/image'
-import { Icon, CoinIcon } from '@/Assets/icon'
-import {
-  PageContainer,
-  ReactTable,
-  Input,
-  Button,
-  Loading,
-  Empty,
-  CoinCombin,
-  InputSection,
-} from '@/Components'
-import { fetchIcon, fetchBalance } from '@/Constants/index'
+import { PageContainer, Input, Button, InputSection } from '@/Components'
+import { fetchCoinByType } from '@/Constants/index'
 import * as constantsStyles from '@/Constants/constants.styles'
 
 import SelectPoolModal from './_SelectPoolModal'
 import * as styles from './index.styles'
 import { cx, css } from '@emotion/css'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useBribeContext } from '@/Containers/Bribe'
-
-const _coinList = [
-  {
-    id: 0,
-    text: 'USDC',
-    icon: <CoinIcon.USDCIcon />,
-  },
-  {
-    id: 1,
-    text: 'SUI',
-    icon: <CoinIcon.SUIIcon />,
-  },
-  {
-    id: 2,
-    text: 'USDT',
-    icon: <CoinIcon.USDTIcon />,
-  },
-  {
-    id: 3,
-    text: 'SDB',
-    icon: <CoinIcon.SDBIcon />,
-  },
-]
-
-const _fakeCoinData = () => [
-  {
-    coinType: fetchIcon('ETH')?.type,
-    coinName: 'ETH',
-    totalBalance: '123',
-  },
-  {
-    coinType: fetchIcon('SUI')?.type,
-    coinName: 'SUI',
-    totalBalance: '123',
-  },
-]
+import { CoinInterface, Coins } from '@/Constants/coin'
+import useGetBalance from '@/Hooks/Coin/useGetBalance'
+import { formatBalance } from '@/Utils/format'
+import { useBribe } from '@/Hooks/Vote/useBribe'
+import { usePageContext } from '@/Components/Page'
 
 const BribePresentation = () => {
   const [isShow, setIsShow] = useState(false)
-  const [coinType, setCoinType] = useState('ETH')
-  const [coinInputFirst, setCoinInputFirst] = useState('')
-  const coinTypeFirst = fetchIcon('ETH')
-  const coinData = _fakeCoinData()
+  const [coinType, setCoinType] = useState<CoinInterface>(Coins[0])
+  const balance = useGetBalance(coinType.type)
 
   const { rewardsData, handleInputOnchange, coinInput } = useBribeContext()
+  const { setting } = usePageContext()
 
-  const handleOnCoinInputFirstChange = (e) => {
-    setCoinInputFirst(e)
+  const [rewardsId, setRewardsId] = useState('')
+  const selectedReward = useMemo(() => {
+    if (!rewardsData) return
+    if (!rewardsId) return rewardsData[0]
+    return rewardsData?.find((r) => r.id == rewardsId)
+  }, [rewardsId, rewardsData])
+
+  const bribe = useBribe(setting)
+  const handleBribe = () => {
+    if (selectedReward && coinType) {
+      bribe.mutate({
+        rewards: selectedReward.id,
+        type_x: selectedReward.type_x,
+        type_y: selectedReward.type_y,
+        input_type: coinType.type,
+        input_value: Math.round(
+          parseFloat(coinInput) * 10 ** coinType.decimals,
+        ).toString(),
+      })
+    }
   }
 
   return (
@@ -102,11 +77,14 @@ const BribePresentation = () => {
           </div>
           <div className={styles.inputContent}>
             <InputSection
-              balance='123'
+              balance={formatBalance(
+                balance?.totalBalance ?? '0',
+                coinType.decimals,
+              )}
               titleChildren={
                 <div className={styles.coinButton} onClick={() => {}}>
-                  {coinTypeFirst!.logo}
-                  <span>{coinTypeFirst!.name}</span>
+                  {coinType.logo}
+                  <span>{coinType.name}</span>
                 </div>
               }
               inputChildren={
@@ -116,7 +94,7 @@ const BribePresentation = () => {
                     onChange={(e) => {
                       handleInputOnchange(e)
                     }}
-                    placeholder={`${coinTypeFirst!.name} Value`}
+                    placeholder={`${coinType.name} Value`}
                     // disabled={isLoading}
                   />
                 </>
@@ -124,36 +102,35 @@ const BribePresentation = () => {
             />
           </div>
           <div className={styles.coinBlock}>
-            {_coinList.map((coin) => {
-              const _coinData = coinData?.filter(
-                (item: { coinName: string }) => item.coinName === coin.text,
-              )[0]
-              const _coinIdx = coinData && fetchIcon(coinData.coinType)
-
-              return (
-                <Button
-                  onClick={() => {
-                    setCoinType(_coinIdx)
-                    setIsShow(false)
-                  }}
-                  styletype='outlined'
-                  text={coin.text}
-                  icon={coin.icon}
-                  key={coin.id}
-                  disabled={!_coinData}
-                  size='medium'
-                />
-              )
-            })}
+            {selectedReward?.rewards
+              .map((r) => fetchCoinByType(r.type))
+              ?.map((_coinData, idx) => {
+                if (!_coinData) return
+                return (
+                  <Button
+                    onClick={() => {
+                      setCoinType(_coinData)
+                      setIsShow(false)
+                    }}
+                    styletype='outlined'
+                    text={_coinData.name}
+                    icon={_coinData.logo}
+                    key={idx}
+                    disabled={!_coinData}
+                    size='medium'
+                  />
+                )
+              })}
           </div>
           <div className={css({ marginTop: 'auto' })}>
-            <Button styletype='filled' text='Bride' onClick={() => {}} />
+            <Button styletype='filled' text='Bribe' onClick={handleBribe} />
           </div>
         </div>
         <SelectPoolModal
           isShow={isShow}
           setIsShow={setIsShow}
           rewardsData={rewardsData}
+          setRewardsId={setRewardsId}
           isCoinDataLoading={false}
         />
       </div>

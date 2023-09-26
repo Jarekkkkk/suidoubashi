@@ -17,6 +17,18 @@ export interface CoinInterface {
 
 export const Coins: CoinInterface[] = [
   {
+    type: Coin.SUI,
+    logo: <CoinIcon.SUIIcon />,
+    decimals: 9,
+    name: 'SUI',
+  },
+  {
+    type: Coin.SDB,
+    logo: <CoinIcon.SDBIcon />,
+    decimals: 9,
+    name: 'SDB',
+  },
+  {
     type: Coin.BTC,
     logo: <CoinIcon.BTCIcon />,
     decimals: 8,
@@ -39,17 +51,5 @@ export const Coins: CoinInterface[] = [
     logo: <CoinIcon.USDTIcon />,
     decimals: 6,
     name: 'USDT',
-  },
-  {
-    type: Coin.SUI,
-    logo: <CoinIcon.SUIIcon />,
-    decimals: 9,
-    name: 'SUI',
-  },
-  {
-    type: Coin.SDB,
-    logo: <CoinIcon.SDBIcon />,
-    decimals: 9,
-    name: 'SDB',
   },
 ]

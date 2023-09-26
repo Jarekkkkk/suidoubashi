@@ -62,6 +62,7 @@ export type Bribe = {
 }
 
 export type Rewards = {
+  id: string
   name: string
   type_x: string
   type_y: string
@@ -232,7 +233,7 @@ export async function get_rewards(
       ?.slice(objectType.indexOf('<') + 1, objectType.indexOf('>'))
       .split(',')
       .map((t) => normalizeStructTag(t.trim())) ?? []
-  const name = X.split('::')[2] + Y.split('::')[2]
+  const name = X.split('::')[2] + '-' + Y.split('::')[2]
   //  // balances
   //  const entries = [
   //    {
@@ -285,7 +286,7 @@ export async function get_rewards(
 
   return {
     id,
-    name, 
+    name,
     type_x: normalizeStructTag(X),
     type_y: normalizeStructTag(Y),
     rewards,
