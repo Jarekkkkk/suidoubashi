@@ -280,7 +280,7 @@ export async function get_rewards(
       type,
       ts.toString(),
     )
-    rewards.push({ type, value })
+    rewards.push({ type: normalizeStructTag(type), value })
   }
 
   return {
@@ -503,8 +503,8 @@ export function bribe(
   coin: any,
   type_x: string,
   type_y: string,
-  input_type: string
-){
+  input_type: string,
+) {
   txb.moveCall({
     target: `${vote_package}::bribe::bribe`,
     typeArguments: [type_x, type_y, input_type],
