@@ -2,7 +2,6 @@ import {
   JsonRpcProvider,
   ObjectId,
   SUI_CLOCK_OBJECT_ID,
-  SUI_TYPE_ARG,
   SuiAddress,
   TransactionBlock,
   getObjectFields,
@@ -11,9 +10,8 @@ import {
   normalizeStructTag,
 } from '@mysten/sui.js'
 
-import { Vsdb, vsdb_package } from './vsdb'
+import { Vsdb, vsdb_package, vsdb_reg } from './vsdb'
 import { bcs_registry } from '../bcs'
-import pLimit from 'p-limit'
 
 export const vote_package = import.meta.env.VITE_VOTE_PACKAGE_TESTNET as string
 export const gauges_df_id = import.meta.env.VITE_GAUGES_DF_ID as string
@@ -76,6 +74,23 @@ export interface VotingState {
   voted: boolean
   used_weights: string
   last_voted: string
+}
+
+export async function initialize_voting_state(
+  txb: TransactionBlock,
+  vsdb: string,
+) {
+  txb.moveCall({
+    target: `${vote_package}::voter::initialize`,
+    arguments: [txb.object(vsdb_reg), txb.object(vsdb)],
+  })
+}
+
+export async function clear_voting_state(txb: TransactionBlock, vsdb: string) {
+  txb.moveCall({
+    target: `${vote_package}::voter::clear`,
+    arguments: [txb.object(vsdb)],
+  })
 }
 
 export async function get_voter(
@@ -253,7 +268,7 @@ export async function get_rewards(
   //  )
   const ts = Math.floor(Date.now() / 1000)
   const promises = rewards_type.map((r) =>
-    rewards_per_epoch(rpc, sender, id, X, Y, r, ts.toString())
+    rewards_per_epoch(rpc, sender, id, X, Y, r, ts.toString()),
   )
 
   const rewards = (await Promise.all(promises)).map((value, idx) => {

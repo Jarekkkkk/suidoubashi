@@ -74,14 +74,14 @@ export async function get_vsdb(
       value: { dummy_field: false },
     },
   })
-  //  const voting_state = await rpc.getDynamicFieldObject({
-  //    parentId: id,
-  //    name: {
-  //      type: vsdb_dynamic_key(`${vote_package}::voter::VSDB`),
-  //      value: { dummy_field: false },
-  //    },
-  //    //name: df.data[0].name,
-  //  })
+    const voting_state = await rpc.getDynamicFieldObject({
+      parentId: id,
+      name: {
+        type: vsdb_dynamic_key(`${vote_package}::voter::VSDB`),
+        value: { dummy_field: false },
+      },
+      //name: df.data[0].name,
+    })
 
   const vesdb = await voting_weight(rpc, address, id)
   return {
@@ -94,6 +94,7 @@ export async function get_vsdb(
     modules: modules.fields.contents,
     display,
     amm_state: getObjectFields(amm_state)?.value?.fields,
+    voting_state : getObjectFields(voting_state)?.value?.fields
   } as Vsdb
 }
 
