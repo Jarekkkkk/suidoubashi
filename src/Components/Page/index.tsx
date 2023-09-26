@@ -16,6 +16,7 @@ import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import { SettingInterface, defaultSetting } from '../SettingModal'
 import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
 import { useGetMulStake } from '@/Hooks/Vote/useGetStake'
+import SettingModule from '@/Modules/Setting'
 
 const PageContext = createContext<PageContext>({
   currentNFTInfo: {
@@ -85,7 +86,11 @@ const PageComponent = (props: Props) => {
   // stake
   const { data: stakes, isLoading: isStakeDataLoading } = useGetMulStake(gauges)
   // setting
-  const [setting, setSetting] = useState<SettingInterface>(defaultSetting)
+  const [setting, setSetting] = useState<SettingInterface>({
+    gasBudget: SettingModule.getGadBudgetToken() ?? defaultSetting.gasBudget,
+    expiration: SettingModule.getExpirationToken() ?? defaultSetting.expiration,
+    slippage: SettingModule.getSlippageToken() ?? defaultSetting.slippage,
+  })
 
   if (isDashboard) {
     return (
