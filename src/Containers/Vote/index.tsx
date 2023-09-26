@@ -6,11 +6,15 @@ import React, {
   ChangeEvent,
 } from 'react'
 import { regexEn } from '@/Constants/index'
-import { useGetGaugeIDs, useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
+import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
 import { useGetVoter } from '@/Hooks/Vote/useGetVoter'
+import { Gauge, Rewards, Voter } from '@/Constants/API/vote'
+import { useGetMulRewards } from '@/Hooks/Vote/useGetRewards'
 
 const VoteContext = React.createContext<VoteContext>({
-  data: null,
+  gaugeData: null,
+  voterData: null,
+  rewardsData: null,
   fetching: false,
   searchInput: '',
   handleOnInputChange: () => {},
@@ -18,17 +22,14 @@ const VoteContext = React.createContext<VoteContext>({
 export const useVoteContext = () => useContext(VoteContext)
 
 const VoteContainer = ({ children }: PropsWithChildren) => {
-  const [data, _setData] = useState(null)
-  const [fetching, _setFetching] = useState(false)
   const [searchInput, setSearchInput] = useState('')
 
-  const { data: gauge_ids } = useGetGaugeIDs()
-  const { data: gauges } = useGetMulGauge(gauge_ids)
-
-
-  const {data: voter} = useGetVoter()
-  console.log('voter',voter)
-
+  const gauge = useGetMulGauge()
+  const voter = useGetVoter()
+  const rewards = useGetMulRewards(
+    gauge.data?.map((g) => g.rewards) ?? [],
+    gauge.isLoading,
+  )
 
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,8 +47,10 @@ const VoteContainer = ({ children }: PropsWithChildren) => {
   return (
     <VoteContext.Provider
       value={{
-        data,
-        fetching,
+        gaugeData: gauge.data,
+        voterData: voter.data,
+        rewardsData: rewards.data,
+        fetching: gauge.isLoading || voter.isLoading || rewards.isLoading,
         searchInput,
         handleOnInputChange,
       }}
@@ -58,8 +61,10 @@ const VoteContainer = ({ children }: PropsWithChildren) => {
 }
 
 interface VoteContext {
-  readonly data: [] | null
+  readonly gaugeData: Gauge[] | null
   readonly fetching: boolean
+  readonly voterData: Voter | null | undefined
+  readonly rewardsData: Rewards[] | null
   searchInput: string
   handleOnInputChange: (e: ChangeEvent<HTMLInputElement>) => void
 }

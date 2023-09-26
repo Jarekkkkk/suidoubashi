@@ -18,7 +18,6 @@ const PoolContext = React.createContext<PoolContext>({
 export const usePoolContext = () => useContext(PoolContext)
 
 const PoolContainer = ({ children }: PropsWithChildren) => {
-  const [fetching, _setFetching] = useState(false)
   const [searchInput, setSearchInput] = useState('')
 
   const walletAddress = UserModule.getUserToken()

@@ -1,11 +1,10 @@
-import { getObjectFields } from '@mysten/sui.js'
+import { JsonRpcProvider, getObjectFields } from '@mysten/sui.js'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useMemo } from 'react'
 import { Gauge, gauges_df_id, get_gauge } from '@/Constants/API/vote'
 
-export function useGetGaugeIDs() {
-  const rpc = useRpc()
+export function useGetGaugeIDs(rpc: JsonRpcProvider) {
   return useQuery(
     ['get-gauge-ids'],
     async () => {
@@ -31,7 +30,7 @@ export function useGetGaugeIDs() {
 
 export const useGetMulGauge = () => {
   const rpc = useRpc()
-  const {data: gauge_ids} = useGetGaugeIDs()
+  const {data: gauge_ids} = useGetGaugeIDs(rpc)
   const gauges = useQueries({
     queries:
       gauge_ids?.map((id) => {
@@ -58,11 +57,10 @@ export const useGetMulGauge = () => {
 }
 
 export const useGetGauge = (type_x?: string, type_y?: string) => {
-  const { data: gauge_ids } = useGetGaugeIDs()
-  const { data: gauges } = useGetMulGauge(gauge_ids)
+  const { data: gauges } = useGetMulGauge()
 
   return useMemo(
     () => gauges?.find((g) => g.type_x == type_x && g.type_y == type_y) ?? null,
-    [gauge_ids, gauges],
+    [gauges],
   )
 }
