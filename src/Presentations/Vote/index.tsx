@@ -76,11 +76,9 @@ const VotePresentation = () => {
 
   const renderRow = (columns: any[], data: Gauge[], voterData: Voter) => {
     return data.map((gauge, idx) => {
+      if (!rewardsData[idx].rewards) return null
+      const _rewards = rewardsData[idx].rewards
       const weight = voterData.pool_weights.find((p) => p.pool_id == gauge.pool)?.weight ?? '0'
-      const _reward0 = fetchCoinByType(rewardsData[idx].rewards[0]?.type)
-      const _reward1 = fetchCoinByType(rewardsData[idx].rewards[1]?.type)
-      const _reward2 = fetchCoinByType(rewardsData[idx].rewards[2]?.type)
-      const _reward3 = fetchCoinByType(rewardsData[idx].rewards[3]?.type)
 
       return columns.map((column: { id: string }, idx) => {
         switch (column.id) {
@@ -121,50 +119,23 @@ const VotePresentation = () => {
                 )}
               >
                 <div className={constantsStyles.boldText}>$ 1,234.56</div>
-                {(_reward0 && rewardsData[idx].rewards[0]) && <div
-                  className={cx(
-                    constantsStyles.rowContent,
-                    constantsStyles.greyText,
-                  )}
-                >
-                  <span>{rewardsData[idx].rewards[0].value}</span>
-                  <div className={styles.smallIcon}>
-                    {_reward0.logo}
-                  </div>
-                </div>}
-                {(_reward1 && rewardsData[idx].rewards[1]) && <div
-                  className={cx(
-                    constantsStyles.rowContent,
-                    constantsStyles.greyText,
-                  )}
-                >
-                  <span>{rewardsData[idx].rewards[1].value}</span>
-                  <div className={styles.smallIcon}>
-                    {_reward1.logo}
-                  </div>
-                </div>}
-                {(_reward2 && rewardsData[idx].rewards[2]) && <div
-                  className={cx(
-                    constantsStyles.rowContent,
-                    constantsStyles.greyText,
-                  )}
-                >
-                  <span>{rewardsData[idx].rewards[2].value}</span>
-                  <div className={styles.smallIcon}>
-                    {_reward2.logo}
-                  </div>
-                </div>}
-                {(_reward3 && rewardsData[idx].rewards[3]) && <div
-                  className={cx(
-                    constantsStyles.rowContent,
-                    constantsStyles.greyText,
-                  )}
-                >
-                  <span>{rewardsData[idx].rewards[3].value}</span>
-                  <div className={styles.smallIcon}>
-                    {_reward3.logo}
-                  </div>
-                </div>}
+                {
+                  _rewards.map((reward) => {
+                    console.log('reward', reward)
+                    return (
+                    <div
+                      className={cx(
+                        constantsStyles.rowContent,
+                        constantsStyles.greyText,
+                      )}
+                    >
+                      <span>{reward.value}</span>
+                      <div className={styles.smallIcon}>
+                        {fetchCoinByType(reward.type)?.logo}
+                      </div>
+                    </div>
+                  )})
+                }
               </div>
             )
           case 'apr':
