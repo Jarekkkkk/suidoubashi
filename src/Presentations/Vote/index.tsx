@@ -119,19 +119,20 @@ const VotePresentation = () => {
               >
                 <div className={constantsStyles.boldText}>$ 1,234.56</div>
                 {
-                  _rewards.map((reward) => {
+                  _rewards.map((reward, key) => {
                     return (
-                    <div
-                      className={cx(
-                        constantsStyles.rowContent,
-                        constantsStyles.greyText,
-                      )}
-                    >
-                      <span>{reward.value}</span>
-                      <div className={styles.smallIcon}>
-                        {fetchCoinByType(reward.type)?.logo}
+                      <div
+                        className={cx(
+                          constantsStyles.rowContent,
+                          constantsStyles.greyText,
+                        )}
+                        key={idx + key}
+                      >
+                        <span>{reward.value}</span>
+                        <div className={styles.smallIcon}>
+                          {fetchCoinByType(reward.type)?.logo}
+                        </div>
                       </div>
-                    </div>
                   )})
                 }
               </div>
