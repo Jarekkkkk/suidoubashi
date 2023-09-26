@@ -12,7 +12,6 @@ import {
 
 import { Vsdb, vsdb_package, vsdb_reg } from './vsdb'
 import { bcs_registry } from '../bcs'
-import exp from 'constants'
 
 export const vote_package = import.meta.env.VITE_VOTE_PACKAGE_TESTNET as string
 export const gauges_df_id = import.meta.env.VITE_GAUGES_DF_ID as string
@@ -286,8 +285,8 @@ export async function get_rewards(
 
   return {
     id,
-    type_x: X,
-    type_y: Y,
+    type_x: normalizeStructTag(X),
+    type_y: normalizeStructTag(Y),
     rewards,
   } as Rewards
 }
@@ -496,4 +495,19 @@ export async function get_stake_balance(
     const valueData = Uint8Array.from(returnValue[0] as Iterable<number>)
     return bcs_registry.de(valueType, valueData, 'hex')
   }
+}
+
+export function bribe(
+  txb: TransactionBlock,
+  rewards: string,
+  coin: any,
+  type_x: string,
+  type_y: string,
+  input_type: string
+){
+  txb.moveCall({
+    target: `${vote_package}::bribe::bribe`,
+    typeArguments: [type_x, type_y, input_type],
+    arguments: [txb.object(rewards), coin, txb.object(SUI_CLOCK_OBJECT_ID)],
+  })
 }
