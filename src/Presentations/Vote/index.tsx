@@ -35,16 +35,16 @@ const VotePresentation = () => {
 
   if (fetching)
     return (
-      <PageContainer title='Pool' titleImg={Image.pageBackground_2}>
+      <PageContainer title='Vote' titleImg={Image.pageBackground_2}>
         <div className={constantsStyles.LoadingContainer}>
           <Loading />
         </div>
       </PageContainer>
     )
 
-  if (!gaugeData || !voterData)
+  if (!gaugeData || !voterData || !rewardsData)
     return (
-      <PageContainer title='Pool' titleImg={Image.pageBackground_2}>
+      <PageContainer title='Vote' titleImg={Image.pageBackground_2}>
         <div className={constantsStyles.LoadingContainer}>
           <Empty content='Oops! No Data.' />
         </div>
@@ -75,10 +75,12 @@ const VotePresentation = () => {
   ]
 
   const renderRow = (columns: any[], data: Gauge[], voterData: Voter) => {
-    return data.map((gauge) => {
-      const weight =
-        voterData.pool_weights.find((p) => p.pool_id == gauge.pool)?.weight ??
-        '0'
+    return data.map((gauge, idx) => {
+      const weight = voterData.pool_weights.find((p) => p.pool_id == gauge.pool)?.weight ?? '0'
+      const _reward0 = fetchCoinByType(rewardsData[idx].rewards[0]?.type)
+      const _reward1 = fetchCoinByType(rewardsData[idx].rewards[1]?.type)
+      const _reward2 = fetchCoinByType(rewardsData[idx].rewards[2]?.type)
+      const _reward3 = fetchCoinByType(rewardsData[idx].rewards[3]?.type)
 
       return columns.map((column: { id: string }, idx) => {
         switch (column.id) {
@@ -106,8 +108,7 @@ const VotePresentation = () => {
                         (Number(weight) / Number(voterData.total_weight)) *
                         100
                       ).toFixed(2)
-                    : '0.00'}{' '}
-                  %
+                    : '0.00'}%
                 </div>
               </div>
             )
@@ -120,42 +121,50 @@ const VotePresentation = () => {
                 )}
               >
                 <div className={constantsStyles.boldText}>$ 1,234.56</div>
-                <div
+                {(_reward0 && rewardsData[idx].rewards[0]) && <div
                   className={cx(
                     constantsStyles.rowContent,
                     constantsStyles.greyText,
                   )}
                 >
-                  <span>123,456.0000</span>
-                  <CoinIcon.WETHIcon className={styles.smallIcon} />
-                </div>
-                <div
+                  <span>{rewardsData[idx].rewards[0].value}</span>
+                  <div className={styles.smallIcon}>
+                    {_reward0.logo}
+                  </div>
+                </div>}
+                {(_reward1 && rewardsData[idx].rewards[1]) && <div
                   className={cx(
                     constantsStyles.rowContent,
                     constantsStyles.greyText,
                   )}
                 >
-                  <span>123,456.00</span>
-                  <CoinIcon.SUIIcon className={styles.smallIcon} />
-                </div>
-                <div
+                  <span>{rewardsData[idx].rewards[1].value}</span>
+                  <div className={styles.smallIcon}>
+                    {_reward1.logo}
+                  </div>
+                </div>}
+                {(_reward2 && rewardsData[idx].rewards[2]) && <div
                   className={cx(
                     constantsStyles.rowContent,
                     constantsStyles.greyText,
                   )}
                 >
-                  <span>123,456.00</span>
-                  <CoinIcon.SUIIcon className={styles.smallIcon} />
-                </div>
-                <div
+                  <span>{rewardsData[idx].rewards[2].value}</span>
+                  <div className={styles.smallIcon}>
+                    {_reward2.logo}
+                  </div>
+                </div>}
+                {(_reward3 && rewardsData[idx].rewards[3]) && <div
                   className={cx(
                     constantsStyles.rowContent,
                     constantsStyles.greyText,
                   )}
                 >
-                  <span>123,456.00</span>
-                  <CoinIcon.SUIIcon className={styles.smallIcon} />
-                </div>
+                  <span>{rewardsData[idx].rewards[3].value}</span>
+                  <div className={styles.smallIcon}>
+                    {_reward3.logo}
+                  </div>
+                </div>}
               </div>
             )
           case 'apr':
