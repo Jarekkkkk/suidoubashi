@@ -13,6 +13,7 @@ import {
 
 import { Vsdb, vsdb_package } from './vsdb'
 import { bcs_registry } from '../bcs'
+import pLimit from 'p-limit'
 
 export const vote_package = import.meta.env.VITE_VOTE_PACKAGE_TESTNET as string
 export const gauges_df_id = import.meta.env.VITE_GAUGES_DF_ID as string
@@ -64,10 +65,10 @@ export type Bribe = {
 export type Rewards = {
   type_x: string
   type_y: string
-  balance_x: string
-  balance_y: string
-  balance_sdb?: string
-  balance_sui?: string
+  rewards: {
+    type: string
+    value: string
+  }[]
 }
 
 export interface VotingState {
@@ -164,8 +165,38 @@ export async function get_bribe(
   } as Bribe
 }
 
+async function rewards_per_epoch(
+  rpc: JsonRpcProvider,
+  sender: SuiAddress,
+  rewards: string,
+  pool_type_x: string,
+  pool_type_y: string,
+  input_type: string,
+  ts: string,
+): Promise<string> {
+  let txb = new TransactionBlock()
+  txb.moveCall({
+    target: `${vote_package}::bribe::rewards_per_epoch`,
+    typeArguments: [pool_type_x, pool_type_y, input_type],
+    arguments: [txb.object(rewards), txb.pure(ts)],
+  })
+  let res = await rpc.devInspectTransactionBlock({
+    sender,
+    transactionBlock: txb,
+  })
+  const returnValue = res?.results?.[0]?.returnValues?.[0]
+  if (!returnValue) {
+    return '0'
+  } else {
+    const valueType = returnValue[1].toString()
+    const valueData = Uint8Array.from(returnValue[0] as Iterable<number>)
+    return bcs_registry.de(valueType, valueData, 'hex')
+  }
+}
+
 export async function get_rewards(
   rpc: JsonRpcProvider,
+  sender: string,
   id: string,
 ): Promise<Rewards | null> {
   if (!isValidSuiObjectId(id)) return null
@@ -175,57 +206,65 @@ export async function get_rewards(
 
   if (!fields) return null
 
-  const objectType = fields ? getObjectType(fields!) : null
+  const objectType = getObjectType(rewards_obj)
+  const rewards_type = fields.rewards_type.fields.contents.map(
+    (r: any) => r.fields.name,
+  )
 
   const [X, Y] =
     objectType
       ?.slice(objectType.indexOf('<') + 1, objectType.indexOf('>'))
       .split(',')
-      .map((t) => t.trim()) ?? []
+      .map((t) => normalizeStructTag(t.trim())) ?? []
 
-  // balances
-  const entries = [
-    {
-      type: '0x1::type_name::TypeName',
-      value: { name: X.slice(2) },
-    },
-    {
-      type: '0x1::type_name::TypeName',
-      value: { name: Y.slice(2) },
-    },
-  ]
+  //  // balances
+  //  const entries = [
+  //    {
+  //      type: '0x1::type_name::TypeName',
+  //      value: { name: X },
+  //    },
+  //    {
+  //      type: '0x1::type_name::TypeName',
+  //      value: { name: Y },
+  //    },
+  //  ]
+  //
+  //  const sdb_type = `${vsdb_package}::sdb::SDB`
+  //  if (entries[0].value.name != sdb_type && entries[1].value.name != sdb_type) {
+  //    entries.push({
+  //      type: '0x1::type_name::TypeName',
+  //      value: { name: sdb_type.slice(2) },
+  //    })
+  //  }
+  //  if (
+  //    entries[0].value.name != normalizeStructTag(SUI_TYPE_ARG) &&
+  //    entries[1].value.name != normalizeStructTag(SUI_TYPE_ARG)
+  //  ) {
+  //    entries.push({
+  //      type: '0x1::type_name::TypeName',
+  //      value: {
+  //        name: '0000000000000000000000000000000000000000000000000000000000000002::sui::SUI',
+  //      },
+  //    })
+  //  }
 
-  const sdb_type = `${vsdb_package}::sdb::SDB`
-  if (entries[0].type != sdb_type && entries[1].type != sdb_type) {
-    entries.push({
-      type: '0x1::type_name::TypeName',
-      value: { name: sdb_type.slice(2) },
-    })
-  }
-  if (entries[0].type != SUI_TYPE_ARG && entries[1].type != SUI_TYPE_ARG) {
-    entries.push({
-      type: '0x1::type_name::TypeName',
-      value: {
-        name: '0000000000000000000000000000000000000000000000000000000000000002::sui::SUI',
-      },
-    })
-  }
-
-  const promises = entries.map((e) =>
-    rpc.getDynamicFieldObject({ parentId: id, name: e }),
+  //  const promises = entries.map((e) =>
+  //    rpc.getDynamicFieldObject({ parentId: id, name: e }),
+  //  )
+  const ts = Math.floor(Date.now() / 1000)
+  const promises = rewards_type.map((r) =>
+    rewards_per_epoch(rpc, sender, id, X, Y, r, ts.toString())
   )
-  const rewards = (await Promise.all(promises)).map((reward) => {
-    return getObjectFields(reward)?.balance ?? ''
+
+  const rewards = (await Promise.all(promises)).map((value, idx) => {
+    return { type: rewards_type[idx], value }
   })
 
   return {
-    ...fields,
+    id,
     type_x: X,
     type_y: Y,
-    balance_x: rewards[0],
-    balance_y: rewards[1],
-    balance_sdb: rewards?.[2] ?? undefined,
-    balance_sui: rewards?.[3] ?? undefined,
+    rewards,
   } as Rewards
 }
 
