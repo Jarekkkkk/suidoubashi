@@ -76,7 +76,6 @@ const SwapContainer = ({ children }: PropsWithChildren) => {
     [coinTypeFirst?.type, coinTypeSecond?.type, pools],
   )
 
-
   const handleOnCoinInputFirstChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value

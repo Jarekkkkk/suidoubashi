@@ -1,7 +1,7 @@
-import { useQueries, useQuery } from '@tanstack/react-query'
+import { useQueries } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useMemo } from 'react'
-import { Gauge, Rewards, get_rewards } from '@/Constants/API/vote'
+import { Rewards, get_rewards } from '@/Constants/API/vote'
 import { useWalletKit } from '@mysten/wallet-kit'
 
 export const useGetMulRewards = (
@@ -36,12 +36,12 @@ export const useGetMulRewards = (
 }
 
 export const useGetRewards = (
-  rewards_ids: any,
+  rewards_ids: null | string[],
+  gaugeIsLoading: boolean,
   type_x?: string,
   type_y?: string,
 ) => {
-  const { data: rewards } = useGetMulRewards(rewards_ids)
-
+  const { data: rewards } = useGetMulRewards(rewards_ids, gaugeIsLoading)
   return useMemo(
     () =>
       rewards?.find((g) => g.type_x == type_x && g.type_y == type_y) ?? null,

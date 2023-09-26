@@ -2,7 +2,6 @@ import { useMutation } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
 import {
-  CoinBalance,
   TransactionBlock,
   getExecutionStatusType,
 } from '@mysten/sui.js'

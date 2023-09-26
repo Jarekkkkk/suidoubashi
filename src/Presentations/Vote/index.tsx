@@ -31,6 +31,7 @@ const VotePresentation = () => {
   } = useVoteContext()
   const { setting, currentNFTInfo } = usePageContext()
 
+  console.log('rewards', rewardsData)
   const data = [{ id: 1 }, { id: 2 }]
 
   if (fetching)

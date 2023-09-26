@@ -14,9 +14,10 @@ import { Balance } from '@/Hooks/Coin/useGetBalance'
 import { Coins } from '@/Constants/coin'
 import { regexEn } from '@/Constants/index'
 import * as styles from './index.styles'
+import { Rewards } from '@/Constants/API/vote'
 
 type Props = {
-	coinData: Balance[] | undefined,
+  rewardsData: Rewards[] | null,
   isCoinDataLoading: boolean,
   isShow: boolean,
   setIsShow: Function,
@@ -26,19 +27,9 @@ type Props = {
 const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
 
 const SelectPoolModal = (props: Props) => {
-  const { coinData, isCoinDataLoading, isShow, setIsShow, setCoinType } = props;
+  const { rewardsData, isCoinDataLoading, isShow, setIsShow, setCoinType } = props;
   const [input, setInput] = useState<string>('');
-  const _coinsData = coinData?.filter((coin) => new RegExp(input, 'ig').test(coin.coinName))?.sort((prev, next) => {
-    const _prevIdx = fetchIcon(prev.coinType)!.decimals
-    const _nextIdx = fetchIcon(next.coinType)!.decimals
-
-    return Number(
-      BigInt(next.totalBalance) *
-        BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
-        BigInt(prev.totalBalance) *
-          BigInt('10') ** BigInt((9 - _prevIdx).toString()),
-    )
-  });
+  const _coinsData = rewardsData?.filter((reward) => new RegExp(input, 'ig').test(reward.name)) ?? []
 
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,8 +72,8 @@ const SelectPoolModal = (props: Props) => {
                 <Loading />
               </div>
             ) : _coinsData && !!_coinsData.length ? (
-              _coinsData.map((balance, idx) => {
-                  const _coinIdx = fetchIcon(balance.coinType)
+              _coinsData.map((reward, idx) => {
+                  const _coinIdx = fetchIcon(reward.type_x)
 
                   return (
                     <div
@@ -94,8 +85,8 @@ const SelectPoolModal = (props: Props) => {
                       className={styles.coincardContent}
                     >
                       <CoinCombin
-                        poolCoinX={fetchIcon(balance.coinType)}
-                        poolCoinY={fetchIcon(balance.coinType)}
+                        poolCoinX={fetchIcon(reward.type_x)}
+                        poolCoinY={fetchIcon(reward.type_y)}
                       />
                     </div>
                   )

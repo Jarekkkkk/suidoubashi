@@ -1,37 +1,65 @@
+import { regexNumber } from '@/Constants'
+import { Rewards } from '@/Constants/API/vote'
+import useGetBalance from '@/Hooks/Coin/useGetBalance'
+import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
+import { useGetMulRewards } from '@/Hooks/Vote/useGetRewards'
 import React, {
-    useState,
-    useContext,
-    PropsWithChildren,
-} from 'react';
+  useState,
+  useContext,
+  PropsWithChildren,
+  useCallback,
+} from 'react'
 
 export const BribeContext = React.createContext<BribeContext>({
-    data: null,
-    fetching: false
-});
+  rewardsData: null,
+  fetching: false,
+  coinInput: '',
+  handleInputOnchange: () => {},
+})
 
-export const useBribeContext = () => useContext(BribeContext);
+export const useBribeContext = () => useContext(BribeContext)
 
 export const BribeContainer = ({ children }: PropsWithChildren) => {
-    const [data, _setData] = useState(null);
-    const [fetching, _setFetching] = useState(false);
+  const [fetching, _setFetching] = useState(false)
 
+  const gauge = useGetMulGauge()
+  const { data: rewardsData } = useGetMulRewards(
+    gauge.data?.map((g) => g.rewards) ?? [],
+    gauge.isLoading,
+  )
 
-    return (
-        <BribeContext.Provider
-            value={{
-                data,
-                fetching,
-            }}
-        >
-            {children}
-        </BribeContext.Provider>
-    );
-};
+  const [coinInput, setCoinInput] = useState('')
+  const handleInputOnchange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value
+      const isValid = regexNumber.test(value)
+      if (!isValid) {
+        value = value.slice(0, -1)
+      }
+      setCoinInput(value)
+    },
+    [setCoinInput],
+  )
 
-
-interface BribeContext {
-    readonly data: [] | null,
-    readonly fetching: boolean,
+  return (
+    <BribeContext.Provider
+      value={{
+        rewardsData,
+        fetching,
+        coinInput,
+        handleInputOnchange,
+      }}
+    >
+      {children}
+    </BribeContext.Provider>
+  )
 }
 
-export default BribeContainer;
+interface BribeContext {
+  readonly rewardsData: Rewards[] | null
+  readonly fetching: boolean
+  coinInput: string
+  handleInputOnchange: Function
+}
+
+export default BribeContainer
