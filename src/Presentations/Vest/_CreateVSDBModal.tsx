@@ -77,6 +77,17 @@ const CreateVSDBModal = (props: Props) => {
     })
   }
 
+  const minDate = () => {
+    const _today = moment().toDate();
+    const _thisWed = moment().startOf('week').add(3, 'days').toDate();
+
+    if (_thisWed >= _today) {
+      return moment().startOf('week').add(4, 'days').toDate()
+    } else if (_thisWed < _today) {
+      return moment().startOf('week').add(11, 'days').toDate()
+    }
+  }
+
   return (
     <Dialog
       {...props}
@@ -119,6 +130,7 @@ const CreateVSDBModal = (props: Props) => {
         inputChildren={
           <>
             <DatePicker
+              minDate={minDate()}
               endDate={new Date(endDate)}
               handleOnChange={handleOnChange}
               disabled={isLoading}
