@@ -84,13 +84,12 @@ export async function get_vsdb(
   })
 
   let voting_state = getObjectFields(voting_state_)?.value?.fields
-  console.log('voting_state', voting_state)
   let pool_votes: any = {}
   let unclaimed_rewards: any = {}
 
   if (voting_state?.pool_votes) {
     voting_state?.pool_votes?.fields?.contents?.forEach((v_s: any) => {
-      const { key, value }: { key: string; value: string } = v_s.fields
+      const { key, value } = v_s.fields
       pool_votes[key] = value
     })
     voting_state.pool_votes = pool_votes

@@ -72,8 +72,14 @@ export type Rewards = {
   }[]
 }
 
+interface LooseObject {
+    [key: string]: any
+}
+
+
 export interface VotingState {
-  pool_votes: { pool_id: ObjectId; votes: string }[]
+  pool_votes: LooseObject
+  unclaimed_rewards: LooseObject
   voted: boolean
   used_weights: string
   last_voted: string
