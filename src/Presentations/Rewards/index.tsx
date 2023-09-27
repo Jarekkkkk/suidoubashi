@@ -15,7 +15,7 @@ import { cx, css } from '@emotion/css'
 import { useRewardsContext } from '@/Containers/Rewards'
 import { usePageContext } from '@/Components/Page'
 import { useEffect, useState } from 'react'
-import { earned } from '@/Constants/API/vote'
+import { all_earned, earned } from '@/Constants/API/vote'
 import useRpc from '@/Hooks/useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
 
@@ -24,51 +24,46 @@ const RewardsPresentation = () => {
   const { currentNFTInfo } = usePageContext()
 
   const [voterRewards, setVoterRewards] = useState()
+  const [voterRewardsIsLoading, setVoterRewardsIsLoading] = useState(false)
   const rpc = useRpc()
   const { currentAccount } = useWalletKit()
 
   useEffect(() => {
     const get_vote_rewards = async () => {
-      if (
-        stakeData &&
-        currentAccount &&
-        rewardsData &&
-        currentNFTInfo.data &&
-        currentNFTInfo.data.voting_state?.unclaimed_rewards
-      ) {
+      if (!currentNFTInfo?.data?.voting_state?.unclaimed_rewards) {
+        setVoterRewards(undefined)
+        return
+      }
+      if (stakeData && currentAccount && rewardsData) {
+        setVoterRewardsIsLoading(true)
+
         const unclaimed_rewards =
           currentNFTInfo.data.voting_state.unclaimed_rewards
         const rewards_ = rewardsData.filter((r) =>
           Object.keys(unclaimed_rewards).includes(r.id),
         )
 
-        const promise = rewards_.map((r) => {
-          const types = unclaimed_rewards[r.id]
-          return Promise.all(
-            types.map((type: string) =>
-              earned(
-                rpc,
-                currentAccount.address,
-                r.bribe,
-                r.id,
-                currentNFTInfo.data!.id,
-                r.type_x,
-                r.type_y,
-                type,
-              ),
+        const promise = rewards_.map(
+          async (r) =>
+            await all_earned(
+              rpc,
+              currentAccount.address,
+              r.bribe,
+              r.id,
+              currentNFTInfo.data!.id,
+              r.type_x,
+              r.type_y,
+              unclaimed_rewards[r.id],
             ),
-          )
-            .then((res) => {
-              console.log('res', res)
-              return res.map((r, idx) => ({ [types[idx]]: r }))
-            })
-            .catch((e) => console.log(e))
-        })
-        const res = await Promise.all(promise)
-        console.log('results_2', res)
+        )
+        const res_ = await Promise.all(promise)
+        let res: any = {}
+        res_.forEach((r, idx) => (res[rewards_[idx].id] = r))
+        setVoterRewardsIsLoading(false)
+        setVoterRewards(res)
       }
     }
-    get_vote_rewards()
+    if (!voterRewardsIsLoading) get_vote_rewards()
   }, [currentNFTInfo, rewardsData, stakeData])
 
   if (fetching)
@@ -89,6 +84,7 @@ const RewardsPresentation = () => {
       </PageContainer>
     )
 
+  console.log(voterRewards)
   return (
     <PageContainer title='Rewards' titleImg={Image.pageBackground_1}>
       <div className={styles.rewardsWrapper}>
@@ -163,55 +159,61 @@ const RewardsPresentation = () => {
           <div
             className={cx(constantsStyles.boldText, css({ marginTop: '20px' }))}
           >
-            Brides
+            Bribes
           </div>
-          <div className={styles.rewardsCard}>
-            <div className={constantsStyles.columnContent}>
-              <CoinCombinImg
-                poolCoinX={fetchIcon('ETH')}
-                poolCoinY={fetchIcon('SUI')}
-              />
-              <div className={constantsStyles.boldText}>ETH/SUI</div>
-            </div>
-            <div className={constantsStyles.rowContent}>
-              <div
-                className={cx(
-                  constantsStyles.columnContent,
-                  css({ marginLeft: '10px' }),
-                )}
-              >
-                <div className={styles.bridesText}>
-                  <CoinIcon.WETHIcon />
-                  <span>12.3</span>
+          {voterRewards &&
+            rewardsData &&
+            Object.keys(voterRewards).map((rewards) => {
+              const reward = rewardsData.find((r) => r.id == rewards)
+              if (!reward) return
+              let earned_ = Object.entries(voterRewards[reward.id])
+              const group_earned = earned_.reduce((result, item, index) => {
+                if (index % 2 === 0) {
+                  result.push([item])
+                } else {
+                  result[result.length - 1].push(item)
+                }
+                return result
+              }, [] as any)
+
+              const coin_x = fetchCoinByType(reward.type_x)
+              const coin_y = fetchCoinByType(reward.type_y)
+              return (
+                <div className={styles.rewardsCard}>
+                  <div className={constantsStyles.columnContent}>
+                    <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
+                    <div className={constantsStyles.boldText}>
+                      {coin_x?.name ?? '' + '/' + coin_y?.name ?? ''}
+                    </div>
+                  </div>
+                  <div className={constantsStyles.rowContent}>
+                    {group_earned.map((group: any) => {
+                      return (
+                        <div
+                          className={cx(
+                            constantsStyles.columnContent,
+                            css({ marginLeft: '10px' }),
+                          )}
+                        >
+                          {group.map((g) => (
+                            <div className={styles.bridesText}>
+                              {fetchCoinByType(g[0])?.logo}
+                              <span>{g[1] as string}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )
+                    })}
+                  </div>
+                  <Button
+                    size='small'
+                    styletype='outlined'
+                    text='Claim'
+                    onClick={() => {}}
+                  />
                 </div>
-                <div className={styles.bridesText}>
-                  <CoinIcon.WETHIcon />
-                  <span>12.3</span>
-                </div>
-              </div>
-              <div
-                className={cx(
-                  constantsStyles.columnContent,
-                  css({ margin: '0 10px' }),
-                )}
-              >
-                <div className={styles.bridesText}>
-                  <CoinIcon.SUIIcon />
-                  <span>12.3</span>
-                </div>
-                <div className={styles.bridesText}>
-                  <CoinIcon.SUIIcon />
-                  <span>12.3</span>
-                </div>
-              </div>
-            </div>
-            <Button
-              size='small'
-              styletype='outlined'
-              text='Claim'
-              onClick={() => {}}
-            />
-          </div>
+              )
+            })}
           <div className={css({ marginTop: 'auto' })}>
             <Button styletype='filled' text='Claim All' onClick={() => {}} />
           </div>

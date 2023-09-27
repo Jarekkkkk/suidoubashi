@@ -6,6 +6,7 @@ import {
   getObjectFields,
   getObjectDisplay,
   getObjectId,
+  normalizeStructTag,
 } from '@mysten/sui.js'
 import { AMMState, amm_package } from './pool'
 import { VotingState, vote_package } from './vote'
@@ -98,7 +99,9 @@ export async function get_vsdb(
   if (voting_state?.unclaimed_rewards) {
     voting_state?.unclaimed_rewards?.fields?.contents.forEach((v_s: any) => {
       const { key, value } = v_s.fields
-      const types = value.fields?.contents.map((t: any) => t.fields.name)
+      const types = value.fields?.contents.map((t: any) =>
+        normalizeStructTag(t.fields.name),
+      )
       unclaimed_rewards[key] = types
     })
     voting_state.unclaimed_rewards = unclaimed_rewards

@@ -573,6 +573,34 @@ export async function get_stake(
   } as Stake
 }
 
+export async function all_earned(
+  rpc: JsonRpcProvider,
+  sender: SuiAddress,
+  bribe: string,
+  rewards: string,
+  vsdb: string,
+  type_x: string,
+  type_y: string,
+  input_types: string[],
+) {
+  const res: any = {}
+  for (const input of input_types) {
+    const earned_ = await earned(
+      rpc,
+      sender,
+      bribe,
+      rewards,
+      vsdb,
+      type_x,
+      type_y,
+      input,
+    )
+    res[input] = earned_
+  }
+
+  return res
+}
+
 export async function earned(
   rpc: JsonRpcProvider,
   sender: SuiAddress,
