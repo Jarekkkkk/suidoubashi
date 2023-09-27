@@ -89,7 +89,7 @@ const VotePresentation = () => {
   }
 
   useEffect(() => {
-    if (currentNFTInfo?.data?.voting_state) {
+    if (currentNFTInfo?.data?.voting_state && currentNFTInfo.data.voting_state.voted) {
       const total = Number(
         parseInt(
           currentNFTInfo.data.voting_state?.used_weights ?? '0',
