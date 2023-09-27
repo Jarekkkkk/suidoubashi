@@ -18,6 +18,8 @@ import { Gauge, Voter, Rewards } from '@/Constants/API/vote'
 import { usePageContext } from '@/Components/Page'
 import { fetchCoinByType } from '@/Constants'
 import { useState } from 'react'
+import { CoinFormat, formatBalance } from '@/Utils/format'
+import { useVote } from '@/Hooks/Vote/useVote'
 
 const renderLabel2 = (val: number) => {
   return `${Math.round(val * 100)}%`
@@ -39,14 +41,51 @@ const VotePresentation = () => {
 
   const handleVotingOnchange = (pool: string, value: number) => {
     const value_ = Math.floor(10 * value) / 10
-    const total_ =
-      Number(((totalVoting['total'] ?? 0) + value_ - (totalVoting[pool] ?? 0)).toPrecision(2))
+    const total_ = Number(
+      (
+        (totalVoting['total'] ?? 0) +
+        value_ -
+        (totalVoting[pool] ?? 0)
+      ).toPrecision(2),
+    )
     if (total_ > 1) return
     setTotalVoting({
       ...totalVoting,
       total: total_,
       [pool]: value_,
     })
+  }
+
+  const vote_mutation = useVote(setting)
+  const handleVote = () => {
+    if (totalVoting['total'] == 1 && currentNFTInfo.data && gaugeData) {
+      let vote = []
+      let reset: Gauge[] = []
+      let voting_weights = []
+      //  if (currentNFTInfo.data?.voting_state) {
+      //    console.log(currentNFTInfo.data.voting_state)
+      //    currentNFTInfo.data.voting_state.pool_votes.forEach((p) => {
+      //      const gauge = gaugeData.find((g) => g.pool == p.pool_id)
+      //      if (gauge) reset.push(gauge)
+      //    })
+      //  }
+      for (const [key, value] of Object.entries<number>(totalVoting)) {
+        if (value > 0) {
+          const gauge = gaugeData.find((g) => g.pool == key)
+          if (gauge) {
+            vote.push(gauge)
+            voting_weights.push((value * 100).toString())
+          }
+        }
+      }
+
+      vote_mutation.mutate({
+        vsdb: currentNFTInfo.data.id,
+        reset,
+        vote,
+        voting_weights,
+      })
+    }
   }
 
   const data = [{ id: 1 }, { id: 2 }]
@@ -147,23 +186,27 @@ const VotePresentation = () => {
                 )}
               >
                 <div className={constantsStyles.boldText}>$ 1,234.56</div>
-                {
-                  _rewards.map((reward, key) => {
-                    return (
-                      <div
-                        className={cx(
-                          constantsStyles.rowContent,
-                          constantsStyles.greyText,
+                {_rewards.map((reward, key) => {
+                  const coin = fetchCoinByType(reward.type)
+                  return (
+                    <div
+                      className={cx(
+                        constantsStyles.rowContent,
+                        constantsStyles.greyText,
+                      )}
+                      key={idx + key}
+                    >
+                      <span>
+                        {formatBalance(
+                          reward.value,
+                          coin?.decimals ?? 0,
+                          CoinFormat.FULL,
                         )}
-                        key={idx + key}
-                      >
-                        <span>{reward.value}</span>
-                        <div className={styles.smallIcon}>
-                          {fetchCoinByType(reward.type)?.logo}
-                        </div>
-                      </div>
-                  )})
-                }
+                      </span>
+                      <div className={styles.smallIcon}>{coin!.logo}</div>
+                    </div>
+                  )
+                })}
               </div>
             )
           case 'apr':
@@ -230,7 +273,7 @@ const VotePresentation = () => {
           <div className={styles.bottomVotePercent}>
             {(totalVoting['total'] ?? 0) * 100}%
           </div>
-          <Button styletype='filled' text='Vote' onClick={() => {}} />
+          <Button styletype='filled' text='Vote' onClick={handleVote} />
         </div>
       </div>
     </PageContainer>
