@@ -2,19 +2,18 @@ import Image from '@/Assets/image'
 import { Icon, CoinIcon } from '@/Assets/icon'
 import {
   PageContainer,
-  Input,
   Button,
   Loading,
   Empty,
-  CoinCombin,
   CoinCombinImg,
 } from '@/Components'
-import { fetchIcon, fetchBalance, fetchCoinByType } from '@/Constants/index'
+import { fetchIcon, fetchCoinByType } from '@/Constants/index'
 import * as constantsStyles from '@/Constants/constants.styles'
 
 import * as styles from './index.styles'
 import { cx, css } from '@emotion/css'
 import { useRewardsContext } from '@/Containers/Rewards'
+import { Coins } from '@/Constants/coin'
 
 const RewardsPresentation = () => {
   const { rewardsData, stakeData, fetching } = useRewardsContext()
@@ -83,6 +82,10 @@ const RewardsPresentation = () => {
                     </div>
                     <div className={constantsStyles.boldText}>12343</div>
                   </div>
+                  <span>
+                    <CoinIcon.SDBIcon className={styles.smallIcon} />
+                  </span>
+                    123.123
                   <Button
                     size='small'
                     styletype='outlined'

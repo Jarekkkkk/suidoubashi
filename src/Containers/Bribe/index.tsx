@@ -29,7 +29,7 @@ export const BribeContainer = ({ children }: PropsWithChildren) => {
   const handleInputOnchange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
-      const isValid = regexNumber.test(value)
+      const isValid = /^-?\d*\.?\d*$/.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }

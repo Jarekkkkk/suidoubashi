@@ -100,3 +100,13 @@ export const bridesText = css`
     }
   }
 `
+export const smallIcon = css`
+  margin-left: 5px;
+  width: 16px;
+  height: 16px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+`
