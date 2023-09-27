@@ -78,6 +78,7 @@ const VestPresentation = () => {
                       .shiftedBy(-9)
                       .decimalPlaces(3)
                       .toFormat()}
+                      end = {item.end}
                     expiration={new Date(
                       Number(item.end) * 1000,
                     ).toLocaleDateString('en-ZA')}

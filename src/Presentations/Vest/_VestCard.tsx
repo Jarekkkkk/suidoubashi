@@ -18,6 +18,7 @@ interface Props {
   expValue: number
   vesdbValue: number
   lockSdbValue: string
+  end: string
   expiration: string
   isPerviewMode?: boolean
   setCurrentVSDBId?: Function
@@ -94,6 +95,7 @@ const VestCardComponent = (props: Props) => {
     isPerviewMode,
     vesdbValue,
     lockSdbValue,
+    end,
     expiration,
     setIsShowDepositVSDBModal,
     setCurrentVSDBId,
@@ -101,7 +103,7 @@ const VestCardComponent = (props: Props) => {
     expSpanValue,
     vesdbSpanValue,
     amm_state,
-    voting_state
+    voting_state,
   } = props
 
   const { mutate: unlock } = useUnlock()
@@ -116,10 +118,9 @@ const VestCardComponent = (props: Props) => {
   }
 
   const { mutate: initialize_voting_state } = useRegisterVotingState()
-  const handleInitializeVotingState= ()=>{
-    if(!voting_state) initialize_voting_state({vsdb:nftId})
+  const handleInitializeVotingState = () => {
+    if (!voting_state) initialize_voting_state({ vsdb: nftId })
   }
-
 
   return (
     <div className={styles.vestCardContainer}>
@@ -160,13 +161,13 @@ const VestCardComponent = (props: Props) => {
               />
             </div>
             <div className={styles.buttonContent}>
-              {new Date().getTime() >= Date.parse(expiration) ? (
+              {new Date().getTime() >= parseInt(end) * 1000 ? (
                 <>
                   {
                     <Button
                       styletype='outlined'
                       text='Unlock'
-                      onClick={() => !amm_state && handleUnlock(nftId)}
+                      onClick={() => !voting_state && handleUnlock(nftId)}
                     />
                   }
                   {setIsShowWithdrawVSDBModal && (
