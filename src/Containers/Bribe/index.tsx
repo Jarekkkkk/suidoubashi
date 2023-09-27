@@ -21,7 +21,7 @@ export const useBribeContext = () => useContext(BribeContext)
 export const BribeContainer = ({ children }: PropsWithChildren) => {
   const gauge = useGetMulGauge()
   const { data: rewardsData, isLoading: isRewardsDataLoading } = useGetMulRewards(
-    gauge.data?.map((g) => g.rewards) ?? [],
+    gauge.data,
     gauge.isLoading,
   )
 

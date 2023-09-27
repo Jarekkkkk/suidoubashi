@@ -62,13 +62,6 @@ const VotePresentation = () => {
       let vote = []
       let reset: Gauge[] = []
       let voting_weights = []
-      //  if (currentNFTInfo.data?.voting_state) {
-      //    console.log(currentNFTInfo.data.voting_state)
-      //    currentNFTInfo.data.voting_state.pool_votes.forEach((p) => {
-      //      const gauge = gaugeData.find((g) => g.pool == p.pool_id)
-      //      if (gauge) reset.push(gauge)
-      //    })
-      //  }
       for (const [key, value] of Object.entries<number>(totalVoting)) {
         if (value > 0) {
           const gauge = gaugeData.find((g) => g.pool == key)
@@ -99,7 +92,6 @@ const VotePresentation = () => {
         currentNFTInfo.data.voting_state?.pool_votes ?? {},
       )) {
         const foo = Number((parseInt(value) / total).toPrecision(2))
-        console.log('foo', foo)
         setTotalVoting((prev:any) => ({
           ...prev,
           [key]: foo,
@@ -114,7 +106,6 @@ const VotePresentation = () => {
     }
   }, [currentNFTInfo])
 
-  console.log('voting', totalVoting)
 
   const data = [{ id: 1 }, { id: 2 }]
 
@@ -192,7 +183,7 @@ const VotePresentation = () => {
                   constantsStyles.columnContent,
                 )}
               >
-                <div className={constantsStyles.boldText}>{weight}</div>
+                <div className={constantsStyles.boldText}>{formatBalance(weight, 9, CoinFormat.FULL)}</div>
                 <div className={constantsStyles.greyText}>
                   {voterData.total_weight != '0'
                     ? (

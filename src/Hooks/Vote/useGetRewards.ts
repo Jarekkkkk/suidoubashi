@@ -1,27 +1,27 @@
 import { useQueries } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useMemo } from 'react'
-import { Rewards, get_rewards } from '@/Constants/API/vote'
+import { Gauge, Rewards, get_rewards } from '@/Constants/API/vote'
 import { useWalletKit } from '@mysten/wallet-kit'
 
 export const useGetMulRewards = (
-  rewards_ids: null | string[],
+  gauges: null | Gauge[],
   gaugeIsLoading: boolean,
 ) => {
   const rpc = useRpc()
   const { currentAccount } = useWalletKit()
   const rewards = useQueries({
     queries:
-      rewards_ids?.map((id) => {
+      gauges?.map((gauge) => {
         return {
-          queryKey: ['rewards', id],
-          queryFn: () => get_rewards(rpc, currentAccount!.address, id),
-          enabled: !!id && !!currentAccount?.address && !gaugeIsLoading,
+          queryKey: ['rewards', gauge.rewards],
+          queryFn: () => get_rewards(rpc, currentAccount!.address, gauge),
+          enabled: !!gauge && !!currentAccount?.address && !gaugeIsLoading,
         }
       }) ?? [],
   })
   return useMemo(() => {
-    if (!rewards_ids) return { isLoading: true, data: null }
+    if (!gauges) return { isLoading: true, data: null }
     if (rewards.length == 0) return { isLoading: false, data: [] }
 
     const isLoading = rewards.some((v) => v.isLoading)
@@ -36,12 +36,12 @@ export const useGetMulRewards = (
 }
 
 export const useGetRewards = (
-  rewards_ids: null | string[],
+  gauges: null | Gauge[],
   gaugeIsLoading: boolean,
   type_x?: string,
   type_y?: string,
 ) => {
-  const { data: rewards } = useGetMulRewards(rewards_ids, gaugeIsLoading)
+  const { data: rewards } = useGetMulRewards(gauges, gaugeIsLoading)
   return useMemo(
     () =>
       rewards?.find((g) => g.type_x == type_x && g.type_y == type_y) ?? null,

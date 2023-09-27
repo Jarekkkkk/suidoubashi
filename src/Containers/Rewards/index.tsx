@@ -16,17 +16,14 @@ const RewardsContainer = ({ children }: PropsWithChildren) => {
 
   const gauge = useGetMulGauge()
   const stakes = useGetMulStake(gauge.data)
-  const rewards = useGetMulRewards(
-    gauge.data?.map((g) => g.rewards) ?? [],
-    gauge.isLoading,
-  )
+  const rewards = useGetMulRewards(gauge.data, gauge.isLoading)
 
   return (
     <RewardsContext.Provider
       value={{
         rewardsData: rewards.data,
         stakeData: stakes.data,
-        fetching: stakes.isLoading ||rewards.isLoading,
+        fetching: stakes.isLoading || rewards.isLoading,
       }}
     >
       {children}

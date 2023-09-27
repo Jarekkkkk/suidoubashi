@@ -13,9 +13,63 @@ import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 import { cx, css } from '@emotion/css'
 import { useRewardsContext } from '@/Containers/Rewards'
+import { usePageContext } from '@/Components/Page'
+import { useEffect, useState } from 'react'
+import { earned } from '@/Constants/API/vote'
+import useRpc from '@/Hooks/useRpc'
+import { useWalletKit } from '@mysten/wallet-kit'
 
 const RewardsPresentation = () => {
   const { rewardsData, stakeData, fetching } = useRewardsContext()
+  const { currentNFTInfo } = usePageContext()
+
+  const [voterRewards, setVoterRewards] = useState()
+  const rpc = useRpc()
+  const { currentAccount } = useWalletKit()
+
+  useEffect(() => {
+    const get_vote_rewards = async () => {
+      if (
+        stakeData &&
+        currentAccount &&
+        rewardsData &&
+        currentNFTInfo.data &&
+        currentNFTInfo.data.voting_state?.unclaimed_rewards
+      ) {
+        const unclaimed_rewards =
+          currentNFTInfo.data.voting_state.unclaimed_rewards
+        const rewards_ = rewardsData.filter((r) =>
+          Object.keys(unclaimed_rewards).includes(r.id),
+        )
+
+        const promise = rewards_.map((r) => {
+          const types = unclaimed_rewards[r.id]
+          return Promise.all(
+            types.map((type: string) =>
+              earned(
+                rpc,
+                currentAccount.address,
+                r.bribe,
+                r.id,
+                currentNFTInfo.data!.id,
+                r.type_x,
+                r.type_y,
+                type,
+              ),
+            ),
+          )
+            .then((res) => {
+              console.log('res', res)
+              return res.map((r, idx) => ({ [types[idx]]: r }))
+            })
+            .catch((e) => console.log(e))
+        })
+        const res = await Promise.all(promise)
+        console.log('results_2', res)
+      }
+    }
+    get_vote_rewards()
+  }, [currentNFTInfo, rewardsData, stakeData])
 
   if (fetching)
     return (

@@ -10,7 +10,7 @@ import {
   normalizeStructTag,
 } from '@mysten/sui.js'
 
-import { Vsdb, vsdb_package, vsdb_reg } from './vsdb'
+import { vsdb_reg } from './vsdb'
 import { bcs_registry } from '../bcs'
 
 export const vote_package = import.meta.env.VITE_VOTE_PACKAGE_TESTNET as string
@@ -64,6 +64,8 @@ export type Bribe = {
 
 export type Rewards = {
   id: string
+  bribe: string
+  pool: string
   name: string
   type_x: string
   type_y: string
@@ -221,11 +223,12 @@ async function rewards_per_epoch(
 export async function get_rewards(
   rpc: JsonRpcProvider,
   sender: string,
-  id: string,
+  gauge: Gauge,
 ): Promise<Rewards | null> {
-  if (!isValidSuiObjectId(id)) return null
-
-  const rewards_obj = await rpc.getObject({ id, options: defaultOptions })
+  const rewards_obj = await rpc.getObject({
+    id: gauge.rewards,
+    options: defaultOptions,
+  })
   const fields = getObjectFields(rewards_obj)
 
   if (!fields) return null
@@ -281,7 +284,7 @@ export async function get_rewards(
     const value = await rewards_per_epoch(
       rpc,
       sender,
-      id,
+      gauge.rewards,
       X,
       Y,
       type,
@@ -291,7 +294,9 @@ export async function get_rewards(
   }
 
   return {
-    id,
+    id: gauge.rewards,
+    bribe: gauge.bribe,
+    pool: gauge.pool,
     name,
     type_x: normalizeStructTag(X),
     type_y: normalizeStructTag(Y),
@@ -566,4 +571,39 @@ export async function get_stake(
     stakes,
     pending_sdb,
   } as Stake
+}
+
+export async function earned(
+  rpc: JsonRpcProvider,
+  sender: SuiAddress,
+  bribe: string,
+  rewards: string,
+  vsdb: string,
+  type_x: string,
+  type_y: string,
+  input_type: string,
+): Promise<string> {
+  let txb = new TransactionBlock()
+  txb.moveCall({
+    target: `${vote_package}::bribe::earned`,
+    typeArguments: [type_x, type_y, input_type],
+    arguments: [
+      txb.object(bribe),
+      txb.object(rewards),
+      txb.object(vsdb),
+      txb.pure(SUI_CLOCK_OBJECT_ID),
+    ],
+  })
+  let res = await rpc.devInspectTransactionBlock({
+    sender,
+    transactionBlock: txb,
+  })
+  const returnValue = res?.results?.[0]?.returnValues?.[0]
+  if (!returnValue) {
+    return '0'
+  } else {
+    const valueType = returnValue[1].toString()
+    const valueData = Uint8Array.from(returnValue[0] as Iterable<number>)
+    return bcs_registry.de(valueType, valueData, 'hex')
+  }
 }
