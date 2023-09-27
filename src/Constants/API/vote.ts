@@ -51,6 +51,7 @@ export type Stake = {
   type_x: string
   type_y: string
   stakes: string
+  pending_sdb: string
 }
 
 export type Bribe = {
@@ -73,9 +74,8 @@ export type Rewards = {
 }
 
 interface LooseObject {
-    [key: string]: any
+  [key: string]: any
 }
-
 
 export interface VotingState {
   pool_votes: LooseObject
@@ -350,11 +350,8 @@ export function vote_entry(
       potato,
       txb.object(voter),
       txb.object(vsdb),
-      txb.pure(
-        pools,
-        'vector<address>',
-      ),
-      txb.pure( weights,'vector<u64>'),
+      txb.pure(pools, 'vector<address>'),
+      txb.pure(weights, 'vector<u64>'),
     ],
   })
 }
@@ -484,7 +481,7 @@ export function unstake_all(
 export async function get_stake_balance(
   rpc: JsonRpcProvider,
   sender: SuiAddress,
-  farm: string,
+  gauge: string,
   type_x: string,
   type_y: string,
 ): Promise<string> {
@@ -492,7 +489,7 @@ export async function get_stake_balance(
   txb.moveCall({
     target: `${vote_package}::gauge::lp_stakes`,
     typeArguments: [type_x, type_y],
-    arguments: [txb.object(farm), txb.pure(sender)],
+    arguments: [txb.object(gauge), txb.pure(sender)],
   })
   let res = await rpc.devInspectTransactionBlock({
     sender,
@@ -521,4 +518,52 @@ export function bribe(
     typeArguments: [type_x, type_y, input_type],
     arguments: [txb.object(rewards), coin, txb.object(SUI_CLOCK_OBJECT_ID)],
   })
+}
+
+export async function get_pending_sdb(
+  rpc: JsonRpcProvider,
+  sender: SuiAddress,
+  gauge: string,
+  gauge_type_x: string,
+  gauge_type_y: string,
+): Promise<string> {
+  let txb = new TransactionBlock()
+  txb.moveCall({
+    target: `${vote_package}::gauge::pending_sdb`,
+    typeArguments: [gauge_type_x, gauge_type_y],
+    arguments: [
+      txb.object(gauge),
+      txb.pure(sender),
+      txb.pure(SUI_CLOCK_OBJECT_ID),
+    ],
+  })
+  let res = await rpc.devInspectTransactionBlock({
+    sender,
+    transactionBlock: txb,
+  })
+  const returnValue = res?.results?.[0]?.returnValues?.[0]
+  if (!returnValue) {
+    return '0'
+  } else {
+    const valueType = returnValue[1].toString()
+    const valueData = Uint8Array.from(returnValue[0] as Iterable<number>)
+    return bcs_registry.de(valueType, valueData, 'hex')
+  }
+}
+
+export async function get_stake(
+  rpc: JsonRpcProvider,
+  sender: SuiAddress,
+  gauge: string,
+  type_x: string,
+  type_y: string,
+) {
+  const stakes = await get_stake_balance(rpc, sender, gauge, type_x, type_y)
+  const pending_sdb = await get_pending_sdb(rpc, sender, gauge, type_x, type_y)
+  return {
+    type_x,
+    type_y,
+    stakes,
+    pending_sdb,
+  } as Stake
 }

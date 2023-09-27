@@ -1,7 +1,7 @@
 import { useQueries, useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import { Gauge, Stake, get_stake_balance } from '@/Constants/API/vote'
+import { Gauge, Stake, get_stake } from '@/Constants/API/vote'
 import { useMemo } from 'react'
 
 export const useGetMulStake = (gauges?: Gauge[] | null) => {
@@ -13,7 +13,7 @@ export const useGetMulStake = (gauges?: Gauge[] | null) => {
         return {
           queryKey: ['stake', gauge!.id],
           queryFn: () =>
-            get_stake_balance(
+            get_stake(
               rpc,
               currentAccount!.address,
               gauge!.id,
@@ -33,11 +33,7 @@ export const useGetMulStake = (gauges?: Gauge[] | null) => {
 
     stakes.forEach(({ data }, idx) => {
       if (!data) return { isLoading, data: [] }
-      ret.push({
-        type_x: gauges[idx].type_x,
-        type_y: gauges[idx].type_y,
-        stakes: data,
-      })
+      ret.push(data)
     })
     return { isLoading, data: ret.length ? ret : [] }
   }, [stakes])
@@ -54,7 +50,7 @@ export const useGetStake = (
   const address = currentAccount?.address
   return useQuery(
     ['stake', gauge_id],
-    () => get_stake_balance(rpc, address!, gauge_id!, type_x!, type_y!),
+    () => get_stake(rpc, address!, gauge_id!, type_x!, type_y!),
     {
       staleTime: 10 * 1000,
       enabled: !!address && !!rpc && !!gauge_id && !!lp_id,

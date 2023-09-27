@@ -13,7 +13,6 @@ import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 import { cx, css } from '@emotion/css'
 import { useRewardsContext } from '@/Containers/Rewards'
-import { Coins } from '@/Constants/coin'
 
 const RewardsPresentation = () => {
   const { rewardsData, stakeData, fetching } = useRewardsContext()
@@ -84,8 +83,8 @@ const RewardsPresentation = () => {
                   </div>
                   <span>
                     <CoinIcon.SDBIcon className={styles.smallIcon} />
+                    {r.pending_sdb}
                   </span>
-                    123.123
                   <Button
                     size='small'
                     styletype='outlined'
