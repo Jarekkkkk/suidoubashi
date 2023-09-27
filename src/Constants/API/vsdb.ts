@@ -74,15 +74,36 @@ export async function get_vsdb(
       value: { dummy_field: false },
     },
   })
-    const voting_state = await rpc.getDynamicFieldObject({
-      parentId: id,
-      name: {
-        type: vsdb_dynamic_key(`${vote_package}::voter::VSDB`),
-        value: { dummy_field: false },
-      },
-      //name: df.data[0].name,
-    })
+  const voting_state_ = await rpc.getDynamicFieldObject({
+    parentId: id,
+    name: {
+      type: vsdb_dynamic_key(`${vote_package}::voter::VSDB`),
+      value: { dummy_field: false },
+    },
+    //name: df.data[0].name,
+  })
 
+  let voting_state = getObjectFields(voting_state_)?.value?.fields
+  console.log('voting_state', voting_state)
+  let pool_votes: any = {}
+  let unclaimed_rewards: any = {}
+
+  if (voting_state?.pool_votes) {
+    voting_state?.pool_votes?.fields?.contents?.forEach((v_s: any) => {
+      const { key, value }: { key: string; value: string } = v_s.fields
+      pool_votes[key] = value
+    })
+    voting_state.pool_votes = pool_votes
+  }
+
+  if (voting_state?.unclaimed_rewards) {
+    voting_state?.unclaimed_rewards?.fields?.contents.forEach((v_s: any) => {
+      const { key, value } = v_s.fields
+      const types = value.fields?.contents.map((t: any) => t.fields.name)
+      unclaimed_rewards[key] = types
+    })
+    voting_state.unclaimed_rewards = unclaimed_rewards
+  }
   const vesdb = await voting_weight(rpc, address, id)
   return {
     id,
@@ -94,7 +115,7 @@ export async function get_vsdb(
     modules: modules.fields.contents,
     display,
     amm_state: getObjectFields(amm_state)?.value?.fields,
-    voting_state : getObjectFields(voting_state)?.value?.fields
+    voting_state,
   } as Vsdb
 }
 

@@ -344,8 +344,11 @@ export function vote_entry(
       potato,
       txb.object(voter),
       txb.object(vsdb),
-      txb.pure(pools, 'vector<address>'),
-      txb.pure(weights, 'vector<u64>'),
+      txb.pure(
+        pools,
+        'vector<address>',
+      ),
+      txb.pure( weights,'vector<u64>'),
     ],
   })
 }
