@@ -17,7 +17,7 @@ import { cx } from '@emotion/css'
 import { Gauge, Voter, Rewards } from '@/Constants/API/vote'
 import { usePageContext } from '@/Components/Page'
 import { fetchCoinByType } from '@/Constants'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CoinFormat, formatBalance } from '@/Utils/format'
 import { useVote } from '@/Hooks/Vote/useVote'
 
@@ -87,6 +87,32 @@ const VotePresentation = () => {
       })
     }
   }
+
+  useEffect(() => {
+    if (currentNFTInfo && currentNFTInfo.data) {
+      const total = Number(
+        parseInt(
+          currentNFTInfo.data.voting_state?.used_weights ?? '0',
+        ).toPrecision(2),
+      )
+      for (const [key, value] of Object.entries(
+        currentNFTInfo.data.voting_state?.pool_votes ?? {},
+      )) {
+        const foo = Number((parseInt(value) / total).toPrecision(2))
+        console.log('foo', foo)
+        setTotalVoting((prev:any) => ({
+          ...prev,
+          [key]: foo,
+        }))
+      }
+      setTotalVoting((prev:any) => ({
+        ...prev,
+        total: 1,
+      }))
+    }
+  }, [currentNFTInfo])
+
+  console.log('voting', totalVoting)
 
   const data = [{ id: 1 }, { id: 2 }]
 
