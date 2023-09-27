@@ -89,7 +89,7 @@ const PageComponent = (props: Props) => {
   const [setting, setSetting] = useState<SettingInterface>({
     gasBudget: SettingModule.getGadBudgetToken() ?? defaultSetting.gasBudget,
     expiration: SettingModule.getExpirationToken() ?? defaultSetting.expiration,
-    slippage: SettingModule.getSlippageToken() ?? defaultSetting.slippage,
+    slippage: SettingModule.getSlippageToken() ?? defaultSetting.slippage
   })
 
   if (isDashboard) {

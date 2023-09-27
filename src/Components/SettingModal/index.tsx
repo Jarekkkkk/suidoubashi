@@ -13,7 +13,7 @@ export interface SettingInterface {
 }
 
 export const defaultSetting: SettingInterface = {
-  gasBudget: '1000000',
+  gasBudget: '10000000',
   expiration: '30',
   slippage: '2',
 }
@@ -63,24 +63,24 @@ const SettingModal = (props: Props) => {
             <div className={styles.settingButtons}>
               <Button
                 styletype={
+                  setting.gasBudget == '100000000' ? 'filled' : 'outlined'
+                }
+                text='0.1 SUI'
+                onClick={() => handleGasBudgetOnchange('100000000')}
+              />
+              <Button
+                styletype={
+                  setting.gasBudget == '50000000' ? 'filled' : 'outlined'
+                }
+                text='0.05 SUI'
+                onClick={() => handleGasBudgetOnchange('50000000')}
+              />
+              <Button
+                styletype={
                   setting.gasBudget == '10000000' ? 'filled' : 'outlined'
                 }
                 text='0.01 SUI'
                 onClick={() => handleGasBudgetOnchange('10000000')}
-              />
-              <Button
-                styletype={
-                  setting.gasBudget == '5000000' ? 'filled' : 'outlined'
-                }
-                text='0.005 SUI'
-                onClick={() => handleGasBudgetOnchange('5000000')}
-              />
-              <Button
-                styletype={
-                  setting.gasBudget == '1000000' ? 'filled' : 'outlined'
-                }
-                text='0.001 SUI'
-                onClick={() => handleGasBudgetOnchange('1000000')}
               />
             </div>
             <div className={styles.settingTitle}>
