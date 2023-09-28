@@ -95,7 +95,9 @@ const SwapPresentation = () => {
 
     return sort
       ? `1${coin_x?.name} = ${price.toFixed(5)} ${coin_y?.name}`
-      : `1${coin_y?.name} = ${(price == 0 ? 0 : 1/ price).toFixed(5)} ${coin_x?.name}`
+      : `1${coin_y?.name} = ${(price == 0 ? 0 : 1 / price).toFixed(
+          5,
+        )} ${coin_x?.name}`
   }
 
   const [getOutputIsLoading, setGetOutpuIsLoading] = useState(false)
@@ -128,7 +130,6 @@ const SwapPresentation = () => {
         handleOnCoinInputSecondChange(
           (parseInt(res) / 10 ** coinTypeSecond.decimals).toString(),
         )
-
       }
     }
     get_output_()
@@ -136,6 +137,7 @@ const SwapPresentation = () => {
 
   const swap = useSwap()
   const handleSwap = () => {
+    if (currentNFTInfo.isLoading) return
     if (pool && coinTypeFirst && coinTypeSecond) {
       swap.mutate({
         pool_id: pool.id,
@@ -148,6 +150,7 @@ const SwapPresentation = () => {
         output_value: Math.round(
           minimum_received * 10 ** coinTypeSecond.decimals,
         ).toString(),
+        vsdb: ( currentNFTInfo.data?.amm_state ) ? currentNFTInfo!.data.id : null,
       })
     }
   }
@@ -243,38 +246,36 @@ const SwapPresentation = () => {
           }
           inputChildren={
             <>
-              {
-                getOutputIsLoading ? (
-                  <div className={styles.inputAnimation}>
-                    <Spinner size={20} />
-                  </div>
-                ) : (
-                  <Input
-                    value={coinInputSecond}
-                    onChange={(e) => {
-                      if (coinTypeSecondBalance?.totalBalance) {
-                        if (
-                          parseFloat(e.target.value) * Math.pow(10, 9) >
-                          Number(coinTypeSecondBalance.totalBalance)
-                        ) {
-                          setError('Insufficient Balance')
-                        } else {
-                          setError('')
-                        }
+              {getOutputIsLoading ? (
+                <div className={styles.inputAnimation}>
+                  <Spinner size={20} />
+                </div>
+              ) : (
+                <Input
+                  value={coinInputSecond}
+                  onChange={(e) => {
+                    if (coinTypeSecondBalance?.totalBalance) {
+                      if (
+                        parseFloat(e.target.value) * Math.pow(10, 9) >
+                        Number(coinTypeSecondBalance.totalBalance)
+                      ) {
+                        setError('Insufficient Balance')
+                      } else {
+                        setError('')
                       }
-                    }}
-                    placeholder={`${coinTypeSecond.name} Value`}
-                    disabled={getOutputIsLoading}
-                  />
-                )
-              }
+                    }
+                  }}
+                  placeholder={`${coinTypeSecond.name} Value`}
+                  disabled={getOutputIsLoading}
+                />
+              )}
             </>
           }
         />
         <div className={styles.infoContent}>
           <div className={styles.bonusText}>
             Fee Percentage Discount
-            <span>{currentNFTInfo.data?.level ?? 0 * 0.01} %</span>
+            <span>{parseInt(currentNFTInfo.data?.level ?? '0') * 0.01} %</span>
           </div>
           <div className={styles.infoText}>
             Price
@@ -297,14 +298,24 @@ const SwapPresentation = () => {
             </span>
           </div>
         </div>
-        {error &&  <div className={styles.errorContent}><Error errorText={error} /></div>}
+        {error && (
+          <div className={styles.errorContent}>
+            <Error errorText={error} />
+          </div>
+        )}
         <div className={styles.swapButton}>
           <Button
             text='Swap'
             styletype='filled'
             onClick={handleSwap}
-            disabled={!!error || !coinInputFirst || !coinInputSecond || getOutput === "0" || getOutputIsLoading}
-            isloading={swap.isLoading? 1 : 0}
+            disabled={
+              !!error ||
+              !coinInputFirst ||
+              !coinInputSecond ||
+              getOutput === '0' ||
+              getOutputIsLoading
+            }
+            isloading={swap.isLoading ? 1 : 0}
           />
         </div>
       </div>

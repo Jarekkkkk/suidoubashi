@@ -40,9 +40,7 @@ export const useIncreaseUnlockTime = (setIsShowDepositVSDBModal: Function) => {
       return 'success'
     },
     onSuccess: (_, params) => {
-      queryClient.invalidateQueries({
-        queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
-      })
+      queryClient.invalidateQueries(['vsdb', params.vsdb])
       toast.success('Deposit VSDB Successfully!')
       setIsShowDepositVSDBModal(false)
     },

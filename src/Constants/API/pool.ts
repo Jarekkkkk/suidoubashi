@@ -382,16 +382,21 @@ export function swap_for_x(
   pool_type_y: string,
   coin_y: any,
   output_x_min: bigint | number | string,
+  vsdb: string | null,
 ) {
+  let arguments_ = [
+    txb.object(pool),
+    coin_y,
+    txb.pure(output_x_min),
+    txb.object(SUI_CLOCK_OBJECT_ID),
+  ]
+
+  if (vsdb) arguments_.splice(3, 0, txb.object(vsdb))
+
   txb.moveCall({
-    target: `${amm_package}::pool::swap_for_x`,
+    target: `${amm_package}::pool::${vsdb ? 'swap_for_x_vsdb' : 'swap_for_x'}`,
     typeArguments: [pool_type_x, pool_type_y],
-    arguments: [
-      txb.object(pool),
-      coin_y,
-      txb.pure(output_x_min),
-      txb.object(SUI_CLOCK_OBJECT_ID),
-    ],
+    arguments: arguments_,
   })
 }
 
@@ -402,16 +407,21 @@ export function swap_for_y(
   pool_type_y: string,
   coin_x: any,
   output_y_min: bigint | number | string,
+  vsdb?: string | null,
 ) {
+  const arguments_ = [
+    txb.object(pool),
+    coin_x,
+    txb.pure(output_y_min),
+    txb.object(SUI_CLOCK_OBJECT_ID),
+  ]
+
+  if (vsdb) arguments_.splice(3, 0, txb.object(vsdb))
+
   txb.moveCall({
-    target: `${amm_package}::pool::swap_for_y`,
-    typeArguments: [pool_type_x, pool_type_y] ?? [],
-    arguments: [
-      txb.object(pool),
-      coin_x,
-      txb.pure(output_y_min),
-      txb.object(SUI_CLOCK_OBJECT_ID),
-    ],
+    target: `${amm_package}::pool::${vsdb ? 'swap_for_y_vsdb' : 'swap_for_y'}`,
+    typeArguments: [pool_type_x, pool_type_y],
+    arguments: arguments_,
   })
 }
 export interface Swap {

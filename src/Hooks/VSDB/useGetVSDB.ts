@@ -28,23 +28,14 @@ export function useGetVsdbIDs(address?: string | null) {
   )
 }
 
-export const get_vsdb_key = (address: string, vsdb: string) => [
-  'vsdb',
-  address,
-  vsdb,
-]
 
 export const useGetVsdb = (address?: string | null, vsdb?: string | null) => {
   const rpc = useRpc()
-  const res = useQuery(
-    ['vsdb', address, vsdb],
-    () => get_vsdb(rpc, address!, vsdb!),
-    {
-      enabled: !!address && !!vsdb,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-    },
-  )
+  const res = useQuery(['vsdb', vsdb], () => get_vsdb(rpc, address!, vsdb!), {
+    enabled: !!address && !!vsdb,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  })
   return useMemo(() => {
     if (vsdb === undefined) return { isLoading: true, data: null }
     if (vsdb === null) return { isLoading: false, data: null }
@@ -61,7 +52,7 @@ export const useGetMulVsdb = (
     queries:
       owned_vsdb?.map((id) => {
         return {
-          queryKey: ['vsdb', address, id],
+          queryKey: ['vsdb', id],
           queryFn: () => get_vsdb(rpc, address!, id!),
           enabled: !!address && !!id,
         }

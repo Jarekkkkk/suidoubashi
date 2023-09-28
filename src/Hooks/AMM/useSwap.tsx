@@ -17,6 +17,7 @@ type SwapMutationArgs = {
   is_type_x: boolean
   input_value: string
   output_value: string
+  vsdb:string | null
 }
 
 export const useSwap = () => {
@@ -31,6 +32,7 @@ export const useSwap = () => {
       is_type_x,
       input_value,
       output_value,
+      vsdb
     }: SwapMutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
 
@@ -45,9 +47,9 @@ export const useSwap = () => {
       const coin = payCoin(txb, coins, input_value, input_type)
 
       if (is_type_x) {
-        swap_for_y(txb, pool_id, pool_type_x, pool_type_y, coin, output_value)
+        swap_for_y(txb, pool_id, pool_type_x, pool_type_y, coin, output_value, vsdb)
       } else {
-        swap_for_x(txb, pool_id, pool_type_x, pool_type_y, coin, output_value)
+        swap_for_x(txb, pool_id, pool_type_x, pool_type_y, coin, output_value, vsdb)
       }
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
@@ -71,6 +73,7 @@ export const useSwap = () => {
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['balance'])
       queryClient.invalidateQueries(['pool', params.pool_id])
+      if(params.vsdb) queryClient.invalidateQueries(['vsdb', params.vsdb])
       toast.success('Swap Success!')
     },
     onError: (err: Error) => {

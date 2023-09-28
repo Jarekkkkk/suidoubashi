@@ -7,7 +7,6 @@ import {
   getExecutionStatusType,
 } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
-import { get_vsdb_key } from './useGetVSDB'
 import { increase_unlock_amount } from '@/Constants/API/vsdb'
 import { Coin } from '@/Constants/coin'
 import { payCoin } from '@/Utils/payCoin'
@@ -48,9 +47,7 @@ export const useIncreaseUnlockAmount = (
       }
     },
     onSuccess: (_, params) => {
-      queryClient.invalidateQueries({
-        queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
-      })
+      queryClient.invalidateQueries(['vsdb', params.vsdb])
       queryClient.invalidateQueries(['balance'])
 
       toast.success('Deposit VSDB Successfully!')

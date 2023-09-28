@@ -9,7 +9,6 @@ import {
 } from '@mysten/sui.js'
 import { revive } from '@/Constants/API/vsdb'
 import { queryClient } from '@/App'
-import { get_vsdb_key } from './useGetVSDB'
 
 type MutationProps = {
   vsdb: string
@@ -44,11 +43,9 @@ export const useRevive = () => {
       return 'success'
     },
     onSuccess: (_, params) => {
-      queryClient.invalidateQueries({
-        queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
-      })
-      toast.success('Revive Success!')
+      queryClient.invalidateQueries(['vsdb', params.vsdb])
       queryClient.invalidateQueries(['balance'])
+      toast.success('Revive Success!')
     },
     onError: (_err: Error) => toast.error('Oops! Have some error'),
   })

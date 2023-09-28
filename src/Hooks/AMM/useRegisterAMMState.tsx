@@ -4,7 +4,6 @@ import { TransactionBlock } from '@mysten/sui.js'
 import { initialize_amm } from '@/Constants/API/pool'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { toast } from 'react-hot-toast'
-import { get_vsdb_key } from '../VSDB/useGetVSDB'
 
 interface MutationProps {
   vsdb: string
@@ -13,7 +12,7 @@ interface MutationProps {
 const useRegisterAMMState = () => {
   const rpc = useRpc()
   const queryClient = useQueryClient()
-  const { signTransactionBlock, currentAccount } = useWalletKit()
+  const { signTransactionBlock} = useWalletKit()
 
   return useMutation({
     mutationFn: async ({ vsdb }: MutationProps) => {
@@ -29,9 +28,7 @@ const useRegisterAMMState = () => {
       if (res.effects?.status.status == 'failure') throw Error
     },
     onSuccess: (_, params) => {
-      queryClient.invalidateQueries({
-        queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
-      })
+      queryClient.invalidateQueries(['vsdb', params.vsdb])
       toast.success('Initiazlie successfully !')
     },
     onError: (_: Error) => toast.error('Oops! Have some error'),

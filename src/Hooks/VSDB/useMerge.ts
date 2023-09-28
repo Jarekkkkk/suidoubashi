@@ -8,7 +8,6 @@ import {
   getExecutionStatusType,
 } from '@mysten/sui.js'
 import { queryClient } from '@/App'
-import { get_vsdb_key } from './useGetVSDB'
 import { merge } from '@/Constants/API/vsdb'
 
 type MutationProps = {
@@ -46,12 +45,9 @@ export const useMerge = (setIsShowMergeVSDBModal: Function) => {
         (vsdb_ids?: string[]) =>
           [...(vsdb_ids ?? [])].filter((id) => id !== params.mergedVsdb),
       )
-      queryClient.removeQueries({
-        queryKey: get_vsdb_key(currentAccount!.address, params.mergedVsdb),
-      })
-      queryClient.invalidateQueries({
-        queryKey: get_vsdb_key(currentAccount!.address, params.vsdb),
-      })
+
+      queryClient.invalidateQueries(['vsdb', params.vsdb])
+      queryClient.invalidateQueries(['vsdb', params.mergedVsdb])
       toast.success('Merge VSDB Successfully!')
     },
     onError: (_err: Error) => toast.error('Oops! Have some error'),
