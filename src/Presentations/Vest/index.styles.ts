@@ -316,7 +316,6 @@ export const addressContent = css`
   flex-direction: row;
   margin: 0 auto;
   width: 100%;
-  max-width: 200px;
   overflow: hidden;
 
   div {
