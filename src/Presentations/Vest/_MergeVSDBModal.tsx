@@ -56,6 +56,8 @@ const MergeVSDBModal = (props: Props) => {
     merge({ vsdb: currentVsdb.id, mergedVsdb: secondVsdb.id })
   }
 
+  const _vsdbsList = vsdbs.filter((vsdb) => vsdb.voting_state == undefined)
+
   useEffect(() => {
     if(isSuccess) {
       const _vsdb = vsdbs.filter((vsdb) => vsdb.id === mergedVsdb?.id && vsdb.balance === mergedVsdb.balance)[0]
@@ -78,12 +80,11 @@ const MergeVSDBModal = (props: Props) => {
             <div className={styles.perviewContainer}>
               <div className={styles.perviewCardBlock}>
                 <Select
-                  options={vsdbs.map(
-                    (vsdb) =>
-                      ({
+                  options={_vsdbsList.map(
+                    (vsdb) => ({
                         label: formatId(vsdb.id, 6),
                         value: vsdb,
-                      }) as SelectOption,
+                      }) as SelectOption
                   )}
                   onChange={({ value }: SelectOption) => {
                     setCurrentVsdb(value)
@@ -109,7 +110,7 @@ const MergeVSDBModal = (props: Props) => {
               </div>
               <div className={styles.perviewCardBlock}>
                 <Select
-                  options={vsdbs
+                  options={_vsdbsList
                     .filter((v) => v.id != currentVsdb?.id)
                     .map(
                       (vsdb) =>
