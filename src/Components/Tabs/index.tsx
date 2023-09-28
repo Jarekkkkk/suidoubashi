@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import cx from 'classnames'
 
+import { Loading } from '@/Components'
+import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 
 type Tabprops = {
@@ -18,6 +20,16 @@ type Props = {
 const Tabs = (props: Props) => {
   const { links, styletype, isLoading } = props
   const [currTabId, setCurrTabId] = useState(0)
+
+  if (isLoading) {
+    return (
+      <div className={styles.tabs}>
+        <div className={constantsStyles.LoadingContainer}>
+          <Loading />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.tabs}>

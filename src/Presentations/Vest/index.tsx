@@ -31,74 +31,82 @@ const VestPresentation = () => {
     setIsShowWithdrawVSDBModal,
   } = useContext(VestContext)
 
-  return (
-    <PageContainer title='Vest' titleImg={Image.pageBackground_1}>
-      {nftList.isLoading ? (
+  if (nftList.isLoading) {
+    return (
+      <PageContainer title='Vest' titleImg={Image.pageBackground_1}>
         <div className={constantsStyles.LoadingContainer}>
           <Loading />
         </div>
-      ) : (
-        <div className={styles.controlContainer}>
-          <div className={styles.buttonSection}>
-            <TestMintSDBButton />
-            {nftList.data.length > 1 && (
-              <Button
-                styletype='filled'
-                text='Merge VSDB'
-                icon={<Icon.FileIcon />}
-                onClick={() => setIsShowMergeVSDBModal(true)}
-              />
-            )}
+      </PageContainer>
+    )
+  }
+
+  if (nftList.data.length < 1) {
+    return (
+      <div className={styles.EmptyContainer}>
+        <Empty content='No Vesting NFT' />
+      </div>
+    )
+  }
+
+  const _data = nftList.data.sort((prev, next) => Number(next.balance) - Number(prev.balance))
+
+  return (
+    <PageContainer title='Vest' titleImg={Image.pageBackground_1}>
+      <div className={styles.controlContainer}>
+        <div className={styles.buttonSection}>
+          <TestMintSDBButton />
+          {_data.length > 1 && (
             <Button
               styletype='filled'
-              text='Create VSDB'
-              icon={<Icon.SquareAddIcon />}
-              onClick={() => setIsShowCreateVSDBModal(true)}
+              text='Merge VSDB'
+              icon={<Icon.FileIcon />}
+              onClick={() => setIsShowMergeVSDBModal(true)}
             />
-          </div>
-          <div className={styles.contentSection}>
-            {!!nftList.data.length ? (
-              nftList.data.map((item, idx) => {
-                return (
-                  <VestCardComponent
-                    key={idx}
-                    nftId={item.id}
-                    nftImg={item?.display?.image_url}
-                    level={item.level}
-                    expValue={
-                      Number(item.experience) /
-                      required_exp(Number(item.level) + 1)
-                    }
-                    expSpanValue={{
-                      experience: Number(item.experience),
-                      required_exp: required_exp(Number(item.level) + 1),
-                    }}
-                    vesdbSpanValue={item.vesdb}
-                    vesdbValue={Number(item.vesdb) / Number(item.balance)}
-                    lockSdbValue={BigNumber(item.balance)
-                      .shiftedBy(-9)
-                      .decimalPlaces(3)
-                      .toFormat()}
-                      end = {item.end}
-                    expiration={new Date(
-                      Number(item.end) * 1000,
-                    ).toLocaleDateString('en-ZA')}
-                    setCurrentVSDBId={setCurrentVSDBId}
-                    setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
-                    setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
-                    amm_state={item.amm_state}
-                    voting_state={item.voting_state}
-                  />
-                )
-              })
-            ) : (
-              <div className={styles.EmptyContainer}>
-                <Empty content='No Vesting NFT' />
-              </div>
-            )}
-          </div>
+          )}
+          <Button
+            styletype='filled'
+            text='Create VSDB'
+            icon={<Icon.SquareAddIcon />}
+            onClick={() => setIsShowCreateVSDBModal(true)}
+          />
         </div>
-      )}
+        <div className={styles.contentSection}>
+          {
+            _data.map((item, idx) => {
+              return (
+                <VestCardComponent
+                  key={idx}
+                  nftId={item.id}
+                  nftImg={item?.display?.image_url}
+                  level={item.level}
+                  expValue={
+                    Number(item.experience) /
+                    required_exp(Number(item.level) + 1)
+                  }
+                  expSpanValue={{
+                    experience: Number(item.experience),
+                    required_exp: required_exp(Number(item.level) + 1),
+                  }}
+                  vesdbSpanValue={item.vesdb}
+                  vesdbValue={Number(item.vesdb) / Number(item.balance)}
+                  lockSdbValue={BigNumber(item.balance)
+                    .shiftedBy(-9)
+                    .decimalPlaces(3)
+                    .toFormat()}
+                  end = {item.end}
+                  expiration={new Date( Number(item.end) * 1000).toLocaleDateString('en-ZA')}
+                  setCurrentVSDBId={setCurrentVSDBId}
+                  setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
+                  setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
+                  amm_state={item.amm_state}
+                  voting_state={item.voting_state}
+                />
+              )
+            })
+          }
+        </div>
+      </div>
       {isShowCreateVSDBModal && (
         <CreateVSDBModal
           isShowCreateVSDBModal={isShowCreateVSDBModal}

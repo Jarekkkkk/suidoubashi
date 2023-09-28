@@ -44,54 +44,58 @@ const ControlBarComponent = (props: Props) => {
     isPoolDataLoading,
     isStakeDataLoading,
   } = props
-  const tabDataKeys = [
-    {
-      id: 0,
-      title: 'Coin',
-      children: isCoinDataLoading ? (
+
+  if (nftInfo.isLoading || isCoinDataLoading || isLpDataLoading || isPoolDataLoading || isStakeDataLoading || isPoolDataLoading) {
+    return (
+      <div className={styles.barContainer}>
+        <div className={styles.loadingContent}>
+          <Loading />
+        </div>
         <div className={styles.cardLoadingContent}>
           <Loading />
         </div>
-      ) : coinData && !!coinData.length ? (
-        coinData
-          ?.sort((prev, next) => {
-            const _prevIdx = fetchIcon(prev.coinType)!.decimals
-            const _nextIdx = fetchIcon(next.coinType)!.decimals
+      </div>
+    )
+  }
 
-            return Number(
-              BigInt(next.totalBalance) *
-                BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
-                BigInt(prev.totalBalance) *
-                  BigInt('10') ** BigInt((9 - _prevIdx).toString()),
-            )
-          })
-          .map((balance, idx) => {
-            const _coinIdx = fetchIcon(balance.coinType)
-            return (
-              <Coincard
-                key={idx}
-                coinXIcon={_coinIdx!.logo}
-                coinXName={_coinIdx!.name}
-                coinXValue={formatBalance(
-                  balance.totalBalance,
-                  _coinIdx!.decimals,
-                )}
-              />
-            )
-          })
-      ) : (
-        <Empty content={'No Supported Coins'} />
-      ),
+  const tabData = [
+    {
+      id: 0,
+      title: 'Coin',
+      children: (
+        !coinData ? (
+          <Empty content={'No Supported Coins'} />
+        ) : coinData?.sort((prev, next) => {
+          const _prevIdx = fetchIcon(prev.coinType)!.decimals
+          const _nextIdx = fetchIcon(next.coinType)!.decimals
+
+          return Number(
+            BigInt(next.totalBalance) *
+              BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
+              BigInt(prev.totalBalance) *
+                BigInt('10') ** BigInt((9 - _prevIdx).toString()),
+          )
+        }).map((balance, idx) => {
+          const _coinIdx = fetchIcon(balance.coinType)
+          return (
+            <Coincard
+              key={idx}
+              coinXIcon={_coinIdx!.logo}
+              coinXName={_coinIdx!.name}
+              coinXValue={formatBalance(
+                balance.totalBalance,
+                _coinIdx!.decimals,
+              )}
+            />
+          )
+        })
+      )
     },
     {
       id: 1,
       title: 'LP',
-      children:
-        isLpDataLoading || isPoolDataLoading ? (
-          <div className={styles.cardLoadingContent}>
-            <Loading />
-          </div>
-        ) : lpData && poolDataList && !!lpData.length ? (
+      children: (
+        lpData && poolDataList && !!lpData.length ? (
           lpData.map((data, idx) => {
             const _coinXIdx = fetchIcon(data.type_x)
             const _coinYIdx = fetchIcon(data.type_y)
@@ -127,17 +131,14 @@ const ControlBarComponent = (props: Props) => {
           })
         ) : (
           <Empty content={'No Deposited Liquidity'} />
-        ),
+        )
+      )
     },
     {
       id: 2,
       title: 'Stake',
       children:
-        isStakeDataLoading || isPoolDataLoading ? (
-          <div className={styles.cardLoadingContent}>
-            <Loading />
-          </div>
-        ) : stakeData && poolDataList && !!stakeData.length ? (
+        stakeData && poolDataList && !!stakeData.length ? (
           stakeData
             .filter((s) => Number(s.stakes) > 0)
             .map((data, idx) => {
@@ -181,28 +182,30 @@ const ControlBarComponent = (props: Props) => {
 
   return (
     <div className={styles.barContainer}>
-      {nftInfo.isLoading ? (
-        <div className={styles.loadingContent}>
-          <Loading />
-        </div>
-      ) : !nftInfo?.data ? (
-        <div className={styles.loadingContent}>
-          <Empty content='No Data' />
-        </div>
-      ) : (
-        <NFTCard
-          isPrevBtnDisplay={isPrevBtnDisplay}
-          isNextBtnDisplay={isNextBtnDisplay}
-          nftImg={nftInfo?.data?.display?.image_url}
-          level={nftInfo?.data?.level}
-          expValue={parseInt(nftInfo?.data?.experience)}
-          sdbValue={parseInt(nftInfo?.data?.balance)}
-          vesdbValue={parseInt(nftInfo?.data?.vesdb)}
-          address={nftInfo?.data?.id}
-          handleFetchNFTData={handleFetchNFTData}
-        />
-      )}
-      <Tabs links={tabDataKeys} styletype='default' />
+      {
+        !nftInfo.data ? (
+          <div className={styles.loadingContent}>
+            <Empty content='No Data' />
+          </div>
+        ) : (
+          <NFTCard
+            isPrevBtnDisplay={isPrevBtnDisplay}
+            isNextBtnDisplay={isNextBtnDisplay}
+            nftImg={nftInfo.data.display.image_url}
+            level={nftInfo.data.level}
+            expValue={parseInt(nftInfo.data.experience)}
+            sdbValue={parseInt(nftInfo.data.balance)}
+            vesdbValue={parseInt(nftInfo.data.vesdb)}
+            address={nftInfo.data.id}
+            handleFetchNFTData={handleFetchNFTData}
+          />
+        )
+      }
+      <Tabs
+        isLoading={isCoinDataLoading}
+        links={tabData}
+        styletype='default'
+      />
     </div>
   )
 }

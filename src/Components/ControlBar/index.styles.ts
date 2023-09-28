@@ -22,6 +22,9 @@ export const cardLoadingContent = css`
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 300px;
-  margin-bottom: 4px;
+  margin-top: 12px;
+  min-height: calc(100vh - 485px);
+  background-color: var(--TransparentWhite);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
 `
