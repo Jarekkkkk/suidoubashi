@@ -101,6 +101,7 @@ const VestPresentation = () => {
                   setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
                   amm_state={item.amm_state}
                   voting_state={item.voting_state}
+                  id={item.id}
                 />
               )
             })

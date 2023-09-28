@@ -34,6 +34,7 @@ interface Props {
   vesdbSpanValue?: string
   amm_state?: AMMState
   voting_state?: VotingState
+  id: string
 }
 
 interface TextItemProps {
@@ -107,6 +108,7 @@ const VestCardComponent = (props: Props) => {
     vesdbSpanValue,
     amm_state,
     voting_state,
+    id,
   } = props
 
   const { setting } = usePageContext()
@@ -140,6 +142,7 @@ const VestCardComponent = (props: Props) => {
         <img src={nftImg || Image.nftDefault} />
       </div>
       <div className={styles.cardContentSection}>
+        <TextItem title='ID' level={id} />
         <TextItem title='Level' level={level} />
         <ValueItem title='EXP' value={expValue} expSpanValue={expSpanValue} />
         <ValueItem
