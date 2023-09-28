@@ -268,7 +268,7 @@ const LiquidityPresentation = () => {
         pool_type_y: poolData.type_y,
         gauge_id: gaugeData?.id,
         lp_id: lp.id,
-        withdrawl: stake_bal,
+        withdrawl: stake_bal.stakes,
       })
     }
   }
@@ -677,7 +677,7 @@ const LiquidityPresentation = () => {
               <div
                 className={cx(constantsStyles.boldText, styles.textMarginLeft)}
               >
-                {formatBalance(stake_bal ?? '0', 9, CoinFormat.FULL)}
+                {formatBalance(stake_bal?.stakes ?? '0', 9, CoinFormat.FULL)}
               </div>
             </div>
             <div className={styles.coinContent}>
@@ -693,7 +693,7 @@ const LiquidityPresentation = () => {
                     ? lp_position(
                         poolData.reserve_x,
                         poolData.lp_supply,
-                        stake_bal,
+                        stake_bal.stakes,
                         coinTypeX.decimals,
                       )
                     : '0.00'}
@@ -711,7 +711,7 @@ const LiquidityPresentation = () => {
                     ? lp_position(
                         poolData.reserve_y,
                         poolData.lp_supply,
-                        stake_bal,
+                        stake_bal.stakes,
                         coinTypeY.decimals,
                       )
                     : '0.00'}
