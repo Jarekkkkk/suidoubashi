@@ -3,6 +3,7 @@ import { cx } from '@emotion/css'
 import { Button } from '@/Components'
 import Image from '@/Assets/image'
 
+import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 import BigNumber from 'bignumber.js'
 import useRegisterAMMState from '@/Hooks/AMM/useRegisterAMMState'
@@ -52,6 +53,7 @@ interface ValueItemProps {
     required_exp: number
   }
   vesdbSpanValue?: string
+  buttonChildren?: any
 }
 
 const TextItem = (props: TextItemProps) => {
@@ -69,15 +71,18 @@ const format = (value: string | number) => {
 }
 
 const ValueItem = (props: ValueItemProps) => {
-  const { title, value, expSpanValue, vesdbSpanValue } = props
+  const { title, value, expSpanValue, vesdbSpanValue, buttonChildren } = props
   return (
     <div className={styles.valueContent}>
       <div className={styles.valueTitle}>
         <div>{title}</div>
         {expSpanValue && (
-          <span>
-            {expSpanValue.experience} / {expSpanValue.required_exp}
-          </span>
+          <div className={constantsStyles.rowContent}>
+            <span>
+              {expSpanValue.experience} / {expSpanValue.required_exp}
+            </span>
+            {buttonChildren}
+          </div>
         )}
         {vesdbSpanValue && <span>{format(vesdbSpanValue)}</span>}
       </div>
@@ -141,6 +146,7 @@ const VestCardComponent = (props: Props) => {
   const handleUpgrade = () => {
     upgrade({ vsdb: nftId })
   }
+  console.log('expSpanValue', expSpanValue)
 
   return (
     <div className={styles.vestCardContainer}>
@@ -164,7 +170,22 @@ const VestCardComponent = (props: Props) => {
           />
         )}
         <TextItem title='Level' level={level} />
-        <ValueItem title='EXP' value={expValue} expSpanValue={expSpanValue} />
+        <ValueItem
+          title='EXP'
+          value={expValue}
+          expSpanValue={expSpanValue}
+          buttonChildren={
+            expSpanValue?.experience === expSpanValue?.required_exp && (
+              <div className={styles.buttonLevelup}>
+                <Button
+                  text='Level Up'
+                  styletype='badge'
+                  onClick={handleUpgrade}
+                />
+              </div>
+            )
+          }
+        />
         <ValueItem
           title='VeSDB'
           value={vesdbValue}

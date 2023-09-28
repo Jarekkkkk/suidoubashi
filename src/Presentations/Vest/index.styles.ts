@@ -335,3 +335,9 @@ export const next = css`
   display: block;
   white-space: nowrap;
 `
+
+export const buttonLevelup = css`
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+`

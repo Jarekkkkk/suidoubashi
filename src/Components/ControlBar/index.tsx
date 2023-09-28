@@ -45,19 +45,6 @@ const ControlBarComponent = (props: Props) => {
     isStakeDataLoading,
   } = props
 
-  if (nftInfo.isLoading || isCoinDataLoading || isLpDataLoading || isPoolDataLoading || isStakeDataLoading || isPoolDataLoading) {
-    return (
-      <div className={styles.barContainer}>
-        <div className={styles.loadingContent}>
-          <Loading />
-        </div>
-        <div className={styles.cardLoadingContent}>
-          <Loading />
-        </div>
-      </div>
-    )
-  }
-
   const tabData = [
     {
       id: 0,
@@ -183,6 +170,11 @@ const ControlBarComponent = (props: Props) => {
   return (
     <div className={styles.barContainer}>
       {
+        nftInfo.isLoading ? (
+          <div className={styles.loadingContent}>
+            <Loading />
+          </div>
+        ) :
         !nftInfo.data ? (
           <div className={styles.loadingContent}>
             <Empty content='No Data' />
@@ -201,11 +193,19 @@ const ControlBarComponent = (props: Props) => {
           />
         )
       }
-      <Tabs
-        isLoading={isCoinDataLoading}
-        links={tabData}
-        styletype='default'
-      />
+      {
+        isCoinDataLoading || isLpDataLoading || isPoolDataLoading || isStakeDataLoading || isPoolDataLoading ? (
+          <div className={styles.cardLoadingContent}>
+            <Loading />
+          </div>
+        ) : (
+          <Tabs
+            isLoading={isCoinDataLoading}
+            links={tabData}
+            styletype='default'
+          />
+        )
+      }
     </div>
   )
 }
