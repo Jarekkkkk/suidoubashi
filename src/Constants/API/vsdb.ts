@@ -247,11 +247,10 @@ export async function voting_weight(
 // Gaming
 export async function upgrade(txb: TransactionBlock, vsdb: string) {
   txb.moveCall({
-    target: `${vsdb_package}::vsdb::unlock`,
+    target: `${vsdb_package}::vsdb::upgrade`,
     arguments: [
       txb.object(vsdb_reg),
       txb.object(vsdb),
-      txb.object(SUI_CLOCK_OBJECT_ID),
     ],
   })
 }

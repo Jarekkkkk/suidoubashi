@@ -13,6 +13,8 @@ import { round_down_week } from '@/Utils/vsdb'
 import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
 import { usePageContext } from '@/Components/Page'
 import { useUnlock } from '@/Hooks/Vote/useUnlock'
+import { upgrade } from '@/Constants/API/vsdb'
+import { useUpgrade } from '@/Hooks/VSDB/useUpgrade'
 
 interface Props {
   nftId: string
@@ -136,20 +138,32 @@ const VestCardComponent = (props: Props) => {
     if (!voting_state) initialize_voting_state({ vsdb: nftId })
   }
 
+  const { mutate: upgrade } = useUpgrade()
+  const handleUpgrade = () => {
+    upgrade({ vsdb: nftId })
+  }
+
   return (
     <div className={styles.vestCardContainer}>
       <div className={styles.imgSection}>
         <img src={nftImg || Image.nftDefault} />
       </div>
       <div className={styles.cardContentSection}>
-        {!isPerviewMode && <TextItem
-          title='ID'
-          level={id.length > 10 ? (
-            <div className={styles.addressContent}>
-              <div className={styles.prev}>{id.slice(0, -8)}</div>
-              <div className={styles.next}>{id.slice(-8)}</div>
-            </div>
-          ) : (id)} />}
+        {!isPerviewMode && (
+          <TextItem
+            title='ID'
+            level={
+              id.length > 10 ? (
+                <div className={styles.addressContent}>
+                  <div className={styles.prev}>{id.slice(0, -8)}</div>
+                  <div className={styles.next}>{id.slice(-8)}</div>
+                </div>
+              ) : (
+                id
+              )
+            }
+          />
+        )}
         <TextItem title='Level' level={level} />
         <ValueItem title='EXP' value={expValue} expSpanValue={expSpanValue} />
         <ValueItem
