@@ -39,7 +39,7 @@ interface Props {
 
 interface TextItemProps {
   title: string
-  level: string
+  level: string | any
   className?: any
 }
 
@@ -142,7 +142,14 @@ const VestCardComponent = (props: Props) => {
         <img src={nftImg || Image.nftDefault} />
       </div>
       <div className={styles.cardContentSection}>
-        <TextItem title='ID' level={id} />
+        <TextItem
+          title='ID'
+          level={id.length > 10 ? (
+            <div className={styles.addressContent}>
+              <div className={styles.prev}>{id.slice(0, -8)}</div>
+              <div className={styles.next}>{id.slice(-8)}</div>
+            </div>
+          ) : (id)} />
         <TextItem title='Level' level={level} />
         <ValueItem title='EXP' value={expValue} expSpanValue={expSpanValue} />
         <ValueItem

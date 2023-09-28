@@ -308,3 +308,29 @@ export const newStyleVSDBText = css`
   text-align: center;
   color: var(--Brand);
 `
+
+export const addressContent = css`
+  display: flex;
+  flex-direction: row;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 200px;
+  overflow: hidden;
+
+  div {
+    color: var(--Brand)  !important;
+    font-size: 10px !important;
+  }
+`
+
+export const prev = css`
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`
+
+export const next = css`
+  display: block;
+  white-space: nowrap;
+`
