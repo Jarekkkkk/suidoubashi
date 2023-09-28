@@ -13,7 +13,6 @@ import { get_vsdb_key } from './useGetVSDB'
 
 type MutationProps = {
   vsdb: string
-  withdrawl: string
   extended_duration: string
 }
 
@@ -24,14 +23,13 @@ export const useRevive = () => {
   return useMutation({
     mutationFn: async ({
       vsdb,
-      withdrawl,
       extended_duration,
     }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       if (!isValidSuiObjectId(vsdb)) throw new Error('invalid VSDB ID')
 
       const txb = new TransactionBlock()
-      revive(txb, vsdb, withdrawl, extended_duration)
+      revive(txb, vsdb, extended_duration)
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,

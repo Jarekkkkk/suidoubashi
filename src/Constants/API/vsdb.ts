@@ -184,7 +184,6 @@ export async function merge(txb: TransactionBlock, self: string, vsdb: string) {
 export async function revive(
   txb: TransactionBlock,
   vsdb: string,
-  withdrawl: string,
   extended_duration: string,
 ) {
   txb.moveCall({
@@ -192,7 +191,6 @@ export async function revive(
     arguments: [
       txb.object(vsdb_reg),
       txb.object(vsdb),
-      txb.pure(withdrawl),
       txb.pure(extended_duration),
       txb.object(SUI_CLOCK_OBJECT_ID),
     ],

@@ -1,3 +1,4 @@
+const WEEK = 604800
 
 export const calculate_vesdb = (bal: string, end: string) => {
   const diff = Math.floor(
@@ -10,3 +11,5 @@ export const calculate_vesdb = (bal: string, end: string) => {
 export const parseIpfsUrl = (ipfsUrl: string) =>
   ipfsUrl.replace(/^ipfs:\/\//, 'https://ipfs.io/ipfs/')
 
+
+export const round_down_week = (end: string) => parseInt(end) - parseInt(end) % WEEK

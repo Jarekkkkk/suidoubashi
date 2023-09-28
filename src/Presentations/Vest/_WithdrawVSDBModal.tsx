@@ -80,7 +80,6 @@ const WithdrawVSDBModal = (props: Props) => {
 
     revive({
       vsdb: currentVSDBId,
-      withdrawl: (parseFloat(input) * Math.pow(10, 9)).toString(),
       extended_duration: extended_duration.toString(),
     })
   }

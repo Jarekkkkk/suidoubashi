@@ -10,6 +10,7 @@ import useRegisterAMMState from '@/Hooks/AMM/useRegisterAMMState'
 import { AMMState, initialize_amm } from '@/Constants/API/pool'
 import useRegisterVotingState from '@/Hooks/Vote/useRegisterVotingState'
 import { VotingState } from '@/Constants/API/vote'
+import { useReset } from '@/Hooks/Vote/useReset'
 
 interface Props {
   nftId: string
@@ -107,12 +108,18 @@ const VestCardComponent = (props: Props) => {
   } = props
 
   const { mutate: unlock } = useUnlock()
-  const { mutate: initialize_amm } = useRegisterAMMState()
-
-  const handleUnlock = (nftId: string) => {
-    unlock({ vsdb: nftId })
+  const { mutateAsync: reset } = useReset()
+  const handleUnlock = async (nftId: string) => {
+    const pools = Object.keys(voting_state?.pool_votes ?? {})
+    console.log(pools)
+    if (!voting_state?.voted && voting_state) {
+      const pools = Object.keys(voting_state.pool_votes)
+      console.log(pools)
+    }
+    //unlock({ vsdb: nftId })
   }
 
+  const { mutate: initialize_amm } = useRegisterAMMState()
   const handleInitializeAMM = () => {
     if (!amm_state) initialize_amm({ vsdb: nftId })
   }
@@ -163,11 +170,11 @@ const VestCardComponent = (props: Props) => {
             <div className={styles.buttonContent}>
               {new Date().getTime() >= parseInt(end) * 1000 ? (
                 <>
-                  {
+                  { voting_state && new Date().getTime() >= parseInt(voting_state.last_voted) &&
                     <Button
                       styletype='outlined'
                       text='Unlock'
-                      onClick={() => !voting_state && handleUnlock(nftId)}
+                      onClick={() => handleUnlock(nftId)}
                     />
                   }
                   {setIsShowWithdrawVSDBModal && (
