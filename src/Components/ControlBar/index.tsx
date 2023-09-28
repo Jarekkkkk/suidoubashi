@@ -66,7 +66,7 @@ const ControlBarComponent = (props: Props) => {
         !coinData ? (
           <Empty content={'No Supported Coins'} />
         ) : coinData?.sort((prev, next) => {
-          const _prevIdx = fetchIcon(prev.coinType)!.decimals
+         const _prevIdx = fetchIcon(prev.coinType)!.decimals
           const _nextIdx = fetchIcon(next.coinType)!.decimals
 
           return Number(

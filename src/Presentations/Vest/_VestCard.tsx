@@ -13,7 +13,6 @@ import { round_down_week } from '@/Utils/vsdb'
 import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
 import { usePageContext } from '@/Components/Page'
 import { useUnlock } from '@/Hooks/Vote/useUnlock'
-import { upgrade } from '@/Constants/API/vsdb'
 import { useUpgrade } from '@/Hooks/VSDB/useUpgrade'
 
 interface Props {

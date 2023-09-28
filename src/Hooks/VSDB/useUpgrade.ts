@@ -40,7 +40,6 @@ export const useUpgrade = () => {
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['vsdb', params.vsdb])
-      queryClient.invalidateQueries(['balance'])
       toast.success('Revive Success!')
     },
     onError: (_err: Error) => toast.error('Oops! Have some error'),

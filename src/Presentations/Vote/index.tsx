@@ -62,6 +62,16 @@ const VotePresentation = () => {
       let vote = []
       let reset: Gauge[] = []
       let voting_weights = []
+      if (currentNFTInfo.data.voting_state?.pool_votes) {
+        for (const key of Object.keys(
+          currentNFTInfo.data.voting_state?.pool_votes,
+        )) {
+          const gauge = gaugeData.find((g) => g.pool == key)
+          if (gauge) {
+            reset.push(gauge)
+          }
+        }
+      }
       for (const [key, value] of Object.entries<number>(totalVoting)) {
         if (value > 0) {
           const gauge = gaugeData.find((g) => g.pool == key)
@@ -82,7 +92,10 @@ const VotePresentation = () => {
   }
 
   useEffect(() => {
-    if (currentNFTInfo?.data?.voting_state && currentNFTInfo.data.voting_state.voted) {
+    if (
+      currentNFTInfo?.data?.voting_state &&
+      currentNFTInfo.data.voting_state.voted
+    ) {
       const total = Number(
         parseInt(
           currentNFTInfo.data.voting_state?.used_weights ?? '0',
@@ -92,20 +105,19 @@ const VotePresentation = () => {
         currentNFTInfo.data.voting_state?.pool_votes ?? {},
       )) {
         const foo = Number((parseInt(value) / total).toPrecision(2))
-        setTotalVoting((prev:any) => ({
+        setTotalVoting((prev: any) => ({
           ...prev,
           [key]: foo,
         }))
       }
-      setTotalVoting((prev:any) => ({
+      setTotalVoting((prev: any) => ({
         ...prev,
         total: 1,
       }))
-    }else{
+    } else {
       setTotalVoting({})
     }
   }, [currentNFTInfo])
-
 
   const data = [{ id: 1 }, { id: 2 }]
 
@@ -183,7 +195,9 @@ const VotePresentation = () => {
                   constantsStyles.columnContent,
                 )}
               >
-                <div className={constantsStyles.boldText}>{formatBalance(weight, 9, CoinFormat.FULL)}</div>
+                <div className={constantsStyles.boldText}>
+                  {formatBalance(weight, 9, CoinFormat.FULL)}
+                </div>
                 <div className={constantsStyles.greyText}>
                   {voterData.total_weight != '0'
                     ? (
