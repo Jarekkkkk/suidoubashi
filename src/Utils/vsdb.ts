@@ -12,4 +12,4 @@ export const parseIpfsUrl = (ipfsUrl: string) =>
   ipfsUrl.replace(/^ipfs:\/\//, 'https://ipfs.io/ipfs/')
 
 
-export const round_down_week = (end: string) => parseInt(end) - parseInt(end) % WEEK
+export const round_down_week = (end: number) => end - end % WEEK

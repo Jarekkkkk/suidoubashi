@@ -4,13 +4,15 @@ import { Button } from '@/Components'
 import Image from '@/Assets/image'
 
 import * as styles from './index.styles'
-import { useUnlock } from '@/Hooks/VSDB/useUnlock'
 import BigNumber from 'bignumber.js'
 import useRegisterAMMState from '@/Hooks/AMM/useRegisterAMMState'
-import { AMMState, initialize_amm } from '@/Constants/API/pool'
+import { AMMState } from '@/Constants/API/pool'
 import useRegisterVotingState from '@/Hooks/Vote/useRegisterVotingState'
 import { VotingState } from '@/Constants/API/vote'
-import { useReset } from '@/Hooks/Vote/useReset'
+import { round_down_week } from '@/Utils/vsdb'
+import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
+import { usePageContext } from '@/Components/Page'
+import { useUnlock } from '@/Hooks/Vote/useUnlock'
 
 interface Props {
   nftId: string
@@ -107,16 +109,19 @@ const VestCardComponent = (props: Props) => {
     voting_state,
   } = props
 
-  const { mutate: unlock } = useUnlock()
-  const { mutateAsync: reset } = useReset()
+  const { setting } = usePageContext()
+
+  const { mutate: unlock } = useUnlock(setting)
+  const { data: gauges } = useGetMulGauge()
   const handleUnlock = async (nftId: string) => {
-    const pools = Object.keys(voting_state?.pool_votes ?? {})
-    console.log(pools)
-    if (!voting_state?.voted && voting_state) {
-      const pools = Object.keys(voting_state.pool_votes)
-      console.log(pools)
+    if (voting_state && gauges) {
+      const reset_ = gauges.filter((g) =>
+        Object.keys(voting_state.pool_votes).some((p) => p == g.pool),
+      )
+      unlock({ vsdb: nftId, reset: reset_ })
+    } else {
+      unlock({ vsdb: nftId })
     }
-    //unlock({ vsdb: nftId })
   }
 
   const { mutate: initialize_amm } = useRegisterAMMState()
@@ -170,13 +175,15 @@ const VestCardComponent = (props: Props) => {
             <div className={styles.buttonContent}>
               {new Date().getTime() >= parseInt(end) * 1000 ? (
                 <>
-                  { voting_state && new Date().getTime() >= parseInt(voting_state.last_voted) &&
+                  {(!voting_state ||
+                    round_down_week(new Date().getTime() / 1000) >=
+                      parseInt(voting_state.last_voted)) && (
                     <Button
                       styletype='outlined'
                       text='Unlock'
                       onClick={() => handleUnlock(nftId)}
                     />
-                  }
+                  )}
                   {setIsShowWithdrawVSDBModal && (
                     <Button
                       styletype='outlined'
