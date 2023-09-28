@@ -1,27 +1,23 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import {
   Dialog,
   InputSection,
-  Input,
   DatePicker,
   RadioGroup,
   Button,
-  Error,
 } from '@/Components'
 import Image from '@/Assets/image'
-import { CoinIcon, Icon } from '@/Assets/icon'
-import { vsdbTimeSettingOptions, regexNumber } from '@/Constants/index'
+import { Icon } from '@/Assets/icon'
+import { vsdbTimeSettingOptions } from '@/Constants/index'
 
 import * as styles from './index.styles'
 import { cx } from '@emotion/css'
-import useGetBalance from '@/Hooks/Coin/useGetBalance'
-import { Coin } from '@/Constants/coin'
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
 import { useGetVsdb } from '@/Hooks/VSDB/useGetVSDB'
 import { useRevive } from '@/Hooks/VSDB/useRevive'
-import UserModule from '@/Modules/User';
-import { calculate_vesdb } from '@/Utils/vsdb'
+import UserModule from '@/Modules/User'
+import { handleIncreaseDurationVesdbOnchange } from '@/Utils/vsdb'
 
 type Props = {
   isShowWithdrawVSDBModal: boolean
@@ -41,17 +37,21 @@ const WithdrawVSDBModal = (props: Props) => {
   }
 
   const walletAddress = UserModule.getUserToken()
-  const { data: vsdb, isLoading: isGetVsdbLoading } = useGetVsdb(walletAddress, currentVSDBId)
+  const { data: vsdb, isLoading: isGetVsdbLoading } = useGetVsdb(
+    walletAddress,
+    currentVSDBId,
+  )
 
   const { mutate: revive, isLoading: isReviveLoading } = useRevive()
 
   const handleRevive = () => {
+    if (isReviveLoading) return
     const extended_duration =
       (new Date(endDate).getTime() -
         moment().startOf('day').toDate().getTime()) /
       1000
 
-    if ( extended_duration < 0) return null
+    if (extended_duration < 0) return null
 
     revive({
       vsdb: currentVSDBId,
@@ -65,10 +65,11 @@ const WithdrawVSDBModal = (props: Props) => {
   return (
     <Dialog
       {...props}
-      title='Withdraw VSDB'
+      title='Revive VSDB'
       titleImg={Image.pageBackground_3}
       isShow={isShowWithdrawVSDBModal}
       setIsShow={setIsShowWithdrawVSDBModal}
+      disabled = {isReviveLoading}
     >
       <InputSection
         titleChildren={
@@ -105,24 +106,17 @@ const WithdrawVSDBModal = (props: Props) => {
           <div>New VeSDB</div>
           <span className={styles.vsdbCountContent}>
             {vsdb
-              ? calculate_vesdb(
-                  (
-                    Number(vsdb.balance) -
-                    parseFloat(input || '0') * Math.pow(10, 9)
-                  ).toString(),
-                  (new Date(endDate).getTime() / 1000).toString(),
-                )
+              ? handleIncreaseDurationVesdbOnchange(vsdb.balance, endDate)
               : '0'}
           </span>
         </div>
       </div>
-      {error &&  <div className={styles.errorContent}><Error errorText={error} /></div>}
       <div className={styles.vsdbModalbutton}>
         <Button
-          text='Claim'
+          text='Revive'
+          isloading={isReviveLoading ? 1 : 0}
           styletype='filled'
           onClick={handleRevive}
-          disabled={!!error}
         />
       </div>
     </Dialog>

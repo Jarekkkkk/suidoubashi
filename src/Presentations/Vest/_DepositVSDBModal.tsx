@@ -24,7 +24,7 @@ import { Coin } from '@/Constants/coin'
 import { useIncreaseUnlockTime } from '@/Hooks/VSDB/useIncreaseUnlockTime'
 import { useIncreaseUnlockAmount } from '@/Hooks/VSDB/useIncreaseUnlockAmount'
 import { useGetVsdb } from '@/Hooks/VSDB/useGetVSDB'
-import { calculate_vesdb } from '@/Utils/vsdb'
+import { handleIncreaseDurationVesdbOnchange } from '@/Utils/vsdb'
 
 type Props = {
   currentVSDBId: string
@@ -118,18 +118,6 @@ const DepositVSDBModal = (props: Props) => {
       .toFormat()
   }
 
-  const handleIncreaseDurationVesdbOnchange = (end: string) => {
-    return BigNumber(
-      calculate_vesdb(
-        vsdb?.balance || '0',
-        (new Date(end).getTime() / 1000).toString(),
-      ),
-    )
-      .shiftedBy(-9)
-      .decimalPlaces(3)
-      .toFormat()
-  }
-
   const tabDataKeys = [
     {
       id: 0,
@@ -170,11 +158,15 @@ const DepositVSDBModal = (props: Props) => {
               </span>
             </div>
           </div>
-          {error &&  <div className={styles.errorContent}><Error errorText={error} /></div>}
+          {error && (
+            <div className={styles.errorContent}>
+              <Error errorText={error} />
+            </div>
+          )}
           <div className={styles.vsdbModalbutton}>
             <Button
               disabled={!!error}
-              isloading={incrase_amount_isLoading? 1 : 0}
+              isloading={incrase_amount_isLoading ? 1 : 0}
               text='Increase SDB'
               styletype='filled'
               onClick={handleIncreaseAmount}
@@ -229,15 +221,22 @@ const DepositVSDBModal = (props: Props) => {
                   >
                     <div>New VeSDB</div>
                     <span className={styles.vsdbCountContent}>
-                      {handleIncreaseDurationVesdbOnchange(endDate)}
+                      {handleIncreaseDurationVesdbOnchange(
+                        vsdb?.balance,
+                        endDate,
+                      )}
                     </span>
                   </div>
                 </div>
-                {error &&  <div className={styles.errorContent}><Error errorText={error} /></div>}
+                {error && (
+                  <div className={styles.errorContent}>
+                    <Error errorText={error} />
+                  </div>
+                )}
                 <div className={styles.vsdbModalbutton}>
                   <Button
                     disabled={!!error}
-                    isloading={increase_unlock_time_isLoading? 1 : 0}
+                    isloading={increase_unlock_time_isLoading ? 1 : 0}
                     text='Increase Duration'
                     styletype='filled'
                     onClick={handleIncreaseDuration}
