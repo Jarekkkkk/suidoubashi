@@ -41,32 +41,7 @@ const WithdrawVSDBModal = (props: Props) => {
   }
 
   const walletAddress = UserModule.getUserToken()
-  const balance = useGetBalance(Coin.SDB, walletAddress)
   const { data: vsdb, isLoading: isGetVsdbLoading } = useGetVsdb(walletAddress, currentVSDBId)
-
-  const [input, setInput] = useState<string>('')
-  const [error, setError] = useState<string>()
-
-  const handleOnInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      let value = e.target.value
-      const isValid = regexNumber.test(value)
-      if (!isValid) {
-        value = value.slice(0, -1)
-      }
-      setInput(value)
-
-      if (balance?.totalBalance) {
-        if (parseFloat(value) * Math.pow(10, 9) > Number(balance.totalBalance)) {
-          setError('Insufficient Balance')
-        } else {
-          setError('')
-        }
-      }
-    },
-
-    [setInput],
-  )
 
   const { mutate: revive, isLoading: isReviveLoading } = useRevive()
 
@@ -76,7 +51,7 @@ const WithdrawVSDBModal = (props: Props) => {
         moment().startOf('day').toDate().getTime()) /
       1000
 
-    if (!input || extended_duration < 0) return null
+    if ( extended_duration < 0) return null
 
     revive({
       vsdb: currentVSDBId,
@@ -95,29 +70,6 @@ const WithdrawVSDBModal = (props: Props) => {
       isShow={isShowWithdrawVSDBModal}
       setIsShow={setIsShowWithdrawVSDBModal}
     >
-      <InputSection
-        titleChildren={
-          <>
-            <CoinIcon.SDBIcon />
-            <span>SDB</span>
-          </>
-        }
-        inputChildren={
-          <>
-            <Input
-              value={input}
-              onChange={handleOnInputChange}
-              placeholder='Increase Unlocked Amount'
-              disabled={isReviveLoading}
-            />
-          </>
-        }
-        balance={
-          balance
-            ? BigNumber(balance.totalBalance).shiftedBy(-9).toFormat()
-            : '...'
-        }
-      />
       <InputSection
         titleChildren={
           <>

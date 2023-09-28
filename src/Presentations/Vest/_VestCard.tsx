@@ -187,7 +187,7 @@ const VestCardComponent = (props: Props) => {
                   {setIsShowWithdrawVSDBModal && (
                     <Button
                       styletype='outlined'
-                      text='Revival'
+                      text='Revive'
                       onClick={() => {
                         setIsShowWithdrawVSDBModal(true)
                         setCurrentVSDBId && setCurrentVSDBId(nftId)
