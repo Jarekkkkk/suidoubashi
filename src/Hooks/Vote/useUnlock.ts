@@ -64,7 +64,8 @@ export const useUnlock = (setting: SettingInterface) => {
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['vsdb', params.vsdb])
-      queryClient.invalidateQueries(['gauge'])
+      queryClient.invalidateQueries(['get-vsdbs'])
+      if (params.reset) queryClient.invalidateQueries(['gauge'])
       toast.success('reset Successfully')
     },
     onError: (err) => {
