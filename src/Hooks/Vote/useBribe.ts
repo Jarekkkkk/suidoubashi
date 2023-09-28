@@ -40,7 +40,7 @@ export const useBribe = (setting: SettingInterface) => {
       const coin = payCoin(txb, coins, input_value, input_type)
       bribe(txb, rewards, coin, type_x, type_y, input_type)
 
-      let signed_tx = await signTransactionBlock({ transactionBlok: txb })
+      let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
