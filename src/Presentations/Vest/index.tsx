@@ -11,6 +11,7 @@ import MergeVSDBModal from './_MergeVSDBModal'
 import WithdrawVSDBModal from './_WithdrawVSDBModal'
 import DepositVSDBModal from './_DepositVSDBModal'
 
+import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 import BigNumber from 'bignumber.js'
 import { useMintSDB } from '@/Hooks/VSDB/useMintSDB'
@@ -33,7 +34,7 @@ const VestPresentation = () => {
   return (
     <PageContainer title='Vest' titleImg={Image.pageBackground_1}>
       {nftList.isLoading ? (
-        <div className={styles.EmptyContainer}>
+        <div className={constantsStyles.LoadingContainer}>
           <Loading />
         </div>
       ) : (

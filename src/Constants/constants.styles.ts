@@ -3,8 +3,10 @@ import { css } from '@emotion/css'
 export const LoadingContainer = css`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   margin: 30px auto;
   padding: 0 30px;
+  height: calc(100% - 140px - 60px);
 `
 
 export const rowContent = css`

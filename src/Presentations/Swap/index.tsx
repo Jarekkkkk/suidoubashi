@@ -17,6 +17,7 @@ import Image from '@/Assets/image'
 import { Icon } from '@/Assets/icon'
 
 import SelectCoinModal from './_SelectCoinModal'
+import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { get_output } from '@/Constants/API/pool'
@@ -153,7 +154,7 @@ const SwapPresentation = () => {
   if (isCoinDataLoading)
     return (
       <PageContainer title='Swap' titleImg={Image.pageBackground_1}>
-        <div className={styles.swapContainer}>
+        <div className={constantsStyles.LoadingContainer}>
           <Loading />
         </div>
       </PageContainer>
