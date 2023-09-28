@@ -48,6 +48,7 @@ export const vestCardLoadingContainer = css`
   min-height: 300px;
   border-radius: 12px;
   box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
+  box-sizing: border-box;
 `
 export const vestCardContainer = css`
   display: flex;
@@ -83,10 +84,11 @@ export const imgSection = css`
 `
 
 export const cardContentSection = css`
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 14px 8px 14px 16px;
-  width: 100%;
+  width: calc(100% - 240px);
 
   * {
     font-size: 16px;
