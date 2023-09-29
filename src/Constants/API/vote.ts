@@ -48,6 +48,7 @@ export type Gauge = {
 }
 
 export type Stake = {
+  gauge: string
   type_x: string
   type_y: string
   stakes: string
@@ -483,6 +484,43 @@ export function unstake_all(
   })
 }
 
+export function claim_rewards(
+  txb: TransactionBlock,
+  gauge_id: string,
+  gauge_type_x: string,
+  gauge_type_y: string,
+) {
+  txb.moveCall({
+    target: `${vote_package}::voter::claim_rewards`,
+    typeArguments: [gauge_type_x, gauge_type_y],
+    arguments: [
+      txb.object(voter),
+      txb.object(gauge_id),
+      txb.object(SUI_CLOCK_OBJECT_ID),
+    ],
+  })
+}
+export function claim_bribes(
+  txb: TransactionBlock,
+  bribe: string,
+  rewards: string,
+  vsdb: string,
+  type_x: string,
+  type_y: string,
+  input_type: string,
+) {
+  txb.moveCall({
+    target: `${vote_package}::voter::claim_bribes`,
+    typeArguments: [type_x, type_y, input_type],
+    arguments: [
+      txb.object(bribe),
+      txb.object(rewards),
+      txb.object(vsdb),
+      txb.object(SUI_CLOCK_OBJECT_ID),
+    ],
+  })
+}
+
 export async function get_stake_balance(
   rpc: JsonRpcProvider,
   sender: SuiAddress,
@@ -566,6 +604,7 @@ export async function get_stake(
   const stakes = await get_stake_balance(rpc, sender, gauge, type_x, type_y)
   const pending_sdb = await get_pending_sdb(rpc, sender, gauge, type_x, type_y)
   return {
+    gauge,
     type_x,
     type_y,
     stakes,

@@ -103,11 +103,10 @@ const VotePresentation = () => {
       currentNFTInfo?.data?.voting_state &&
       currentNFTInfo.data.voting_state.voted
     ) {
-      const total = Number(
-        parseInt(
-          currentNFTInfo.data.voting_state?.used_weights ?? '0',
-        ).toPrecision(2),
+      const total = parseInt(
+        currentNFTInfo.data.voting_state?.used_weights ?? '0',
       )
+
       for (const [key, value] of Object.entries(
         currentNFTInfo.data.voting_state?.pool_votes ?? {},
       )) {
@@ -168,6 +167,7 @@ const VotePresentation = () => {
       Header: 'Weights',
     },
   ]
+
 
   const renderRow = (
     columns: any[],

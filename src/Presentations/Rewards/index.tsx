@@ -7,7 +7,7 @@ import {
   Empty,
   CoinCombinImg,
 } from '@/Components'
-import { fetchIcon, fetchCoinByType } from '@/Constants/index'
+import { fetchCoinByType } from '@/Constants/index'
 import * as constantsStyles from '@/Constants/constants.styles'
 
 import * as styles from './index.styles'
@@ -15,18 +15,43 @@ import { cx, css } from '@emotion/css'
 import { useRewardsContext } from '@/Containers/Rewards'
 import { usePageContext } from '@/Components/Page'
 import { useEffect, useState } from 'react'
-import { all_earned, earned } from '@/Constants/API/vote'
+import { all_earned } from '@/Constants/API/vote'
 import useRpc from '@/Hooks/useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
+import { formatBalance } from '@/Utils/format'
+import { useClaimRewards } from '@/Hooks/Vote/useClaimRewards'
+import { useClaimBribes } from '@/Hooks/Vote/useClaimBribe'
 
 const RewardsPresentation = () => {
   const { rewardsData, stakeData, fetching } = useRewardsContext()
-  const { currentNFTInfo } = usePageContext()
+  const { setting, currentNFTInfo } = usePageContext()
 
   const [voterRewards, setVoterRewards] = useState()
   const [voterRewardsIsLoading, setVoterRewardsIsLoading] = useState(false)
   const rpc = useRpc()
   const { currentAccount } = useWalletKit()
+
+  const claim_rewards = useClaimRewards(setting)
+  const handleClaimRewards = (
+    gauge_id: string,
+    gauge_type_x: string,
+    gauge_type_y: string,
+  ) => {
+    claim_rewards.mutate({ gauge_id, gauge_type_x, gauge_type_y })
+  }
+
+  const claim_bribes = useClaimBribes(setting)
+  const handleClaimBribes = (
+    bribe: string,
+    rewards: string,
+    vsdb: string | undefined,
+    type_x: string,
+    type_y: string,
+    input_types: string[]
+  ) => {
+    if (!vsdb) return
+    claim_bribes.mutate({ bribe, rewards, vsdb, type_x, type_y, input_types })
+  }
 
   useEffect(() => {
     const get_vote_rewards = async () => {
@@ -84,7 +109,6 @@ const RewardsPresentation = () => {
       </PageContainer>
     )
 
-  console.log(voterRewards)
   return (
     <PageContainer title='Rewards' titleImg={Image.pageBackground_1}>
       <div className={styles.rewardsWrapper}>
@@ -133,13 +157,15 @@ const RewardsPresentation = () => {
                   </div>
                   <span>
                     <CoinIcon.SDBIcon className={styles.smallIcon} />
-                    {r.pending_sdb}
+                    {formatBalance(r.pending_sdb, 9)}
                   </span>
                   <Button
                     size='small'
                     styletype='outlined'
                     text='Claim'
-                    onClick={() => {}}
+                    onClick={() =>
+                      handleClaimRewards(r.gauge, r.type_x, r.type_y)
+                    }
                   />
                 </div>
               )
@@ -209,7 +235,16 @@ const RewardsPresentation = () => {
                     size='small'
                     styletype='outlined'
                     text='Claim'
-                    onClick={() => {}}
+                    onClick={() =>
+                      handleClaimBribes(
+                        reward.bribe,
+                        reward.id,
+                        currentNFTInfo.data?.id,
+                        reward.type_x,
+                        reward.type_y,
+                        Object.keys(voterRewards[reward.id])
+                      )
+                    }
                   />
                 </div>
               )

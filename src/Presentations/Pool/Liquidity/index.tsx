@@ -254,7 +254,7 @@ const LiquidityPresentation = () => {
         pool_type_x: poolData.type_x,
         pool_type_y: poolData.type_y,
         lp_id: lp.id,
-        value: stake_bal,
+        value: stake_bal.stakes,
       })
     }
   }
@@ -729,7 +729,7 @@ const LiquidityPresentation = () => {
               <div className={styles.buttonContent}>
                 <Button
                   styletype='filled'
-                  disabled={parseInt(stake_bal ?? '0') == 0}
+                  disabled={parseInt(stake_bal?.stakes ?? '0') == 0}
                   text='Unstake'
                   onClick={() => handleUnstake()}
                 />
@@ -737,7 +737,7 @@ const LiquidityPresentation = () => {
                   styletype='filled'
                   text='Unstake & Withdraw'
                   onClick={() => handleUnstakeAndWithdraw()}
-                  disabled={parseInt(stake_bal ?? '0') == 0 || !gaugeData}
+                  disabled={parseInt(stake_bal?.stakes ?? '0') == 0 || !gaugeData}
                 />
               </div>
             </div>
