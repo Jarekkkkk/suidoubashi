@@ -21,7 +21,6 @@ export const queryClient = new QueryClient({
       refetchIntervalInBackground: false,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-      onError: (err) => console.log(err),
     },
     mutations: {
       onError: (error) => console.log(error),

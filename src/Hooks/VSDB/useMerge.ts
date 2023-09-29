@@ -41,7 +41,7 @@ export const useMerge = (setIsShowMergeVSDBModal: Function) => {
     },
     onSuccess: (_, params) => {
       queryClient.setQueryData(
-        ['get-vsdbs', currentAccount!.address],
+        ['get-vsdbs'],
         (vsdb_ids?: string[]) =>
           [...(vsdb_ids ?? [])].filter((id) => id !== params.mergedVsdb),
       )

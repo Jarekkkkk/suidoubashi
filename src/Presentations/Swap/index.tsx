@@ -138,6 +138,7 @@ const SwapPresentation = () => {
   const swap = useSwap()
   const handleSwap = () => {
     if (currentNFTInfo.isLoading) return
+    console.log(currentNFTInfo.data)
     if (pool && coinTypeFirst && coinTypeSecond) {
       swap.mutate({
         pool_id: pool.id,

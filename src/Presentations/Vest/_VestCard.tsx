@@ -146,7 +146,6 @@ const VestCardComponent = (props: Props) => {
   const handleUpgrade = () => {
     upgrade({ vsdb: nftId })
   }
-  console.log('expSpanValue', expSpanValue)
 
   return (
     <div className={styles.vestCardContainer}>

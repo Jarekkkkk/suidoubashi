@@ -66,7 +66,6 @@ export const useVote = (setting: SettingInterface) => {
 
       vote_exit(txb, potato, vsdb)
 
-      console.log('txb', txb)
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,

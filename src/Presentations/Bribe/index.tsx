@@ -1,5 +1,12 @@
 import Image from '@/Assets/image'
-import { PageContainer, Input, Button, InputSection, Empty, Loading } from '@/Components'
+import {
+  PageContainer,
+  Input,
+  Button,
+  InputSection,
+  Empty,
+  Loading,
+} from '@/Components'
 import { fetchCoinByType } from '@/Constants/index'
 import * as constantsStyles from '@/Constants/constants.styles'
 
@@ -13,15 +20,20 @@ import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { formatBalance } from '@/Utils/format'
 import { useBribe } from '@/Hooks/Vote/useBribe'
 import { usePageContext } from '@/Components/Page'
+import { useWalletKit } from '@mysten/wallet-kit'
 
 const BribePresentation = () => {
-  const { rewardsData, handleInputOnchange, coinInput, fetching } = useBribeContext()
+  const { rewardsData, handleInputOnchange, coinInput, fetching } =
+    useBribeContext()
   const { setting } = usePageContext()
 
   const [isShow, setIsShow] = useState(false)
+
   const [coinType, setCoinType] = useState<CoinInterface>(Coins[0])
   const [rewardsId, setRewardsId] = useState('')
-  const balance = useGetBalance(coinType.type)
+
+  const { currentAccount } = useWalletKit()
+  const balance = useGetBalance(coinType.type, currentAccount?.address)
   const bribe = useBribe(setting)
 
   const selectedReward = useMemo(() => {
@@ -44,15 +56,15 @@ const BribePresentation = () => {
     }
   }
 
-	const _fetchCoinByType = () => {
-		if (selectedReward) {
-			const _x = fetchCoinByType(selectedReward.type_x)!.name;
-			const _y = fetchCoinByType(selectedReward.type_y)!.name;
-			const coinName = _x.concat('-', _y);
+  const _fetchCoinByType = () => {
+    if (selectedReward) {
+      const _x = fetchCoinByType(selectedReward.type_x)!.name
+      const _y = fetchCoinByType(selectedReward.type_y)!.name
+      const coinName = _x.concat('-', _y)
 
-			return coinName;
-		}
-	}
+      return coinName
+    }
+  }
 
   if (fetching)
     return (
@@ -90,7 +102,7 @@ const BribePresentation = () => {
           <div className={styles.inputContent}>
             <Input
               value={_fetchCoinByType()}
-              onChange={(e) => {}}
+              onChange={() => {}}
               placeholder='Choose Pool'
               rightElement={
                 <div

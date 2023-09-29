@@ -31,8 +31,9 @@ const MergeVSDBModal = (props: Props) => {
     let _mergedVsdb = Object.assign({}, currentVsdb)
 
     if (
-      (secondVsdb.level > _mergedVsdb.level) ||
-      ((secondVsdb.level === _mergedVsdb.level) && (secondVsdb.experience > _mergedVsdb.experience))
+      secondVsdb.level > _mergedVsdb.level ||
+      (secondVsdb.level === _mergedVsdb.level &&
+        secondVsdb.experience > _mergedVsdb.experience)
     ) {
       _mergedVsdb.level = secondVsdb.level
       _mergedVsdb.experience = secondVsdb.experience
@@ -49,18 +50,29 @@ const MergeVSDBModal = (props: Props) => {
     return _mergedVsdb
   }, [secondVsdb, currentVsdb])
 
-  const { mutate: merge, isLoading, isSuccess } = useMerge(setIsShowMergeVSDBModal)
+  const {
+    mutate: merge,
+    isLoading,
+    isSuccess,
+  } = useMerge(setIsShowMergeVSDBModal)
 
   const handleMerge = async () => {
     if (!currentVsdb || !secondVsdb) return null
     merge({ vsdb: currentVsdb.id, mergedVsdb: secondVsdb.id })
   }
 
-  const _vsdbsList = vsdbs.filter((vsdb) => vsdb.voting_state == undefined)
+  const _vsdbsList = vsdbs.filter(
+    (vsdb) =>
+      vsdb.voting_state == undefined &&
+      new Date().getTime() < parseInt(vsdb.end) * 1000,
+  )
 
   useEffect(() => {
-    if(isSuccess) {
-      const _vsdb = vsdbs.filter((vsdb) => vsdb.id === mergedVsdb?.id && vsdb.balance === mergedVsdb.balance)[0]
+    if (isSuccess) {
+      const _vsdb = vsdbs.filter(
+        (vsdb) =>
+          vsdb.id === mergedVsdb?.id && vsdb.balance === mergedVsdb.balance,
+      )[0]
       setNewVsdb(_vsdb)
     }
   }, [vsdbs])
@@ -74,157 +86,158 @@ const MergeVSDBModal = (props: Props) => {
       setIsShow={setIsShowMergeVSDBModal}
       disabled={isLoading}
     >
-      {
-        !isSuccess ? (
-          <>
-            <div className={styles.perviewContainer}>
-              <div className={styles.perviewCardBlock}>
-                <Select
-                  options={_vsdbsList.map(
-                    (vsdb) => ({
+      {!isSuccess ? (
+        <>
+          <div className={styles.perviewContainer}>
+            <div className={styles.perviewCardBlock}>
+              <Select
+                options={_vsdbsList.map(
+                  (vsdb) =>
+                    ({
+                      label: formatId(vsdb.id, 6),
+                      value: vsdb,
+                    }) as SelectOption,
+                )}
+                onChange={({ value }: SelectOption) => {
+                  setCurrentVsdb(value)
+                  setSecondVsdb(undefined)
+                }}
+                isDisabled={isLoading}
+              />
+              <div className={styles.perviewCard}>
+                <div>{currentVsdb ? formatDate(currentVsdb.end) : '---'}</div>
+                <div>
+                  {currentVsdb
+                    ? formatBalance(currentVsdb.balance, 9) + ' SDB'
+                    : '---'}
+                </div>
+                <div className={styles.perviewImage}>
+                  <img
+                    src={
+                      currentVsdb
+                        ? currentVsdb.display.image_url
+                        : Image.nftDefault
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+            <div className={styles.perviewCardBlock}>
+              <Select
+                options={_vsdbsList
+                  .filter((v) => v.id != currentVsdb?.id && !v.voting_state)
+                  .map(
+                    (vsdb) =>
+                      ({
                         label: formatId(vsdb.id, 6),
                         value: vsdb,
-                      }) as SelectOption
+                      }) as SelectOption,
                   )}
-                  onChange={({ value }: SelectOption) => {
-                    setCurrentVsdb(value)
-                    setSecondVsdb(undefined)
-                  }}
-                  isDisabled={isLoading}
-                />
-                <div className={styles.perviewCard}>
-                  <div>{currentVsdb ? formatDate(currentVsdb.end) : '---'}</div>
-                  <div>
-                    {currentVsdb
-                      ? formatBalance(currentVsdb.balance, 9) + ' SDB'
-                      : '---'}
-                  </div>
-                  <div className={styles.perviewImage}>
-                    <img
-                      src={
-                        currentVsdb ? currentVsdb.display.image_url : Image.nftDefault
-                      }
-                    />
-                  </div>
+                value={
+                  secondVsdb
+                    ? ({
+                        label: formatId(secondVsdb.id, 6),
+                        value: secondVsdb,
+                      } as SelectOption)
+                    : null
+                }
+                onChange={({ value }: SelectOption) => setSecondVsdb(value)}
+                isDisabled={isLoading}
+              />
+              <div className={styles.perviewCard}>
+                <div>{secondVsdb ? formatDate(secondVsdb.end) : '---'}</div>
+                <div>
+                  {secondVsdb
+                    ? formatBalance(secondVsdb.balance, 9) + ' SDB'
+                    : '---'}
                 </div>
-              </div>
-              <div className={styles.perviewCardBlock}>
-                <Select
-                  options={_vsdbsList
-                    .filter((v) => v.id != currentVsdb?.id)
-                    .map(
-                      (vsdb) =>
-                        ({
-                          label: formatId(vsdb.id, 6),
-                          value: vsdb,
-                        }) as SelectOption,
-                    )}
-                  value={
-                    secondVsdb
-                      ? ({
-                          label: formatId(secondVsdb.id, 6),
-                          value: secondVsdb,
-                        } as SelectOption)
-                      : null
-                  }
-                  onChange={({ value }: SelectOption) => setSecondVsdb(value)}
-                  isDisabled={isLoading}
-                />
-                <div className={styles.perviewCard}>
-                  <div>{secondVsdb ? formatDate(secondVsdb.end) : '---'}</div>
-                  <div>
-                    {secondVsdb
-                      ? formatBalance(secondVsdb.balance, 9) + ' SDB'
-                      : '---'}
-                  </div>
-                  <div className={styles.perviewImage}>
-                    <img
-                      src={
-                        secondVsdb ? secondVsdb.display.image_url : Image.nftDefault
-                      }
-                    />
-                  </div>
+                <div className={styles.perviewImage}>
+                  <img
+                    src={
+                      secondVsdb
+                        ? secondVsdb.display.image_url
+                        : Image.nftDefault
+                    }
+                  />
                 </div>
               </div>
             </div>
-            <VestCardComponent
-              isPerviewMode={true}
-              nftId={mergedVsdb?.id ?? '0x00'}
-              nftImg={mergedVsdb?.display?.['image_url'] ?? Image.nftDefault}
-              level={mergedVsdb?.level ?? '0'}
-              expValue={
-                mergedVsdb
-                  ? parseInt(mergedVsdb?.experience) /
-                    required_exp(parseInt(mergedVsdb.level) + 1)
-                  : 0
-              }
-              vesdbValue={
-                mergedVsdb
-                  ? parseInt(mergedVsdb.vesdb) / parseInt(mergedVsdb.balance)
-                  : 0
-              }
-              lockSdbValue={BigNumber(mergedVsdb?.balance ?? '0')
-                .shiftedBy(-9)
-                .decimalPlaces(3)
-                .toFormat()}
-              expiration={
-                mergedVsdb
-                  ? new Date(Number(mergedVsdb.end) * 1000).toLocaleDateString(
-                      'en-ZA',
-                    )
-                  : '---'
-              }
+          </div>
+          <VestCardComponent
+            isPerviewMode={true}
+            nftId={mergedVsdb?.id ?? '0x00'}
+            nftImg={mergedVsdb?.display?.['image_url'] ?? Image.nftDefault}
+            level={mergedVsdb?.level ?? '0'}
+            expValue={
+              mergedVsdb
+                ? parseInt(mergedVsdb?.experience) /
+                  required_exp(parseInt(mergedVsdb.level) + 1)
+                : 0
+            }
+            vesdbValue={
+              mergedVsdb
+                ? parseInt(mergedVsdb.vesdb) / parseInt(mergedVsdb.balance)
+                : 0
+            }
+            lockSdbValue={BigNumber(mergedVsdb?.balance ?? '0')
+              .shiftedBy(-9)
+              .decimalPlaces(3)
+              .toFormat()}
+            expiration={
+              mergedVsdb
+                ? new Date(Number(mergedVsdb.end) * 1000).toLocaleDateString(
+                    'en-ZA',
+                  )
+                : '---'
+            }
+          />
+          <div className={styles.vsdbModalbutton}>
+            <Button
+              isloading={isLoading ? 1 : 0}
+              text='Merge'
+              styletype='filled'
+              onClick={handleMerge}
             />
-            <div className={styles.vsdbModalbutton}>
-              <Button
-                isloading={isLoading? 1 : 0}
-                text='Merge'
-                styletype='filled'
-                onClick={handleMerge}
-              />
-            </div>
-          </>
-        ) : (
-          <>
-            <VestCardComponent
-              isPerviewMode={true}
-              nftId={newVsdb?.id ?? '0x00'}
-              nftImg={newVsdb?.display?.['image_url'] ?? Image.nftDefault}
-              level={newVsdb?.level ?? '0'}
-              expValue={
-                newVsdb
-                  ? parseInt(newVsdb?.experience) /
-                    required_exp(parseInt(newVsdb.level) + 1)
-                  : 0
-              }
-              vesdbValue={
-                newVsdb
-                  ? parseInt(newVsdb.vesdb) / parseInt(newVsdb.balance)
-                  : 0
-              }
-              lockSdbValue={BigNumber(newVsdb?.balance ?? '0')
-                .shiftedBy(-9)
-                .decimalPlaces(3)
-                .toFormat()}
-              expiration={
-                newVsdb
-                  ? new Date(Number(newVsdb.end) * 1000).toLocaleDateString(
-                      'en-ZA',
-                    )
-                  : '---'
-              }
+          </div>
+        </>
+      ) : (
+        <>
+          <VestCardComponent
+            isPerviewMode={true}
+            nftId={newVsdb?.id ?? '0x00'}
+            nftImg={newVsdb?.display?.['image_url'] ?? Image.nftDefault}
+            level={newVsdb?.level ?? '0'}
+            expValue={
+              newVsdb
+                ? parseInt(newVsdb?.experience) /
+                  required_exp(parseInt(newVsdb.level) + 1)
+                : 0
+            }
+            vesdbValue={
+              newVsdb ? parseInt(newVsdb.vesdb) / parseInt(newVsdb.balance) : 0
+            }
+            lockSdbValue={BigNumber(newVsdb?.balance ?? '0')
+              .shiftedBy(-9)
+              .decimalPlaces(3)
+              .toFormat()}
+            expiration={
+              newVsdb
+                ? new Date(Number(newVsdb.end) * 1000).toLocaleDateString(
+                    'en-ZA',
+                  )
+                : '---'
+            }
+          />
+          <div className={styles.vsdbModalbutton}>
+            <Button
+              isloading={isLoading ? 1 : 0}
+              text='Done'
+              styletype='filled'
+              onClick={() => setIsShowMergeVSDBModal(false)}
             />
-            <div className={styles.vsdbModalbutton}>
-              <Button
-                isloading={isLoading? 1 : 0}
-                text='Done'
-                styletype='filled'
-                onClick={() => setIsShowMergeVSDBModal(false)}
-              />
-            </div>
-          </>
-        )
-      }
+          </div>
+        </>
+      )}
     </Dialog>
   )
 }

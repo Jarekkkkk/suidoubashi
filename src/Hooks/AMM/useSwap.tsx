@@ -45,7 +45,7 @@ export const useSwap = () => {
         coinType: input_type,
       })
       const coin = payCoin(txb, coins, input_value, input_type)
-
+  console.log(vsdb)
       if (is_type_x) {
         swap_for_y(txb, pool_id, pool_type_x, pool_type_y, coin, output_value, vsdb)
       } else {

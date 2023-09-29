@@ -20,6 +20,7 @@ import { fetchCoinByType } from '@/Constants'
 import { useEffect, useState } from 'react'
 import { CoinFormat, formatBalance } from '@/Utils/format'
 import { useVote } from '@/Hooks/Vote/useVote'
+import { toast } from 'react-hot-toast'
 
 const renderLabel2 = (val: number) => {
   return `${Math.round(val * 100)}%`
@@ -59,35 +60,41 @@ const VotePresentation = () => {
   const vote_mutation = useVote(setting)
   const handleVote = () => {
     if (totalVoting['total'] == 1 && currentNFTInfo.data && gaugeData) {
-      let vote = []
-      let reset: Gauge[] = []
-      let voting_weights = []
-      if (currentNFTInfo.data.voting_state?.pool_votes) {
-        for (const key of Object.keys(
-          currentNFTInfo.data.voting_state?.pool_votes,
-        )) {
-          const gauge = gaugeData.find((g) => g.pool == key)
-          if (gauge) {
-            reset.push(gauge)
+      try {
+        if (!currentNFTInfo.data.voting_state)
+          throw new Error('NFT should be registered')
+        let vote = []
+        let reset: Gauge[] = []
+        let voting_weights = []
+        if (currentNFTInfo.data.voting_state?.pool_votes) {
+          for (const key of Object.keys(
+            currentNFTInfo.data.voting_state?.pool_votes,
+          )) {
+            const gauge = gaugeData.find((g) => g.pool == key)
+            if (gauge) {
+              reset.push(gauge)
+            }
           }
         }
-      }
-      for (const [key, value] of Object.entries<number>(totalVoting)) {
-        if (value > 0) {
-          const gauge = gaugeData.find((g) => g.pool == key)
-          if (gauge) {
-            vote.push(gauge)
-            voting_weights.push((value * 100).toString())
+        for (const [key, value] of Object.entries<number>(totalVoting)) {
+          if (value > 0) {
+            const gauge = gaugeData.find((g) => g.pool == key)
+            if (gauge) {
+              vote.push(gauge)
+              voting_weights.push((value * 100).toString())
+            }
           }
         }
-      }
 
-      vote_mutation.mutate({
-        vsdb: currentNFTInfo.data.id,
-        reset,
-        vote,
-        voting_weights,
-      })
+        vote_mutation.mutate({
+          vsdb: currentNFTInfo.data.id,
+          reset,
+          vote,
+          voting_weights,
+        })
+      } catch (error: any) {
+        toast.error(error.message)
+      }
     }
   }
 
