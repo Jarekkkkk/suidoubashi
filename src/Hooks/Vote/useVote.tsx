@@ -78,6 +78,7 @@ export const useVote = (setting: SettingInterface) => {
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['vsdb', params.vsdb])
       queryClient.invalidateQueries(['gauge'])
+      queryClient.invalidateQueries(['voter'])
       toast.success('Votes Successfully')
     },
     onError: (err) => {

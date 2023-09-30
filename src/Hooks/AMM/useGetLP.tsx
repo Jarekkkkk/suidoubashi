@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
-import { LP, amm_package } from '@/Constants/API/pool'
+import { LP, amm_package, get_claimable_x } from '@/Constants/API/pool'
 import {
   getObjectFields,
   getObjectType,

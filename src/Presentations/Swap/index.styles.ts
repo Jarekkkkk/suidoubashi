@@ -134,6 +134,10 @@ export const bonusText = css`
     color: var(--AppleGreen);
     font-size: 16px;
   }
+
+  strong{
+    font-weight: 800
+  }
 `
 
 export const infoText = css`

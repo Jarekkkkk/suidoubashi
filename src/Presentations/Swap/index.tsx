@@ -20,9 +20,10 @@ import SelectCoinModal from './_SelectCoinModal'
 import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
-import { get_output } from '@/Constants/API/pool'
+import { get_output, get_output_fee } from '@/Constants/API/pool'
 import useRpc from '@/Hooks/useRpc'
 import { useSwap } from '@/Hooks/AMM/useSwap'
+import { get_fee_deduction } from '@/Utils/pool'
 
 const SwapPresentation = () => {
   const {
@@ -114,17 +115,36 @@ const SwapPresentation = () => {
         coinTypeSecond
       ) {
         setGetOutpuIsLoading(true)
-        const res = await get_output(
-          rpc,
-          walletAddress,
-          pool.id,
-          pool?.type_x,
-          pool?.type_y,
-          coinTypeFirst?.type,
-          Math.round(
-            parseFloat(coinInputFirst) * 10 ** coinTypeFirst.decimals,
-          ).toString(),
-        )
+        let res
+        if (currentNFTInfo.data) {
+          res = await get_output_fee(
+            rpc,
+            walletAddress,
+            pool.id,
+            pool?.type_x,
+            pool?.type_y,
+            coinTypeFirst?.type,
+            Math.round(
+              parseFloat(coinInputFirst) * 10 ** coinTypeFirst.decimals,
+            ).toString(),
+            (
+              parseInt(pool.fee.fee_percentage) -
+              get_fee_deduction(pool.stable, currentNFTInfo.data.level)
+            ).toString(),
+          )
+        } else {
+          res = await get_output(
+            rpc,
+            walletAddress,
+            pool.id,
+            pool?.type_x,
+            pool?.type_y,
+            coinTypeFirst?.type,
+            Math.round(
+              parseFloat(coinInputFirst) * 10 ** coinTypeFirst.decimals,
+            ).toString(),
+          )
+        }
         setGetOutpuIsLoading(false)
         setGetOutput(res)
         handleOnCoinInputSecondChange(
@@ -133,7 +153,7 @@ const SwapPresentation = () => {
       }
     }
     get_output_()
-  }, [pool, walletAddress, coinTypeFirst, coinInputFirst])
+  }, [pool, walletAddress, coinTypeFirst, coinInputFirst, currentNFTInfo])
 
   const swap = useSwap()
   const handleSwap = () => {
@@ -151,7 +171,7 @@ const SwapPresentation = () => {
         output_value: Math.round(
           minimum_received * 10 ** coinTypeSecond.decimals,
         ).toString(),
-        vsdb: ( currentNFTInfo.data?.amm_state ) ? currentNFTInfo!.data.id : null,
+        vsdb: currentNFTInfo.data?.amm_state ? currentNFTInfo!.data.id : null,
       })
     }
   }
@@ -275,8 +295,15 @@ const SwapPresentation = () => {
         />
         <div className={styles.infoContent}>
           <div className={styles.bonusText}>
-            Fee Percentage Discount
-            <span>{parseInt(currentNFTInfo.data?.level ?? '0') * 0.01} %</span>
+            <strong>{!pool?.stable ? 'Variable' : 'Stable'} </strong> Percentage
+            Discount
+            <span>
+              {get_fee_deduction(
+                !!pool?.stable,
+                currentNFTInfo.data?.level ?? '0',
+              ) * 0.01}{' '}
+              %
+            </span>
           </div>
           <div className={styles.infoText}>
             Price

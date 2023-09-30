@@ -95,7 +95,6 @@ export async function get_pool(
   } as Pool
 }
 
-/// [GET] get_output
 export async function get_output(
   rpc: JsonRpcProvider,
   sender: SuiAddress,
@@ -110,6 +109,36 @@ export async function get_output(
     target: `${amm_package}::pool::get_output`,
     typeArguments: [pool_type_x, pool_type_y, input_type],
     arguments: [txb.object(pool), txb.pure(input_amount)],
+  })
+  let res = await rpc.devInspectTransactionBlock({
+    sender,
+    transactionBlock: txb,
+  })
+  const returnValue = res?.results?.[0]?.returnValues?.[0]
+  if (!returnValue) {
+    return '0'
+  } else {
+    const valueType = returnValue[1].toString()
+    const valueData = Uint8Array.from(returnValue[0] as Iterable<number>)
+    return bcs_registry.de(valueType, valueData, 'hex')
+  }
+}
+
+export async function get_output_fee(
+  rpc: JsonRpcProvider,
+  sender: SuiAddress,
+  pool: string,
+  pool_type_x: string,
+  pool_type_y: string,
+  input_type: string,
+  input_amount: string | BigInt,
+  fee_percentage: string
+): Promise<string> {
+  let txb = new TransactionBlock()
+  txb.moveCall({
+    target: `${amm_package}::pool::get_output_fee`,
+    typeArguments: [pool_type_x, pool_type_y, input_type],
+    arguments: [txb.object(pool), txb.pure(input_amount), txb.pure(fee_percentage)],
   })
   let res = await rpc.devInspectTransactionBlock({
     sender,

@@ -36,7 +36,6 @@ export const calculate_slippage = (slippage: string, output_value: string) => {
   )
 }
 
-
 export const lp_position = (
   res: string,
   lp_supply: string,
@@ -49,4 +48,9 @@ export const lp_position = (
     .shiftedBy(-decimals)
     .decimalPlaces(decimals)
     .toFormat()
+}
+
+export const get_fee_deduction = (stable: boolean, level: string) => {
+  const level_ = parseInt(level)
+  return stable ? Math.floor(level_ / 3) : level_
 }
