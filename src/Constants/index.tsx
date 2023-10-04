@@ -1,6 +1,15 @@
 import moment from 'moment'
 
-import { Dashboard, Swap, Pool, Vest, Vote, Rewards, Bridge, Bribe } from '@/Scenes'
+import {
+  Dashboard,
+  Swap,
+  Pool,
+  Vest,
+  Vote,
+  Rewards,
+  Bridge,
+  Bribe,
+} from '@/Scenes'
 
 import { Icon } from '@/Assets/icon'
 import { Balance } from '@/Hooks/Coin/useGetBalance'
@@ -24,7 +33,7 @@ export const generateSideBarLinks = [
     element: <Swap />,
     title: 'Swap',
     icon: <Icon.SwapIcon />,
-    isHidden: false,
+    isHidden: true,
   },
   {
     key: 'Pool',
@@ -32,7 +41,7 @@ export const generateSideBarLinks = [
     element: <Pool />,
     title: 'Pool',
     icon: <Icon.PoolIcon />,
-    isHidden: false,
+    isHidden: true,
   },
   {
     key: 'Vest',
@@ -48,7 +57,7 @@ export const generateSideBarLinks = [
     element: <Vote />,
     title: 'Vote',
     icon: <Icon.VoteIcon />,
-    isHidden: false,
+    isHidden: true,
   },
   {
     key: 'Rewards',
@@ -56,7 +65,7 @@ export const generateSideBarLinks = [
     element: <Rewards />,
     title: 'Rewards',
     icon: <Icon.RewardsIcon />,
-    isHidden: false,
+    isHidden: true,
   },
   {
     key: 'Bribe',
@@ -64,15 +73,7 @@ export const generateSideBarLinks = [
     element: <Bribe />,
     title: 'Bribe',
     icon: <Icon.StakeIcon />,
-    isHidden: false,
-  },
-  {
-    key: 'Bridge',
-    path: '/bridge',
-    element: <Bridge />,
-    title: 'Bridge',
-    icon: <Icon.BridgeIcon />,
-    isHidden: false,
+    isHidden: true,
   },
 ]
 
@@ -146,13 +147,17 @@ export const vsdbTimeSettingOptions = [
   },
 ]
 
+export const fetchIcon = (name: string) =>
+  Coins.find((coin) => coin.name === name)
 
-export const fetchIcon = (name: string) => Coins.find((coin) => coin.name === name);
+export const fetchCoinByType = (type: string) =>
+  Coins.find((coin) => coin.type === type)
 
-export const fetchCoinByType = (type: string) => Coins.find((coin) => coin.type === type)
+export const fetchBalance = (
+  BalanceData: Balance[] | undefined,
+  coinName: string,
+) => BalanceData?.find((balance) => balance.coinName === coinName)
 
-export const fetchBalance = (BalanceData: Balance[] | undefined, coinName: string) => BalanceData?.find((balance) => balance.coinName === coinName);
+export const regexEn = /^[A-Za-z]+$/
 
-export const regexEn = /^[A-Za-z]+$/;
-
-export const regexNumber = /^[0-9]+$/;
+export const regexNumber = /^[0-9]+$/
