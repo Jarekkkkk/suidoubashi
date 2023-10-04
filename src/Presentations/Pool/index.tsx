@@ -17,7 +17,7 @@ import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 import { cx } from '@emotion/css'
 import { CoinFormat, formatBalance } from '@/Utils/format'
-
+import { Pool } from '@/Constants/API/pool'
 
 const PoolPresentation = () => {
   const {
@@ -27,7 +27,6 @@ const PoolPresentation = () => {
     searchInput,
     handleOnInputChange,
   } = usePoolContext()
-
 
   if (fetching)
     return (
@@ -70,12 +69,8 @@ const PoolPresentation = () => {
     },
   ]
 
-  const renderRow = (cell: {
-    columns: any
-    poolsData: any
-    allBalanceData: any
-  }) => {
-    return poolsData.map((pool) => {
+  const renderRow = ({ columns, poolsData, allBalanceData }: any) => {
+    return poolsData.map((pool: Pool) => {
       const _poolCoins = pool.name.split('-')
       const _poolCoinX = fetchIcon(_poolCoins[0])
       const _poolCoinY = fetchIcon(_poolCoins[1])
@@ -88,7 +83,7 @@ const PoolPresentation = () => {
         _poolCoins[1],
       )!.totalBalance
 
-      return columns.map((column, idx) => {
+      return columns.map((column: any, idx: any) => {
         switch (column.id) {
           case 'pool':
             return (

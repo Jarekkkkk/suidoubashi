@@ -15,7 +15,7 @@ type MutationProps = {
   mergedVsdb: string
 }
 
-export const useMerge = (setIsShowMergeVSDBModal: Function) => {
+export const useMerge = () => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
@@ -40,10 +40,8 @@ export const useMerge = (setIsShowMergeVSDBModal: Function) => {
       return mergedVsdb
     },
     onSuccess: (_, params) => {
-      queryClient.setQueryData(
-        ['get-vsdbs'],
-        (vsdb_ids?: string[]) =>
-          [...(vsdb_ids ?? [])].filter((id) => id !== params.mergedVsdb),
+      queryClient.setQueryData(['get-vsdbs'], (vsdb_ids?: string[]) =>
+        [...(vsdb_ids ?? [])].filter((id) => id !== params.mergedVsdb),
       )
 
       queryClient.invalidateQueries(['vsdb', params.vsdb])

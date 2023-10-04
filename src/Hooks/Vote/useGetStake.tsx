@@ -31,7 +31,7 @@ export const useGetMulStake = (gauges?: Gauge[] | null) => {
     const isLoading = stakes.some((v) => v.isLoading)
     const ret: Stake[] = []
 
-    stakes.forEach(({ data }, idx) => {
+    stakes.forEach(({ data }) => {
       if (!data) return { isLoading, data: [] }
       ret.push(data)
     })

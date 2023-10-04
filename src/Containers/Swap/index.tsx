@@ -8,7 +8,6 @@ import React, {
 import UserModule from '@/Modules/User'
 import { CoinIcon } from '@/Assets/icon'
 import { Coins, Coin, CoinInterface } from '@/Constants/coin'
-import { regexNumber } from '@/Constants/index'
 import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import { Pool } from '@/Constants/API/pool'
 import { useGetAllBalance, Balance } from '@/Hooks/Coin/useGetBalance'

@@ -6,9 +6,9 @@ import Image from '@/Assets/image'
 import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 import BigNumber from 'bignumber.js'
-import useRegisterAMMState from '@/Hooks/AMM/useRegisterAMMState'
 import { AMMState } from '@/Constants/API/pool'
-import useRegisterVotingState from '@/Hooks/Vote/useRegisterVotingState'
+//import useRegisterAMMState from '@/Hooks/AMM/useRegisterAMMState'
+//import useRegisterVotingState from '@/Hooks/Vote/useRegisterVotingState'
 import { VotingState } from '@/Constants/API/vote'
 import { round_down_week } from '@/Utils/vsdb'
 import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
@@ -23,8 +23,7 @@ interface Props {
   expValue: number
   vesdbValue: number
   lockSdbValue: string
-  end: string
-  expiration: string
+  end: string | undefined
   isPerviewMode?: boolean
   setCurrentVSDBId?: Function
   setIsShowDepositVSDBModal?: Function
@@ -36,7 +35,6 @@ interface Props {
   vesdbSpanValue?: string
   amm_state?: AMMState
   voting_state?: VotingState
-  id: string
 }
 
 interface TextItemProps {
@@ -106,15 +104,13 @@ const VestCardComponent = (props: Props) => {
     vesdbValue,
     lockSdbValue,
     end,
-    expiration,
     setIsShowDepositVSDBModal,
     setCurrentVSDBId,
     setIsShowWithdrawVSDBModal,
     expSpanValue,
     vesdbSpanValue,
-    amm_state,
+    amm_state: _,
     voting_state,
-    id,
   } = props
 
   const { setting } = usePageContext()
@@ -132,20 +128,24 @@ const VestCardComponent = (props: Props) => {
     }
   }
 
-  const { mutate: initialize_amm } = useRegisterAMMState()
-  const handleInitializeAMM = () => {
-    if (!amm_state) initialize_amm({ vsdb: nftId })
-  }
-
-  const { mutate: initialize_voting_state } = useRegisterVotingState()
-  const handleInitializeVotingState = () => {
-    if (!voting_state) initialize_voting_state({ vsdb: nftId })
-  }
+  //  const { mutate: initialize_amm } = useRegisterAMMState()
+  //  const handleInitializeAMM = () => {
+  //    if (!amm_state) initialize_amm({ vsdb: nftId })
+  //  }
+  //
+  //  const { mutate: initialize_voting_state } = useRegisterVotingState()
+  //  const handleInitializeVotingState = () => {
+  //    if (!voting_state) initialize_voting_state({ vsdb: nftId })
+  //  }
 
   const { mutate: upgrade } = useUpgrade()
   const handleUpgrade = () => {
     upgrade({ vsdb: nftId })
   }
+
+  const expiration = end
+    ? new Date(Number(end) * 1000).toLocaleDateString('en-ZA')
+    : '---'
 
   return (
     <div className={styles.vestCardContainer}>
@@ -157,13 +157,13 @@ const VestCardComponent = (props: Props) => {
           <TextItem
             title='ID'
             level={
-              id.length > 10 ? (
+              nftId.length > 10 ? (
                 <div className={styles.addressContent}>
-                  <div className={styles.prev}>{id.slice(0, -8)}</div>
-                  <div className={styles.next}>{id.slice(-8)}</div>
+                  <div className={styles.prev}>{nftId.slice(0, -8)}</div>
+                  <div className={styles.next}>{nftId.slice(-8)}</div>
                 </div>
               ) : (
-                id
+                nftId
               )
             }
           />
@@ -202,21 +202,22 @@ const VestCardComponent = (props: Props) => {
           <>
             <div className={cx(styles.badgeContent)}>
               <div>Badge</div>
-              <Button
-                text='AMM'
-                styletype='badge'
-                disabled={!!amm_state}
-                onClick={handleInitializeAMM}
-              />
-              <Button
-                text='Vote'
+              {/**
+                <Button
+                  text='AMM'
+                  styletype='badge'
+                  disabled={!!amm_state}
+                  onClick={handleInitializeAMM}
+                />
+                  <Button
+                    text='Vote'
                 styletype='badge'
                 disabled={!!voting_state}
-                onClick={handleInitializeVotingState}
-              />
+              onClick={handleInitializeVotingState}
+              />**/}
             </div>
             <div className={styles.buttonContent}>
-              {new Date().getTime() >= parseInt(end) * 1000 ? (
+              {new Date().getTime() >= parseInt(end ?? '0') * 1000 ? (
                 <>
                   {(!voting_state ||
                     round_down_week(new Date().getTime() / 1000) >=

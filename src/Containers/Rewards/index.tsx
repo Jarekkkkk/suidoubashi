@@ -1,8 +1,8 @@
 import { Rewards, Stake } from '@/Constants/API/vote'
 import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
-import { useGetMulRewards, useGetRewards } from '@/Hooks/Vote/useGetRewards'
+import { useGetMulRewards } from '@/Hooks/Vote/useGetRewards'
 import { useGetMulStake } from '@/Hooks/Vote/useGetStake'
-import React, { useState, useContext, PropsWithChildren } from 'react'
+import React, { useContext, PropsWithChildren } from 'react'
 
 const RewardsContext = React.createContext<RewardsContext>({
   rewardsData: null,
@@ -12,8 +12,6 @@ const RewardsContext = React.createContext<RewardsContext>({
 export const useRewardsContext = () => useContext(RewardsContext)
 
 const RewardsContainer = ({ children }: PropsWithChildren) => {
-  const [fetching, _setFetching] = useState(false)
-
   const gauge = useGetMulGauge()
   const stakes = useGetMulStake(gauge.data)
   const rewards = useGetMulRewards(gauge.data, gauge.isLoading)

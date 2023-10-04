@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { Coin, CoinInterface, Coins } from '@/Constants/coin'
 import { useMemo } from 'react'
-import { SUI_TYPE_ARG, normalizeStructTag, normalizeSuiAddress } from '@mysten/sui.js'
+import { normalizeStructTag } from '@mysten/sui.js'
 
 export function get_balance_key(type: Coin, address: string) {
   return ['get-balance', address, type]

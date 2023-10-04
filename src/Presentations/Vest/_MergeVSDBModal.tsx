@@ -50,11 +50,7 @@ const MergeVSDBModal = (props: Props) => {
     return _mergedVsdb
   }, [secondVsdb, currentVsdb])
 
-  const {
-    mutate: merge,
-    isLoading,
-    isSuccess,
-  } = useMerge(setIsShowMergeVSDBModal)
+  const { mutate: merge, isLoading, isSuccess } = useMerge()
 
   const handleMerge = async () => {
     if (!currentVsdb || !secondVsdb) return null
@@ -183,13 +179,7 @@ const MergeVSDBModal = (props: Props) => {
               .shiftedBy(-9)
               .decimalPlaces(3)
               .toFormat()}
-            expiration={
-              mergedVsdb
-                ? new Date(Number(mergedVsdb.end) * 1000).toLocaleDateString(
-                    'en-ZA',
-                  )
-                : '---'
-            }
+            end={mergedVsdb?.end}
           />
           <div className={styles.vsdbModalbutton}>
             <Button
@@ -220,13 +210,7 @@ const MergeVSDBModal = (props: Props) => {
               .shiftedBy(-9)
               .decimalPlaces(3)
               .toFormat()}
-            expiration={
-              newVsdb
-                ? new Date(Number(newVsdb.end) * 1000).toLocaleDateString(
-                    'en-ZA',
-                  )
-                : '---'
-            }
+            end={mergedVsdb?.end}
           />
           <div className={styles.vsdbModalbutton}>
             <Button

@@ -1,8 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
-import BigNumber from 'bignumber.js'
-import { Dialog, Input, Button, CoinCombin, Empty, Loading } from '@/Components'
+import { Dialog, Input, CoinCombin, Empty, Loading } from '@/Components'
 import Image from '@/Assets/image'
-import { CoinIcon, Icon } from '@/Assets/icon'
+import { Icon } from '@/Assets/icon'
 import { Coins } from '@/Constants/coin'
 import { regexEn } from '@/Constants/index'
 import * as styles from './index.styles'
@@ -19,7 +18,8 @@ type Props = {
 const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
 
 const SelectPoolModal = (props: Props) => {
-  const { rewardsData, setRewardsId, isCoinDataLoading, isShow, setIsShow } = props
+  const { rewardsData, setRewardsId, isCoinDataLoading, isShow, setIsShow } =
+    props
   const [input, setInput] = useState<string>('')
   const _coinsData =
     rewardsData?.filter((reward) =>

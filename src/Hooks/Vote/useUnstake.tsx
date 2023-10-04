@@ -3,7 +3,7 @@ import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { TransactionBlock, getExecutionStatus } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
-import { unstake, unstake_all } from '@/Constants/API/vote'
+import { unstake } from '@/Constants/API/vote'
 import { SettingInterface } from '@/Components/SettingModal'
 
 type UnstakeArgs = {
@@ -27,7 +27,7 @@ export const useUnStake = (setting: SettingInterface) => {
       pool_type_y,
       gauge_id,
       lp_id,
-      value
+      value,
     }: UnstakeArgs) => {
       if (!currentAccount) throw new Error('no Wallet Account')
 

@@ -4,7 +4,7 @@ import { useWalletKit } from '@mysten/wallet-kit'
 import { TransactionBlock, getExecutionStatus } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { quote_remove_liquidity, remove_liquidity } from '@/Constants/API/pool'
-import { unstake, unstake_all } from '@/Constants/API/vote'
+import { unstake } from '@/Constants/API/vote'
 import { SettingInterface } from '@/Components/SettingModal'
 
 type MutationArgs = {
@@ -16,7 +16,7 @@ type MutationArgs = {
   withdrawl: string
 }
 
-export const useUnStakeAndWithdraw = (setting:SettingInterface) => {
+export const useUnStakeAndWithdraw = (setting: SettingInterface) => {
   const rpc = useRpc()
   const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
@@ -34,7 +34,15 @@ export const useUnStakeAndWithdraw = (setting:SettingInterface) => {
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
-      unstake(txb, gauge_id, pool_id, pool_type_x, pool_type_y, lp_id, withdrawl)
+      unstake(
+        txb,
+        gauge_id,
+        pool_id,
+        pool_type_x,
+        pool_type_y,
+        lp_id,
+        withdrawl,
+      )
       const quote = await quote_remove_liquidity(
         rpc,
         currentAccount.address,
@@ -69,7 +77,7 @@ export const useUnStakeAndWithdraw = (setting:SettingInterface) => {
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['LP'])
       queryClient.invalidateQueries(['gauge', params.gauge_id])
-      queryClient.invalidateQueries(['stake',params.gauge_id])
+      queryClient.invalidateQueries(['stake', params.gauge_id])
       toast.success('Unstake Liquidity Successfully')
     },
     onError: (err) => {

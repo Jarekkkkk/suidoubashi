@@ -178,7 +178,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.22.5"
 
-"@babel/runtime@^7.12.0", "@babel/runtime@^7.12.5", "@babel/runtime@^7.18.3", "@babel/runtime@^7.21.0", "@babel/runtime@^7.22.6", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.12.0", "@babel/runtime@^7.12.5", "@babel/runtime@^7.18.3", "@babel/runtime@^7.21.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7":
   version "7.22.6"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.22.6.tgz"
   integrity sha512-wDb5pWm4WDdF6LFUde3Jl8WzPA+3ZbxYqkC6xAXuD3irdEHN1k0NfTRrJD8ZD378SJ61miMLCqIOXYhd8x+AJQ==
@@ -292,13 +292,6 @@
   version "0.9.1"
   resolved "https://registry.npmjs.org/@emotion/hash/-/hash-0.9.1.tgz"
   integrity sha512-gJB6HLm5rYwSLI6PQa+X1t5CFGrv1J1TWG+sOyMCeKz2ojaj6Fnl/rZEspogG+cvqbt4AE/2eIyD2QfLKTBNlQ==
-
-"@emotion/is-prop-valid@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.npmjs.org/@emotion/is-prop-valid/-/is-prop-valid-1.2.1.tgz"
-  integrity sha512-61Mf7Ufx4aDxx1xlDeOm8aFFigGHE4z+0sKCa+IHCeZKiyP9RLD0Mmx7m8b9/Cf37f7NAvQOOJAbQQGVr5uERw==
-  dependencies:
-    "@emotion/memoize" "^0.8.1"
 
 "@emotion/memoize@^0.8.1":
   version "0.8.1"
@@ -522,10 +515,10 @@
   resolved "https://registry.npmjs.org/@gar/promisify/-/promisify-1.1.3.tgz"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
-"@headlessui/react@^1.7.14":
-  version "1.7.15"
-  resolved "https://registry.npmjs.org/@headlessui/react/-/react-1.7.15.tgz"
-  integrity sha512-OTO0XtoRQ6JPB1cKNFYBZv2Q0JMqMGNhYP1CjPvcJvjz8YGokz8oAj89HIYZGN0gZzn/4kk9iUpmMF4Q21Gsqw==
+"@headlessui/react@^1.7.15":
+  version "1.7.17"
+  resolved "https://registry.yarnpkg.com/@headlessui/react/-/react-1.7.17.tgz#a0ec23af21b527c030967245fd99776aa7352bc6"
+  integrity sha512-4am+tzvkqDSSgiwrsEpGWqgGo9dz8qU5M3znCkC4PgkpY4HcCZzEDEvozltGGGHIKl9jbXbZPSH5TWn4sWJdow==
   dependencies:
     client-only "^0.0.1"
 
@@ -585,92 +578,6 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@mui/base@5.0.0-beta.10":
-  version "5.0.0-beta.10"
-  resolved "https://registry.npmjs.org/@mui/base/-/base-5.0.0-beta.10.tgz"
-  integrity sha512-moTAhGwFfQffj7hsu61FnqcGqVcd53A1CrOhnskM9TF0Uh2rnLDMCuar4JRUWWpaJofAfQEbQBBFPadFQLI4PA==
-  dependencies:
-    "@babel/runtime" "^7.22.6"
-    "@emotion/is-prop-valid" "^1.2.1"
-    "@mui/types" "^7.2.4"
-    "@mui/utils" "^5.14.4"
-    "@popperjs/core" "^2.11.8"
-    clsx "^2.0.0"
-    prop-types "^15.8.1"
-    react-is "^18.2.0"
-
-"@mui/core-downloads-tracker@^5.14.4":
-  version "5.14.4"
-  resolved "https://registry.npmjs.org/@mui/core-downloads-tracker/-/core-downloads-tracker-5.14.4.tgz"
-  integrity sha512-pW2XghSi3hpYKX57Wu0SCWMTSpzvXZmmucj3TcOJWaCiFt4xr05w2gcwBZi36dAp9uvd9//9N51qbblmnD+GPg==
-
-"@mui/material@^5.12.1":
-  version "5.14.4"
-  resolved "https://registry.npmjs.org/@mui/material/-/material-5.14.4.tgz"
-  integrity sha512-2XUV3KyRC07BQPPzEgd+ss3x/ezXtHeKtOGCMCNmx3MauZojPYUpSwFkE0fYgYCD9dMQMVG4DY/VF38P0KShsg==
-  dependencies:
-    "@babel/runtime" "^7.22.6"
-    "@mui/base" "5.0.0-beta.10"
-    "@mui/core-downloads-tracker" "^5.14.4"
-    "@mui/system" "^5.14.4"
-    "@mui/types" "^7.2.4"
-    "@mui/utils" "^5.14.4"
-    "@types/react-transition-group" "^4.4.6"
-    clsx "^2.0.0"
-    csstype "^3.1.2"
-    prop-types "^15.8.1"
-    react-is "^18.2.0"
-    react-transition-group "^4.4.5"
-
-"@mui/private-theming@^5.14.4":
-  version "5.14.4"
-  resolved "https://registry.npmjs.org/@mui/private-theming/-/private-theming-5.14.4.tgz"
-  integrity sha512-ISXsHDiQ3z1XA4IuKn+iXDWvDjcz/UcQBiFZqtdoIsEBt8CB7wgdQf3LwcwqO81dl5ofg/vNQBEnXuKfZHrnYA==
-  dependencies:
-    "@babel/runtime" "^7.22.6"
-    "@mui/utils" "^5.14.4"
-    prop-types "^15.8.1"
-
-"@mui/styled-engine@^5.13.2":
-  version "5.13.2"
-  resolved "https://registry.npmjs.org/@mui/styled-engine/-/styled-engine-5.13.2.tgz"
-  integrity sha512-VCYCU6xVtXOrIN8lcbuPmoG+u7FYuOERG++fpY74hPpEWkyFQG97F+/XfTQVYzlR2m7nPjnwVUgATcTCMEaMvw==
-  dependencies:
-    "@babel/runtime" "^7.21.0"
-    "@emotion/cache" "^11.11.0"
-    csstype "^3.1.2"
-    prop-types "^15.8.1"
-
-"@mui/system@^5.14.4":
-  version "5.14.4"
-  resolved "https://registry.npmjs.org/@mui/system/-/system-5.14.4.tgz"
-  integrity sha512-oPgfWS97QNfHcDBapdkZIs4G5i85BJt69Hp6wbXF6s7vi3Evcmhdk8AbCRW6n0sX4vTj8oe0mh0RIm1G2A1KDA==
-  dependencies:
-    "@babel/runtime" "^7.22.6"
-    "@mui/private-theming" "^5.14.4"
-    "@mui/styled-engine" "^5.13.2"
-    "@mui/types" "^7.2.4"
-    "@mui/utils" "^5.14.4"
-    clsx "^2.0.0"
-    csstype "^3.1.2"
-    prop-types "^15.8.1"
-
-"@mui/types@^7.2.4":
-  version "7.2.4"
-  resolved "https://registry.npmjs.org/@mui/types/-/types-7.2.4.tgz"
-  integrity sha512-LBcwa8rN84bKF+f5sDyku42w1NTxaPgPyYKODsh01U1fVstTClbUoSA96oyRBnSNyEiAVjKm6Gwx9vjR+xyqHA==
-
-"@mui/utils@^5.14.4":
-  version "5.14.4"
-  resolved "https://registry.npmjs.org/@mui/utils/-/utils-5.14.4.tgz"
-  integrity sha512-4ANV0txPD3x0IcTCSEHKDWnsutg1K3m6Vz5IckkbLXVYu17oOZCVUdOKsb/txUmaCd0v0PmSRe5PW+Mlvns5dQ==
-  dependencies:
-    "@babel/runtime" "^7.22.6"
-    "@types/prop-types" "^15.7.5"
-    "@types/react-is" "^18.2.1"
-    prop-types "^15.8.1"
-    react-is "^18.2.0"
-
 "@mysten/bcs@0.7.3", "@mysten/bcs@^0.7.3":
   version "0.7.3"
   resolved "https://registry.npmjs.org/@mysten/bcs/-/bcs-0.7.3.tgz"
@@ -678,7 +585,30 @@
   dependencies:
     bs58 "^5.0.0"
 
-"@mysten/sui.js@0.37.1", "@mysten/sui.js@^0.37.1":
+"@mysten/bcs@0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@mysten/bcs/-/bcs-0.8.0.tgz#5eb96e8329be460f32808fd0d2bc4c1da55c52f6"
+  integrity sha512-1udHN4kjJ96t7Z5svJic6Eg0ctwwq83vhPeCAVA7r2x/HGw4g9ERCWwkItKXPtnlWFcXnchXi0M78dV+OZcvOQ==
+  dependencies:
+    bs58 "^5.0.0"
+
+"@mysten/sui.js@0.43.0":
+  version "0.43.0"
+  resolved "https://registry.yarnpkg.com/@mysten/sui.js/-/sui.js-0.43.0.tgz#f8cd542e578abf1d08eeba7ffe820c9b72163751"
+  integrity sha512-eZOqYZbgdDjq0yYpTnbRuRIs0QR7E/0L3OtfkTMTl1SVkZIczw7svO7MKKdmq4+35ZfQ+XeaL931ynmSjIPEZw==
+  dependencies:
+    "@mysten/bcs" "0.8.0"
+    "@noble/curves" "^1.1.0"
+    "@noble/hashes" "^1.3.1"
+    "@open-rpc/client-js" "^1.8.1"
+    "@scure/bip32" "^1.3.1"
+    "@scure/bip39" "^1.2.1"
+    "@suchipi/femver" "^1.0.0"
+    events "^3.3.0"
+    superstruct "^1.0.3"
+    tweetnacl "^1.0.3"
+
+"@mysten/sui.js@^0.37.1":
   version "0.37.1"
   resolved "https://registry.npmjs.org/@mysten/sui.js/-/sui.js-0.37.1.tgz"
   integrity sha512-nEOqnjUqb/VJcVk23LgZOX1FmBib/mBCwAWaJhtsCHLwv2jIAfCPY/fpB9lJ62QHrM8UFclpWxsLkqcUkKyPgA==
@@ -694,62 +624,31 @@
     superstruct "^1.0.3"
     tweetnacl "^1.0.3"
 
-"@mysten/wallet-adapter-base@0.7.12":
-  version "0.7.12"
-  resolved "https://registry.npmjs.org/@mysten/wallet-adapter-base/-/wallet-adapter-base-0.7.12.tgz"
-  integrity sha512-5xDLaZ11+Sw65I9VSzmsHlue8jV0Kq/HiBJYmQes5TU2clwV0ClNBlw7CCipkMPi6IfhBSaaLXWZ9ftX0KG1TQ==
+"@mysten/wallet-kit-core@0.6.4":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@mysten/wallet-kit-core/-/wallet-kit-core-0.6.4.tgz#e8ca2a309ace127b02ebf298345be8e46abff4c1"
+  integrity sha512-t/J0ISZdZK0oCv/2OCasv8U80C8yQ4IArzQY78seBswPwluAx7h3255jP+4b61zVMNa6p63JHo+nSypaVgX8Kg==
   dependencies:
-    "@mysten/sui.js" "0.37.1"
-    "@mysten/wallet-standard" "0.5.12"
+    "@mysten/sui.js" "0.43.0"
+    "@mysten/wallet-standard" "0.8.1"
 
-"@mysten/wallet-adapter-unsafe-burner@0.8.12":
-  version "0.8.12"
-  resolved "https://registry.npmjs.org/@mysten/wallet-adapter-unsafe-burner/-/wallet-adapter-unsafe-burner-0.8.12.tgz"
-  integrity sha512-s0ek8KIc483jK954INNguDtsCgMsA5L/Zow8gQ15gPQKCIzwSbFnv5JOhrBgHTqDrv5jkjPAfp4AeesXXQHOqg==
+"@mysten/wallet-kit@^0.7.4":
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/@mysten/wallet-kit/-/wallet-kit-0.7.4.tgz#f6b9ee9817d0a1c581f5770d123e074327296dcc"
+  integrity sha512-GhrinOC/jYGKxgoSr6n1p2Wsryz4WRMuBNilqTwo6vzCht3wwlMFIqumnSOfJcRmH6C25ChkjYo7lVrsE4jtCg==
   dependencies:
-    "@mysten/sui.js" "0.37.1"
-    "@mysten/wallet-adapter-base" "0.7.12"
-    "@mysten/wallet-standard" "0.5.12"
-
-"@mysten/wallet-adapter-wallet-standard@0.7.12":
-  version "0.7.12"
-  resolved "https://registry.npmjs.org/@mysten/wallet-adapter-wallet-standard/-/wallet-adapter-wallet-standard-0.7.12.tgz"
-  integrity sha512-3Km3nsbggIHoaefsPEX2rNFD7+bamk6JBs4jhtOfTFYzXWK3FjWisMEDZFwx+EvoQTH/9lhxgwVRJqPHCv4/yA==
-  dependencies:
-    "@mysten/sui.js" "0.37.1"
-    "@mysten/wallet-adapter-base" "0.7.12"
-    "@mysten/wallet-standard" "0.5.12"
-    mitt "^3.0.0"
-
-"@mysten/wallet-kit-core@0.4.12":
-  version "0.4.12"
-  resolved "https://registry.npmjs.org/@mysten/wallet-kit-core/-/wallet-kit-core-0.4.12.tgz"
-  integrity sha512-h2NXFiUdB3NpBpcHW8SkFCGFyqDkaj3WyML8IgT6otlYgc9v2hl7Wjm7Uc7V4kSf0pM/vwZnG8hh7vMCts7MFA==
-  dependencies:
-    "@mysten/sui.js" "0.37.1"
-    "@mysten/wallet-adapter-base" "0.7.12"
-    "@mysten/wallet-standard" "0.5.12"
-
-"@mysten/wallet-kit@^0.4.12":
-  version "0.4.12"
-  resolved "https://registry.npmjs.org/@mysten/wallet-kit/-/wallet-kit-0.4.12.tgz"
-  integrity sha512-D/Uh0m8HAVnL0mSdqoE5UsmJhtioqhVHVXDqPrnzbclUZWaq9+e16C8LiP/Bc5mf3/C/24boBTLf9kl/Zd0FiQ==
-  dependencies:
-    "@headlessui/react" "^1.7.14"
-    "@mysten/sui.js" "0.37.1"
-    "@mysten/wallet-adapter-base" "0.7.12"
-    "@mysten/wallet-adapter-unsafe-burner" "0.8.12"
-    "@mysten/wallet-adapter-wallet-standard" "0.7.12"
-    "@mysten/wallet-kit-core" "0.4.12"
-    "@mysten/wallet-standard" "0.5.12"
+    "@headlessui/react" "^1.7.15"
+    "@mysten/sui.js" "0.43.0"
+    "@mysten/wallet-kit-core" "0.6.4"
+    "@mysten/wallet-standard" "0.8.1"
     "@stitches/react" "^1.2.8"
 
-"@mysten/wallet-standard@0.5.12":
-  version "0.5.12"
-  resolved "https://registry.npmjs.org/@mysten/wallet-standard/-/wallet-standard-0.5.12.tgz"
-  integrity sha512-RDKEhBf8aNbCXgTGsDAA7uzpkll24O9M/C48wHFjeb9edIxhaDkiSeGty6flhg9G5ShAHP76dEbz5z6z3ODmCA==
+"@mysten/wallet-standard@0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@mysten/wallet-standard/-/wallet-standard-0.8.1.tgz#83bb104011dc7f0079e3882f9b963c540cc1b869"
+  integrity sha512-LaAF3xRtnbdCJo1PaHZEeil2UPOvHl5Sp3AZce2lYUwMhjmC2UJbcQvfwvn7s4Zf5l9eDEPUy5PcfoLjtexS6w==
   dependencies:
-    "@mysten/sui.js" "0.37.1"
+    "@mysten/sui.js" "0.43.0"
     "@wallet-standard/core" "1.0.3"
 
 "@noble/curves@^1.0.0", "@noble/curves@~1.1.0":
@@ -759,10 +658,22 @@
   dependencies:
     "@noble/hashes" "1.3.1"
 
+"@noble/curves@^1.1.0", "@noble/curves@~1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.2.0.tgz#92d7e12e4e49b23105a2555c6984d41733d65c35"
+  integrity sha512-oYclrNgRaM9SsBUBVbb8M6DTV7ZHRTKugureoYEncY5c65HOmRzvSiTE3y5CYaPYJA/GVkrhXEoF0M3Ya9PMnw==
+  dependencies:
+    "@noble/hashes" "1.3.2"
+
 "@noble/hashes@1.3.1", "@noble/hashes@^1.3.0", "@noble/hashes@~1.3.0", "@noble/hashes@~1.3.1":
   version "1.3.1"
   resolved "https://registry.npmjs.org/@noble/hashes/-/hashes-1.3.1.tgz"
   integrity sha512-EbqwksQwz9xDRGfDST86whPBgM65E0OH/pCgqW0GBVzO22bNE+NuIbeTb714+IfSjU3aRk47EUvXIb5bTsenKA==
+
+"@noble/hashes@1.3.2", "@noble/hashes@^1.3.1", "@noble/hashes@~1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.3.2.tgz#6f26dbc8fbc7205873ce3cee2f690eba0d421b39"
+  integrity sha512-MVC8EAQp7MvEcm30KWENFjgR+Mkmf+D189XJTkFIlwohU5hcBbn1ZkKq7KVTi2Hme3PMGF390DaL52beVrIihQ==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -851,6 +762,11 @@
   resolved "https://registry.npmjs.org/@scure/base/-/base-1.1.1.tgz"
   integrity sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==
 
+"@scure/base@~1.1.2":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.3.tgz#8584115565228290a6c6c4961973e0903bb3df2f"
+  integrity sha512-/+SgoRjLq7Xlf0CWuLHq2LUZeL/w65kfzAPG5NH9pcmBhs+nunQTn4gvdwgMTIXnt9b2C/1SeL2XiysZEyIC9Q==
+
 "@scure/bip32@^1.3.0":
   version "1.3.1"
   resolved "https://registry.npmjs.org/@scure/bip32/-/bip32-1.3.1.tgz"
@@ -860,7 +776,16 @@
     "@noble/hashes" "~1.3.1"
     "@scure/base" "~1.1.0"
 
-"@scure/bip39@^1.2.0":
+"@scure/bip32@^1.3.1":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@scure/bip32/-/bip32-1.3.2.tgz#90e78c027d5e30f0b22c1f8d50ff12f3fb7559f8"
+  integrity sha512-N1ZhksgwD3OBlwTv3R6KFEcPojl/W4ElJOeCZdi+vuI5QmTFwLq3OFf2zd2ROpKvxFdgZ6hUpb0dx9bVNEwYCA==
+  dependencies:
+    "@noble/curves" "~1.2.0"
+    "@noble/hashes" "~1.3.2"
+    "@scure/base" "~1.1.2"
+
+"@scure/bip39@^1.2.0", "@scure/bip39@^1.2.1":
   version "1.2.1"
   resolved "https://registry.npmjs.org/@scure/bip39/-/bip39-1.2.1.tgz"
   integrity sha512-Z3/Fsz1yr904dduJD0NpiyRHhRYHdcnyh73FZWiV+/qhWi83wNJ3NWolYqCEN+ZWsUz2TWwajJggcRE9r1zUYg==
@@ -1029,7 +954,7 @@
   resolved "https://registry.npmjs.org/@types/parse-json/-/parse-json-4.0.0.tgz"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
-"@types/prop-types@*", "@types/prop-types@^15.7.5":
+"@types/prop-types@*":
   version "15.7.5"
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.5.tgz"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
@@ -1051,14 +976,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-is@^18.2.1":
-  version "18.2.1"
-  resolved "https://registry.npmjs.org/@types/react-is/-/react-is-18.2.1.tgz"
-  integrity sha512-wyUkmaaSZEzFZivD8F2ftSyAfk6L+DfFliVj/mYdOXbVjRcS87fQJLTnhk6dRZPuJjI+9g6RZJO4PNCngUrmyw==
-  dependencies:
-    "@types/react" "*"
-
-"@types/react-transition-group@^4.4.0", "@types/react-transition-group@^4.4.6":
+"@types/react-transition-group@^4.4.0":
   version "4.4.6"
   resolved "https://registry.npmjs.org/@types/react-transition-group/-/react-transition-group-4.4.6.tgz"
   integrity sha512-VnCdSxfcm08KjsJVQcfBmhEQAPnLB8G08hAxn39azX1qYBQ/5RVQuoHuKIcfKOdncuaUvEpFKFzEvbtIMsfVew==
@@ -1213,13 +1131,6 @@
   integrity sha512-qkhJeuQU2afQTZ02yMZE5SFc91Fo3hyFjFkpQglHudENNyiSG0oUKcIjky8X32xVSaumgTZSQUAzpXnCTWHzKQ==
   dependencies:
     "@wallet-standard/base" "^1.0.1"
-
-"@wormhole-foundation/wormhole-connect@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.npmjs.org/@wormhole-foundation/wormhole-connect/-/wormhole-connect-0.0.9.tgz"
-  integrity sha512-0XYrRR+uEvztvT4m4FC2P5kD4wAnnrDWYKITClS9SI51Ssd5Qt/ylCF+pguqImRYEM/CnR0BVzgZhyW1bJlnLQ==
-  dependencies:
-    "@mui/material" "^5.12.1"
 
 abbrev@1:
   version "1.1.1"
@@ -1576,11 +1487,6 @@ cliui@^8.0.1:
     strip-ansi "^6.0.1"
     wrap-ansi "^7.0.0"
 
-clsx@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/clsx/-/clsx-2.0.0.tgz"
-  integrity sha512-rQ1+kcj+ttHG0MKVGBUXwayCCF1oh39BF5COIpRzuCEv8Mwjv0XucrI2ExNTOn9IlLifGClWQcU9BrZORvtw6Q==
-
 color-convert@^1.9.0:
   version "1.9.3"
   resolved "https://registry.npmjs.org/color-convert/-/color-convert-1.9.3.tgz"
@@ -1676,7 +1582,7 @@ cross-spawn@^7.0.2, cross-spawn@^7.0.3:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-csstype@^3.0.2, csstype@^3.1.2:
+csstype@^3.0.2:
   version "3.1.2"
   resolved "https://registry.npmjs.org/csstype/-/csstype-3.1.2.tgz"
   integrity sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==
@@ -2739,11 +2645,6 @@ minizlib@^2.0.0, minizlib@^2.1.1, minizlib@^2.1.2:
     minipass "^3.0.0"
     yallist "^4.0.0"
 
-mitt@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.npmjs.org/mitt/-/mitt-3.0.1.tgz"
-  integrity sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==
-
 mkdirp@^1.0.3, mkdirp@^1.0.4:
   version "1.0.4"
   resolved "https://registry.npmjs.org/mkdirp/-/mkdirp-1.0.4.tgz"
@@ -3059,7 +2960,7 @@ promise-retry@^2.0.1:
     err-code "^2.0.2"
     retry "^0.12.0"
 
-prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
+prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -3119,11 +3020,6 @@ react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
-
-react-is@^18.2.0:
-  version "18.2.0"
-  resolved "https://registry.npmjs.org/react-is/-/react-is-18.2.0.tgz"
-  integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
 react-onclickoutside@^6.12.2:
   version "6.13.0"

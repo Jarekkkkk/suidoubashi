@@ -8,7 +8,6 @@ import {
 } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { increase_unlock_time } from '@/Constants/API/vsdb'
-import { get_vsdb_key } from './useGetVSDB'
 
 type MutationProps = {
   vsdb: string

@@ -41,15 +41,9 @@ const VestPresentation = () => {
     )
   }
 
-  if (nftList.data.length < 1) {
-    return (
-      <div className={styles.EmptyContainer}>
-        <Empty content='No Vesting NFT' />
-      </div>
-    )
-  }
-
-  const _data = nftList.data.sort((prev, next) => Number(next.balance) - Number(prev.balance))
+  const _data = nftList.data.sort(
+    (prev, next) => Number(next.balance) - Number(prev.balance),
+  )
 
   return (
     <PageContainer title='Vest' titleImg={Image.pageBackground_1}>
@@ -72,7 +66,7 @@ const VestPresentation = () => {
           />
         </div>
         <div className={styles.contentSection}>
-          {
+          {_data.length > 0 ? (
             _data.map((item, idx) => {
               return (
                 <VestCardComponent
@@ -94,18 +88,20 @@ const VestPresentation = () => {
                     .shiftedBy(-9)
                     .decimalPlaces(3)
                     .toFormat()}
-                  end = {item.end}
-                  expiration={new Date( Number(item.end) * 1000).toLocaleDateString('en-ZA')}
+                  end={item.end}
                   setCurrentVSDBId={setCurrentVSDBId}
                   setIsShowDepositVSDBModal={setIsShowDepositVSDBModal}
                   setIsShowWithdrawVSDBModal={setIsShowWithdrawVSDBModal}
                   amm_state={item.amm_state}
                   voting_state={item.voting_state}
-                  id={item.id}
                 />
               )
             })
-          }
+          ) : (
+            <div className={styles.EmptyContainer}>
+              <Empty content='No Vesting NFT' />
+            </div>
+          )}
         </div>
       </div>
       {isShowCreateVSDBModal && (

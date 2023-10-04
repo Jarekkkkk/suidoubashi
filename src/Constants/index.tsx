@@ -1,15 +1,6 @@
 import moment from 'moment'
 
-import {
-  Dashboard,
-  Swap,
-  Pool,
-  Vest,
-  Vote,
-  Rewards,
-  Bridge,
-  Bribe,
-} from '@/Scenes'
+import { Dashboard, Swap, Pool, Vest, Vote, Rewards, Bribe } from '@/Scenes'
 
 import { Icon } from '@/Assets/icon'
 import { Balance } from '@/Hooks/Coin/useGetBalance'
@@ -119,12 +110,6 @@ export const generateLinks = [
     path: '/bribe',
     element: <Bribe />,
     title: 'Bribe',
-  },
-  {
-    key: 'Bridge',
-    path: '/bridge',
-    element: <Bridge />,
-    title: 'Bridge',
   },
 ]
 

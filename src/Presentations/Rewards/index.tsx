@@ -47,7 +47,7 @@ const RewardsPresentation = () => {
     vsdb: string | undefined,
     type_x: string,
     type_y: string,
-    input_types: string[]
+    input_types: string[],
   ) => {
     if (!vsdb) return
     claim_bribes.mutate({ bribe, rewards, vsdb, type_x, type_y, input_types })
@@ -221,7 +221,7 @@ const RewardsPresentation = () => {
                             css({ marginLeft: '10px' }),
                           )}
                         >
-                          {group.map((g) => (
+                          {group.map((g: any) => (
                             <div className={styles.bridesText}>
                               {fetchCoinByType(g[0])?.logo}
                               <span>{g[1] as string}</span>
@@ -242,7 +242,7 @@ const RewardsPresentation = () => {
                         currentNFTInfo.data?.id,
                         reward.type_x,
                         reward.type_y,
-                        Object.keys(voterRewards[reward.id])
+                        Object.keys(voterRewards[reward.id]),
                       )
                     }
                   />

@@ -1,4 +1,3 @@
-import { regexNumber } from '@/Constants'
 import { Rewards } from '@/Constants/API/vote'
 import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
 import { useGetMulRewards } from '@/Hooks/Vote/useGetRewards'
@@ -20,10 +19,8 @@ export const useBribeContext = () => useContext(BribeContext)
 
 export const BribeContainer = ({ children }: PropsWithChildren) => {
   const gauge = useGetMulGauge()
-  const { data: rewardsData, isLoading: isRewardsDataLoading } = useGetMulRewards(
-    gauge.data,
-    gauge.isLoading,
-  )
+  const { data: rewardsData, isLoading: isRewardsDataLoading } =
+    useGetMulRewards(gauge.data, gauge.isLoading)
 
   const [coinInput, setCoinInput] = useState('')
   const handleInputOnchange = useCallback(
@@ -41,7 +38,7 @@ export const BribeContainer = ({ children }: PropsWithChildren) => {
   return (
     <BribeContext.Provider
       value={{
-				fetching: isRewardsDataLoading || gauge.isLoading,
+        fetching: isRewardsDataLoading || gauge.isLoading,
         rewardsData,
         coinInput,
         handleInputOnchange,

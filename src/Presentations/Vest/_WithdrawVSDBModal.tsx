@@ -37,10 +37,7 @@ const WithdrawVSDBModal = (props: Props) => {
   }
 
   const walletAddress = UserModule.getUserToken()
-  const { data: vsdb, isLoading: isGetVsdbLoading } = useGetVsdb(
-    walletAddress,
-    currentVSDBId,
-  )
+  const { data: vsdb } = useGetVsdb(walletAddress, currentVSDBId)
 
   const { mutate: revive, isLoading: isReviveLoading } = useRevive()
 
@@ -69,7 +66,7 @@ const WithdrawVSDBModal = (props: Props) => {
       titleImg={Image.pageBackground_3}
       isShow={isShowWithdrawVSDBModal}
       setIsShow={setIsShowWithdrawVSDBModal}
-      disabled = {isReviveLoading}
+      disabled={isReviveLoading}
     >
       <InputSection
         titleChildren={
