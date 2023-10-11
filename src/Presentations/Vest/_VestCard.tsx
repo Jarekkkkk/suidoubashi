@@ -7,7 +7,7 @@ import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 import BigNumber from 'bignumber.js'
 import { AMMState } from '@/Constants/API/pool'
-//import useRegisterAMMState from '@/Hooks/AMM/useRegisterAMMState'
+import useRegisterAMMState from '@/Hooks/AMM/useRegisterAMMState'
 //import useRegisterVotingState from '@/Hooks/Vote/useRegisterVotingState'
 import { VotingState } from '@/Constants/API/vote'
 import { round_down_week } from '@/Utils/vsdb'
@@ -109,7 +109,7 @@ const VestCardComponent = (props: Props) => {
     setIsShowWithdrawVSDBModal,
     expSpanValue,
     vesdbSpanValue,
-    amm_state: _,
+    amm_state,
     voting_state,
   } = props
 
@@ -128,11 +128,11 @@ const VestCardComponent = (props: Props) => {
     }
   }
 
-  //  const { mutate: initialize_amm } = useRegisterAMMState()
-  //  const handleInitializeAMM = () => {
-  //    if (!amm_state) initialize_amm({ vsdb: nftId })
-  //  }
-  //
+  const { mutate: initialize_amm } = useRegisterAMMState()
+  const handleInitializeAMM = () => {
+    if (!amm_state) initialize_amm({ vsdb: nftId })
+  }
+
   //  const { mutate: initialize_voting_state } = useRegisterVotingState()
   //  const handleInitializeVotingState = () => {
   //    if (!voting_state) initialize_voting_state({ vsdb: nftId })
@@ -202,19 +202,21 @@ const VestCardComponent = (props: Props) => {
           <>
             <div className={cx(styles.badgeContent)}>
               <div>Badge</div>
-              {/**
+              {
                 <Button
                   text='AMM'
                   styletype='badge'
                   disabled={!!amm_state}
                   onClick={handleInitializeAMM}
                 />
+                /**
                   <Button
                     text='Vote'
                 styletype='badge'
                 disabled={!!voting_state}
               onClick={handleInitializeVotingState}
-              />**/}
+              />**/
+              }
             </div>
             <div className={styles.buttonContent}>
               {new Date().getTime() >= parseInt(end ?? '0') * 1000 ? (

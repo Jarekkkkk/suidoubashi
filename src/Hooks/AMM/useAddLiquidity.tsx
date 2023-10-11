@@ -1,13 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import {
-  TransactionBlock,
-  getExecutionStatusType,
-} from '@mysten/sui.js'
+import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
-import { add_liquidity,  create_lp } from '@/Constants/API/pool'
+import { add_liquidity, create_lp } from '@/Constants/API/pool'
 import { queryClient } from '@/App'
 import { SettingInterface } from '@/Components/SettingModal'
 
@@ -20,7 +17,7 @@ type AddLiquidityMutationArgs = {
   input_y_value: string
 }
 
-export const useAddLiquidity = (setting:SettingInterface) => {
+export const useAddLiquidity = (setting: SettingInterface) => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
@@ -89,6 +86,7 @@ export const useAddLiquidity = (setting:SettingInterface) => {
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['LP'])
       queryClient.invalidateQueries(['pool', params.pool_id])
+      queryClient.invalidateQueries(['balance'])
       toast.success('Add Liquidity Success!')
     },
     onError: (_err: Error) => {

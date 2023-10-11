@@ -24,7 +24,7 @@ export const generateSideBarLinks = [
     element: <Swap />,
     title: 'Swap',
     icon: <Icon.SwapIcon />,
-    isHidden: true,
+    isHidden: false,
   },
   {
     key: 'Pool',
@@ -32,7 +32,7 @@ export const generateSideBarLinks = [
     element: <Pool />,
     title: 'Pool',
     icon: <Icon.PoolIcon />,
-    isHidden: true,
+    isHidden: false,
   },
   {
     key: 'Vest',

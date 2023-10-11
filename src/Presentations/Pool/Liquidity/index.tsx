@@ -478,7 +478,7 @@ const LiquidityPresentation = () => {
                                   handleOnCoinInputYChange(e)
                                   if (
                                     parseFloat(e.target.value) *
-                                      Math.pow(10, 9) >
+                                      Math.pow(10, coinTypeY.decimals) >
                                     Number(coinTypeYBalance.totalBalance)
                                   ) {
                                     setError('Insufficient Balance')

@@ -182,9 +182,10 @@ const PoolPresentation = () => {
 
   return (
     <PageContainer title='Pool' titleImg={Image.pageBackground_2}>
+      {/**
       <div className={styles.slognContent}>
         Provide Liquidity to SuiDoBashi ecosystem and earn weekly rewards
-      </div>
+      </div>**/}
       <div className={constantsStyles.LoadingContainer}>
         <Input
           value={searchInput}
