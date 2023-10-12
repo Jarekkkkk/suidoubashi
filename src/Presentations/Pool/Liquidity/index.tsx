@@ -76,7 +76,7 @@ const LiquidityPresentation = () => {
         setCoinInputY(isNaN(price) ? '' : price.toFixed(6))
       }
     },
-    [setCoinInputX, poolData],
+    [setCoinInputX, poolData, coinTypeX, coinTypeY],
   )
 
   const handleOnCoinInputYChange = useCallback(
@@ -96,7 +96,7 @@ const LiquidityPresentation = () => {
         setCoinInputX(isNaN(price) ? '' : price.toFixed(6))
       }
     },
-    [setCoinInputY, poolData],
+    [setCoinInputY, poolData, coinTypeX, coinTypeY],
   )
 
   const handleOnCoinInputSingleChange = useCallback(
@@ -409,7 +409,7 @@ const LiquidityPresentation = () => {
                             APY
                           </div>
                           <div className={constantsStyles.boldText}>
-                            {poolData?.reserve_x ?? '...'}
+                            {'0 %'}
                           </div>
                         </div>
                       </div>
@@ -737,7 +737,9 @@ const LiquidityPresentation = () => {
                   styletype='filled'
                   text='Unstake & Withdraw'
                   onClick={() => handleUnstakeAndWithdraw()}
-                  disabled={parseInt(stake_bal?.stakes ?? '0') == 0 || !gaugeData}
+                  disabled={
+                    parseInt(stake_bal?.stakes ?? '0') == 0 || !gaugeData
+                  }
                 />
               </div>
             </div>

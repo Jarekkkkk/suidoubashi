@@ -166,7 +166,7 @@ const PoolPresentation = () => {
               </div>
             )
           case 'apr':
-            return <div key={idx}>12.34 %</div>
+            return <div key={idx}>0 %</div>
           case 'manage':
             return (
               <Link to={`/pool/Liquidity?${pool.id}`} key={idx}>

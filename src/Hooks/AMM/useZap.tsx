@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
+import {
+  TransactionBlock,
+  getExecutionStatusError,
+  getExecutionStatusType,
+} from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
 import {
@@ -12,6 +16,7 @@ import {
   zap_y,
 } from '@/Constants/API/pool'
 import { SettingInterface } from '@/Components/SettingModal'
+import { extract_err_message } from '@/Utils'
 
 type ZapMutationArgs = {
   pool_id: string
@@ -74,40 +79,23 @@ export const useZap = (setting: SettingInterface) => {
       )
 
       const deposit_x_min =
-        ((BigInt('10000') - BigInt(setting.slippage)) *
+        (BigInt(Math.round(1000 - parseFloat(setting.slippage) * 10)) *
           (BigInt(input_value) - swapped_x)) /
-        BigInt('10000')
+        BigInt('1000')
 
       const deposit_y_min =
-        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(output)) /
-        BigInt('10000')
+        (BigInt(Math.round(1000 - parseFloat(setting.slippage) * 10)) *
+          BigInt(output)) /
+        BigInt('1000')
 
       // LP
       let lp = lp_id
         ? txb.object(lp_id)
         : create_lp(txb, pool_id, pool_type_x, pool_type_y)
       if (pool_type_x === input_type) {
-        zap_x(
-          txb,
-          pool_id,
-          pool_type_x,
-          pool_type_y,
-          coin,
-          lp,
-          deposit_x_min,
-          deposit_y_min,
-        )
+        zap_x(txb, pool_id, pool_type_x, pool_type_y, coin, lp, 0, 0)
       } else {
-        zap_y(
-          txb,
-          pool_id,
-          pool_type_x,
-          pool_type_y,
-          coin,
-          lp,
-          deposit_y_min,
-          deposit_x_min,
-        )
+        zap_y(txb, pool_id, pool_type_x, pool_type_y, coin, lp, 0, 0)
       }
 
       if (lp_id == null) {
@@ -118,10 +106,16 @@ export const useZap = (setting: SettingInterface) => {
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
+        options: { showEffects: true },
       })
 
       if (getExecutionStatusType(res) == 'failure') {
-        throw new Error('Vesting Vsdb Tx fail')
+        const err = getExecutionStatusError(res)
+        if (err) {
+          const code = extract_err_message(err)
+          if (code == '103') throw new Error('Slippage Error')
+        }
+        throw new Error('Zap Liquidity Tx fail')
       }
     },
     onSuccess: (_, params) => {
@@ -130,8 +124,8 @@ export const useZap = (setting: SettingInterface) => {
       queryClient.invalidateQueries(['pool', params.pool_id])
       toast.success('Success!')
     },
-    onError: (_err: Error) => {
-      toast.error('Oops! Have some error')
+    onError: (err: Error) => {
+      toast.error(err.message)
     },
   })
 }

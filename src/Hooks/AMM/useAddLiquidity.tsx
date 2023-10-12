@@ -40,18 +40,26 @@ export const useAddLiquidity = (setting: SettingInterface) => {
         coinType: pool_type_x,
       })
       const coin_x = payCoin(txb, coins_x, input_x_value, pool_type_x)
-      const deposit_x_min =
-        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(input_x_value)) /
-        BigInt('10000')
       // coni_y
       const coins_y = await rpc.getCoins({
         owner: currentAccount.address,
         coinType: pool_type_y,
       })
       const coin_y = payCoin(txb, coins_y, input_y_value, pool_type_y)
+
+      const deposit_x_min =
+        (BigInt(Math.round(1000 - parseFloat(setting.slippage) * 10)) *
+          BigInt(input_x_value)) /
+        BigInt('1000')
+
       const deposit_y_min =
-        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(input_y_value)) /
-        BigInt('10000')
+        (BigInt(Math.round(1000 - parseFloat(setting.slippage) * 10)) *
+          BigInt(input_y_value)) /
+        BigInt('1000')
+
+      console.log(deposit_x_min)
+      console.log(deposit_y_min)
+
       // LO
       let lp = lp_id
         ? txb.pure(lp_id)
@@ -65,8 +73,8 @@ export const useAddLiquidity = (setting: SettingInterface) => {
         coin_x,
         coin_y,
         lp,
-        deposit_x_min,
-        deposit_y_min,
+        0,
+        0,
       )
       // return id first time deposit
       if (lp_id == null) {
