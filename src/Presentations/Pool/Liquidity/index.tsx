@@ -73,7 +73,19 @@ const LiquidityPresentation = () => {
           (Number(poolData.reserve_y) / Number(poolData.reserve_x)) *
           10 ** (coinTypeX.decimals - coinTypeY.decimals) *
           parseFloat(value)
-        setCoinInputY(isNaN(price) ? '' : price.toFixed(6))
+        const input_y = isNaN(price) ? '' : price.toFixed(6)
+        setCoinInputY(input_y)
+
+        if (
+          parseFloat(value) * Math.pow(10, coinTypeX.decimals) >
+            Number(coinTypeXBalance?.totalBalance ?? '0') ||
+          parseFloat(input_y || '0') * Math.pow(10, coinTypeY.decimals) >
+            Number(coinTypeYBalance?.totalBalance ?? '0')
+        ) {
+          setError('Insufficient Balance')
+        } else {
+          setError('')
+        }
       }
     },
     [setCoinInputX, poolData, coinTypeX, coinTypeY],
@@ -93,10 +105,22 @@ const LiquidityPresentation = () => {
           (Number(poolData.reserve_x) / Number(poolData.reserve_y)) *
           10 ** (coinTypeY.decimals - coinTypeX.decimals) *
           parseFloat(value)
-        setCoinInputX(isNaN(price) ? '' : price.toFixed(6))
+        const input_x = isNaN(price) ? '' : price.toFixed(6)
+        setCoinInputX(input_x)
+        setError('123')
+        if (
+          parseFloat(value) * Math.pow(10, coinTypeY.decimals) >
+            Number(coinTypeYBalance?.totalBalance ?? '0') ||
+          parseFloat(input_x || '0') * Math.pow(10, coinTypeX.decimals) >
+            Number(coinTypeXBalance?.totalBalance ?? '0')
+        ) {
+          setError('Insufficient Balance')
+        } else {
+          setError('')
+        }
       }
     },
-    [setCoinInputY, poolData, coinTypeX, coinTypeY],
+    [setCoinInputY, poolData, coinTypeX, coinTypeY, setError],
   )
 
   const handleOnCoinInputSingleChange = useCallback(
@@ -130,6 +154,8 @@ const LiquidityPresentation = () => {
       })
     }
   }
+
+  console.log('err', error)
 
   const zap = useZap(setting)
   const handleZap = () => {
@@ -437,15 +463,6 @@ const LiquidityPresentation = () => {
                               onChange={(e) => {
                                 if (coinTypeXBalance?.totalBalance) {
                                   handleOnCoinInputXChange(e)
-                                  if (
-                                    parseFloat(e.target.value) *
-                                      Math.pow(10, coinTypeX.decimals) >
-                                    Number(coinTypeXBalance.totalBalance)
-                                  ) {
-                                    setError('Insufficient Balance')
-                                  } else {
-                                    setError('')
-                                  }
                                 }
                               }}
                               placeholder={`${coinTypeX.name} Value`}
@@ -476,15 +493,6 @@ const LiquidityPresentation = () => {
                               onChange={(e) => {
                                 if (coinTypeYBalance?.totalBalance) {
                                   handleOnCoinInputYChange(e)
-                                  if (
-                                    parseFloat(e.target.value) *
-                                      Math.pow(10, coinTypeY.decimals) >
-                                    Number(coinTypeYBalance.totalBalance)
-                                  ) {
-                                    setError('Insufficient Balance')
-                                  } else {
-                                    setError('')
-                                  }
                                 }
                               }}
                               placeholder={`${coinTypeY.name} Value`}
