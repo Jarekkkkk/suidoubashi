@@ -8,7 +8,7 @@ import * as styles from './index.styles'
 import BigNumber from 'bignumber.js'
 import { AMMState } from '@/Constants/API/pool'
 import useRegisterAMMState from '@/Hooks/AMM/useRegisterAMMState'
-//import useRegisterVotingState from '@/Hooks/Vote/useRegisterVotingState'
+import useRegisterVotingState from '@/Hooks/Vote/useRegisterVotingState'
 import { VotingState } from '@/Constants/API/vote'
 import { round_down_week } from '@/Utils/vsdb'
 import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
@@ -133,10 +133,10 @@ const VestCardComponent = (props: Props) => {
     if (!amm_state) initialize_amm({ vsdb: nftId })
   }
 
-  //  const { mutate: initialize_voting_state } = useRegisterVotingState()
-  //  const handleInitializeVotingState = () => {
-  //    if (!voting_state) initialize_voting_state({ vsdb: nftId })
-  //  }
+  const { mutate: initialize_voting_state } = useRegisterVotingState()
+  const handleInitializeVotingState = () => {
+    if (!voting_state) initialize_voting_state({ vsdb: nftId })
+  }
 
   const { mutate: upgrade } = useUpgrade()
   const handleUpgrade = () => {
@@ -174,7 +174,8 @@ const VestCardComponent = (props: Props) => {
           value={expValue}
           expSpanValue={expSpanValue}
           buttonChildren={
-            expSpanValue?.experience === expSpanValue?.required_exp && (
+            expSpanValue &&
+            expSpanValue.experience > expSpanValue.required_exp && (
               <div className={styles.buttonLevelup}>
                 <Button
                   text='Level Up'
@@ -202,21 +203,18 @@ const VestCardComponent = (props: Props) => {
           <>
             <div className={cx(styles.badgeContent)}>
               <div>Badge</div>
-              {
-                <Button
-                  text='AMM'
-                  styletype='badge'
-                  disabled={!!amm_state}
-                  onClick={handleInitializeAMM}
-                />
-                /**
-                  <Button
-                    text='Vote'
+              <Button
+                text='AMM'
+                styletype='badge'
+                disabled={!!amm_state}
+                onClick={handleInitializeAMM}
+              />
+              <Button
+                text='Vote'
                 styletype='badge'
                 disabled={!!voting_state}
-              onClick={handleInitializeVotingState}
-              />**/
-              }
+                onClick={handleInitializeVotingState}
+              />
             </div>
             <div className={styles.buttonContent}>
               {new Date().getTime() >= parseInt(end ?? '0') * 1000 ? (

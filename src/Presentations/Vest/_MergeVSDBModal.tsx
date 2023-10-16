@@ -58,9 +58,7 @@ const MergeVSDBModal = (props: Props) => {
   }
 
   const _vsdbsList = vsdbs.filter(
-    (vsdb) =>
-      vsdb.voting_state == undefined &&
-      new Date().getTime() < parseInt(vsdb.end) * 1000,
+    (vsdb) => new Date().getTime() < parseInt(vsdb.end) * 1000,
   )
 
   useEffect(() => {

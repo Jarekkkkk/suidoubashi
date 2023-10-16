@@ -9,7 +9,6 @@ import {
 } from '@/Components'
 import { fetchCoinByType } from '@/Constants/index'
 import * as constantsStyles from '@/Constants/constants.styles'
-
 import * as styles from './index.styles'
 import { cx, css } from '@emotion/css'
 import { useRewardsContext } from '@/Containers/Rewards'
@@ -180,7 +179,10 @@ const RewardsPresentation = () => {
           >
             Bribes
           </div>
-          {voterRewards &&
+          {voterRewardsIsLoading ? (
+            <Loading />
+          ) : (
+            voterRewards &&
             rewardsData &&
             Object.keys(voterRewards).map((rewards) => {
               const reward = rewardsData.find((r) => r.id == rewards)
@@ -241,7 +243,8 @@ const RewardsPresentation = () => {
                   />
                 </div>
               )
-            })}
+            })
+          )}
           <div className={css({ marginTop: 'auto' })}>
             <Button styletype='filled' text='Claim All' onClick={() => {}} />
           </div>
