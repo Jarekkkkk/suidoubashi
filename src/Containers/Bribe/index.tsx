@@ -13,6 +13,7 @@ export const BribeContext = React.createContext<BribeContext>({
   fetching: false,
   coinInput: '',
   handleInputOnchange: () => {},
+  clearInput: () => {},
 })
 
 export const useBribeContext = () => useContext(BribeContext)

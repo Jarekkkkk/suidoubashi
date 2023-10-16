@@ -236,6 +236,7 @@ const LiquidityPresentation = () => {
         fee: fee_percentage,
         gauge_id: gaugeData.id,
         lp_id: lp ? lp.id : null,
+        stake_id: stake ? stake.id : null,
         input_type: singleType.type,
         input_value: (
           Number(coinInputSingle) *

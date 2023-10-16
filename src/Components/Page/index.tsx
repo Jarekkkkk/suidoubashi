@@ -14,8 +14,7 @@ import { Sidebar, ControlBar, SettingModal } from '@/Components'
 import * as styles from './index.styles'
 import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import { SettingInterface, defaultSetting } from '../SettingModal'
-import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
-import { useGetAllStake, useGetMulStake } from '@/Hooks/Vote/useGetStake'
+import { useGetAllStake } from '@/Hooks/Vote/useGetStake'
 import SettingModule from '@/Modules/Setting'
 
 const PageContext = createContext<PageContext>({
@@ -81,8 +80,7 @@ const PageComponent = (props: Props) => {
       }
     }
   }
-  // stake
-  //  const { data: stakes, isLoading: isStakeDataLoading } = useGetMulStake(gauges)
+  //stake
   const { data: stakes, isLoading: isStakeDataLoading } =
     useGetAllStake(walletAddress)
   // setting

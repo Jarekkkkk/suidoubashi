@@ -248,10 +248,7 @@ export async function voting_weight(
 export async function upgrade(txb: TransactionBlock, vsdb: string) {
   txb.moveCall({
     target: `${vsdb_package}::vsdb::upgrade`,
-    arguments: [
-      txb.object(vsdb_reg),
-      txb.object(vsdb),
-    ],
+    arguments: [txb.object(vsdb_reg), txb.object(vsdb)],
   })
 }
 

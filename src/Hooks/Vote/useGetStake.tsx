@@ -1,48 +1,12 @@
-import { useQueries, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
-import { useWalletKit } from '@mysten/wallet-kit'
-import { Gauge, Stake, get_stake, vote_package } from '@/Constants/API/vote'
+import { Stake, vote_package } from '@/Constants/API/vote'
 import { useMemo } from 'react'
 import {
   getObjectFields,
   getObjectType,
   normalizeStructTag,
 } from '@mysten/sui.js'
-
-export const useGetMulStake = (gauges?: Gauge[] | null) => {
-  const rpc = useRpc()
-  const { currentAccount } = useWalletKit()
-  const stakes = useQueries({
-    queries:
-      gauges?.map((gauge) => {
-        return {
-          queryKey: ['stake', gauge!.id],
-          queryFn: () =>
-            get_stake(
-              rpc,
-              currentAccount!.address,
-              gauge!.id,
-              gauge!.type_x,
-              gauge!.type_y,
-            ),
-          enabled: !!gauge?.id && !!currentAccount?.address,
-        }
-      }) ?? [],
-  })
-  return useMemo(() => {
-    if (!gauges) return { isLoading: true, data: null }
-    if (stakes.length == 0) return { isLoading: false, data: [] }
-
-    const isLoading = stakes.some((v) => v.isLoading)
-    const ret: Stake[] = []
-
-    stakes.forEach(({ data }) => {
-      if (!data) return { isLoading, data: [] }
-      ret.push(data)
-    })
-    return { isLoading, data: ret.length ? ret : [] }
-  }, [stakes])
-}
 
 export const useGetAllStake = (address?: string | null) => {
   const rpc = useRpc()

@@ -613,24 +613,6 @@ export function create_stake(
   })
 }
 
-export async function get_stake(
-  rpc: JsonRpcProvider,
-  sender: SuiAddress,
-  gauge: string,
-  type_x: string,
-  type_y: string,
-) {
-  const stakes = await get_stake_balance(rpc, sender, gauge, type_x, type_y)
-  const pending_sdb = await get_pending_sdb(rpc, sender, gauge, type_x, type_y)
-  return {
-    gauge,
-    type_x,
-    type_y,
-    stakes,
-    pending_sdb,
-  } as Stake
-}
-
 export async function all_earned(
   rpc: JsonRpcProvider,
   sender: SuiAddress,
