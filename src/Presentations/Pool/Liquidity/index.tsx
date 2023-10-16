@@ -58,6 +58,12 @@ const LiquidityPresentation = () => {
   const coinTypeXBalance = useGetBalance(coinTypeX.type, walletAddress)
   const coinTypeYBalance = useGetBalance(coinTypeY.type, walletAddress)
 
+  const handleIsDepositSingle = () => {
+    if (poolData) {
+      !poolData.stable && setIsDepositSingle(!isDepositSingle)
+    }
+  }
+
   const handleOnCoinInputXChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!poolData || !coinTypeX || !coinTypeY) return
@@ -155,8 +161,6 @@ const LiquidityPresentation = () => {
     }
   }
 
-  console.log('err', error)
-
   const zap = useZap(setting)
   const handleZap = () => {
     if (poolData) {
@@ -187,6 +191,7 @@ const LiquidityPresentation = () => {
     }
   }
 
+  const stake = useGetStake(walletAddress, poolData?.type_x, poolData?.type_y)
   const deposit_and_stake = useDepoistAndStake(setting)
   const handleDepositAndStake = () => {
     if (poolData && gaugeData) {
@@ -196,6 +201,7 @@ const LiquidityPresentation = () => {
         pool_type_y: poolData.type_y,
         gauge_id: gaugeData.id,
         lp_id: lp ? lp.id : null,
+        stake_id: stake ? stake.id : null,
         input_x_value: (
           Number(coinInputX) *
           10 ** coinTypeX.decimals
@@ -239,13 +245,6 @@ const LiquidityPresentation = () => {
     }
   }
 
-  const { data: stake_bal } = useGetStake(
-    gaugeData?.id,
-    gaugeData?.type_x,
-    gaugeData?.type_y,
-    lp?.id,
-  )
-
   const withdraw = useRemoveLiquidity(setting)
   const handleWithdraw = () => {
     if (poolData && lp) {
@@ -258,43 +257,46 @@ const LiquidityPresentation = () => {
       })
     }
   }
-  const stake = useStake(setting)
+  const stake_mut = useStake(setting)
   const handleStake = () => {
     if (poolData && lp && gaugeData) {
-      stake.mutate({
+      stake_mut.mutate({
         pool_id: poolData.id,
         gauge_id: gaugeData.id,
         pool_type_x: gaugeData.type_x,
         pool_type_y: gaugeData.type_y,
         lp_id: lp.id,
+        stake_id: stake ? stake.id : null,
       })
     }
   }
 
   const unstake = useUnStake(setting)
   const handleUnstake = () => {
-    if (poolData && lp && gaugeData && stake_bal) {
+    if (poolData && lp && gaugeData && stake) {
       unstake.mutate({
         pool_id: poolData.id,
         gauge_id: gaugeData.id,
         pool_type_x: poolData.type_x,
         pool_type_y: poolData.type_y,
         lp_id: lp.id,
-        value: stake_bal.stakes,
+        stake_id: stake.id,
+        value: stake.stakes,
       })
     }
   }
 
   const unstake_and_withdraw = useUnStakeAndWithdraw(setting)
   const handleUnstakeAndWithdraw = () => {
-    if (poolData && lp && gaugeData && stake_bal) {
+    if (poolData && lp && gaugeData && stake) {
       unstake_and_withdraw.mutate({
         pool_id: poolData.id,
         pool_type_x: poolData.type_x,
         pool_type_y: poolData.type_y,
         gauge_id: gaugeData?.id,
         lp_id: lp.id,
-        withdrawl: stake_bal.stakes,
+        stake_id: stake.id,
+        withdrawl: stake.stakes,
       })
     }
   }
@@ -341,7 +343,7 @@ const LiquidityPresentation = () => {
                 className={cx(styles.ellipseTabTitle, {
                   [styles.ellipseActiveTab]: !isDepositSingle,
                 })}
-                onClick={() => setIsDepositSingle(!isDepositSingle)}
+                onClick={handleIsDepositSingle}
               >
                 Pair
               </span>
@@ -349,7 +351,7 @@ const LiquidityPresentation = () => {
                 className={cx(styles.ellipseTabTitle, {
                   [styles.ellipseActiveTab]: isDepositSingle,
                 })}
-                onClick={() => setIsDepositSingle(!isDepositSingle)}
+                onClick={handleIsDepositSingle}
               >
                 Single
               </span>
@@ -685,7 +687,7 @@ const LiquidityPresentation = () => {
               <div
                 className={cx(constantsStyles.boldText, styles.textMarginLeft)}
               >
-                {formatBalance(stake_bal?.stakes ?? '0', 9, CoinFormat.FULL)}
+                {formatBalance(stake?.stakes ?? '0', 9, CoinFormat.FULL)}
               </div>
             </div>
             <div className={styles.coinContent}>
@@ -697,11 +699,11 @@ const LiquidityPresentation = () => {
                   </span>
                 </span>
                 <div className={constantsStyles.boldText}>
-                  {poolData && stake_bal
+                  {poolData && stake?.stakes
                     ? lp_position(
                         poolData.reserve_x,
                         poolData.lp_supply,
-                        stake_bal.stakes,
+                        stake.stakes,
                         coinTypeX.decimals,
                       )
                     : '0.00'}
@@ -715,11 +717,11 @@ const LiquidityPresentation = () => {
                   </span>
                 </span>
                 <div className={constantsStyles.boldText}>
-                  {poolData && stake_bal
+                  {poolData && stake?.stakes
                     ? lp_position(
                         poolData.reserve_y,
                         poolData.lp_supply,
-                        stake_bal.stakes,
+                        stake.stakes,
                         coinTypeY.decimals,
                       )
                     : '0.00'}
@@ -737,7 +739,7 @@ const LiquidityPresentation = () => {
               <div className={styles.buttonContent}>
                 <Button
                   styletype='filled'
-                  disabled={parseInt(stake_bal?.stakes ?? '0') == 0}
+                  disabled={parseInt(stake?.stakes ?? '0') == 0}
                   text='Unstake'
                   onClick={() => handleUnstake()}
                 />
@@ -745,9 +747,7 @@ const LiquidityPresentation = () => {
                   styletype='filled'
                   text='Unstake & Withdraw'
                   onClick={() => handleUnstakeAndWithdraw()}
-                  disabled={
-                    parseInt(stake_bal?.stakes ?? '0') == 0 || !gaugeData
-                  }
+                  disabled={parseInt(stake?.stakes ?? '0') == 0 || !gaugeData}
                 />
               </div>
             </div>

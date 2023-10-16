@@ -23,7 +23,7 @@ import { usePageContext } from '@/Components/Page'
 import { useWalletKit } from '@mysten/wallet-kit'
 
 const BribePresentation = () => {
-  const { rewardsData, handleInputOnchange, coinInput, fetching } =
+  const { rewardsData, handleInputOnchange, coinInput, fetching, clearInput } =
     useBribeContext()
   const { setting } = usePageContext()
 
@@ -34,7 +34,8 @@ const BribePresentation = () => {
 
   const { currentAccount } = useWalletKit()
   const balance = useGetBalance(coinType.type, currentAccount?.address)
-  const bribe = useBribe(setting)
+
+  const bribe = useBribe(setting, clearInput)
 
   const selectedReward = useMemo(() => {
     if (!rewardsData) return null

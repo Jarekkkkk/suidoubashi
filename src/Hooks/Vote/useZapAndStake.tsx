@@ -6,13 +6,13 @@ import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
 import {
   create_lp,
-  get_output,
-  zap_optimized_input_,
+  //  get_output,
+  //  zap_optimized_input_,
   zap_x,
   zap_y,
 } from '@/Constants/API/pool'
 import { SettingInterface } from '@/Components/SettingModal'
-import { stake_all } from '@/Constants/API/vote'
+import { create_stake, stake_all } from '@/Constants/API/vote'
 
 type MutationArgs = {
   pool_id: string
@@ -24,6 +24,7 @@ type MutationArgs = {
   fee: string
   gauge_id: string
   lp_id: string | null
+  stake_id: string | null
   input_type: string
   input_value: string
 }
@@ -38,12 +39,13 @@ export const useZapAndStake = (setting: SettingInterface) => {
       pool_id,
       pool_type_x,
       pool_type_y,
-      reserve_x,
-      reserve_y,
-      stable,
-      fee,
+      //      reserve_x,
+      //      reserve_y,
+      //      stable,
+      //      fee,
       gauge_id,
       lp_id,
+      stake_id,
       input_type,
       input_value,
     }: MutationArgs) => {
@@ -57,65 +59,54 @@ export const useZapAndStake = (setting: SettingInterface) => {
       })
       const coin = payCoin(txb, coins, input_value, input_type)
 
-      const swapped_x = stable
-        ? BigInt(input_value) / BigInt(2)
-        : zap_optimized_input_(
-            pool_type_x === input_type ? reserve_x : reserve_y,
-            input_value,
-            fee,
-          )
+      //    const swapped_x = stable
+      //      ? BigInt(input_value) / BigInt(2)
+      //      : zap_optimized_input_(
+      //          pool_type_x === input_type ? reserve_x : reserve_y,
+      //          input_value,
+      //          fee,
+      //        )
 
-      const output = await get_output(
-        rpc,
-        currentAccount.address,
-        pool_id,
-        pool_type_x,
-        pool_type_y,
-        input_type,
-        swapped_x,
-      )
+      //     const output = await get_output(
+      //       rpc,
+      //       currentAccount.address,
+      //       pool_id,
+      //       pool_type_x,
+      //       pool_type_y,
+      //       input_type,
+      //       swapped_x,
+      //     )
 
-      const deposit_x_min =
-        ((BigInt('10000') - BigInt(setting.slippage)) *
-          (BigInt(input_value) - swapped_x)) /
-        BigInt('10000')
-
-      const deposit_y_min =
-        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(output)) /
-        BigInt('10000')
+      //      const deposit_x_min =
+      //        ((BigInt('10000') - BigInt(setting.slippage)) *
+      //          (BigInt(input_value) - swapped_x)) /
+      //        BigInt('10000')
+      //
+      //      const deposit_y_min =
+      //        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(output)) /
+      //        BigInt('10000')
 
       // LP
       let lp = lp_id
         ? txb.object(lp_id)
         : create_lp(txb, pool_id, pool_type_x, pool_type_y)
+      let stake = stake_id
+        ? txb.pure(stake_id)
+        : create_stake(txb, gauge_id, pool_type_x, pool_type_y)
       if (pool_type_x === input_type) {
-        zap_x(
-          txb,
-          pool_id,
-          pool_type_x,
-          pool_type_y,
-          coin,
-          lp,
-          deposit_x_min,
-          deposit_y_min,
-        )
+        zap_x(txb, pool_id, pool_type_x, pool_type_y, coin, lp, 0, 0)
       } else {
-        zap_y(
-          txb,
-          pool_id,
-          pool_type_x,
-          pool_type_y,
-          coin,
-          lp,
-          deposit_y_min,
-          deposit_x_min,
-        )
+        zap_y(txb, pool_id, pool_type_x, pool_type_y, coin, lp, 0, 0)
       }
       //stake
-      stake_all(txb, gauge_id, pool_id, pool_type_x, pool_type_y, lp)
+      stake_all(txb, gauge_id, pool_id, pool_type_x, pool_type_y, lp, stake)
 
       if (lp_id == null) {
         txb.transferObjects([lp], txb.pure(currentAccount.address))
+      }
+
+      if (stake_id == null) {
+        txb.transferObjects([stake], txb.pure(currentAccount.address))
       }
 
       const signed_tx = await signTransactionBlock({ transactionBlock: txb })
@@ -133,7 +124,7 @@ export const useZapAndStake = (setting: SettingInterface) => {
       queryClient.invalidateQueries(['balance'])
       queryClient.invalidateQueries(['pool', params.pool_id])
       queryClient.invalidateQueries(['gauge', params.gauge_id])
-      queryClient.invalidateQueries(['stake',params.gauge_id])
+      queryClient.invalidateQueries(['Stake'])
       toast.success('Success!')
     },
     onError: (_err: Error) => {

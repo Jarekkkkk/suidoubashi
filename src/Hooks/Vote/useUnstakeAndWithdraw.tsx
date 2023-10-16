@@ -13,6 +13,7 @@ type MutationArgs = {
   pool_type_y: string
   gauge_id: string
   lp_id: string
+  stake_id: string
   withdrawl: string
 }
 
@@ -28,6 +29,7 @@ export const useUnStakeAndWithdraw = (setting: SettingInterface) => {
       pool_type_y,
       gauge_id,
       lp_id,
+      stake_id,
       withdrawl,
     }: MutationArgs) => {
       if (!currentAccount) throw new Error('no Wallet Account')
@@ -41,6 +43,7 @@ export const useUnStakeAndWithdraw = (setting: SettingInterface) => {
         pool_type_x,
         pool_type_y,
         lp_id,
+        stake_id,
         withdrawl,
       )
       const quote = await quote_remove_liquidity(
@@ -77,7 +80,7 @@ export const useUnStakeAndWithdraw = (setting: SettingInterface) => {
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['LP'])
       queryClient.invalidateQueries(['gauge', params.gauge_id])
-      queryClient.invalidateQueries(['stake', params.gauge_id])
+      queryClient.invalidateQueries(['Stake'])
       toast.success('Unstake Liquidity Successfully')
     },
     onError: (err) => {

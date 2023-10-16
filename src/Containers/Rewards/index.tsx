@@ -1,19 +1,21 @@
 import { Rewards, Stake } from '@/Constants/API/vote'
 import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
 import { useGetMulRewards } from '@/Hooks/Vote/useGetRewards'
-import { useGetMulStake } from '@/Hooks/Vote/useGetStake'
+import { useGetAllStake } from '@/Hooks/Vote/useGetStake'
+import { useWalletKit } from '@mysten/wallet-kit'
 import React, { useContext, PropsWithChildren } from 'react'
 
 const RewardsContext = React.createContext<RewardsContext>({
   rewardsData: null,
-  stakeData: null,
+  stakeData: undefined,
   fetching: false,
 })
 export const useRewardsContext = () => useContext(RewardsContext)
 
 const RewardsContainer = ({ children }: PropsWithChildren) => {
   const gauge = useGetMulGauge()
-  const stakes = useGetMulStake(gauge.data)
+  const { currentAccount } = useWalletKit()
+  const stakes = useGetAllStake(currentAccount?.address)
   const rewards = useGetMulRewards(gauge.data, gauge.isLoading)
 
   return (
@@ -31,7 +33,7 @@ const RewardsContainer = ({ children }: PropsWithChildren) => {
 
 interface RewardsContext {
   readonly rewardsData: Rewards[] | null
-  readonly stakeData: Stake[] | null
+  readonly stakeData: Stake[] | undefined
   readonly fetching: boolean
 }
 

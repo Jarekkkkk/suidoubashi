@@ -10,6 +10,7 @@ import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
 import { useGetVoter } from '@/Hooks/Vote/useGetVoter'
 import { Gauge, Rewards, Voter } from '@/Constants/API/vote'
 import { useGetMulRewards } from '@/Hooks/Vote/useGetRewards'
+import { Coins } from '@/Constants/coin'
 
 const VoteContext = React.createContext<VoteContext>({
   gaugeData: null,
@@ -31,13 +32,13 @@ const VoteContainer = ({ children }: PropsWithChildren) => {
     gauge.isLoading || voter.isLoading,
   )
 
-	const _gaugeData = gauge.data?.filter((data) => {
-		const _x = fetchCoinByType(data.type_x)!.name;
-		const _y = fetchCoinByType(data.type_y)!.name;
-		const coinName = _x.concat('-', _y);
+  const _gaugeData = gauge.data?.filter((data) => {
+    const _x = fetchCoinByType(data.type_x)?.name ?? Coins[0].name
+    const _y = fetchCoinByType(data.type_y)?.name ?? Coins[0].name
+    const coinName = _x.concat('-', _y)
 
-		return new RegExp(searchInput, 'ig').test(coinName)
-	});
+    return new RegExp(searchInput, 'ig').test(coinName)
+  })
 
   const handleOnInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

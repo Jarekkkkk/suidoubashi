@@ -7,7 +7,7 @@ import { payCoin } from '@/Utils/payCoin'
 import { add_liquidity, create_lp } from '@/Constants/API/pool'
 import { queryClient } from '@/App'
 import { SettingInterface } from '@/Components/SettingModal'
-import { stake_all } from '@/Constants/API/vote'
+import { create_stake, stake_all } from '@/Constants/API/vote'
 
 type MutationArgs = {
   pool_id: string
@@ -15,6 +15,7 @@ type MutationArgs = {
   pool_type_y: string
   gauge_id: string
   lp_id: string | null
+  stake_id: string | null
   input_x_value: string
   input_y_value: string
 }
@@ -29,6 +30,7 @@ export const useDepoistAndStake = (setting: SettingInterface) => {
       pool_type_x,
       pool_type_y,
       lp_id,
+      stake_id,
       gauge_id,
       input_x_value,
       input_y_value,
@@ -60,6 +62,10 @@ export const useDepoistAndStake = (setting: SettingInterface) => {
         ? txb.pure(lp_id)
         : create_lp(txb, pool_id, pool_type_x, pool_type_y)
 
+      let stake = stake_id
+        ? txb.pure(stake_id)
+        : create_stake(txb, gauge_id, pool_type_x, pool_type_y)
+
       add_liquidity(
         txb,
         pool_id,
@@ -72,11 +78,15 @@ export const useDepoistAndStake = (setting: SettingInterface) => {
         deposit_y_min,
       )
 
-      stake_all(txb, gauge_id, pool_id, pool_type_x, pool_type_y, lp)
+      stake_all(txb, gauge_id, pool_id, pool_type_x, pool_type_y, lp, stake)
 
       // return id first time deposit
       if (lp_id == null) {
         txb.transferObjects([lp], txb.pure(currentAccount.address))
+      }
+
+      if (stake_id == null) {
+        txb.transferObjects([stake], txb.pure(currentAccount.address))
       }
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
@@ -93,7 +103,7 @@ export const useDepoistAndStake = (setting: SettingInterface) => {
       queryClient.invalidateQueries(['pool', params.pool_id])
       queryClient.invalidateQueries(['LP'])
       queryClient.invalidateQueries(['gauge', params.gauge_id])
-      queryClient.invalidateQueries(['stake',params.gauge_id])
+      queryClient.invalidateQueries(['stake'])
       toast.success('Add Liquidity and Stake Success!')
     },
     onError: (_err: Error) => {

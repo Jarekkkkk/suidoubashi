@@ -4,6 +4,7 @@ import { useWalletKit } from '@mysten/wallet-kit'
 import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import {
+  claim_fees_player,
   delete_lp,
   quote_remove_liquidity,
   remove_liquidity,
@@ -58,8 +59,12 @@ export const useRemoveLiquidity = (setting: SettingInterface) => {
         quote[1],
       )
 
+      claim_fees_player(txb, pool_id, lp, pool_type_x, pool_type_y)
+
       // LP should withdraw all the fee revenue before burn it
       delete_lp(txb, lp, pool_type_x, pool_type_y)
+
+      console.log('txb', txb)
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({

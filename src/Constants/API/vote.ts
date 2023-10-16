@@ -48,7 +48,7 @@ export type Gauge = {
 }
 
 export type Stake = {
-  gauge: string
+  id: string
   type_x: string
   type_y: string
   stakes: string
@@ -429,6 +429,7 @@ export function stake_all(
   gauge_type_x: string,
   gauge_type_y: string,
   lp: any,
+  stake: any,
 ) {
   txb.moveCall({
     target: `${vote_package}::gauge::stake_all`,
@@ -437,6 +438,7 @@ export function stake_all(
       txb.object(gauge_id),
       txb.object(pool_id),
       lp,
+      stake,
       txb.object(SUI_CLOCK_OBJECT_ID),
     ],
   })
@@ -449,6 +451,7 @@ export function unstake(
   gauge_type_x: string,
   gauge_type_y: string,
   lp: string,
+  stake_id: string,
   value: string,
 ) {
   txb.moveCall({
@@ -458,6 +461,7 @@ export function unstake(
       txb.object(gauge_id),
       txb.object(pool_id),
       txb.object(lp),
+      txb.object(stake_id),
       txb.pure(value),
       txb.object(SUI_CLOCK_OBJECT_ID),
     ],
@@ -487,6 +491,7 @@ export function unstake_all(
 export function claim_rewards(
   txb: TransactionBlock,
   gauge_id: string,
+  stake_id: string,
   gauge_type_x: string,
   gauge_type_y: string,
 ) {
@@ -496,6 +501,7 @@ export function claim_rewards(
     arguments: [
       txb.object(voter),
       txb.object(gauge_id),
+      txb.object(stake_id),
       txb.object(SUI_CLOCK_OBJECT_ID),
     ],
   })
@@ -592,6 +598,19 @@ export async function get_pending_sdb(
     const valueData = Uint8Array.from(returnValue[0] as Iterable<number>)
     return bcs_registry.de(valueType, valueData, 'hex')
   }
+}
+
+export function create_stake(
+  txb: TransactionBlock,
+  gauge_id: string,
+  type_x: string,
+  type_y: string,
+) {
+  return txb.moveCall({
+    target: `${vote_package}::gauge::create_stake`,
+    typeArguments: [type_x, type_y],
+    arguments: [txb.object(gauge_id)],
+  })
 }
 
 export async function get_stake(

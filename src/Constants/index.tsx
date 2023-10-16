@@ -48,7 +48,7 @@ export const generateSideBarLinks = [
     element: <Vote />,
     title: 'Vote',
     icon: <Icon.VoteIcon />,
-    isHidden: true,
+    isHidden: false,
   },
   {
     key: 'Rewards',
@@ -56,7 +56,7 @@ export const generateSideBarLinks = [
     element: <Rewards />,
     title: 'Rewards',
     icon: <Icon.RewardsIcon />,
-    isHidden: true,
+    isHidden: false,
   },
   {
     key: 'Bribe',
@@ -64,7 +64,7 @@ export const generateSideBarLinks = [
     element: <Bribe />,
     title: 'Bribe',
     icon: <Icon.StakeIcon />,
-    isHidden: true,
+    isHidden: false,
   },
 ]
 

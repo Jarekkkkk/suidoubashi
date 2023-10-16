@@ -8,6 +8,7 @@ import { claim_rewards } from '@/Constants/API/vote'
 
 type MutationArgs = {
   gauge_id: string
+  stake_id: string
   gauge_type_x: string
   gauge_type_y: string
 }
@@ -20,6 +21,7 @@ export const useClaimRewards = (setting: SettingInterface) => {
   return useMutation({
     mutationFn: async ({
       gauge_id,
+      stake_id,
       gauge_type_y,
       gauge_type_x,
     }: MutationArgs) => {
@@ -28,7 +30,7 @@ export const useClaimRewards = (setting: SettingInterface) => {
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
 
-      claim_rewards(txb, gauge_id, gauge_type_x, gauge_type_y)
+      claim_rewards(txb, gauge_id, stake_id, gauge_type_x, gauge_type_y)
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({

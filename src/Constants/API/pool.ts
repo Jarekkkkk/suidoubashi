@@ -132,13 +132,17 @@ export async function get_output_fee(
   pool_type_y: string,
   input_type: string,
   input_amount: string | BigInt,
-  fee_percentage: string
+  fee_percentage: string,
 ): Promise<string> {
   let txb = new TransactionBlock()
   txb.moveCall({
     target: `${amm_package}::pool::get_output_fee`,
     typeArguments: [pool_type_x, pool_type_y, input_type],
-    arguments: [txb.object(pool), txb.pure(input_amount), txb.pure(fee_percentage)],
+    arguments: [
+      txb.object(pool),
+      txb.pure(input_amount),
+      txb.pure(fee_percentage),
+    ],
   })
   let res = await rpc.devInspectTransactionBlock({
     sender,
@@ -573,6 +577,20 @@ export async function get_claimable_y(
   })
 
   return res?.results?.[0]?.returnValues ?? 0
+}
+
+export function claim_fees_player(
+  txb: TransactionBlock,
+  pool: string,
+  lp: any,
+  type_x: string,
+  type_y: string,
+) {
+  txb.moveCall({
+    target: `${amm_package}::pool::claim_fees_player`,
+    typeArguments: [type_x, type_y],
+    arguments: [txb.object(pool), lp],
+  })
 }
 
 export async function initialize_amm(txb: TransactionBlock, vsdb: string) {

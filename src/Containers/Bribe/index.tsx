@@ -35,6 +35,8 @@ export const BribeContainer = ({ children }: PropsWithChildren) => {
     [setCoinInput],
   )
 
+  const clearInput = () => setCoinInput('')
+
   return (
     <BribeContext.Provider
       value={{
@@ -42,6 +44,7 @@ export const BribeContainer = ({ children }: PropsWithChildren) => {
         rewardsData,
         coinInput,
         handleInputOnchange,
+        clearInput,
       }}
     >
       {children}
@@ -54,6 +57,7 @@ interface BribeContext {
   readonly fetching: boolean
   coinInput: string
   handleInputOnchange: Function
+  clearInput: Function
 }
 
 export default BribeContainer

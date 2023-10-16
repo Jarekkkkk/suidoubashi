@@ -21,6 +21,7 @@ import { useEffect, useState } from 'react'
 import { CoinFormat, formatBalance } from '@/Utils/format'
 import { useVote } from '@/Hooks/Vote/useVote'
 import { toast } from 'react-hot-toast'
+import { Coins } from '@/Constants/coin'
 
 const renderLabel2 = (val: number) => {
   return `${Math.round(val * 100)}%`
@@ -159,8 +160,6 @@ const VotePresentation = () => {
 
   const [countdown, setCountdown] = useState(calculateCountdown())
 
-  console.log('coountdown',countdown)
-
   useEffect(() => {
     const interval = setInterval(() => {
       setCountdown(calculateCountdown())
@@ -288,7 +287,9 @@ const VotePresentation = () => {
                           CoinFormat.FULL,
                         )}
                       </span>
-                      <div className={styles.smallIcon}>{coin!.logo}</div>
+                      <div className={styles.smallIcon}>
+                        {coin?.logo ?? Coins[0].logo}
+                      </div>
                     </div>
                   )
                 })}
@@ -344,7 +345,9 @@ const VotePresentation = () => {
             <div className={styles.infoTitle}>Epoch 1</div>
             <div>
               <div>Finished in </div>
-              <div className={styles.yellowText}>{`${countdown.days}d ${countdown.hours}h ${countdown.minutes}m ${countdown.seconds}s`}</div>
+              <div
+                className={styles.yellowText}
+              >{`${countdown.days}d ${countdown.hours}h ${countdown.minutes}m ${countdown.seconds}s`}</div>
             </div>
           </div>
         </div>

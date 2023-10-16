@@ -1,10 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import {
-  TransactionBlock,
-  getExecutionStatusType,
-} from '@mysten/sui.js'
+import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
 import { Swap, amm_package, swap_for_x, swap_for_y } from '@/Constants/API/pool'
@@ -17,7 +14,7 @@ type SwapMutationArgs = {
   is_type_x: boolean
   input_value: string
   output_value: string
-  vsdb:string | null
+  vsdb: string | null
 }
 
 export const useSwap = () => {
@@ -32,7 +29,7 @@ export const useSwap = () => {
       is_type_x,
       input_value,
       output_value,
-      vsdb
+      vsdb,
     }: SwapMutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
 
@@ -45,11 +42,26 @@ export const useSwap = () => {
         coinType: input_type,
       })
       const coin = payCoin(txb, coins, input_value, input_type)
-  console.log(vsdb)
       if (is_type_x) {
-        swap_for_y(txb, pool_id, pool_type_x, pool_type_y, coin, output_value, vsdb)
+        swap_for_y(
+          txb,
+          pool_id,
+          pool_type_x,
+          pool_type_y,
+          coin,
+          output_value,
+          vsdb,
+        )
       } else {
-        swap_for_x(txb, pool_id, pool_type_x, pool_type_y, coin, output_value, vsdb)
+        swap_for_x(
+          txb,
+          pool_id,
+          pool_type_x,
+          pool_type_y,
+          coin,
+          output_value,
+          vsdb,
+        )
       }
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
@@ -73,11 +85,10 @@ export const useSwap = () => {
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['balance'])
       queryClient.invalidateQueries(['pool', params.pool_id])
-      if(params.vsdb) queryClient.invalidateQueries(['vsdb', params.vsdb])
+      if (params.vsdb) queryClient.invalidateQueries(['vsdb', params.vsdb])
       toast.success('Swap Success!')
     },
-    onError: (err: Error) => {
-      console.log(err)
+    onError: (_err: Error) => {
       toast.error('Oops! Have some error')
     },
   })

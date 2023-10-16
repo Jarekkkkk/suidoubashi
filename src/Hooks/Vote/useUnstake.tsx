@@ -12,6 +12,7 @@ type UnstakeArgs = {
   pool_type_y: string
   gauge_id: string
   lp_id: string
+  stake_id: string
   value: string
 }
 
@@ -26,6 +27,7 @@ export const useUnStake = (setting: SettingInterface) => {
       pool_type_x,
       pool_type_y,
       gauge_id,
+      stake_id,
       lp_id,
       value,
     }: UnstakeArgs) => {
@@ -33,7 +35,17 @@ export const useUnStake = (setting: SettingInterface) => {
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
-      unstake(txb, gauge_id, pool_id, pool_type_x, pool_type_y, lp_id, value)
+
+      unstake(
+        txb,
+        gauge_id,
+        pool_id,
+        pool_type_x,
+        pool_type_y,
+        lp_id,
+        stake_id,
+        value,
+      )
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
@@ -47,8 +59,7 @@ export const useUnStake = (setting: SettingInterface) => {
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['pool', params.pool_id])
       queryClient.invalidateQueries(['LP'])
-      queryClient.invalidateQueries(['farm', params.gauge_id])
-      queryClient.invalidateQueries(['stake', params.gauge_id])
+      queryClient.invalidateQueries(['Stake'])
       toast.success('Unstake Liquidity Successfully')
     },
     onError: (err) => {

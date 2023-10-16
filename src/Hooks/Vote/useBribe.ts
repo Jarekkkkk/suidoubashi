@@ -15,7 +15,7 @@ type MutationArgs = {
   input_value: string
 }
 
-export const useBribe = (setting: SettingInterface) => {
+export const useBribe = (setting: SettingInterface, clearInput: Function) => {
   const rpc = useRpc()
   const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
@@ -52,7 +52,8 @@ export const useBribe = (setting: SettingInterface) => {
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['balance'])
       queryClient.invalidateQueries(['rewards', params.rewards])
-      toast.success('Votes Successfully')
+      toast.success('Bribes Successfully')
+      clearInput()
     },
     onError: (err) => {
       console.log(err)

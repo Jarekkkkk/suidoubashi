@@ -21,6 +21,7 @@ import { useWalletKit } from '@mysten/wallet-kit'
 import { formatBalance } from '@/Utils/format'
 import { useClaimRewards } from '@/Hooks/Vote/useClaimRewards'
 import { useClaimBribes } from '@/Hooks/Vote/useClaimBribe'
+import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
 
 const RewardsPresentation = () => {
   const { rewardsData, stakeData, fetching } = useRewardsContext()
@@ -30,14 +31,30 @@ const RewardsPresentation = () => {
   const [voterRewardsIsLoading, setVoterRewardsIsLoading] = useState(false)
   const rpc = useRpc()
   const { currentAccount } = useWalletKit()
+  const { data: gauges } = useGetMulGauge()
 
   const claim_rewards = useClaimRewards(setting)
   const handleClaimRewards = (
-    gauge_id: string,
+    stake_id: string,
     gauge_type_x: string,
     gauge_type_y: string,
   ) => {
-    claim_rewards.mutate({ gauge_id, gauge_type_x, gauge_type_y })
+    if (gauges) {
+      const gauge = gauges.find(
+        (g) => g.type_x == gauge_type_x && g.type_y == gauge_type_y,
+      )
+
+      if (gauge) {
+        claim_rewards.mutate({
+          gauge_id: gauge.id,
+          stake_id,
+          gauge_type_x,
+          gauge_type_y,
+        })
+      } else {
+        throw new Error('No Gauge Exist')
+      }
+    }
   }
 
   const claim_bribes = useClaimBribes(setting)
@@ -93,7 +110,7 @@ const RewardsPresentation = () => {
 
   if (fetching)
     return (
-      <PageContainer title='Pool' titleImg={Image.pageBackground_2}>
+      <PageContainer title='Rewards' titleImg={Image.pageBackground_2}>
         <div className={constantsStyles.LoadingContainer}>
           <Loading />
         </div>
@@ -102,7 +119,7 @@ const RewardsPresentation = () => {
 
   if (!rewardsData || !stakeData)
     return (
-      <PageContainer title='Pool' titleImg={Image.pageBackground_2}>
+      <PageContainer title='Rewards' titleImg={Image.pageBackground_2}>
         <div className={constantsStyles.LoadingContainer}>
           <Empty content='Oops! No Data.' />
         </div>
@@ -133,28 +150,6 @@ const RewardsPresentation = () => {
               return (
                 <div className={styles.rewardsCard}>
                   <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
-                  <div
-                    className={cx(
-                      constantsStyles.columnContent,
-                      css({ padding: '0 5px' }),
-                    )}
-                  >
-                    <div className={constantsStyles.greyText}>
-                      {coin_x?.name ?? ''}
-                    </div>
-                    <div className={constantsStyles.boldText}>12344</div>
-                  </div>
-                  <div
-                    className={cx(
-                      constantsStyles.columnContent,
-                      css({ padding: '0 5px' }),
-                    )}
-                  >
-                    <div className={constantsStyles.greyText}>
-                      {coin_y?.name ?? ''}
-                    </div>
-                    <div className={constantsStyles.boldText}>12343</div>
-                  </div>
                   <span>
                     <CoinIcon.SDBIcon className={styles.smallIcon} />
                     {formatBalance(r.pending_sdb, 9)}
@@ -163,9 +158,7 @@ const RewardsPresentation = () => {
                     size='small'
                     styletype='outlined'
                     text='Claim'
-                    onClick={() =>
-                      handleClaimRewards(r.gauge, r.type_x, r.type_y)
-                    }
+                    onClick={() => handleClaimRewards(r.id, r.type_x, r.type_y)}
                   />
                 </div>
               )
