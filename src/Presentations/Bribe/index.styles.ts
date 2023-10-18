@@ -15,6 +15,17 @@ export const bribrContainer = css`
   height: 100%;
 `
 
+export const container = css`
+  align-items: center;
+  margin: 30px auto;
+  max-width: 580px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 10 auto;
+`
+
 export const arrowButton = css`
   display: flex;
   align-items: center;
@@ -104,7 +115,7 @@ export const coinBlock = css`
 export const banlaceContent = css`
   margin: 20px auto;
   max-width: 400px;
-
+  overflow: scroll;
   > div {
     margin-bottom: 16px;
   }
@@ -149,7 +160,7 @@ export const errorContent = css`
 `
 
 export const bonusText = css`
-  color:  var(--Grey);
+  color: var(--Grey);
   font-size: 12px;
   text-align: center;
   font-weight: normal;
@@ -165,7 +176,7 @@ export const bonusText = css`
 export const infoText = css`
   display: flex;
   justify-content: space-between;
-  color:  var(--Black);
+  color: var(--Black);
   font-size: 20px;
   font-weight: bold;
   line-height: 1;

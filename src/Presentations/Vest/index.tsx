@@ -33,7 +33,7 @@ const VestPresentation = () => {
 
   if (nftList.isLoading) {
     return (
-      <PageContainer title='Vest' titleImg={Image.pageBackground_1}>
+      <PageContainer title='Vest' titleImg={Image.pageBackground_3}>
         <div className={constantsStyles.LoadingContainer}>
           <Loading />
         </div>
@@ -46,7 +46,7 @@ const VestPresentation = () => {
   )
 
   return (
-    <PageContainer title='Vest' titleImg={Image.pageBackground_1}>
+    <PageContainer title='Vest' titleImg={Image.pageBackground_3}>
       <div className={styles.controlContainer}>
         <div className={styles.buttonSection}>
           <TestMintSDBButton />

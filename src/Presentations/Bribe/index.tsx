@@ -86,7 +86,7 @@ const BribePresentation = () => {
     )
 
   return (
-    <PageContainer title='Bribe' titleImg={Image.pageBackground_1}>
+    <PageContainer title='Bribe' titleImg={Image.pageBackground_2}>
       <div className={styles.bribeWrapper}>
         <div className={styles.bribrContainer}>
           <div
@@ -100,71 +100,73 @@ const BribePresentation = () => {
           <div className={constantsStyles.greyText}>
             Deposit Coins into Pool
           </div>
-          <div className={styles.inputContent}>
-            <Input
-              value={_fetchCoinByType()}
-              onChange={() => {}}
-              placeholder='Choose Pool'
-              rightElement={
-                <div
-                  className={styles.arrowButton}
-                  onClick={() => {
-                    setIsShow(!isShow)
-                  }}
-                />
-              }
-              // disabled={isLoading}
-            />
-          </div>
-          <div className={styles.inputContent}>
-            <InputSection
-              balance={formatBalance(
-                balance?.totalBalance ?? '0',
-                coinType.decimals,
-              )}
-              titleChildren={
-                <div className={styles.coinButton} onClick={() => {}}>
-                  {coinType.logo}
-                  <span>{coinType.name}</span>
-                </div>
-              }
-              inputChildren={
-                <>
-                  <Input
-                    value={coinInput}
-                    onChange={(e) => {
-                      handleInputOnchange(e)
-                    }}
-                    placeholder={`${coinType.name} Value`}
-                    // disabled={isLoading}
-                  />
-                </>
-              }
-            />
-          </div>
-          <div className={styles.coinBlock}>
-            {selectedReward?.rewards
-              .map((r) => fetchCoinByType(r.type))
-              ?.map((_coinData, idx) => {
-                if (!_coinData) return
-                return (
-                  <Button
+          <div className={styles.container}>
+            <div className={styles.inputContent}>
+              <Input
+                value={_fetchCoinByType()}
+                onChange={() => { }}
+                placeholder='Choose Pool'
+                rightElement={
+                  <div
+                    className={styles.arrowButton}
                     onClick={() => {
-                      setCoinType(_coinData)
-                      setIsShow(false)
+                      setIsShow(!isShow)
                     }}
-                    styletype='outlined'
-                    text={_coinData.name}
-                    icon={_coinData.logo}
-                    key={idx}
-                    disabled={!_coinData}
-                    size='medium'
                   />
-                )
-              })}
-          </div>
-          <div className={css({ marginTop: 'auto' })}>
-            <Button styletype='filled' text='Bribe' onClick={handleBribe} />
+                }
+              // disabled={isLoading}
+              />
+            </div>
+            <div className={styles.inputContent}>
+              <InputSection
+                balance={formatBalance(
+                  balance?.totalBalance ?? '0',
+                  coinType.decimals,
+                )}
+                titleChildren={
+                  <div className={styles.coinButton} onClick={() => { }}>
+                    {coinType.logo}
+                    <span>{coinType.name}</span>
+                  </div>
+                }
+                inputChildren={
+                  <>
+                    <Input
+                      value={coinInput}
+                      onChange={(e) => {
+                        handleInputOnchange(e)
+                      }}
+                      placeholder={`${coinType.name} Value`}
+                    // disabled={isLoading}
+                    />
+                  </>
+                }
+              />
+            </div>
+            <div className={styles.coinBlock}>
+              {selectedReward?.rewards
+                .map((r) => fetchCoinByType(r.type))
+                ?.map((_coinData, idx) => {
+                  if (!_coinData) return
+                  return (
+                    <Button
+                      onClick={() => {
+                        setCoinType(_coinData)
+                        setIsShow(false)
+                      }}
+                      styletype='outlined'
+                      text={_coinData.name}
+                      icon={_coinData.logo}
+                      key={idx}
+                      disabled={!_coinData}
+                      size='medium'
+                    />
+                  )
+                })}
+            </div>
+            <div className={css({ marginTop: '0px' })}>
+              <Button styletype='filled' text='Bribe' onClick={handleBribe} />
+            </div>
           </div>
         </div>
         <SelectPoolModal

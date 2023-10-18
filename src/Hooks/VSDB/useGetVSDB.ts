@@ -8,7 +8,7 @@ import { Vsdb, get_vsdb, vsdb_package } from '@/Constants/API/vsdb'
 export function useGetVsdbIDs(address?: string | null) {
   const rpc = useRpc()
   return useQuery(
-    ['get-vsdbs'],
+    ['get-vsdbs', address],
     async () => {
       const res = await rpc.getOwnedObjects({
         owner: address!,
@@ -27,7 +27,6 @@ export function useGetVsdbIDs(address?: string | null) {
     },
   )
 }
-
 
 export const useGetVsdb = (address?: string | null, vsdb?: string | null) => {
   const rpc = useRpc()

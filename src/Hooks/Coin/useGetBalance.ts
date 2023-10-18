@@ -28,7 +28,7 @@ export function useGetAllBalance(
 ) {
   const rpc = useRpc()
   return useQuery(
-    ['balance'],
+    ['balance', address],
     async () => {
       const res = await rpc.getAllBalances({
         owner: address!,

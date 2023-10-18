@@ -18,7 +18,6 @@ export const stakeContainer = css`
   width: calc(50% - 10px);
   border-radius: 12px;
   box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
-
 `
 
 export const votingContainer = css`
@@ -32,7 +31,6 @@ export const votingContainer = css`
   width: calc(50% - 10px);
   border-radius: 12px;
   box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
-
 `
 
 export const title = css`
@@ -109,4 +107,15 @@ export const smallIcon = css`
     width: 16px;
     height: 16px;
   }
+`
+
+export const inputAnimation = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0 10px;
+  width: 100%;
+  height: 40px;
+  background: var(--White);
 `

@@ -11,7 +11,7 @@ import {
 export const useGetAllStake = (address?: string | null) => {
   const rpc = useRpc()
   return useQuery(
-    ['Stake'],
+    ['Stake', address],
     async () => {
       const res = await rpc.getOwnedObjects({
         owner: address!,

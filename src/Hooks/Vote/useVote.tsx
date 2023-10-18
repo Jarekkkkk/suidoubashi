@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import { TransactionBlock, getExecutionStatus } from '@mysten/sui.js'
+import {
+  TransactionBlock,
+  getExecutionStatus,
+  getExecutionStatusError,
+} from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { SettingInterface } from '@/Components/SettingModal'
 import {
@@ -70,10 +74,13 @@ export const useVote = (setting: SettingInterface) => {
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
+        options: {
+          showEffects: true,
+        },
       })
 
       if (getExecutionStatus(res)?.status == 'failure')
-        throw new Error('Tx Failed')
+        throw new Error(getExecutionStatusError(res))
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['vsdb', params.vsdb])
@@ -81,9 +88,8 @@ export const useVote = (setting: SettingInterface) => {
       queryClient.invalidateQueries(['voter'])
       toast.success('Votes Successfully')
     },
-    onError: (err) => {
-      console.log(err)
-      toast.error('Oops! Have some error')
+    onError: (err: Error) => {
+      toast.error(err.message)
     },
   })
 }

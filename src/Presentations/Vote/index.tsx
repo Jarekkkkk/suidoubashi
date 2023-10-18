@@ -22,6 +22,7 @@ import { CoinFormat, formatBalance } from '@/Utils/format'
 import { useVote } from '@/Hooks/Vote/useVote'
 import { toast } from 'react-hot-toast'
 import { Coins } from '@/Constants/coin'
+import { round_down_week } from '@/Utils/vsdb'
 
 const renderLabel2 = (val: number) => {
   return `${Math.round(val * 100)}%`
@@ -174,7 +175,7 @@ const VotePresentation = () => {
 
   if (fetching)
     return (
-      <PageContainer title='Vote' titleImg={Image.pageBackground_2}>
+      <PageContainer title='Vote' titleImg={Image.pageBackground_4}>
         <div className={constantsStyles.LoadingContainer}>
           <Loading />
         </div>
@@ -183,7 +184,7 @@ const VotePresentation = () => {
 
   if (!gaugeData || !voterData || !rewardsData)
     return (
-      <PageContainer title='Vote' titleImg={Image.pageBackground_2}>
+      <PageContainer title='Vote' titleImg={Image.pageBackground_4}>
         <div className={constantsStyles.LoadingContainer}>
           <Empty content='Oops! No Data.' />
         </div>
@@ -252,9 +253,9 @@ const VotePresentation = () => {
                 <div className={constantsStyles.greyText}>
                   {voterData.total_weight != '0'
                     ? (
-                        (Number(weight) / Number(voterData.total_weight)) *
-                        100
-                      ).toFixed(2)
+                      (Number(weight) / Number(voterData.total_weight)) *
+                      100
+                    ).toFixed(2)
                     : '0.00'}
                   %
                 </div>
@@ -326,7 +327,7 @@ const VotePresentation = () => {
   }
 
   return (
-    <PageContainer title='Vote' titleImg={Image.pageBackground_1}>
+    <PageContainer title='Vote' titleImg={Image.pageBackground_4}>
       <div className={styles.voteWrapper}>
         <div className={styles.topContainer}>
           <div className={styles.inputContent}>
@@ -361,7 +362,19 @@ const VotePresentation = () => {
           <div className={styles.bottomVotePercent}>
             {(totalVoting['total'] ?? 0) * 100}%
           </div>
-          <Button styletype='filled' text='Vote' onClick={handleVote} />
+          <Button
+            styletype='filled'
+            text='Vote'
+            onClick={handleVote}
+            disabled={
+              !(
+                currentNFTInfo.data?.voting_state &&
+                round_down_week(
+                  parseInt(currentNFTInfo.data.voting_state.last_voted),
+                ) < round_down_week(Date.now() / 1000)
+              )
+            }
+          />
         </div>
       </div>
     </PageContainer>
@@ -369,4 +382,3 @@ const VotePresentation = () => {
 }
 
 export default VotePresentation
-2

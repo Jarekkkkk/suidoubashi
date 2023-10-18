@@ -24,7 +24,7 @@ const Table = (props: TableProps) => {
     <div className={styles.TableWrapper}>
       <table>
         <thead>
-          <tr>
+          <tr style={{backgroundColor: "#2977EC", color: "white"}}>
             {columns.map(
               (column: {
                 id: Key | null | undefined

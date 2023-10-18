@@ -21,6 +21,7 @@ import { formatBalance } from '@/Utils/format'
 import { useClaimRewards } from '@/Hooks/Vote/useClaimRewards'
 import { useClaimBribes } from '@/Hooks/Vote/useClaimBribe'
 import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
+import { Spinner } from '@blueprintjs/core'
 
 const RewardsPresentation = () => {
   const { rewardsData, stakeData, fetching } = useRewardsContext()
@@ -73,6 +74,7 @@ const RewardsPresentation = () => {
     const get_vote_rewards = async () => {
       if (!currentNFTInfo?.data?.voting_state?.unclaimed_rewards) {
         setVoterRewards(undefined)
+        setVoterRewardsIsLoading(false)
         return
       }
       if (stakeData && currentAccount && rewardsData) {
@@ -162,9 +164,17 @@ const RewardsPresentation = () => {
                 </div>
               )
             })}
-          <div className={css({ marginTop: 'auto' })}>
-            <Button styletype='filled' text='Claim All' onClick={() => {}} />
-          </div>
+          {/**
+            <div
+              className={css({
+                marginTop: 'auto',
+                width: '100%',
+                padding: '12px',
+              })}
+            >
+              <Button styletype='filled' text='Claim All' onClick={() => {}} />
+            </div>
+          **/}
         </div>
         <div className={styles.votingContainer}>
           <div className={styles.title}>
@@ -179,75 +189,87 @@ const RewardsPresentation = () => {
           >
             Bribes
           </div>
-          {voterRewardsIsLoading ? (
-            <Loading />
-          ) : (
-            voterRewards &&
-            rewardsData &&
-            Object.keys(voterRewards).map((rewards) => {
-              const reward = rewardsData.find((r) => r.id == rewards)
-              if (!reward) return
-              let earned_ = Object.entries(voterRewards[reward.id])
-              const group_earned = earned_.reduce((result, item, index) => {
-                if (index % 2 === 0) {
-                  result.push([item])
-                } else {
-                  result[result.length - 1].push(item)
-                }
-                return result
-              }, [] as any)
+          <div
+            className={css({
+              overflow: 'scroll',
+              width: '100%',
+              padding: '10px',
+            })}
+          >
+            {voterRewardsIsLoading ? (
+              <div className={styles.inputAnimation}>
+                <Spinner size={20} />
+              </div>
+            ) : (
+              voterRewards &&
+              rewardsData &&
+              Object.keys(voterRewards).map((rewards) => {
+                const reward = rewardsData.find((r) => r.id == rewards)
+                if (!reward) return
+                let earned_ = Object.entries(voterRewards[reward.id])
+                const group_earned = earned_.reduce((result, item, index) => {
+                  if (index % 2 === 0) {
+                    result.push([item])
+                  } else {
+                    result[result.length - 1].push(item)
+                  }
+                  return result
+                }, [] as any)
 
-              const coin_x = fetchCoinByType(reward.type_x)
-              const coin_y = fetchCoinByType(reward.type_y)
-              return (
-                <div className={styles.rewardsCard}>
-                  <div className={constantsStyles.columnContent}>
-                    <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
-                    <div className={constantsStyles.boldText}>
-                      {coin_x?.name ?? '' + '/' + coin_y?.name ?? ''}
+                const coin_x = fetchCoinByType(reward.type_x)
+                const coin_y = fetchCoinByType(reward.type_y)
+                return (
+                  <div className={styles.rewardsCard}>
+                    <div className={constantsStyles.columnContent}>
+                      <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
+                      <div className={constantsStyles.boldText}>
+                        {coin_x!.name + '/' + coin_y!.name}
+                      </div>
                     </div>
+                    <div className={constantsStyles.rowContent}>
+                      {group_earned.map((group: any) => {
+                        return (
+                          <div
+                            className={cx(
+                              constantsStyles.columnContent,
+                              css({ marginLeft: '10px' }),
+                            )}
+                          >
+                            {group.map((g: any) => (
+                              <div className={styles.bridesText}>
+                                {fetchCoinByType(g[0])?.logo}
+                                <span>{g[1] as string}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )
+                      })}
+                    </div>
+                    <Button
+                      size='small'
+                      styletype='outlined'
+                      text='Claim'
+                      onClick={() =>
+                        handleClaimBribes(
+                          reward.bribe,
+                          reward.id,
+                          currentNFTInfo.data?.id,
+                          reward.type_x,
+                          reward.type_y,
+                          Object.keys(voterRewards[reward.id]),
+                        )
+                      }
+                    />
                   </div>
-                  <div className={constantsStyles.rowContent}>
-                    {group_earned.map((group: any) => {
-                      return (
-                        <div
-                          className={cx(
-                            constantsStyles.columnContent,
-                            css({ marginLeft: '10px' }),
-                          )}
-                        >
-                          {group.map((g: any) => (
-                            <div className={styles.bridesText}>
-                              {fetchCoinByType(g[0])?.logo}
-                              <span>{g[1] as string}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )
-                    })}
-                  </div>
-                  <Button
-                    size='small'
-                    styletype='outlined'
-                    text='Claim'
-                    onClick={() =>
-                      handleClaimBribes(
-                        reward.bribe,
-                        reward.id,
-                        currentNFTInfo.data?.id,
-                        reward.type_x,
-                        reward.type_y,
-                        Object.keys(voterRewards[reward.id]),
-                      )
-                    }
-                  />
-                </div>
-              )
-            })
-          )}
-          <div className={css({ marginTop: 'auto' })}>
-            <Button styletype='filled' text='Claim All' onClick={() => {}} />
+                )
+              })
+            )}
           </div>
+          {/**
+            <div className={css({ marginTop: 'auto' })}>
+              <Button styletype='filled' text='Claim All' onClick={() => {}} />
+            </div>
+          **/}
         </div>
       </div>
     </PageContainer>

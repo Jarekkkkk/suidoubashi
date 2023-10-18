@@ -10,6 +10,7 @@ import nftDefault from '@/Assets/image/nft_default.png'
 import pageBackground_1 from '@/Assets/image/page_background_1.png'
 import pageBackground_2 from '@/Assets/image/page_background_2.png'
 import pageBackground_3 from '@/Assets/image/page_background_3.png'
+import pageBackground_4 from '@/Assets/image/page_background_4.png'
 import setting from '@/Assets/image/setting.png'
 import SdbCoinIcon from '@/Assets/image/icon_sdb_coin.png'
 import VesdbCoinIcon from '@/Assets/image/icon_vesdb_coin.png'
@@ -24,9 +25,10 @@ const Image = {
   pageBackground_1,
   pageBackground_2,
   pageBackground_3,
+  pageBackground_4,
   loadingFishDown,
   loadingFishUp,
-	setting,
+  setting,
   SdbCoinIcon,
   VesdbCoinIcon,
 };

@@ -26,7 +26,7 @@ export const useGetLP = (
 export const useGetAllLP = (address?: string | null) => {
   const rpc = useRpc()
   return useQuery(
-    ['LP'],
+    ['LP', address],
     async () => {
       const res = await rpc.getOwnedObjects({
         owner: address!,

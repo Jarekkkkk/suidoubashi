@@ -25,7 +25,7 @@ export const title = css`
   padding-left: 60px;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, #012B52 0%, rgba(1, 78, 82, 0.00) 100%);
+  background: linear-gradient(90deg, #012b52 0%, rgba(1, 78, 82, 0) 100%);
   color: var(--White);
   font-size: 48px;
   font-weight: 900;
