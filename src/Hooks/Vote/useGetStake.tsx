@@ -1,6 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
-import { Stake, vote_package } from '@/Constants/API/vote'
+import {
+  Gauge,
+  Stake,
+  get_pending_sdb,
+  vote_package,
+} from '@/Constants/API/vote'
 import { useMemo } from 'react'
 import {
   getObjectFields,
@@ -8,7 +13,11 @@ import {
   normalizeStructTag,
 } from '@mysten/sui.js'
 
-export const useGetAllStake = (address?: string | null) => {
+export const useGetAllStake = (
+  address?: string | null,
+  gauges?: Gauge[] | null,
+  isLoading?: boolean,
+) => {
   const rpc = useRpc()
   return useQuery(
     ['Stake', address],
@@ -20,30 +29,42 @@ export const useGetAllStake = (address?: string | null) => {
         },
         options: { showType: true, showContent: true },
       })
+      if (res.data.length == 0 || !gauges) return []
 
-      if (res.data.length == 0) return []
+      return Promise.all(
+        res.data.map(async (stake) => {
+          let { id, stakes, pending_sdb } = getObjectFields(stake) as any
+          const type = getObjectType(stake)
 
-      return res.data.map((stake) => {
-        const { id, stakes, pending_sdb } = getObjectFields(stake) as any
-        const type = getObjectType(stake)
+          const [X, Y] =
+            type
+              ?.slice(type.indexOf('<') + 1, type.indexOf('>'))
+              .split(',')
+              .map((t) => normalizeStructTag(t.trim())) ?? []
+          const gauge = gauges.find((g) => g.type_x == X && g.type_y == Y)
+          if (gauge) {
+            pending_sdb = await get_pending_sdb(
+              rpc,
+              address!,
+              gauge.id,
+              id.id,
+              X,
+              Y,
+            )
+          }
 
-        const [X, Y] =
-          type
-            ?.slice(type.indexOf('<') + 1, type.indexOf('>'))
-            .split(',')
-            .map((t) => t.trim()) ?? []
-
-        return {
-          id: id.id,
-          type_x: normalizeStructTag(X),
-          type_y: normalizeStructTag(Y),
-          stakes,
-          pending_sdb,
-        } as Stake
-      })
+          return {
+            id: id.id,
+            type_x: X,
+            type_y: Y,
+            stakes,
+            pending_sdb,
+          } as Stake
+        }),
+      )
     },
     {
-      enabled: !!address,
+      enabled: !!address && !!gauges?.length && !isLoading,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
     },

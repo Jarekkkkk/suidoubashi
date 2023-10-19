@@ -253,9 +253,9 @@ const VotePresentation = () => {
                 <div className={constantsStyles.greyText}>
                   {voterData.total_weight != '0'
                     ? (
-                      (Number(weight) / Number(voterData.total_weight)) *
-                      100
-                    ).toFixed(2)
+                        (Number(weight) / Number(voterData.total_weight)) *
+                        100
+                      ).toFixed(2)
                     : '0.00'}
                   %
                 </div>
@@ -273,6 +273,13 @@ const VotePresentation = () => {
                 <div className={constantsStyles.boldText}>$ 1,234.56</div>
                 {_rewards.map((reward, key) => {
                   const coin = fetchCoinByType(reward.type)
+                  const value =
+                    reward.type == gauge.type_x
+                      ? Number(reward.value) + Number(gauge.pool_bribes[0])
+                      : reward.type == gauge.type_y
+                      ? Number(reward.value) + Number(gauge.pool_bribes[1])
+                      : Number(reward.value)
+
                   return (
                     <div
                       className={cx(
@@ -282,11 +289,13 @@ const VotePresentation = () => {
                       key={idx + key}
                     >
                       <span>
-                        {formatBalance(
-                          reward.value,
-                          coin?.decimals ?? 0,
-                          CoinFormat.FULL,
-                        )}
+                        {value > 0
+                          ? formatBalance(
+                              value,
+                              coin?.decimals ?? 0,
+                              CoinFormat.FULL,
+                            )
+                          : 0}
                       </span>
                       <div className={styles.smallIcon}>
                         {coin?.logo ?? Coins[0].logo}
@@ -343,7 +352,9 @@ const VotePresentation = () => {
             </div>
           </div>
           <div className={styles.infoContent}>
-            <div className={styles.infoTitle}>Epoch 1</div>
+            <div className={styles.infoTitle}>
+              Epoch {round_down_week(Date.now() / 1000) / 604800 - 2806}
+            </div>
             <div>
               <div>Finished in </div>
               <div

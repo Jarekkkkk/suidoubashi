@@ -70,6 +70,12 @@ const RewardsPresentation = () => {
     claim_bribes.mutate({ bribe, rewards, vsdb, type_x, type_y, input_types })
   }
 
+  //  const handleDistribute = async () => {
+  //    if (gauges) {
+  //      await distribute(rpc, gauges, signTransactionBlock)
+  //    }
+  //  }
+
   useEffect(() => {
     const get_vote_rewards = async () => {
       if (!currentNFTInfo?.data?.voting_state?.unclaimed_rewards) {
@@ -152,7 +158,10 @@ const RewardsPresentation = () => {
                 <div className={styles.rewardsCard}>
                   <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
                   <span>
-                    <CoinIcon.SDBIcon className={styles.smallIcon} />
+                    <CoinIcon.SDBIcon
+                      className={styles.smallIcon}
+                      style={{ paddingRight: '5px' }}
+                    />
                     {formatBalance(r.pending_sdb, 9)}
                   </span>
                   <Button
@@ -164,17 +173,6 @@ const RewardsPresentation = () => {
                 </div>
               )
             })}
-          {/**
-            <div
-              className={css({
-                marginTop: 'auto',
-                width: '100%',
-                padding: '12px',
-              })}
-            >
-              <Button styletype='filled' text='Claim All' onClick={() => {}} />
-            </div>
-          **/}
         </div>
         <div className={styles.votingContainer}>
           <div className={styles.title}>
@@ -207,27 +205,31 @@ const RewardsPresentation = () => {
                 const reward = rewardsData.find((r) => r.id == rewards)
                 if (!reward) return
                 let earned_ = Object.entries(voterRewards[reward.id])
-                const group_earned = earned_.reduce((result, item, index) => {
-                  if (index % 2 === 0) {
-                    result.push([item])
-                  } else {
-                    result[result.length - 1].push(item)
-                  }
-                  return result
-                }, [] as any)
-
                 const coin_x = fetchCoinByType(reward.type_x)
                 const coin_y = fetchCoinByType(reward.type_y)
                 return (
                   <div className={styles.rewardsCard}>
-                    <div className={constantsStyles.columnContent}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        width: '20%',
+                      }}
+                    >
                       <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
                       <div className={constantsStyles.boldText}>
                         {coin_x!.name + '/' + coin_y!.name}
                       </div>
                     </div>
-                    <div className={constantsStyles.rowContent}>
-                      {group_earned.map((group: any) => {
+                    <div
+                      className={cx(
+                        constantsStyles.columnContent,
+                        css({ alignItems: 'start', width: '50%' }),
+                      )}
+                    >
+                      {earned_.map((e) => {
+                        const coin = fetchCoinByType(e[0])
                         return (
                           <div
                             className={cx(
@@ -235,12 +237,15 @@ const RewardsPresentation = () => {
                               css({ marginLeft: '10px' }),
                             )}
                           >
-                            {group.map((g: any) => (
-                              <div className={styles.bridesText}>
-                                {fetchCoinByType(g[0])?.logo}
-                                <span>{g[1] as string}</span>
-                              </div>
-                            ))}
+                            <div className={styles.bridesText}>
+                              {coin?.logo}
+                              <span>
+                                {formatBalance(
+                                  e[1] as string,
+                                  coin?.decimals ?? 0,
+                                )}
+                              </span>
+                            </div>
                           </div>
                         )
                       })}
@@ -267,7 +272,11 @@ const RewardsPresentation = () => {
           </div>
           {/**
             <div className={css({ marginTop: 'auto' })}>
-              <Button styletype='filled' text='Claim All' onClick={() => {}} />
+              <Button
+                styletype='filled'
+                text='Claim All'
+                onClick={handleDistribute}
+              />
             </div>
           **/}
         </div>

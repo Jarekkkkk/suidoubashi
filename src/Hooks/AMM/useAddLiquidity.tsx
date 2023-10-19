@@ -57,9 +57,6 @@ export const useAddLiquidity = (setting: SettingInterface) => {
           BigInt(input_y_value)) /
         BigInt('1000')
 
-      console.log(deposit_x_min)
-      console.log(deposit_y_min)
-
       // LO
       let lp = lp_id
         ? txb.pure(lp_id)
@@ -73,8 +70,8 @@ export const useAddLiquidity = (setting: SettingInterface) => {
         coin_x,
         coin_y,
         lp,
-        0,
-        0,
+        deposit_x_min,
+        deposit_y_min,
       )
       // return id first time deposit
       if (lp_id == null) {

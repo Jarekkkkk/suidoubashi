@@ -62,6 +62,14 @@ export const rewardsCard = css`
   background-color: var(--White);
   box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
 
+  span {
+    width: 50%;
+    font-size: 16px;
+    display: flex;
+    justify-content: start;
+    font-weight: bold;
+  }
+
   @media screen and (max-width: 1180px) {
     flex-direction: column;
     flex-wrap: wrap;
@@ -79,7 +87,7 @@ export const rewardsCard = css`
 export const bridesText = css`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   margin-bottom: 8px;
   color: var(--DarkGrey);
   font-size: 16px;

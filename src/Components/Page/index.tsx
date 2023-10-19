@@ -5,7 +5,6 @@ import { useGetAllBalance } from '@/Hooks/Coin/useGetBalance'
 import { useGetVsdb, useGetVsdbIDs } from '@/Hooks/VSDB/useGetVSDB'
 import { Vsdb } from '@/Constants/API/vsdb'
 import { useGetAllLP } from '@/Hooks/AMM/useGetLP'
-import UserModule from '@/Modules/User'
 import { useWalletKit } from '@mysten/wallet-kit'
 
 import { generateSideBarLinks } from '@/Constants'
@@ -16,6 +15,7 @@ import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import { SettingInterface, defaultSetting } from '../SettingModal'
 import { useGetAllStake } from '@/Hooks/Vote/useGetStake'
 import SettingModule from '@/Modules/Setting'
+import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
 
 const PageContext = createContext<PageContext>({
   currentNFTInfo: {
@@ -40,7 +40,10 @@ const PageComponent = (props: Props) => {
 
   // Wallet
   const { isConnected } = useWalletKit()
-  const walletAddress = UserModule.getUserToken()
+  //  const walletAddress = UserModule.getUserToken()
+  const { currentAccount } = useWalletKit()
+
+  const walletAddress = currentAccount?.address ?? ''
   if (isHiddenPage || (!walletAddress && !isDashboard)) {
     window.location.href = '/'
   }
@@ -80,9 +83,14 @@ const PageComponent = (props: Props) => {
       }
     }
   }
+
+  const gauge = useGetMulGauge()
   //stake
-  const { data: stakes, isLoading: isStakeDataLoading } =
-    useGetAllStake(walletAddress)
+  const { data: stakes, isLoading: isStakeDataLoading } = useGetAllStake(
+    walletAddress,
+    gauge.data,
+    gauge.isLoading,
+  )
   // setting
   const [setting, setSetting] = useState<SettingInterface>({
     gasBudget: SettingModule.getGadBudgetToken() ?? defaultSetting.gasBudget,

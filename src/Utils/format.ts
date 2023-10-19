@@ -6,7 +6,7 @@ export enum CoinFormat {
   FULL = 'FULL',
 }
 export function formatBalance(
-  balance: bigint | number | string,
+  balance: bigint | number | string | BigNumber,
   decimals: number,
   format: CoinFormat = CoinFormat.ROUNDED,
 ) {

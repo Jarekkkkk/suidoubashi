@@ -12,6 +12,7 @@ import {
 
 import { vsdb_reg } from './vsdb'
 import { bcs_registry } from '../bcs'
+import { zeroAddress } from '..'
 
 export const vote_package = import.meta.env.VITE_VOTE_PACKAGE_TESTNET as string
 export const gauges_df_id = import.meta.env.VITE_GAUGES_DF_ID as string
@@ -44,6 +45,7 @@ export type Gauge = {
   pool: string
   bribe: string
   rewards: string
+  pool_bribes: string[]
   total_stakes: string
 }
 
@@ -152,17 +154,20 @@ export async function get_gauge(
     objectType
       ?.slice(objectType.indexOf('<') + 1, objectType.indexOf('>'))
       .split(',')
-      .map((t) => t.trim()) ?? []
+      .map((t) => normalizeStructTag(t.trim())) ?? []
+
+  const pool_bribes = await get_pool_bribes(rpc, zeroAddress, id, pool, X, Y)
 
   return {
     id,
-    type_x: normalizeStructTag(X),
-    type_y: normalizeStructTag(Y),
+    type_x: X,
+    type_y: Y,
     is_alive,
     pool,
     bribe,
     rewards,
     total_stakes: total_stakes.fields.lp_balance,
+    pool_bribes,
   } as Gauge
 }
 
@@ -573,23 +578,26 @@ export async function get_pending_sdb(
   rpc: JsonRpcProvider,
   sender: SuiAddress,
   gauge: string,
+  stake: string,
   gauge_type_x: string,
   gauge_type_y: string,
 ): Promise<string> {
   let txb = new TransactionBlock()
+
   txb.moveCall({
     target: `${vote_package}::gauge::pending_sdb`,
     typeArguments: [gauge_type_x, gauge_type_y],
     arguments: [
       txb.object(gauge),
-      txb.pure(sender),
-      txb.pure(SUI_CLOCK_OBJECT_ID),
+      txb.object(stake),
+      txb.object(SUI_CLOCK_OBJECT_ID),
     ],
   })
   let res = await rpc.devInspectTransactionBlock({
     sender,
     transactionBlock: txb,
   })
+
   const returnValue = res?.results?.[0]?.returnValues?.[0]
   if (!returnValue) {
     return '0'
@@ -674,4 +682,67 @@ export async function earned(
     const valueData = Uint8Array.from(returnValue[0] as Iterable<number>)
     return bcs_registry.de(valueType, valueData, 'hex')
   }
+}
+
+export async function get_pool_bribes(
+  rpc: JsonRpcProvider,
+  sender: string,
+  gauge_id: string,
+  pool_id: string,
+  type_x: string,
+  type_y: string,
+): Promise<string[]> {
+  let txb = new TransactionBlock()
+  txb.moveCall({
+    target: `${vote_package}::gauge::pool_bribes`,
+    typeArguments: [type_x, type_y],
+    arguments: [txb.object(gauge_id), txb.object(pool_id)],
+  })
+  let res = await rpc.devInspectTransactionBlock({
+    sender,
+    transactionBlock: txb,
+  })
+
+  return (
+    res?.results?.[0]?.returnValues?.map((returnValue) => {
+      if (!returnValue) {
+        return '0'
+      } else {
+        const valueType = returnValue[1].toString()
+        const valueData = Uint8Array.from(returnValue[0] as Iterable<number>)
+        return bcs_registry.de(valueType, valueData, 'hex')
+      }
+    }) ?? []
+  )
+}
+
+export async function distribute(
+  rpc: JsonRpcProvider,
+  gauges: Gauge[],
+  signTransactionBlock: Function,
+) {
+  const txb = new TransactionBlock()
+  for (const gauge of gauges) {
+    txb.moveCall({
+      target: `${vote_package}::voter::distribute`,
+      typeArguments: [gauge.type_x, gauge.type_y],
+      arguments: [
+        txb.object(voter),
+        txb.object(minter),
+        txb.object(gauge.id),
+        txb.object(gauge.rewards),
+        txb.object(gauge.pool),
+        txb.object(vsdb_reg),
+        txb.object(SUI_CLOCK_OBJECT_ID),
+      ],
+    })
+  }
+  console.log('txb', txb)
+  let signed_tx = await signTransactionBlock({ transactionBlock: txb })
+  const res = await rpc.executeTransactionBlock({
+    transactionBlock: signed_tx.transactionBlockBytes,
+    signature: signed_tx.signature,
+  })
+
+  console.log('res', res)
 }

@@ -348,14 +348,16 @@ const LiquidityPresentation = () => {
               >
                 Pair
               </span>
-              <span
-                className={cx(styles.ellipseTabTitle, {
-                  [styles.ellipseActiveTab]: isDepositSingle,
-                })}
-                onClick={handleIsDepositSingle}
-              >
-                Single
-              </span>
+              {!poolData?.stable && (
+                <span
+                  className={cx(styles.ellipseTabTitle, {
+                    [styles.ellipseActiveTab]: isDepositSingle,
+                  })}
+                  onClick={handleIsDepositSingle}
+                >
+                  Single
+                </span>
+              )}
             </div>
             <div>
               {!isDepositSingle ? (

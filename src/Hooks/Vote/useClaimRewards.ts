@@ -41,10 +41,10 @@ export const useClaimRewards = (setting: SettingInterface) => {
       if (getExecutionStatus(res)?.status == 'failure')
         throw new Error('Tx Failed')
     },
-    onSuccess: (_, params) => {
+    onSuccess: () => {
       queryClient.invalidateQueries(['balance'])
-      queryClient.invalidateQueries(['stake', params.gauge_id])
-      toast.success('Votes Successfully')
+      queryClient.invalidateQueries(['Stake'])
+      toast.success('Claim SDB rewards Successfully')
     },
     onError: (err) => {
       console.log(err)

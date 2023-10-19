@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { NFTCard, Tabs, Coincard, Loading, Empty } from '@/Components'
 import { Coins } from '@/Constants/coin'
-import { formatBalance } from '@/Utils/format'
+import { CoinFormat, formatBalance } from '@/Utils/format'
 import { LP, Pool } from '@/Constants/API/pool'
 import { Vsdb } from '@/Constants/API/vsdb'
 
@@ -74,6 +74,7 @@ const ControlBarComponent = (props: Props) => {
                 coinXValue={formatBalance(
                   balance.totalBalance,
                   _coinIdx!.decimals,
+                  CoinFormat.ROUNDED,
                 )}
               />
             )
@@ -95,26 +96,18 @@ const ControlBarComponent = (props: Props) => {
             ) ?? { lp_supply: 0, reserve_x: 0, reserve_y: 0 }
 
             const percentage = BigNumber(data.lp_balance).div(lp_supply)
-            const x = percentage
-              .multipliedBy(reserve_x)
-              .shiftedBy(-_coinXIdx.decimals)
-              .decimalPlaces(3)
-              .toString()
-            const y = percentage
-              .multipliedBy(reserve_y)
-              .shiftedBy(-_coinYIdx.decimals)
-              .decimalPlaces(3)
-              .toString()
+            const x = percentage.multipliedBy(reserve_x)
+            const y = percentage.multipliedBy(reserve_y)
 
             return (
               <Coincard
                 key={idx}
                 coinXIcon={_coinXIdx.logo}
                 coinXName={_coinXIdx.name}
-                coinXValue={x}
+                coinXValue={formatBalance(x, _coinXIdx.decimals)}
                 coinYIcon={_coinYIdx.logo}
                 coinYName={_coinYIdx.name}
-                coinYValue={y}
+                coinYValue={formatBalance(y, _coinYIdx.decimals)}
               />
             )
           })
@@ -139,26 +132,18 @@ const ControlBarComponent = (props: Props) => {
               ) ?? { lp_supply: 0, reserve_x: 0, reserve_y: 0 }
 
               const percentage = BigNumber(data.stakes).div(lp_supply)
-              const x = percentage
-                .multipliedBy(reserve_x)
-                .shiftedBy(-_coinXIdx.decimals)
-                .decimalPlaces(3)
-                .toString()
-              const y = percentage
-                .multipliedBy(reserve_y)
-                .shiftedBy(-_coinYIdx.decimals)
-                .decimalPlaces(3)
-                .toString()
+              const x = percentage.multipliedBy(reserve_x)
+              const y = percentage.multipliedBy(reserve_y)
 
               return (
                 <Coincard
                   key={idx}
                   coinXIcon={_coinXIdx.logo}
                   coinXName={_coinXIdx.name}
-                  coinXValue={x}
+                  coinXValue={formatBalance(x, _coinXIdx.decimals)}
                   coinYIcon={_coinYIdx.logo}
                   coinYName={_coinYIdx.name}
-                  coinYValue={y}
+                  coinYValue={formatBalance(y, _coinYIdx.decimals)}
                 />
               )
             })

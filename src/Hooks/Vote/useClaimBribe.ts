@@ -46,9 +46,10 @@ export const useClaimBribes = (setting: SettingInterface) => {
       if (getExecutionStatus(res)?.status == 'failure')
         throw new Error('Tx Failed')
     },
-    onSuccess: () => {
+    onSuccess: (_, params) => {
       queryClient.invalidateQueries(['balance'])
-      toast.success('Votes Successfully')
+      queryClient.invalidateQueries(['vsdb', params.vsdb])
+      toast.success('Claim Bribes Successfully')
     },
     onError: (err) => {
       console.log(err)
