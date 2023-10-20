@@ -23,6 +23,7 @@ import { useVote } from '@/Hooks/Vote/useVote'
 import { toast } from 'react-hot-toast'
 import { Coins } from '@/Constants/coin'
 import { round_down_week } from '@/Utils/vsdb'
+import { useGetPrice } from '@/Hooks/useGetPrice'
 
 const renderLabel2 = (val: number) => {
   return `${Math.round(val * 100)}%`
@@ -68,6 +69,25 @@ const VotePresentation = () => {
     const seconds = Math.floor((timeDifference / 1000) % 60)
 
     return { days, hours, minutes, seconds }
+  }
+
+  const price = useGetPrice()
+  const handleTotalRewards = (rewards: { type: string; value: string }[]) => {
+    if (price.data) {
+      return rewards.reduce((acc, reward) => {
+        const coin = fetchCoinByType(reward.type)
+        const price_ =
+          coin?.name && price.data.hasOwnProperty(coin.name)
+            ? price.data[coin.name]
+            : 0
+        acc +=
+          parseInt(reward.value) * 10 ** -(coin?.decimals ?? 0) * (price_ ?? 0)
+
+        return acc
+      }, 0)
+    } else {
+      return 0
+    }
   }
 
   const [totalVoting, setTotalVoting] = useState<any>({})
@@ -226,6 +246,12 @@ const VotePresentation = () => {
       const weight =
         voterData.pool_weights.find((p) => p.pool_id == gauge.pool)?.weight ??
         '0'
+      const totalValue = handleTotalRewards(_rewards)
+      const VAPR =
+        (totalValue /
+          ((Number(weight) + 1000) * 10 ** -9) /
+          (price.data?.['SDB'] ?? 1)) *
+        52
 
       return columns.map((column: { id: string }, idx) => {
         switch (column.id) {
@@ -270,15 +296,11 @@ const VotePresentation = () => {
                   constantsStyles.columnContent,
                 )}
               >
-                <div className={constantsStyles.boldText}>$ 1,234.56</div>
+                <div className={constantsStyles.boldText}>
+                  $ {totalValue.toFixed(6)}
+                </div>
                 {_rewards.map((reward, key) => {
                   const coin = fetchCoinByType(reward.type)
-                  const value =
-                    reward.type == gauge.type_x
-                      ? Number(reward.value) + Number(gauge.pool_bribes[0])
-                      : reward.type == gauge.type_y
-                      ? Number(reward.value) + Number(gauge.pool_bribes[1])
-                      : Number(reward.value)
 
                   return (
                     <div
@@ -289,13 +311,11 @@ const VotePresentation = () => {
                       key={idx + key}
                     >
                       <span>
-                        {value > 0
-                          ? formatBalance(
-                              value,
-                              coin?.decimals ?? 0,
-                              CoinFormat.FULL,
-                            )
-                          : 0}
+                        {formatBalance(
+                          reward.value,
+                          coin?.decimals ?? 0,
+                          CoinFormat.FULL,
+                        )}
                       </span>
                       <div className={styles.smallIcon}>
                         {coin?.logo ?? Coins[0].logo}
@@ -308,7 +328,7 @@ const VotePresentation = () => {
           case 'apr':
             return (
               <div key={idx} className={constantsStyles.boldText}>
-                12.34%
+                {VAPR > 1000 ? ">1000":(VAPR / 100).toFixed(4)}%
               </div>
             )
           case 'weights':

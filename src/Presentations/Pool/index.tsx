@@ -18,15 +18,19 @@ import * as styles from './index.styles'
 import { cx } from '@emotion/css'
 import { CoinFormat, formatBalance } from '@/Utils/format'
 import { Pool } from '@/Constants/API/pool'
+import { useGetPrice } from '@/Hooks/useGetPrice'
 
 const PoolPresentation = () => {
   const {
     fetching,
     poolsData,
+    gaugeData,
     allBalanceData,
     searchInput,
     handleOnInputChange,
   } = usePoolContext()
+
+  const price = useGetPrice()
 
   if (fetching)
     return (
@@ -37,7 +41,7 @@ const PoolPresentation = () => {
       </PageContainer>
     )
 
-  if (!poolsData)
+  if (!poolsData || !gaugeData)
     return (
       <PageContainer title='Pool' titleImg={Image.pageBackground_2}>
         <div className={constantsStyles.LoadingContainer}>
@@ -82,6 +86,35 @@ const PoolPresentation = () => {
         allBalanceData,
         _poolCoins[1],
       )!.totalBalance
+
+      const gauge = gaugeData.find((g) => g.pool == pool.id)
+      const price_x =
+        price.data &&
+        _poolCoinX?.name &&
+        price.data.hasOwnProperty(_poolCoinX.name)
+          ? price.data[_poolCoinX.name]
+          : 0
+      const price_y =
+        price.data &&
+        _poolCoinY?.name &&
+        price.data.hasOwnProperty(_poolCoinY.name)
+          ? price.data[_poolCoinY.name]
+          : 0
+      const price_sdb =
+        price.data && price.data.hasOwnProperty('SDB') ? price.data['SDB'] : 0
+      const apr =
+        ((Number(gauge?.reward_rate ?? 0) *
+          86400 *
+          365 *
+          10 ** -9 *
+          price_sdb) /
+          (Number(pool.reserve_x) *
+            10 ** -(_poolCoinX?.decimals ?? 0) *
+            price_x +
+            Number(pool.reserve_y) *
+              10 ** -(_poolCoinY?.decimals ?? 0) *
+              price_y)) *
+        100
 
       return columns.map((column: any, idx: any) => {
         switch (column.id) {
@@ -166,7 +199,11 @@ const PoolPresentation = () => {
               </div>
             )
           case 'apr':
-            return <div key={idx}>0 %</div>
+            return (
+              <div style={{ fontWeight: 'bold' }} key={idx}>
+                {apr.toFixed(4)} %
+              </div>
+            )
           case 'manage':
             return (
               <Link to={`/pool/Liquidity?${pool.id}`} key={idx}>
@@ -190,7 +227,7 @@ const PoolPresentation = () => {
         <Input
           value={searchInput}
           onChange={handleOnInputChange}
-          placeholder='SDB, SUI, 0x12...'
+          placeholder='SDB, SUI, USDC...'
           leftIcon={<Icon.SearchIcon className={styles.searchInputIcon} />}
         />
         <ReactTable
