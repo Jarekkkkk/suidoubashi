@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react'
 import { all_earned } from '@/Constants/API/vote'
 import useRpc from '@/Hooks/useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import { formatBalance } from '@/Utils/format'
+import { CoinFormat, formatBalance } from '@/Utils/format'
 import { useClaimRewards } from '@/Hooks/Vote/useClaimRewards'
 import { useClaimBribes } from '@/Hooks/Vote/useClaimBribe'
 import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
@@ -162,7 +162,7 @@ const RewardsPresentation = () => {
                       className={styles.smallIcon}
                       style={{ paddingRight: '5px' }}
                     />
-                    {formatBalance(r.pending_sdb, 9)}
+                    {formatBalance(r.pending_sdb, 9, CoinFormat.FULL)}
                   </span>
                   <Button
                     size='small'

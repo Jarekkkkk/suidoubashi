@@ -106,15 +106,11 @@ const SwapPresentation = () => {
   const [getOutput, setGetOutput] = useState('')
 
   useEffect(() => {
+    let rerendered = false
     async function get_output_() {
-      if (
-        pool &&
-        walletAddress &&
-        coinInputFirst &&
-        coinTypeFirst &&
-        coinTypeSecond
-      ) {
+      if (pool && walletAddress && coinTypeFirst && coinTypeSecond) {
         setGetOutpuIsLoading(true)
+        rerendered = false
         let res
         if (currentNFTInfo.data) {
           res = await get_output_fee(
@@ -145,14 +141,26 @@ const SwapPresentation = () => {
             ).toString(),
           )
         }
-        setGetOutpuIsLoading(false)
-        setGetOutput(res)
-        handleOnCoinInputSecondChange(
-          (parseInt(res) / 10 ** coinTypeSecond.decimals).toString(),
-        )
+        if (!rerendered) {
+          setGetOutpuIsLoading(false)
+          setGetOutput(res)
+          handleOnCoinInputSecondChange(
+            (parseInt(res) / 10 ** coinTypeSecond.decimals).toString(),
+          )
+        }
       }
     }
-    get_output_()
+    if (!!coinInputFirst.length) {
+      get_output_()
+    } else {
+      setGetOutpuIsLoading(false)
+      setGetOutput('')
+      handleOnCoinInputSecondChange('')
+    }
+
+    return () => {
+      rerendered = true
+    }
   }, [pool, walletAddress, coinTypeFirst, coinInputFirst, currentNFTInfo])
 
   const swap = useSwap()
