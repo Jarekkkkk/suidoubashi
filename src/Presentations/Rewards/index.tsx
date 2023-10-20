@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react'
 import { all_earned } from '@/Constants/API/vote'
 import useRpc from '@/Hooks/useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import { CoinFormat, formatBalance } from '@/Utils/format'
+import { formatBalance } from '@/Utils/format'
 import { useClaimRewards } from '@/Hooks/Vote/useClaimRewards'
 import { useClaimBribes } from '@/Hooks/Vote/useClaimBribe'
 import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
@@ -149,30 +149,41 @@ const RewardsPresentation = () => {
           >
             Your Position
           </div>
-          {stakeData
-            .filter((r) => r.stakes !== '0')
-            .map((r) => {
-              const coin_x = fetchCoinByType(r.type_x)
-              const coin_y = fetchCoinByType(r.type_y)
-              return (
-                <div className={styles.rewardsCard}>
-                  <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
-                  <span>
-                    <CoinIcon.SDBIcon
-                      className={styles.smallIcon}
-                      style={{ paddingRight: '5px' }}
+          <div
+            style={{
+              overflow: 'scroll',
+              width: '100%',
+              height: '100%',
+              padding: '0 10px',
+            }}
+          >
+            {stakeData
+              .filter((r) => r.stakes !== '0')
+              .map((r) => {
+                const coin_x = fetchCoinByType(r.type_x)
+                const coin_y = fetchCoinByType(r.type_y)
+                return (
+                  <div className={styles.rewardsCard}>
+                    <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
+                    <span>
+                      <CoinIcon.SDBIcon
+                        className={styles.smallIcon}
+                        style={{ paddingRight: '5px' }}
+                      />
+                      {formatBalance(r.pending_sdb, 9)}
+                    </span>
+                    <Button
+                      size='small'
+                      styletype='outlined'
+                      text='Claim'
+                      onClick={() =>
+                        handleClaimRewards(r.id, r.type_x, r.type_y)
+                      }
                     />
-                    {formatBalance(r.pending_sdb, 9, CoinFormat.FULL)}
-                  </span>
-                  <Button
-                    size='small'
-                    styletype='outlined'
-                    text='Claim'
-                    onClick={() => handleClaimRewards(r.id, r.type_x, r.type_y)}
-                  />
-                </div>
-              )
-            })}
+                  </div>
+                )
+              })}
+          </div>
         </div>
         <div className={styles.votingContainer}>
           <div className={styles.title}>

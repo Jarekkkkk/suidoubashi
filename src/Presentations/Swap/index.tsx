@@ -24,6 +24,7 @@ import { get_output, get_output_fee } from '@/Constants/API/pool'
 import useRpc from '@/Hooks/useRpc'
 import { useSwap } from '@/Hooks/AMM/useSwap'
 import { get_fee_deduction } from '@/Utils/pool'
+import { useGetPrice } from '@/Hooks/useGetPrice'
 
 const SwapPresentation = () => {
   const {
@@ -46,6 +47,9 @@ const SwapPresentation = () => {
   } = useSwapContext()
 
   const { currentNFTInfo, setting } = usePageContext()
+
+  const prices = useGetPrice()
+  console.log('prices', prices)
 
   const rpc = useRpc()
   const [isSecond, setIsSecond] = useState<boolean>(false)
