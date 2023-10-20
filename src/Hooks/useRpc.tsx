@@ -1,11 +1,7 @@
 import { useContext, useMemo } from 'react'
 
-import {
-  Connection,
-  JsonRpcProvider,
-  mainnetConnection,
-} from '@mysten/sui.js'
-import { createContext, useState } from 'react'
+import { Connection, JsonRpcProvider, mainnetConnection } from '@mysten/sui.js'
+import { createContext } from 'react'
 
 export enum Network {
   LOCAL = 'LOCAL',
@@ -14,22 +10,22 @@ export enum Network {
   MAINNET = 'MAINNET',
 }
 const blast_testnet = {
-   fullnode: 'https://sui-testnet.public.blastapi.io',
-   websocket: 'wss://sui-testnet.public.blastapi.io',
-   faucet: 'https://sui-testnet.public.blastapi.io/gas',
- }
+  fullnode: 'https://sui-testnet.public.blastapi.io',
+  websocket: 'wss://sui-testnet.public.blastapi.io',
+  faucet: 'https://sui-testnet.public.blastapi.io/gas',
+}
 
 export const api_key = import.meta.env.VITE_NETWORK_KEY as string
 const blockvision = {
   fullnode: `https://sui-testnet.blockvision.org/v1/${api_key}`,
-  Websocket:`wss://sui-testnet.blockvision.org/v1/${api_key}`,
-  faucet: `https://sui-testnet.public.blastapi.io/${api_key}/gas`
+  Websocket: `wss://sui-testnet.blockvision.org/v1/${api_key}`,
+  faucet: `https://sui-testnet.public.blastapi.io/${api_key}/gas`,
 }
 
 const ENDPOINTS: Record<Network, Connection> = {
   [Network.LOCAL]: new Connection(blast_testnet),
   [Network.DEVNET]: new Connection(blockvision),
-  [Network.TESTNET]:  new Connection(blast_testnet),
+  [Network.TESTNET]: new Connection(blast_testnet),
   [Network.MAINNET]: mainnetConnection,
 }
 
@@ -56,19 +52,6 @@ export const getRpcClient = (network: Network) => {
 export const NetworkContext = createContext<
   [Network, (network: Network) => void]
 >([Network.TESTNET, () => null])
-
-export function useNetwork(): [string, (network: Network | string) => void] {
-  const [network, setNetwork] = useState<Network | string>(defaultNetwork)
-  return [network, setNetwork]
-}
-export const defaultOptions = {
-  showType: true,
-  showContent: true,
-  showOwner: true,
-  showPreviousTransaction: true,
-  showStorageRebate: true,
-  showDisplay: true,
-}
 
 const useRpc = (): JsonRpcProvider => {
   const [network] = useContext(NetworkContext)
