@@ -163,7 +163,7 @@ const DashboardPresentation = () => {
               <Section
                 number='2'
                 title='Vesting'
-                content='Locking up at least 1 SDB token for up to 24 weeks in exchange for Vsdb NFT.'
+                content='Locking up SDB token for up to 24 weeks in exchange for Vsdb NFT.'
                 positon='right'
               />
               <Section
