@@ -47,6 +47,7 @@ export type Gauge = {
   rewards: string
   pool_bribes: string[]
   total_stakes: string
+  reward_rate: string
 }
 
 export type Stake = {
@@ -144,9 +145,8 @@ export async function get_gauge(
   if (!isValidSuiObjectId(id)) return null
 
   const gauge = await rpc.getObject({ id, options: defaultOptions })
-  const { bribe, rewards, pool, total_stakes, is_alive } = getObjectFields(
-    gauge,
-  ) as any
+  const { bribe, rewards, pool, total_stakes, is_alive, reward_rate } =
+    getObjectFields(gauge) as any
 
   const objectType = getObjectType(gauge)
 
@@ -168,6 +168,7 @@ export async function get_gauge(
     rewards,
     total_stakes: total_stakes.fields.lp_balance,
     pool_bribes,
+    reward_rate,
   } as Gauge
 }
 
@@ -240,8 +241,8 @@ export async function get_rewards(
   if (!fields) return null
 
   const objectType = getObjectType(rewards_obj)
-  const rewards_type = fields.rewards_type.fields.contents.map(
-    (r: any) => r.fields.name,
+  const rewards_type = fields.rewards_type.fields.contents.map((r: any) =>
+    normalizeStructTag(r.fields.name),
   )
   const [X, Y] =
     objectType
@@ -287,7 +288,7 @@ export async function get_rewards(
   let rewards = []
 
   for (const type of rewards_type) {
-    const value = await rewards_per_epoch(
+    let value = await rewards_per_epoch(
       rpc,
       sender,
       gauge.rewards,
@@ -296,7 +297,11 @@ export async function get_rewards(
       type,
       ts.toString(),
     )
-    rewards.push({ type: normalizeStructTag(type), value })
+    if (type == gauge.type_x)
+      value = (Number(value) + Number(gauge.pool_bribes[0])).toString()
+    if (type == gauge.type_y)
+      value = (Number(value) + Number(gauge.pool_bribes[1])).toString()
+    rewards.push({ type, value })
   }
 
   return {
@@ -304,8 +309,8 @@ export async function get_rewards(
     bribe: gauge.bribe,
     pool: gauge.pool,
     name,
-    type_x: normalizeStructTag(X),
-    type_y: normalizeStructTag(Y),
+    type_x: X,
+    type_y: Y,
     rewards,
   } as Rewards
 }
