@@ -9,5 +9,14 @@ export default {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            lodash: ['lodash'],
+          },
+        },
+      },
+    },
   },
 }

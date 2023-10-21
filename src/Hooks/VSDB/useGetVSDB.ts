@@ -38,15 +38,15 @@ export const useGetVsdb = (address?: string | null, vsdb?: string | null) => {
   return useMemo(() => {
     if (vsdb === undefined) return { isLoading: true, data: null }
     if (vsdb === null) return { isLoading: false, data: null }
-    return { isLoading: res.isLoading, data: res.data }
+    return { isLoading: res.isLoading, data: res?.data ?? null }
   }, [address, vsdb, res])
 }
 
 export const useGetMulVsdb = (
-  address?: string,
-  owned_vsdb?: (string | null)[],
+  address?: string
 ) => {
   const rpc = useRpc()
+  const { data: owned_vsdb } = useGetVsdbIDs(address)
   const mul_vsdb = useQueries({
     queries:
       owned_vsdb?.map((id) => {

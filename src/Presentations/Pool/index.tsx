@@ -11,14 +11,14 @@ import {
 import { usePoolContext } from '@/Containers/Pool'
 import Image from '@/Assets/image'
 import { Icon } from '@/Assets/icon'
-
-import { fetchIcon, fetchBalance } from '@/Constants/index'
 import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 import { cx } from '@emotion/css'
 import { CoinFormat, formatBalance } from '@/Utils/format'
 import { Pool } from '@/Constants/API/pool'
 import { useGetPrice } from '@/Hooks/useGetPrice'
+import { fetchIcon } from '@/Constants/coin'
+import { Balance } from '@/Hooks/Coin/useGetBalance'
 
 const PoolPresentation = () => {
   const {
@@ -31,6 +31,11 @@ const PoolPresentation = () => {
   } = usePoolContext()
 
   const price = useGetPrice()
+
+  const fetchBalance = (
+    BalanceData: Balance[] | undefined,
+    coinName: string,
+  ) => BalanceData?.find((balance) => balance.coinName === coinName)
 
   if (fetching)
     return (
@@ -81,23 +86,23 @@ const PoolPresentation = () => {
       const _walletCoinX = fetchBalance(
         allBalanceData,
         _poolCoins[0],
-      )!.totalBalance
+      )?.totalBalance ?? "0"
       const _walletCoinY = fetchBalance(
         allBalanceData,
         _poolCoins[1],
-      )!.totalBalance
+      )?.totalBalance ?? "0"
 
       const gauge = gaugeData.find((g) => g.pool == pool.id)
       const price_x =
         price.data &&
-        _poolCoinX?.name &&
-        price.data.hasOwnProperty(_poolCoinX.name)
+          _poolCoinX?.name &&
+          price.data.hasOwnProperty(_poolCoinX.name)
           ? price.data[_poolCoinX.name]
           : 0
       const price_y =
         price.data &&
-        _poolCoinY?.name &&
-        price.data.hasOwnProperty(_poolCoinY.name)
+          _poolCoinY?.name &&
+          price.data.hasOwnProperty(_poolCoinY.name)
           ? price.data[_poolCoinY.name]
           : 0
       const price_sdb =
@@ -112,8 +117,8 @@ const PoolPresentation = () => {
             10 ** -(_poolCoinX?.decimals ?? 0) *
             price_x +
             Number(pool.reserve_y) *
-              10 ** -(_poolCoinY?.decimals ?? 0) *
-              price_y)) *
+            10 ** -(_poolCoinY?.decimals ?? 0) *
+            price_y)) *
         100
 
       return columns.map((column: any, idx: any) => {

@@ -5,31 +5,30 @@ import React, {
   PropsWithChildren,
   ChangeEvent,
 } from 'react'
-import { fetchCoinByType, regexEn } from '@/Constants/index'
-import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
+import { regexEn } from '@/Constants/index'
+import { useGetAllGauge } from '@/Hooks/Vote/useGetGauge'
 import { useGetVoter } from '@/Hooks/Vote/useGetVoter'
 import { Gauge, Rewards, Voter } from '@/Constants/API/vote'
-import { useGetMulRewards } from '@/Hooks/Vote/useGetRewards'
-import { Coins } from '@/Constants/coin'
+import { useGetAllRewards } from '@/Hooks/Vote/useGetRewards'
+import { Coins, fetchCoinByType } from '@/Constants/coin'
 
 const VoteContext = React.createContext<VoteContext>({
   gaugeData: null,
   voterData: null,
-  rewardsData: null,
+  rewardsData: undefined,
   fetching: false,
   searchInput: '',
-  handleOnInputChange: () => {},
+  handleOnInputChange: () => { },
 })
 export const useVoteContext = () => useContext(VoteContext)
 
 const VoteContainer = ({ children }: PropsWithChildren) => {
   const [searchInput, setSearchInput] = useState('')
 
-  const gauge = useGetMulGauge()
+  const gauge = useGetAllGauge()
   const voter = useGetVoter()
-  const rewards = useGetMulRewards(
-    gauge.data,
-    gauge.isLoading || voter.isLoading,
+  const rewards = useGetAllRewards(
+    gauge.data
   )
 
   const _gaugeData = gauge.data?.filter((data) => {
@@ -73,7 +72,7 @@ interface VoteContext {
   readonly gaugeData: Gauge[] | null | undefined
   readonly fetching: boolean
   readonly voterData: Voter | null | undefined
-  readonly rewardsData: Rewards[] | null
+  readonly rewardsData: Rewards[] | undefined
   searchInput: string
   handleOnInputChange: (e: ChangeEvent<HTMLInputElement>) => void
 }

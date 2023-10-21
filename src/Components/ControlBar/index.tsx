@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { NFTCard, Tabs, Coincard, Loading, Empty } from '@/Components'
-import { Coins } from '@/Constants/coin'
+import { fetchCoinByType } from '@/Constants/coin'
 import { CoinFormat, formatBalance } from '@/Utils/format'
 import { LP, Pool } from '@/Constants/API/pool'
 import { Vsdb } from '@/Constants/API/vsdb'
@@ -27,8 +27,6 @@ interface Props {
   isStakeDataLoading: boolean
 }
 
-const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
-
 const ControlBarComponent = (props: Props) => {
   const {
     nftInfo,
@@ -54,18 +52,18 @@ const ControlBarComponent = (props: Props) => {
       ) : (
         coinData
           ?.sort((prev, next) => {
-            const _prevIdx = fetchIcon(prev.coinType)!.decimals
-            const _nextIdx = fetchIcon(next.coinType)!.decimals
+            const _prevIdx = fetchCoinByType(prev.coinType)!.decimals
+            const _nextIdx = fetchCoinByType(next.coinType)!.decimals
 
             return Number(
               BigInt(next.totalBalance) *
-                BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
-                BigInt(prev.totalBalance) *
-                  BigInt('10') ** BigInt((9 - _prevIdx).toString()),
+              BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
+              BigInt(prev.totalBalance) *
+              BigInt('10') ** BigInt((9 - _prevIdx).toString()),
             )
           })
           .map((balance, idx) => {
-            const _coinIdx = fetchIcon(balance.coinType)
+            const _coinIdx = fetchCoinByType(balance.coinType)
             return (
               <Coincard
                 key={idx}
@@ -87,8 +85,8 @@ const ControlBarComponent = (props: Props) => {
       children:
         lpData && poolDataList && !!lpData.length ? (
           lpData.map((data, idx) => {
-            const _coinXIdx = fetchIcon(data.type_x)
-            const _coinYIdx = fetchIcon(data.type_y)
+            const _coinXIdx = fetchCoinByType(data.type_x)
+            const _coinYIdx = fetchCoinByType(data.type_y)
 
             if (!_coinXIdx || !_coinYIdx) return
             const { lp_supply, reserve_x, reserve_y } = poolDataList.find(
@@ -123,8 +121,8 @@ const ControlBarComponent = (props: Props) => {
           stakeData
             .filter((s) => Number(s.stakes) > 0)
             .map((data, idx) => {
-              const _coinXIdx = fetchIcon(data.type_x)
-              const _coinYIdx = fetchIcon(data.type_y)
+              const _coinXIdx = fetchCoinByType(data.type_x)
+              const _coinYIdx = fetchCoinByType(data.type_y)
 
               if (!_coinXIdx || !_coinYIdx) return
               const { lp_supply, reserve_x, reserve_y } = poolDataList.find(
@@ -177,10 +175,10 @@ const ControlBarComponent = (props: Props) => {
         />
       )}
       {isCoinDataLoading ||
-      isLpDataLoading ||
-      isPoolDataLoading ||
-      isStakeDataLoading ||
-      isPoolDataLoading ? (
+        isLpDataLoading ||
+        isPoolDataLoading ||
+        isStakeDataLoading ||
+        isPoolDataLoading ? (
         <div className={styles.cardLoadingContent}>
           <Loading />
         </div>

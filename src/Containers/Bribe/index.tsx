@@ -1,6 +1,6 @@
 import { Rewards } from '@/Constants/API/vote'
-import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
-import { useGetMulRewards } from '@/Hooks/Vote/useGetRewards'
+import { useGetAllGauge } from '@/Hooks/Vote/useGetGauge'
+import { useGetAllRewards } from '@/Hooks/Vote/useGetRewards'
 import React, {
   useState,
   useContext,
@@ -9,19 +9,19 @@ import React, {
 } from 'react'
 
 export const BribeContext = React.createContext<BribeContext>({
-  rewardsData: null,
+  rewardsData: undefined,
   fetching: false,
   coinInput: '',
-  handleInputOnchange: () => {},
-  clearInput: () => {},
+  handleInputOnchange: () => { },
+  clearInput: () => { },
 })
 
 export const useBribeContext = () => useContext(BribeContext)
 
 export const BribeContainer = ({ children }: PropsWithChildren) => {
-  const gauge = useGetMulGauge()
+  const gauge = useGetAllGauge()
   const { data: rewardsData, isLoading: isRewardsDataLoading } =
-    useGetMulRewards(gauge.data, gauge.isLoading)
+    useGetAllRewards(gauge.data)
 
   const [coinInput, setCoinInput] = useState('')
   const handleInputOnchange = useCallback(
@@ -54,7 +54,7 @@ export const BribeContainer = ({ children }: PropsWithChildren) => {
 }
 
 interface BribeContext {
-  readonly rewardsData: Rewards[] | null
+  readonly rewardsData: Rewards[] | undefined
   readonly fetching: boolean
   coinInput: string
   handleInputOnchange: Function

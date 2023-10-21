@@ -62,8 +62,7 @@ export async function get_vsdb(
       showDisplay: true,
     },
   })
-  //@ts-ignore
-  const { balance, level, end, experience, modules } = getObjectFields(res)
+  const { balance, level, end, experience, modules } = getObjectFields(res) as any
   id = getObjectId(res)
   const display = getObjectDisplay(res).data as Record<Display, string>
   display['image_url'] = parseIpfsUrl(display['image_url'])
@@ -81,7 +80,6 @@ export async function get_vsdb(
       type: vsdb_dynamic_key(`${vote_package}::voter::VSDB`),
       value: { dummy_field: false },
     },
-    //name: df.data[0].name,
   })
 
   let voting_state = getObjectFields(voting_state_)?.value?.fields

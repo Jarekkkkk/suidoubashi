@@ -8,12 +8,12 @@ import {
 import { Pool } from '@/Constants/API/pool'
 import { regexEn } from '@/Constants/index'
 import UserModule from '@/Modules/User'
-import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import React from 'react'
 import { Balance, useGetAllBalance } from '@/Hooks/Coin/useGetBalance'
 import { Coins } from '@/Constants/coin'
-import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
+import { useGetAllGauge } from '@/Hooks/Vote/useGetGauge'
 import { Gauge } from '@/Constants/API/vote'
+import { useGetAllPool } from '@/Hooks/AMM/useGetPool'
 
 const PoolContext = React.createContext<PoolContext>({
   poolsData: undefined,
@@ -21,7 +21,7 @@ const PoolContext = React.createContext<PoolContext>({
   allBalanceData: undefined,
   fetching: false,
   searchInput: '',
-  handleOnInputChange: () => {},
+  handleOnInputChange: () => { },
 })
 
 export const usePoolContext = () => useContext(PoolContext)
@@ -32,16 +32,14 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
   const walletAddress = UserModule.getUserToken()
   if (!walletAddress) return null
 
-  const pool_ids = useGetPoolIDs()
-  const { data: pools, isLoading: isAllPoolLoading } = useGetMulPool(
-    pool_ids?.data,
-  )
+
+  const { data: pools, isLoading: isAllPoolLoading } = useGetAllPool()
   const { data: allBalance, isLoading: isAllBalanceLoading } = useGetAllBalance(
     Coins,
     walletAddress,
   )
 
-  const { data: gaugeData, isLoading: isAllGaugeLoading } = useGetMulGauge()
+  const { data: gaugeData, isLoading: isAllGaugeLoading } = useGetAllGauge()
 
   const _poolsData = pools?.filter((pool) =>
     new RegExp(searchInput, 'ig').test(pool.name),
@@ -77,7 +75,7 @@ const PoolContainer = ({ children }: PropsWithChildren) => {
 
 interface PoolContext {
   readonly poolsData: Pool[] | undefined
-  readonly gaugeData: Gauge[] | null
+  readonly gaugeData: Gauge[] | undefined
   readonly allBalanceData: Balance[] | undefined
   readonly fetching: boolean
   searchInput: string

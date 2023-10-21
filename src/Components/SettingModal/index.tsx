@@ -3,6 +3,7 @@ import Image from '@/Assets/image'
 import * as styles from './index.styles'
 import SettingModule from '@/Modules/Setting'
 import { Icon } from '@/Assets/icon'
+import React from 'react'
 
 const options = ['0.1', '0.2', '1', '2']
 
@@ -137,4 +138,4 @@ const SettingModal = (props: Props) => {
   )
 }
 
-export default SettingModal
+export default React.memo(SettingModal)

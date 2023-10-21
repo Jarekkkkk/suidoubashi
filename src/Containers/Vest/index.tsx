@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useState } from 'react'
 
-import { useGetMulVsdb, useGetVsdbIDs } from '@/Hooks/VSDB/useGetVSDB'
+import { useGetMulVsdb } from '@/Hooks/VSDB/useGetVSDB'
 
 import { Vsdb } from '@/Constants/API/vsdb'
 import { useWalletKit } from '@mysten/wallet-kit'
@@ -12,23 +12,22 @@ export const VestContext = React.createContext<VestContext>({
     isLoading: false,
   },
   currentVSDBId: '',
-  setCurrentVSDBId: () => {},
+  setCurrentVSDBId: () => { },
   isShowCreateVSDBModal: false,
   isShowDepositVSDBModal: false,
   isShowMergeVSDBModal: false,
   isShowWithdrawVSDBModal: false,
-  setIsShowCreateVSDBModal: () => {},
-  setIsShowDepositVSDBModal: () => {},
-  setIsShowMergeVSDBModal: () => {},
-  setIsShowWithdrawVSDBModal: () => {},
+  setIsShowCreateVSDBModal: () => { },
+  setIsShowDepositVSDBModal: () => { },
+  setIsShowMergeVSDBModal: () => { },
+  setIsShowWithdrawVSDBModal: () => { },
 })
 
 const VestContainer = ({ children }: PropsWithChildren) => {
   const { currentAccount } = useWalletKit()
   const walletAddress = currentAccount?.address
 
-  const { data: vsdbIdList } = useGetVsdbIDs(walletAddress)
-  const nftList = useGetMulVsdb(walletAddress, vsdbIdList)
+  const nftList = useGetMulVsdb(walletAddress)
   const [isShowCreateVSDBModal, setIsShowCreateVSDBModal] = useState(false)
   const [isShowDepositVSDBModal, setIsShowDepositVSDBModal] = useState(false)
   const [isShowMergeVSDBModal, setIsShowMergeVSDBModal] = useState(false)

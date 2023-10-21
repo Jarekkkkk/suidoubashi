@@ -13,6 +13,7 @@ import {
 import { vsdb_reg } from './vsdb'
 import { bcs_registry } from '../bcs'
 import { zeroAddress } from '..'
+import pLimit from 'p-limit'
 
 export const vote_package = import.meta.env.VITE_VOTE_PACKAGE_TESTNET as string
 export const gauges_df_id = import.meta.env.VITE_GAUGES_DF_ID as string
@@ -70,7 +71,6 @@ export type Rewards = {
   id: string
   bribe: string
   pool: string
-  name: string
   type_x: string
   type_y: string
   rewards: {
@@ -138,39 +138,40 @@ export async function get_voter(
   } as Voter
 }
 
-export async function get_gauge(
+export async function get_gauges(
   rpc: JsonRpcProvider,
-  id: string,
-): Promise<Gauge | null> {
-  if (!isValidSuiObjectId(id)) return null
+  gauge_ids: string[],
+): Promise<Gauge[]> {
+  const gauges = await rpc.multiGetObjects({ ids: gauge_ids, options: { showType: true, showContent: true } })
+  const res = (gauges.map((gauge) => {
+    const { id, bribe, rewards, pool, total_stakes, is_alive, reward_rate } =
+      getObjectFields(gauge) as any
 
-  const gauge = await rpc.getObject({ id, options: defaultOptions })
-  const { bribe, rewards, pool, total_stakes, is_alive, reward_rate } =
-    getObjectFields(gauge) as any
+    const objectType = getObjectType(gauge)
+    const [X, Y] =
+      objectType
+        ?.slice(objectType.indexOf('<') + 1, objectType.indexOf('>'))
+        .split(',')
+        .map((t) => normalizeStructTag(t.trim())) ?? []
+    return {
+      id: id.id,
+      type_x: X,
+      type_y: Y,
+      is_alive,
+      pool,
+      bribe,
+      rewards,
+      total_stakes: total_stakes.fields.lp_balance,
+      pool_bribes: ["0", "0"],
+      reward_rate,
+    } as Gauge
+  }))
 
-  const objectType = getObjectType(gauge)
+  await Promise.all(res.map((g) => get_pool_bribes(rpc, zeroAddress, g.id, g.pool, g.type_x, g.type_y))).then((data) => data.forEach((pool_bribes, idx) => res[idx].pool_bribes = pool_bribes))
 
-  const [X, Y] =
-    objectType
-      ?.slice(objectType.indexOf('<') + 1, objectType.indexOf('>'))
-      .split(',')
-      .map((t) => normalizeStructTag(t.trim())) ?? []
-
-  const pool_bribes = await get_pool_bribes(rpc, zeroAddress, id, pool, X, Y)
-
-  return {
-    id,
-    type_x: X,
-    type_y: Y,
-    is_alive,
-    pool,
-    bribe,
-    rewards,
-    total_stakes: total_stakes.fields.lp_balance,
-    pool_bribes,
-    reward_rate,
-  } as Gauge
+  return res
 }
+
 
 export async function get_bribe(
   rpc: JsonRpcProvider,
@@ -229,6 +230,93 @@ async function rewards_per_epoch(
 
 export async function get_rewards(
   rpc: JsonRpcProvider,
+  gauges: Gauge[],
+): Promise<Rewards[]> {
+  const rewards = await rpc.multiGetObjects({
+    ids: gauges.map((g) => g.rewards),
+    options: defaultOptions,
+  })
+
+  const res = rewards.map((reward, idx) => {
+    const gauge = gauges[idx]
+    let { rewards_type } = getObjectFields(reward) as any
+
+    const objectType = getObjectType(reward)
+    rewards_type = rewards_type.fields.contents.map((r: any) =>
+      normalizeStructTag(r.fields.name),
+    )
+    const [X, Y] =
+      objectType
+        ?.slice(objectType.indexOf('<') + 1, objectType.indexOf('>'))
+        .split(',')
+        .map((t) => normalizeStructTag(t.trim())) ?? []
+
+    return {
+      id: gauge.rewards,
+      bribe: gauge.bribe,
+      pool: gauge.pool,
+      type_x: X,
+      type_y: Y,
+      rewards_type
+    }
+  })
+
+  const limit = pLimit(5);
+  const ts = Math.floor(Date.now() / 1000)
+  // return Promise.all(res.map(async (reward, idx) => {
+  //   const gauge = gauges[idx]
+  //   let rewards = []
+
+  //   for (const type of reward.rewards_type) {
+  //     let value = await rewards_per_epoch(
+  //       rpc,
+  //       zeroAddress,
+  //       gauge.rewards,
+  //       reward.type_x,
+  //       reward.type_y,
+  //       type,
+  //       ts.toString(),
+  //     )
+  //     // if (type == gauge.type_x)
+  //     //   value = (Number(value) + Number(gauge.pool_bribes[0])).toString()
+  //     // if (type == gauge.type_y)
+  //     //   value = (Number(value) + Number(gauge.pool_bribes[1])).toString()
+  //     rewards.push({ type, value })
+  //   }
+  //   return rewards
+  // })).then((data) => data.map((rewards, idx) => ({ ...res[idx], rewards }) as Rewards))
+
+  const rewardPromises = res.map(async (reward, idx) => {
+    const gauge = gauges[idx];
+
+    return Promise.all(
+      reward.rewards_type.map(async (type: string) => {
+        return limit(async () => {
+          let value = await rewards_per_epoch(
+            rpc,
+            zeroAddress,
+            gauge.rewards,
+            reward.type_x,
+            reward.type_y,
+            type,
+            ts.toString()
+          );
+          if (type == gauge.type_x)
+            value = (Number(value) + Number(gauge.pool_bribes[0])).toString()
+          if (type == gauge.type_y)
+            value = (Number(value) + Number(gauge.pool_bribes[1])).toString()
+          return { type, value };
+        });
+      })
+    );
+  });
+
+  return Promise.all(rewardPromises).then((data) =>
+    data.map((rewards, idx) => ({ ...res[idx], rewards }) as Rewards)
+  );
+}
+export async function get_rewards_(
+  rpc: JsonRpcProvider,
   sender: string,
   gauge: Gauge,
 ): Promise<Rewards | null> {
@@ -250,40 +338,7 @@ export async function get_rewards(
       .split(',')
       .map((t) => normalizeStructTag(t.trim())) ?? []
   const name = X.split('::')[2] + '-' + Y.split('::')[2]
-  //  // balances
-  //  const entries = [
-  //    {
-  //      type: '0x1::type_name::TypeName',
-  //      value: { name: X },
-  //    },
-  //    {
-  //      type: '0x1::type_name::TypeName',
-  //      value: { name: Y },
-  //    },
-  //  ]
-  //
-  //  const sdb_type = `${vsdb_package}::sdb::SDB`
-  //  if (entries[0].value.name != sdb_type && entries[1].value.name != sdb_type) {
-  //    entries.push({
-  //      type: '0x1::type_name::TypeName',
-  //      value: { name: sdb_type.slice(2) },
-  //    })
-  //  }
-  //  if (
-  //    entries[0].value.name != normalizeStructTag(SUI_TYPE_ARG) &&
-  //    entries[1].value.name != normalizeStructTag(SUI_TYPE_ARG)
-  //  ) {
-  //    entries.push({
-  //      type: '0x1::type_name::TypeName',
-  //      value: {
-  //        name: '0000000000000000000000000000000000000000000000000000000000000002::sui::SUI',
-  //      },
-  //    })
-  //  }
 
-  //  const promises = entries.map((e) =>
-  //    rpc.getDynamicFieldObject({ parentId: id, name: e }),
-  //  )
   const ts = Math.floor(Date.now() / 1000)
   let rewards = []
 

@@ -11,7 +11,7 @@ import useRegisterAMMState from '@/Hooks/AMM/useRegisterAMMState'
 import useRegisterVotingState from '@/Hooks/Vote/useRegisterVotingState'
 import { VotingState } from '@/Constants/API/vote'
 import { round_down_week } from '@/Utils/vsdb'
-import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
+import { useGetAllGauge } from '@/Hooks/Vote/useGetGauge'
 import { usePageContext } from '@/Components/Page'
 import { useUnlock } from '@/Hooks/Vote/useUnlock'
 import { useUpgrade } from '@/Hooks/VSDB/useUpgrade'
@@ -116,7 +116,7 @@ const VestCardComponent = (props: Props) => {
   const { setting } = usePageContext()
 
   const { mutate: unlock } = useUnlock(setting)
-  const { data: gauges } = useGetMulGauge()
+  const { data: gauges } = useGetAllGauge()
   const handleUnlock = async (nftId: string) => {
     if (voting_state && gauges) {
       const reset_ = gauges.filter((g) =>
@@ -221,13 +221,13 @@ const VestCardComponent = (props: Props) => {
                 <>
                   {(!voting_state ||
                     round_down_week(new Date().getTime() / 1000) >=
-                      parseInt(voting_state.last_voted)) && (
-                    <Button
-                      styletype='outlined'
-                      text='Unlock'
-                      onClick={() => handleUnlock(nftId)}
-                    />
-                  )}
+                    parseInt(voting_state.last_voted)) && (
+                      <Button
+                        styletype='outlined'
+                        text='Unlock'
+                        onClick={() => handleUnlock(nftId)}
+                      />
+                    )}
                   {setIsShowWithdrawVSDBModal && (
                     <Button
                       styletype='outlined'

@@ -1,21 +1,8 @@
 import moment from 'moment'
-
 import { Dashboard, Swap, Pool, Vest, Vote, Rewards, Bribe } from '@/Scenes'
-
 import { Icon } from '@/Assets/icon'
 import { Balance } from '@/Hooks/Coin/useGetBalance'
 import { Coins } from '@/Constants/coin'
-
-export const END_POINT_OPTIONS = {
-  fullnode: 'https://fullnode.devnet.vincagame.com',
-  websocket: 'https://fullnode.devnet.vincagame.com',
-  faucet: 'https://fullnode.devnet.vincagame.com/gas',
-}
-
-export const localnetConnection = {
-  fullnode: 'http://127.0.0.1:9000',
-  faucet: 'http://127.0.0.1:9123/gas',
-}
 
 export const generateSideBarLinks = [
   {
@@ -131,17 +118,6 @@ export const vsdbTimeSettingOptions = [
     value: moment().add(168, 'days').toDate().toDateString(),
   },
 ]
-
-export const fetchIcon = (name: string) =>
-  Coins.find((coin) => coin.name === name)
-
-export const fetchCoinByType = (type: string) =>
-  Coins.find((coin) => coin.type === type)
-
-export const fetchBalance = (
-  BalanceData: Balance[] | undefined,
-  coinName: string,
-) => BalanceData?.find((balance) => balance.coinName === coinName)
 
 export const regexEn = /^[A-Za-z]+$/
 

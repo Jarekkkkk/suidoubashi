@@ -51,48 +51,46 @@ type Fee = {
   index_y: string
 }
 
-/// [GET] Pool
-export async function get_pool(
+export async function get_pools(
   rpc: JsonRpcProvider,
-  id: string,
-): Promise<Pool | null> {
-  const pool = await rpc.getObject({
-    id,
-    options: { showType: true, showContent: true },
+  pool_ids: string[],
+): Promise<Pool[]> {
+  const pools = await rpc.multiGetObjects({ ids: pool_ids, options: { showType: true, showContent: true } })
+  return pools.map((pool) => {
+    const {
+      id,
+      name,
+      stable,
+      locked,
+      lp_supply,
+      reserve_x,
+      reserve_y,
+      decimal_x,
+      decimal_y,
+      fee,
+    } = getObjectFields(pool) as any
+    const type = getObjectType(pool)
+
+    const [X, Y] =
+      type
+        ?.slice(type.indexOf('<') + 1, type.indexOf('>'))
+        .split(',')
+        .map((t) => t.trim()) ?? []
+    return {
+      id: id.id,
+      name,
+      stable,
+      locked,
+      reserve_x,
+      reserve_y,
+      lp_supply: lp_supply.fields.value,
+      decimal_x,
+      decimal_y,
+      type_x: normalizeStructTag(X),
+      type_y: normalizeStructTag(Y),
+      fee: getObjectFields(fee),
+    } as Pool
   })
-
-  const {
-    name,
-    stable,
-    locked,
-    lp_supply,
-    reserve_x,
-    reserve_y,
-    decimal_x,
-    decimal_y,
-    fee,
-  } = getObjectFields(pool) as any
-  const type = getObjectType(pool)
-
-  const [X, Y] =
-    type
-      ?.slice(type.indexOf('<') + 1, type.indexOf('>'))
-      .split(',')
-      .map((t) => t.trim()) ?? []
-  return {
-    id,
-    name,
-    stable,
-    locked,
-    reserve_x,
-    reserve_y,
-    lp_supply: lp_supply.fields.value,
-    decimal_x,
-    decimal_y,
-    type_x: normalizeStructTag(X),
-    type_y: normalizeStructTag(Y),
-    fee: getObjectFields(fee),
-  } as Pool
 }
 
 export async function get_output(

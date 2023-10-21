@@ -1,6 +1,5 @@
 import { useState, createContext, useContext } from 'react'
 import { useLocation } from 'react-router-dom'
-
 import { useGetAllBalance } from '@/Hooks/Coin/useGetBalance'
 import { useGetVsdb, useGetVsdbIDs } from '@/Hooks/VSDB/useGetVSDB'
 import { Vsdb } from '@/Constants/API/vsdb'
@@ -11,11 +10,11 @@ import { generateSideBarLinks } from '@/Constants'
 import { Coins } from '@/Constants/coin'
 import { Sidebar, ControlBar, SettingModal } from '@/Components'
 import * as styles from './index.styles'
-import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
+import { useGetAllPool } from '@/Hooks/AMM/useGetPool'
 import { SettingInterface, defaultSetting } from '../SettingModal'
 import { useGetAllStake } from '@/Hooks/Vote/useGetStake'
 import SettingModule from '@/Modules/Setting'
-import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
+import { useGetAllGauge } from '@/Hooks/Vote/useGetGauge'
 
 const PageContext = createContext<PageContext>({
   currentNFTInfo: {
@@ -31,7 +30,6 @@ interface Props {
   children: any
 }
 const PageComponent = (props: Props) => {
-  const { children } = props
   const location = useLocation()
   const isDashboard = location.pathname === '/'
   const isHiddenPage = generateSideBarLinks.filter(
@@ -39,11 +37,8 @@ const PageComponent = (props: Props) => {
   )[0]?.isHidden
 
   // Wallet
-  const { isConnected } = useWalletKit()
-  //  const walletAddress = UserModule.getUserToken()
-  const { currentAccount } = useWalletKit()
-
-  const walletAddress = currentAccount?.address ?? ''
+  const { currentAccount, isConnected } = useWalletKit()
+  const walletAddress = currentAccount?.address
   if (isHiddenPage || (!walletAddress && !isDashboard)) {
     window.location.href = '/'
   }
@@ -52,11 +47,7 @@ const PageComponent = (props: Props) => {
   const { data: vsdbList } = useGetVsdbIDs(walletAddress)
   const currentNFTInfo = useGetVsdb(
     walletAddress,
-    vsdbList === undefined
-      ? undefined
-      : !vsdbList.length
-      ? null
-      : vsdbList[currentVsdbId],
+    !!vsdbList?.length ? vsdbList[currentVsdbId] : null
   )
   // Balance
   const { data: bal, isLoading: isCoinDataLoading } = useGetAllBalance(
@@ -64,12 +55,17 @@ const PageComponent = (props: Props) => {
     walletAddress,
   )
   // Pool
-  const { data: pool_ids } = useGetPoolIDs()
-  const pools = useGetMulPool(pool_ids)
+  const pools = useGetAllPool()
   const { data: lPList, isLoading: isLpDataLoading } =
     useGetAllLP(walletAddress)
-
-  const [isSettingOpen, setIsSettingOpen] = useState(false)
+  // Gauge
+  const gauge = useGetAllGauge()
+  //stake
+  const { data: stakes, isLoading: isStakeDataLoading } = useGetAllStake(
+    walletAddress,
+    gauge.data,
+    gauge.isLoading,
+  )
 
   const handleFetchNFTData = (mode: string) => {
     if (vsdbList && vsdbList.length > 0 && currentVsdbId < vsdbList.length) {
@@ -84,14 +80,9 @@ const PageComponent = (props: Props) => {
     }
   }
 
-  const gauge = useGetMulGauge()
-  //stake
-  const { data: stakes, isLoading: isStakeDataLoading } = useGetAllStake(
-    walletAddress,
-    gauge.data,
-    gauge.isLoading,
-  )
+
   // setting
+  const [isSettingOpen, setIsSettingOpen] = useState(false)
   const [setting, setSetting] = useState<SettingInterface>({
     gasBudget: SettingModule.getGadBudgetToken() ?? defaultSetting.gasBudget,
     expiration: SettingModule.getExpirationToken() ?? defaultSetting.expiration,
@@ -117,7 +108,7 @@ const PageComponent = (props: Props) => {
             />
           </div>
         )}
-        {children}
+        {props.children}
       </>
     )
   }
@@ -136,7 +127,7 @@ const PageComponent = (props: Props) => {
               setting: setting,
             }}
           >
-            <div className={styles.content}>{children}</div>
+            <div className={styles.content}>{props.children}</div>
           </PageContext.Provider>
           <ControlBar
             isPrevBtnDisplay={currentVsdbId !== 0}

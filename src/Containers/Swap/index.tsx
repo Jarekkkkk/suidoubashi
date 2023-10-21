@@ -8,9 +8,9 @@ import React, {
 import UserModule from '@/Modules/User'
 import { CoinIcon } from '@/Assets/icon'
 import { Coins, Coin, CoinInterface } from '@/Constants/coin'
-import { useGetMulPool, useGetPoolIDs } from '@/Hooks/AMM/useGetPool'
 import { Pool } from '@/Constants/API/pool'
 import { useGetAllBalance, Balance } from '@/Hooks/Coin/useGetBalance'
+import { useGetAllPool } from '@/Hooks/AMM/useGetPool'
 
 const SwapContext = React.createContext<SwapContext>({
   coinData: undefined,
@@ -30,13 +30,13 @@ const SwapContext = React.createContext<SwapContext>({
     name: 'SDB',
     decimals: 9,
   },
-  handleOnCoinInputFirstChange: () => {},
-  handleOnCoinInputSecondChange: () => {},
+  handleOnCoinInputFirstChange: () => { },
+  handleOnCoinInputSecondChange: () => { },
   isShowSelectModal: false,
-  setIsShowSelectModal: () => {},
-  setCoinTypeFirst: () => {},
-  setCoinTypeSecond: () => {},
-  setError: () => {},
+  setIsShowSelectModal: () => { },
+  setCoinTypeFirst: () => { },
+  setCoinTypeSecond: () => { },
+  setError: () => { },
   walletAddress: null,
   pool: null,
 })
@@ -62,8 +62,7 @@ const SwapContainer = ({ children }: PropsWithChildren) => {
   )
 
   // pools
-  const { data: pool_ids } = useGetPoolIDs()
-  const { data: pools } = useGetMulPool(pool_ids)
+  const { data: pools } = useGetAllPool()
   const pool = useMemo(
     () =>
       pools?.find(

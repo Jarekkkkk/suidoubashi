@@ -7,7 +7,6 @@ import {
   Empty,
   Loading,
 } from '@/Components'
-import { fetchCoinByType } from '@/Constants/index'
 import * as constantsStyles from '@/Constants/constants.styles'
 
 import SelectPoolModal from './_SelectPoolModal'
@@ -15,7 +14,7 @@ import * as styles from './index.styles'
 import { cx, css } from '@emotion/css'
 import { useMemo, useState } from 'react'
 import { useBribeContext } from '@/Containers/Bribe'
-import { CoinInterface, Coins } from '@/Constants/coin'
+import { CoinInterface, Coins, fetchCoinByType } from '@/Constants/coin'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
 import { formatBalance } from '@/Utils/format'
 import { useBribe } from '@/Hooks/Vote/useBribe'

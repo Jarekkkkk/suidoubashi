@@ -11,19 +11,17 @@ import {
 import Image from '@/Assets/image'
 import { CoinIcon, Icon } from '@/Assets/icon'
 import { Balance } from '@/Hooks/Coin/useGetBalance'
-import { Coins } from '@/Constants/coin'
+import { Coins, fetchCoinByType } from '@/Constants/coin'
 import { regexEn } from '@/Constants/index'
 import * as styles from './index.styles'
 
 type Props = {
-	coinData: Balance[] | undefined,
+  coinData: Balance[] | undefined,
   isCoinDataLoading: boolean,
   isShow: boolean,
   setIsShow: Function,
   setCoinType: Function,
 };
-
-const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
 
 const _coinList = [
   {
@@ -52,14 +50,14 @@ const SelectCoinModal = (props: Props) => {
   const { coinData, isCoinDataLoading, isShow, setIsShow, setCoinType } = props;
   const [input, setInput] = useState<string>('');
   const _coinsData = coinData?.filter((coin) => new RegExp(input, 'ig').test(coin.coinName))?.sort((prev, next) => {
-    const _prevIdx = fetchIcon(prev.coinType)!.decimals
-    const _nextIdx = fetchIcon(next.coinType)!.decimals
+    const _prevIdx = fetchCoinByType(prev.coinType)!.decimals
+    const _nextIdx = fetchCoinByType(next.coinType)!.decimals
 
     return Number(
       BigInt(next.totalBalance) *
-        BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
-        BigInt(prev.totalBalance) *
-          BigInt('10') ** BigInt((9 - _prevIdx).toString()),
+      BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
+      BigInt(prev.totalBalance) *
+      BigInt('10') ** BigInt((9 - _prevIdx).toString()),
     )
   });
 
@@ -102,7 +100,7 @@ const SelectCoinModal = (props: Props) => {
             {
               _coinList.map((coin) => {
                 const _coinData = _coinsData?.filter((item => item.coinName === coin.text))[0];
-                const _coinIdx = _coinData && fetchIcon(_coinData.coinType);
+                const _coinIdx = _coinData && fetchCoinByType(_coinData.coinType);
 
                 return (
                   <Button
@@ -117,7 +115,8 @@ const SelectCoinModal = (props: Props) => {
                     disabled={!_coinData}
                     size="medium"
                   />
-              )})
+                )
+              })
             }
           </div>
         </div>
@@ -129,29 +128,29 @@ const SelectCoinModal = (props: Props) => {
               </div>
             ) : _coinsData && !!_coinsData.length ? (
               _coinsData.map((balance, idx) => {
-                  const _coinIdx = fetchIcon(balance.coinType)
+                const _coinIdx = fetchCoinByType(balance.coinType)
 
-                  return (
-                    <div
-                      key={idx}
-                      onClick={() => {
-                        setCoinType(_coinIdx);
-                        setIsShow(false);
-                      }}
-                      className={styles.coincardContent}
-                    >
-                      <Coincard
-                        coinXIcon={_coinIdx!.logo}
-                        coinXName={_coinIdx!.name}
-                        coinXValue={new BigNumber(balance.totalBalance
-                          .toString())
-                          .shiftedBy(-1 * _coinIdx!.decimals)
-                          .toFormat()
-                        }
-                      />
-                    </div>
-                  )
-                })
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => {
+                      setCoinType(_coinIdx);
+                      setIsShow(false);
+                    }}
+                    className={styles.coincardContent}
+                  >
+                    <Coincard
+                      coinXIcon={_coinIdx!.logo}
+                      coinXName={_coinIdx!.name}
+                      coinXValue={new BigNumber(balance.totalBalance
+                        .toString())
+                        .shiftedBy(-1 * _coinIdx!.decimals)
+                        .toFormat()
+                      }
+                    />
+                  </div>
+                )
+              })
             ) : (
               <Empty content={'No Supported Coins'} />
             )

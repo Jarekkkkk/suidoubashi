@@ -53,3 +53,9 @@ export const Coins: CoinInterface[] = [
     name: 'USDT',
   },
 ]
+
+export const fetchIcon = (name: string | undefined) =>
+  Coins.find((coin) => coin.name === name) ?? Coins[0]
+
+export const fetchCoinByType = (type: string | undefined) =>
+  Coins.find((coin) => coin.type === type) ?? Coins[0]

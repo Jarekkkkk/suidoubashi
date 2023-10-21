@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { Dialog, Input, CoinCombin, Empty, Loading } from '@/Components'
 import Image from '@/Assets/image'
 import { Icon } from '@/Assets/icon'
-import { Coins } from '@/Constants/coin'
+import { fetchCoinByType } from '@/Constants/coin'
 import { regexEn } from '@/Constants/index'
 import * as styles from './index.styles'
 import { Rewards } from '@/Constants/API/vote'
@@ -14,8 +14,6 @@ type Props = {
   setIsShow: Function
   setRewardsId: Function
 }
-
-const fetchIcon = (type: string) => Coins.find((coin) => coin.type === type)
 
 const SelectPoolModal = (props: Props) => {
   const { rewardsData, setRewardsId, isCoinDataLoading, isShow, setIsShow } =
@@ -76,8 +74,8 @@ const SelectPoolModal = (props: Props) => {
                 className={styles.coincardContent}
               >
                 <CoinCombin
-                  poolCoinX={fetchIcon(reward.type_x)}
-                  poolCoinY={fetchIcon(reward.type_y)}
+                  poolCoinX={fetchCoinByType(reward.type_x)}
+                  poolCoinY={fetchCoinByType(reward.type_y)}
                 />
               </div>
             ))

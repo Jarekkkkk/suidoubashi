@@ -7,7 +7,6 @@ import {
   Empty,
   CoinCombinImg,
 } from '@/Components'
-import { fetchCoinByType } from '@/Constants/index'
 import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
 import { cx, css } from '@emotion/css'
@@ -20,8 +19,9 @@ import { useWalletKit } from '@mysten/wallet-kit'
 import { formatBalance } from '@/Utils/format'
 import { useClaimRewards } from '@/Hooks/Vote/useClaimRewards'
 import { useClaimBribes } from '@/Hooks/Vote/useClaimBribe'
-import { useGetMulGauge } from '@/Hooks/Vote/useGetGauge'
+import { useGetAllGauge } from '@/Hooks/Vote/useGetGauge'
 import { Spinner } from '@blueprintjs/core'
+import { fetchCoinByType } from '@/Constants/coin'
 
 const RewardsPresentation = () => {
   const { rewardsData, stakeData, fetching } = useRewardsContext()
@@ -31,7 +31,7 @@ const RewardsPresentation = () => {
   const [voterRewardsIsLoading, setVoterRewardsIsLoading] = useState(false)
   const rpc = useRpc()
   const { currentAccount } = useWalletKit()
-  const { data: gauges } = useGetMulGauge()
+  const { data: gauges } = useGetAllGauge()
 
   const claim_rewards = useClaimRewards(setting)
   const handleClaimRewards = (
@@ -163,7 +163,7 @@ const RewardsPresentation = () => {
                 const coin_x = fetchCoinByType(r.type_x)
                 const coin_y = fetchCoinByType(r.type_y)
                 return (
-                  <div className={styles.rewardsCard}>
+                  <div className={styles.rewardsCard} key={r.id}>
                     <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
                     <span>
                       <CoinIcon.SDBIcon

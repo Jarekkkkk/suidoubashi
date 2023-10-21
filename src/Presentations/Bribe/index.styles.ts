@@ -57,7 +57,7 @@ export const inputContent = css`
 `
 
 export const selectContainer = css`
-  max-height: 550px;
+  max-height: 350px;
   min-height: 550px;
 `
 
@@ -115,6 +115,7 @@ export const coinBlock = css`
 export const banlaceContent = css`
   margin: 20px auto;
   max-width: 400px;
+  height: 400px ;
   overflow: scroll;
   > div {
     margin-bottom: 16px;
@@ -135,9 +136,11 @@ export const coincardContent = css`
     cursor: pointer;
   }
 
+  padding:5px 0 ;
   &:hover {
     > div {
       background-color: var(--BrandLight);
+      border-radius: 15px;
     }
   }
 `

@@ -16,7 +16,7 @@ import * as styles from './index.styles'
 import { cx } from '@emotion/css'
 import { Gauge, Voter, Rewards } from '@/Constants/API/vote'
 import { usePageContext } from '@/Components/Page'
-import { fetchCoinByType } from '@/Constants'
+import { fetchCoinByType } from '@/Constants/coin'
 import { useEffect, useState } from 'react'
 import { CoinFormat, formatBalance } from '@/Utils/format'
 import { useVote } from '@/Hooks/Vote/useVote'
@@ -279,9 +279,9 @@ const VotePresentation = () => {
                 <div className={constantsStyles.greyText}>
                   {voterData.total_weight != '0'
                     ? (
-                        (Number(weight) / Number(voterData.total_weight)) *
-                        100
-                      ).toFixed(2)
+                      (Number(weight) / Number(voterData.total_weight)) *
+                      100
+                    ).toFixed(2)
                     : '0.00'}
                   %
                 </div>
@@ -328,7 +328,7 @@ const VotePresentation = () => {
           case 'apr':
             return (
               <div key={idx} className={constantsStyles.boldText}>
-                {VAPR > 1000 ? ">1000":(VAPR / 100).toFixed(4)}%
+                {VAPR > 1000 ? ">1000" : (VAPR / 100).toFixed(4)}%
               </div>
             )
           case 'weights':

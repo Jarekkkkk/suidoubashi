@@ -1,10 +1,11 @@
-import { JsonRpcProvider, getObjectFields } from '@mysten/sui.js'
-import { useQueries, useQuery } from '@tanstack/react-query'
+import { getObjectFields } from '@mysten/sui.js'
+import { useQuery } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useMemo } from 'react'
-import { Gauge, gauges_df_id, get_gauge } from '@/Constants/API/vote'
+import { gauges_df_id, get_gauges } from '@/Constants/API/vote'
 
-export function useGetGaugeIDs(rpc: JsonRpcProvider) {
+export function useGetGaugeIDs() {
+  const rpc = useRpc()
   return useQuery(
     ['get-gauge-ids'],
     async () => {
@@ -28,37 +29,18 @@ export function useGetGaugeIDs(rpc: JsonRpcProvider) {
   )
 }
 
-export const useGetMulGauge = () => {
+export const useGetAllGauge = () => {
   const rpc = useRpc()
-  const {data: gauge_ids} = useGetGaugeIDs(rpc)
-  const gauges = useQueries({
-    queries:
-      gauge_ids?.map((id) => {
-        return {
-          queryKey: ['gauge', id],
-          queryFn: () => get_gauge(rpc, id!),
-          enabled: !!id,
-        }
-      }) ?? [],
-  })
-  return useMemo(() => {
-    if (!gauge_ids) return { isLoading: true, data: null }
-    if (gauges.length == 0) return { isLoading: false, data: [] }
-
-    const isLoading = gauges.some((v) => v.isLoading)
-    const ret: Gauge[] = []
-
-    gauges.forEach(({ data }) => {
-      if (!data) return { isLoading, data: [] }
-      ret.push(data)
-    })
-    return { isLoading, data: ret.length ? ret : [] }
-  }, [gauges])
+  const { data: gauge_ids } = useGetGaugeIDs()
+  return useQuery(['gauges'], async () => get_gauges(rpc, gauge_ids!), {
+    staleTime: 24 * 60 * 60 * 1000,
+    cacheTime: 24 * 60 * 60 * 1000,
+    enabled: !!gauge_ids,
+  },)
 }
 
 export const useGetGauge = (type_x?: string, type_y?: string) => {
-  const { data: gauges } = useGetMulGauge()
-
+  const { data: gauges } = useGetAllGauge()
   return useMemo(
     () => gauges?.find((g) => g.type_x == type_x && g.type_y == type_y) ?? null,
     [gauges],

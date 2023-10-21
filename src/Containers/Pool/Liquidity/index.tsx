@@ -10,7 +10,7 @@ import UserModule from '@/Modules/User'
 
 import { useGetPool } from '@/Hooks/AMM/useGetPool'
 import { Pool } from '@/Constants/API/pool'
-import { Coins, CoinInterface } from '@/Constants/coin'
+import { Coins, CoinInterface, fetchCoinByType } from '@/Constants/coin'
 import { useGetGauge } from '@/Hooks/Vote/useGetGauge'
 import { Gauge } from '@/Constants/API/vote'
 
@@ -20,23 +20,21 @@ export const LiquidityContext = React.createContext<LiquidityContext>({
   gaugeData: null,
   fetching: false,
   error: undefined,
-  setError: () => {},
+  setError: () => { },
   coinInputX: '',
   coinTypeX: Coins[0],
   coinInputY: '',
   coinTypeY: Coins[1],
   coinInputSingle: '',
-  setCoinInputX: () => {},
-  setCoinInputY: () => {},
-  setCoinInputSingle: () => {},
-  setCoinTypeX: () => {},
-  setCoinTypeY: () => {},
+  setCoinInputX: () => { },
+  setCoinInputY: () => { },
+  setCoinInputSingle: () => { },
+  setCoinTypeX: () => { },
+  setCoinTypeY: () => { },
 })
 
 export const useLiquidityContext = () => useContext(LiquidityContext)
 
-const fetchIcon = (type: string | undefined) =>
-  Coins.find((coin) => coin.type === type) ?? Coins[0]
 
 const LiquidityContainer = ({ children }: PropsWithChildren) => {
   const [error, setError] = useState<string>()
@@ -58,8 +56,8 @@ const LiquidityContainer = ({ children }: PropsWithChildren) => {
   const gauge = useGetGauge(poolData?.type_x, poolData?.type_y)
 
   useEffect(() => {
-    setCoinTypeX(fetchIcon(poolData?.type_x))
-    setCoinTypeY(fetchIcon(poolData?.type_y))
+    setCoinTypeX(fetchCoinByType(poolData?.type_x))
+    setCoinTypeY(fetchCoinByType(poolData?.type_y))
   }, [poolData])
 
   return (
