@@ -266,7 +266,7 @@ const VotePresentation = () => {
                   constantsStyles.columnContent,
                 )}
               >
-                <div className={constantsStyles.boldText} style={{ width: "100%", display: 'flex', justifyContent: "right" }}>
+                <div className={styles.APRTitle} >
                   $ {pool_bribesData ? totalValue.toFixed(6) : <Skeleton width='100' />}
                 </div>
                 {

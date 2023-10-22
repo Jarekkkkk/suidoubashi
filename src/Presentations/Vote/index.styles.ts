@@ -50,6 +50,17 @@ export const smallIcon = css`
   }
 `
 
+export const APRTitle = css`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: end;
+  color: var(--Black);
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
+`
+
 export const VestTableContent = css`
   display: flex;
   align-items: end;
