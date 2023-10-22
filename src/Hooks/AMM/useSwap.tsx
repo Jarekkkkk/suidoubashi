@@ -17,7 +17,7 @@ type SwapMutationArgs = {
   vsdb: string | null
 }
 
-export const useSwap = () => {
+export const useSwap = (setCoinTypeFirst: Function) => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
@@ -84,9 +84,12 @@ export const useSwap = () => {
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['balance'])
-      queryClient.invalidateQueries(['pool', params.pool_id])
+      queryClient.invalidateQueries(['pools'])
+      queryClient.invalidateQueries(['gauges'])
+      queryClient.invalidateQueries(['rewards'])
       if (params.vsdb) queryClient.invalidateQueries(['vsdb', params.vsdb])
       toast.success('Swap Success!')
+      setCoinTypeFirst("")
     },
     onError: (_err: Error) => {
       toast.error('Oops! Have some error')

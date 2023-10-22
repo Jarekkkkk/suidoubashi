@@ -11,7 +11,7 @@ import {
 import Image from '@/Assets/image'
 import { CoinIcon, Icon } from '@/Assets/icon'
 import { Balance } from '@/Hooks/Coin/useGetBalance'
-import { Coins, fetchCoinByType } from '@/Constants/coin'
+import { fetchCoinByType } from '@/Constants/coin'
 import { regexEn } from '@/Constants/index'
 import * as styles from './index.styles'
 

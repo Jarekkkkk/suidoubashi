@@ -6,6 +6,7 @@ import { ReactComponent as VoteIcon } from '@/Assets/icon/icon_vote.svg'
 import { ReactComponent as RewardsIcon } from '@/Assets/icon/icon_rewards.svg'
 import { ReactComponent as BookIcon } from '@/Assets/icon/icon_book.svg'
 import { ReactComponent as TwitterIcon } from '@/Assets/icon/icon_twitter.svg'
+import { ReactComponent as TelegramIcon } from '@/Assets/icon/icon_telegram.svg'
 import { ReactComponent as SearchIcon } from '@/Assets/icon/icon_search.svg'
 import { ReactComponent as CopyIcon } from '@/Assets/icon/icon_copy.svg'
 import { ReactComponent as FileIcon } from '@/Assets/icon/icon_file.svg'
@@ -22,7 +23,7 @@ import { ReactComponent as DefiGreenIcon } from '@/Assets/icon/icon_defi_green.s
 import { ReactComponent as WarningSignIcon } from '@/Assets/icon/icon_warning_sign.svg'
 import { ReactComponent as ArrowDownIcon } from '@/Assets/icon/icon_arrow_down.svg'
 import { ReactComponent as SwapCircleIcon } from '@/Assets/icon/icon_swap_circle.svg'
-import { ReactComponent as PrevIcon  } from '@/Assets/icon/icon_prev.svg'
+import { ReactComponent as PrevIcon } from '@/Assets/icon/icon_prev.svg'
 import { ReactComponent as StakeIcon } from '@/Assets/icon/icon_stake.svg'
 import { ReactComponent as NoticeIcon } from '@/Assets/icon/icon_notice.svg'
 
@@ -47,6 +48,7 @@ export const Icon = {
   InformationIcon,
   SwapGreenIcon,
   DefiGreenIcon,
+  TelegramIcon,
   WarningSignIcon,
   ArrowDownIcon,
   SwapCircleIcon,

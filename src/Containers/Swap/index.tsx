@@ -75,8 +75,7 @@ const SwapContainer = ({ children }: PropsWithChildren) => {
   )
 
   const handleOnCoinInputFirstChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      let value = e.target.value
+    (value: string) => {
       const isValid = /^-?\d*\.?\d*$/.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
@@ -127,7 +126,7 @@ interface SwapContext {
   coinTypeFirst: CoinInterface | undefined
   coinInputSecond: string
   coinTypeSecond: CoinInterface | undefined
-  handleOnCoinInputFirstChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleOnCoinInputFirstChange: (value: string) => void
   handleOnCoinInputSecondChange: (v: string) => void
   isShowSelectModal: boolean
   setIsShowSelectModal: Function

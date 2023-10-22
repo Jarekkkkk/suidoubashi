@@ -1,8 +1,6 @@
 import moment from 'moment'
 import { Dashboard, Swap, Pool, Vest, Vote, Rewards, Bribe } from '@/Scenes'
 import { Icon } from '@/Assets/icon'
-import { Balance } from '@/Hooks/Coin/useGetBalance'
-import { Coins } from '@/Constants/coin'
 
 export const generateSideBarLinks = [
   {

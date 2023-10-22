@@ -18,6 +18,7 @@ export const rowContent = css`
 export const columnContent = css`
   display: flex;
   flex-direction: column;
+  min-width:100px ;
 `
 
 export const boldText = css`

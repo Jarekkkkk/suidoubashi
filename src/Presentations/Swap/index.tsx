@@ -97,8 +97,8 @@ const SwapPresentation = () => {
     return sort
       ? `1${coin_x?.name} = ${price.toFixed(5)} ${coin_y?.name}`
       : `1${coin_y?.name} = ${(price == 0 ? 0 : 1 / price).toFixed(
-          5,
-        )} ${coin_x?.name}`
+        5,
+      )} ${coin_x?.name}`
   }
 
   const [getOutputIsLoading, setGetOutpuIsLoading] = useState(false)
@@ -163,7 +163,7 @@ const SwapPresentation = () => {
     }
   }, [pool, walletAddress, coinTypeFirst, coinInputFirst, currentNFTInfo])
 
-  const swap = useSwap()
+  const swap = useSwap(handleOnCoinInputFirstChange)
   const handleSwap = () => {
     if (currentNFTInfo.isLoading) return
     if (pool && coinTypeFirst && coinTypeSecond) {
@@ -204,8 +204,8 @@ const SwapPresentation = () => {
           balance={
             _coinTypeFirstTotalBalance
               ? BigNumber(_coinTypeFirstTotalBalance)
-                  .shiftedBy(-coinTypeFirst.decimals)
-                  .toFormat()
+                .shiftedBy(-coinTypeFirst.decimals)
+                .toFormat()
               : '...'
           }
           titleChildren={
@@ -225,12 +225,12 @@ const SwapPresentation = () => {
               <Input
                 value={coinInputFirst}
                 onChange={(e) => {
-                  handleOnCoinInputFirstChange(e)
+                  handleOnCoinInputFirstChange(e.target.value)
 
                   if (coinTypeFirstBalance?.totalBalance) {
                     if (
                       parseFloat(e.target.value) *
-                        Math.pow(10, coinTypeFirst.decimals) >
+                      Math.pow(10, coinTypeFirst.decimals) >
                       Number(coinTypeFirstBalance.totalBalance)
                     ) {
                       setError('Insufficient Balance')
@@ -240,7 +240,7 @@ const SwapPresentation = () => {
                   }
                 }}
                 placeholder={`${coinTypeFirst.name} Value`}
-                // disabled={isLoading}
+              // disabled={isLoading}
               />
             </>
           }
@@ -256,8 +256,8 @@ const SwapPresentation = () => {
           balance={
             _coinTypeSecondTotalBalance
               ? BigNumber(_coinTypeSecondTotalBalance)
-                  .shiftedBy(-coinTypeSecond.decimals)
-                  .toFormat()
+                .shiftedBy(-coinTypeSecond.decimals)
+                .toFormat()
               : '...'
           }
           titleChildren={

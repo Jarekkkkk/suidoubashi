@@ -69,6 +69,7 @@ export type Bribe = {
 
 export type Rewards = {
   id: string
+  name: string
   bribe: string
   pool: string
   type_x: string
@@ -167,7 +168,8 @@ export async function get_gauges(
     } as Gauge
   }))
 
-  await Promise.all(res.map((g) => get_pool_bribes(rpc, zeroAddress, g.id, g.pool, g.type_x, g.type_y))).then((data) => data.forEach((pool_bribes, idx) => res[idx].pool_bribes = pool_bribes))
+  const limit = pLimit(5)
+  await Promise.all(res.map((g) => limit(() => get_pool_bribes(rpc, zeroAddress, g.id, g.pool, g.type_x, g.type_y)))).then((data) => data.forEach((pool_bribes, idx) => res[idx].pool_bribes = pool_bribes))
 
   return res
 }
@@ -198,6 +200,7 @@ export async function get_bribe(
     type_y: Y,
   } as Bribe
 }
+
 
 async function rewards_per_epoch(
   rpc: JsonRpcProvider,
@@ -240,7 +243,6 @@ export async function get_rewards(
   const res = rewards.map((reward, idx) => {
     const gauge = gauges[idx]
     let { rewards_type } = getObjectFields(reward) as any
-
     const objectType = getObjectType(reward)
     rewards_type = rewards_type.fields.contents.map((r: any) =>
       normalizeStructTag(r.fields.name),
@@ -251,18 +253,24 @@ export async function get_rewards(
         .split(',')
         .map((t) => normalizeStructTag(t.trim())) ?? []
 
+    let rewards = []
+    for (const type of rewards_type) {
+      rewards.push({ type, value: "0" })
+    }
+
     return {
       id: gauge.rewards,
+      name: X.split('::')[2] + '-' + Y.split('::')[2],
       bribe: gauge.bribe,
       pool: gauge.pool,
       type_x: X,
       type_y: Y,
-      rewards_type
-    }
+      rewards
+    } as Rewards
   })
 
-  const limit = pLimit(5);
-  const ts = Math.floor(Date.now() / 1000)
+  return res
+
   // return Promise.all(res.map(async (reward, idx) => {
   //   const gauge = gauges[idx]
   //   let rewards = []
@@ -286,11 +294,46 @@ export async function get_rewards(
   //   return rewards
   // })).then((data) => data.map((rewards, idx) => ({ ...res[idx], rewards }) as Rewards))
 
-  const rewardPromises = res.map(async (reward, idx) => {
-    const gauge = gauges[idx];
+  // const limit = pLimit(5);
+  // const ts = Math.floor(Date.now() / 1000)
+  // const rewardPromises = res.map(async (reward, idx) => {
+  //   const gauge = gauges[idx];
 
+  //   return Promise.all(
+  //     reward.rewards_type.map(async (type: string) => {
+  //       return limit(async () => {
+  //         let value = await rewards_per_epoch(
+  //           rpc,
+  //           zeroAddress,
+  //           gauge.rewards,
+  //           reward.type_x,
+  //           reward.type_y,
+  //           type,
+  //           ts.toString()
+  //         );
+  //         if (type == gauge.type_x)
+  //           value = (Number(value) + Number(gauge.pool_bribes[0])).toString()
+  //         if (type == gauge.type_y)
+  //           value = (Number(value) + Number(gauge.pool_bribes[1])).toString()
+  //         return { type, value };
+  //       });
+  //     })
+  //   );
+  // });
+
+  // return Promise.all(rewardPromises).then((data) =>
+  //   data.map((rewards, idx) => ({ ...res[idx], rewards }) as Rewards)
+  // );
+}
+
+export async function get_bribes(rpc: JsonRpcProvider, rewards: Rewards[], gauges: Gauge[]) {
+  const ts = Math.floor(Date.now() / 1000)
+  const limit = pLimit(5);
+  return Promise.all(rewards.map(async (reward, idx) => {
+    const gauge = gauges[idx]
+    const rewards_type = reward.rewards.map((r) => r.type)
     return Promise.all(
-      reward.rewards_type.map(async (type: string) => {
+      rewards_type.map(async (type: string) => {
         return limit(async () => {
           let value = await rewards_per_epoch(
             rpc,
@@ -309,65 +352,7 @@ export async function get_rewards(
         });
       })
     );
-  });
-
-  return Promise.all(rewardPromises).then((data) =>
-    data.map((rewards, idx) => ({ ...res[idx], rewards }) as Rewards)
-  );
-}
-export async function get_rewards_(
-  rpc: JsonRpcProvider,
-  sender: string,
-  gauge: Gauge,
-): Promise<Rewards | null> {
-  const rewards_obj = await rpc.getObject({
-    id: gauge.rewards,
-    options: defaultOptions,
-  })
-  const fields = getObjectFields(rewards_obj)
-
-  if (!fields) return null
-
-  const objectType = getObjectType(rewards_obj)
-  const rewards_type = fields.rewards_type.fields.contents.map((r: any) =>
-    normalizeStructTag(r.fields.name),
-  )
-  const [X, Y] =
-    objectType
-      ?.slice(objectType.indexOf('<') + 1, objectType.indexOf('>'))
-      .split(',')
-      .map((t) => normalizeStructTag(t.trim())) ?? []
-  const name = X.split('::')[2] + '-' + Y.split('::')[2]
-
-  const ts = Math.floor(Date.now() / 1000)
-  let rewards = []
-
-  for (const type of rewards_type) {
-    let value = await rewards_per_epoch(
-      rpc,
-      sender,
-      gauge.rewards,
-      X,
-      Y,
-      type,
-      ts.toString(),
-    )
-    if (type == gauge.type_x)
-      value = (Number(value) + Number(gauge.pool_bribes[0])).toString()
-    if (type == gauge.type_y)
-      value = (Number(value) + Number(gauge.pool_bribes[1])).toString()
-    rewards.push({ type, value })
-  }
-
-  return {
-    id: gauge.rewards,
-    bribe: gauge.bribe,
-    pool: gauge.pool,
-    name,
-    type_x: X,
-    type_y: Y,
-    rewards,
-  } as Rewards
+  }))
 }
 
 export function voting_entry(txb: TransactionBlock, vsdb: string) {

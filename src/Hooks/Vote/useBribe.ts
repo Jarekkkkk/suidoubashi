@@ -49,9 +49,9 @@ export const useBribe = (setting: SettingInterface, clearInput: Function) => {
       if (getExecutionStatus(res)?.status == 'failure')
         throw new Error('Tx Failed')
     },
-    onSuccess: (_, params) => {
+    onSuccess: () => {
       queryClient.invalidateQueries(['balance'])
-      queryClient.invalidateQueries(['rewards', params.rewards])
+      queryClient.refetchQueries(['rewards-bribe'])
       toast.success('Bribes Successfully')
       clearInput()
     },

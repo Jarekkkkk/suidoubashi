@@ -206,7 +206,7 @@ const PoolPresentation = () => {
           case 'apr':
             return (
               <div style={{ fontWeight: 'bold' }} key={idx}>
-                {apr.toFixed(4)} %
+                {!isNaN(apr) ? apr.toFixed(4) : "0"} %
               </div>
             )
           case 'manage':

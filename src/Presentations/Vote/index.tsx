@@ -24,6 +24,8 @@ import { toast } from 'react-hot-toast'
 import { Coins } from '@/Constants/coin'
 import { round_down_week } from '@/Utils/vsdb'
 import { useGetPrice } from '@/Hooks/useGetPrice'
+import CountDownClock from '@/Components/CountDownClock.tsx'
+import Skeleton from '@/Components/Skelton'
 
 const renderLabel2 = (val: number) => {
   return `${Math.round(val * 100)}%`
@@ -37,39 +39,8 @@ const VotePresentation = () => {
     voterData,
     fetching,
     rewardsData,
+    pool_bribesData
   } = useVoteContext()
-
-  const calculateCountdown = () => {
-    const now = new Date()
-    const currentDayOfWeek = now.getUTCDay() // 0 (Sunday) to 6 (Saturday)
-
-    // Calculate the number of days until the next Wednesday
-    const daysUntilWednesday = (3 - currentDayOfWeek + 7) % 7
-
-    // Create a target date for the next Wednesday at 23:59 UTC
-    const targetDate = new Date(
-      Date.UTC(
-        now.getUTCFullYear(),
-        now.getUTCMonth(),
-        now.getUTCDate() + daysUntilWednesday,
-        23,
-        59,
-        0,
-      ),
-    )
-
-    // Calculate the time difference
-    // @ts-ignore
-    const timeDifference = targetDate - now
-
-    // Calculate hours, minutes, and seconds
-    const days = Math.floor((timeDifference / (1000 * 60 * 60 * 24)) % 7)
-    const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24)
-    const minutes = Math.floor((timeDifference / (1000 * 60)) % 60)
-    const seconds = Math.floor((timeDifference / 1000) % 60)
-
-    return { days, hours, minutes, seconds }
-  }
 
   const price = useGetPrice()
   const handleTotalRewards = (rewards: { type: string; value: string }[]) => {
@@ -179,17 +150,6 @@ const VotePresentation = () => {
     }
   }, [currentNFTInfo])
 
-  const [countdown, setCountdown] = useState(calculateCountdown())
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCountdown(calculateCountdown())
-    }, 1000)
-
-    return () => {
-      clearInterval(interval)
-    }
-  }, [])
 
   const data = [{ id: 1 }, { id: 2 }]
 
@@ -240,9 +200,19 @@ const VotePresentation = () => {
     voterData: Voter,
     rewardsData: Rewards[],
   ) => {
-    return gaugeData.map((gauge, idx) => {
-      if (!rewardsData[idx].rewards) return null
-      const _rewards = rewardsData[idx].rewards
+    return gaugeData.map((gauge, idx_) => {
+      if (!rewardsData[idx_].rewards) return null
+      let _rewards = rewardsData[idx_].rewards
+      // merge pool_bribes & external bribes from gauge
+      if (pool_bribesData) pool_bribesData[idx_].forEach((r, idx) => {
+        let value = r.value
+        if (r.type == gauge.type_x)
+          value = (Number(value) + Number(gauge.pool_bribes[0])).toString()
+        if (r.type == gauge.type_y)
+          value = (Number(value) + Number(gauge.pool_bribes[1])).toString()
+
+        _rewards[idx].value = value
+      })
       const weight =
         voterData.pool_weights.find((p) => p.pool_id == gauge.pool)?.weight ??
         '0'
@@ -296,39 +266,40 @@ const VotePresentation = () => {
                   constantsStyles.columnContent,
                 )}
               >
-                <div className={constantsStyles.boldText}>
-                  $ {totalValue.toFixed(6)}
+                <div className={constantsStyles.boldText} style={{ width: "100%", display: 'flex', justifyContent: "right" }}>
+                  $ {pool_bribesData ? totalValue.toFixed(6) : <Skeleton width='100' />}
                 </div>
-                {_rewards.map((reward, key) => {
-                  const coin = fetchCoinByType(reward.type)
-
-                  return (
-                    <div
-                      className={cx(
-                        constantsStyles.rowContent,
-                        constantsStyles.greyText,
-                      )}
-                      key={idx + key}
-                    >
-                      <span>
-                        {formatBalance(
-                          reward.value,
-                          coin?.decimals ?? 0,
-                          CoinFormat.FULL,
+                {
+                  _rewards.map((reward, key) => {
+                    const coin = fetchCoinByType(reward.type)
+                    return (
+                      <div
+                        className={cx(
+                          constantsStyles.rowContent,
+                          constantsStyles.greyText,
                         )}
-                      </span>
-                      <div className={styles.smallIcon}>
-                        {coin?.logo ?? Coins[0].logo}
+                        key={idx + key}
+                      >
+                        <span>
+                          {pool_bribesData ? formatBalance(
+                            reward.value,
+                            coin?.decimals ?? 0,
+                            CoinFormat.FULL,
+                          ) : <Skeleton width='50' />}
+                        </span>
+                        <div className={styles.smallIcon}>
+                          {coin?.logo ?? Coins[0].logo}
+                        </div>
                       </div>
-                    </div>
-                  )
-                })}
-              </div>
+                    )
+                  })
+                }
+              </div >
             )
           case 'apr':
             return (
-              <div key={idx} className={constantsStyles.boldText}>
-                {VAPR > 1000 ? ">1000" : (VAPR / 100).toFixed(4)}%
+              <div key={idx} className={constantsStyles.boldText} style={{ width: "100px" }}>
+                {!pool_bribesData ? <Skeleton width='100' /> : VAPR > 1000 ? ">1000" : (VAPR / 100).toFixed(4)}%
               </div>
             )
           case 'weights':
@@ -371,17 +342,7 @@ const VotePresentation = () => {
               underlying bribes.
             </div>
           </div>
-          <div className={styles.infoContent}>
-            <div className={styles.infoTitle}>
-              Epoch {round_down_week(Date.now() / 1000) / 604800 - 2806}
-            </div>
-            <div>
-              <div>Finished in </div>
-              <div
-                className={styles.yellowText}
-              >{`${countdown.days}d ${countdown.hours}h ${countdown.minutes}m ${countdown.seconds}s`}</div>
-            </div>
-          </div>
+          <CountDownClock />
         </div>
         <ReactTable
           data={data}
