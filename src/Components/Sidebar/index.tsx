@@ -40,19 +40,22 @@ const SidebarComponent = (props: Props) => {
       )}
       <SidebarButton
         active={isSettingOpen}
-        text="Setting"
+        text='Setting'
         icon={<Icon.SettingIcon />}
         onClick={() => setIsSettingOpen(!isSettingOpen)}
       />
       <div className={styles.footerContent}>
         <div className={styles.footerIconBlock}>
-          <Link to='https://suidoubashi-1.gitbook.io/suidoubashi/' target="_blank">
-            <BlueIcon icon="git-repo" />
+          <Link
+            to='https://suidoubashi-1.gitbook.io/suidoubashi/'
+            target='_blank'
+          >
+            <BlueIcon icon='git-repo' />
           </Link>
-          <Link to='https://twitter.com/suidoubashi_io' target="_blank">
+          <Link to='https://twitter.com/suidoubashi_io' target='_blank'>
             <Icon.TwitterIcon />
           </Link>
-          <Link to='https://t.me/+fzyTT4_tGCNhYmU1' target="_blank">
+          <Link to='https://t.me/suidoubashi' target='_blank'>
             <Icon.TelegramIcon />
           </Link>
         </div>

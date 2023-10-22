@@ -55,7 +55,10 @@ export async function get_pools(
   rpc: JsonRpcProvider,
   pool_ids: string[],
 ): Promise<Pool[]> {
-  const pools = await rpc.multiGetObjects({ ids: pool_ids, options: { showType: true, showContent: true } })
+  const pools = await rpc.multiGetObjects({
+    ids: pool_ids,
+    options: { showType: true, showContent: true },
+  })
   return pools.map((pool) => {
     const {
       id,
@@ -351,7 +354,7 @@ export function remove_liquidity(
   pool: string,
   pool_type_x: string,
   pool_type_y: string,
-  lp: any,
+  lp_id: string,
   value: bigint | number | string,
   deposit_x_min: bigint | number | string,
   deposit_y_min: bigint | number | string,
@@ -361,7 +364,7 @@ export function remove_liquidity(
     typeArguments: [pool_type_x, pool_type_y],
     arguments: [
       txb.object(pool),
-      lp,
+      txb.object(lp_id),
       txb.pure(value),
       txb.pure(deposit_x_min),
       txb.pure(deposit_y_min),
@@ -528,14 +531,14 @@ export const create_lp = (
 
 export function delete_lp(
   txb: TransactionBlock,
-  lp: any,
+  lp_id: string,
   type_x: string,
   type_y: string,
 ) {
   txb.moveCall({
     target: `${amm_package}::pool::delete_lp`,
     typeArguments: [type_x, type_y],
-    arguments: [lp],
+    arguments: [txb.object(lp_id)],
   })
 }
 
@@ -580,14 +583,14 @@ export async function get_claimable_y(
 export function claim_fees_player(
   txb: TransactionBlock,
   pool: string,
-  lp: any,
+  lp: string,
   type_x: string,
   type_y: string,
 ) {
   txb.moveCall({
     target: `${amm_package}::pool::claim_fees_player`,
     typeArguments: [type_x, type_y],
-    arguments: [txb.object(pool), lp],
+    arguments: [txb.object(pool), txb.object(lp)],
   })
 }
 

@@ -435,14 +435,6 @@ const LiquidityPresentation = () => {
                             </div>
                           </div>
                         </div>
-                        <div>
-                          <div className={constantsStyles.lightGreyText}>
-                            APY
-                          </div>
-                          <div className={constantsStyles.boldText}>
-                            {'0 %'}
-                          </div>
-                        </div>
                       </div>
                     </div>
                     <div className={styles.inputContent}>
@@ -619,7 +611,8 @@ const LiquidityPresentation = () => {
               <span>Pool</span>
             </div>
             <div className={constantsStyles.lightGreyText}>
-              Your Coins in Pool.
+              Your Coins in Pool enables you to earn a share of the transaction
+              fees in proportion to the coins you've added to the pool
             </div>
             <div className={styles.coinContent}>
               <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
@@ -732,11 +725,12 @@ const LiquidityPresentation = () => {
               </div>
               <div className={styles.infoContent}>
                 <div className={constantsStyles.lightGreyText}>
-                  To receive underlying pair of coins from your staked pool,
-                  please unstake and withdraw.
+                  Your Coins in Stake entitle to weekly rewards in the form of
+                  $SDB tokens. These rewards are distributed based on the
+                  accumulated votes
                 </div>
                 <div className={constantsStyles.greyText}>
-                  Make sure to claim any rewards before withdrawing.
+                  When Unstake or Withdraw, we automatically help you acquire all the underlying emissions and transaction fees
                 </div>
               </div>
               <div className={styles.buttonContent}>

@@ -3,8 +3,13 @@ import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { TransactionBlock, getExecutionStatus } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
-import { quote_remove_liquidity, remove_liquidity } from '@/Constants/API/pool'
-import { unstake } from '@/Constants/API/vote'
+import {
+  claim_fees_player,
+  delete_lp,
+  quote_remove_liquidity,
+  remove_liquidity,
+} from '@/Constants/API/pool'
+import { claim_rewards, delete_stake, unstake } from '@/Constants/API/vote'
 import { SettingInterface } from '@/Components/SettingModal'
 
 type MutationArgs = {
@@ -46,6 +51,8 @@ export const useUnStakeAndWithdraw = (setting: SettingInterface) => {
         stake_id,
         withdrawl,
       )
+      claim_rewards(txb, gauge_id, stake_id, pool_type_x, pool_type_y)
+      delete_stake(txb, stake_id, pool_type_x, pool_type_y)
       const quote = await quote_remove_liquidity(
         rpc,
         currentAccount.address,
@@ -55,18 +62,20 @@ export const useUnStakeAndWithdraw = (setting: SettingInterface) => {
         withdrawl,
       )
 
-      const lp = txb.object(lp_id)
-
       remove_liquidity(
         txb,
         pool_id,
         pool_type_x,
         pool_type_y,
-        lp,
+        lp_id,
         withdrawl,
         quote[0],
         quote[1],
       )
+      claim_fees_player(txb, pool_id, lp_id, pool_type_x, pool_type_y)
+
+      // LP should withdraw all the fee revenue before burn it
+      delete_lp(txb, lp_id, pool_type_x, pool_type_y)
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({

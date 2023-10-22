@@ -143,8 +143,11 @@ export async function get_gauges(
   rpc: JsonRpcProvider,
   gauge_ids: string[],
 ): Promise<Gauge[]> {
-  const gauges = await rpc.multiGetObjects({ ids: gauge_ids, options: { showType: true, showContent: true } })
-  const res = (gauges.map((gauge) => {
+  const gauges = await rpc.multiGetObjects({
+    ids: gauge_ids,
+    options: { showType: true, showContent: true },
+  })
+  const res = gauges.map((gauge) => {
     const { id, bribe, rewards, pool, total_stakes, is_alive, reward_rate } =
       getObjectFields(gauge) as any
 
@@ -163,17 +166,24 @@ export async function get_gauges(
       bribe,
       rewards,
       total_stakes: total_stakes.fields.lp_balance,
-      pool_bribes: ["0", "0"],
+      pool_bribes: ['0', '0'],
       reward_rate,
     } as Gauge
-  }))
+  })
 
   const limit = pLimit(5)
-  await Promise.all(res.map((g) => limit(() => get_pool_bribes(rpc, zeroAddress, g.id, g.pool, g.type_x, g.type_y)))).then((data) => data.forEach((pool_bribes, idx) => res[idx].pool_bribes = pool_bribes))
+  await Promise.all(
+    res.map((g) =>
+      limit(() =>
+        get_pool_bribes(rpc, zeroAddress, g.id, g.pool, g.type_x, g.type_y),
+      ),
+    ),
+  ).then((data) =>
+    data.forEach((pool_bribes, idx) => (res[idx].pool_bribes = pool_bribes)),
+  )
 
   return res
 }
-
 
 export async function get_bribe(
   rpc: JsonRpcProvider,
@@ -200,7 +210,6 @@ export async function get_bribe(
     type_y: Y,
   } as Bribe
 }
-
 
 async function rewards_per_epoch(
   rpc: JsonRpcProvider,
@@ -255,7 +264,7 @@ export async function get_rewards(
 
     let rewards = []
     for (const type of rewards_type) {
-      rewards.push({ type, value: "0" })
+      rewards.push({ type, value: '0' })
     }
 
     return {
@@ -265,7 +274,7 @@ export async function get_rewards(
       pool: gauge.pool,
       type_x: X,
       type_y: Y,
-      rewards
+      rewards,
     } as Rewards
   })
 
@@ -326,33 +335,39 @@ export async function get_rewards(
   // );
 }
 
-export async function get_bribes(rpc: JsonRpcProvider, rewards: Rewards[], gauges: Gauge[]) {
+export async function get_bribes(
+  rpc: JsonRpcProvider,
+  rewards: Rewards[],
+  gauges: Gauge[],
+) {
   const ts = Math.floor(Date.now() / 1000)
-  const limit = pLimit(5);
-  return Promise.all(rewards.map(async (reward, idx) => {
-    const gauge = gauges[idx]
-    const rewards_type = reward.rewards.map((r) => r.type)
-    return Promise.all(
-      rewards_type.map(async (type: string) => {
-        return limit(async () => {
-          let value = await rewards_per_epoch(
-            rpc,
-            zeroAddress,
-            gauge.rewards,
-            reward.type_x,
-            reward.type_y,
-            type,
-            ts.toString()
-          );
-          if (type == gauge.type_x)
-            value = (Number(value) + Number(gauge.pool_bribes[0])).toString()
-          if (type == gauge.type_y)
-            value = (Number(value) + Number(gauge.pool_bribes[1])).toString()
-          return { type, value };
-        });
-      })
-    );
-  }))
+  const limit = pLimit(5)
+  return Promise.all(
+    rewards.map(async (reward, idx) => {
+      const gauge = gauges[idx]
+      const rewards_type = reward.rewards.map((r) => r.type)
+      return Promise.all(
+        rewards_type.map(async (type: string) => {
+          return limit(async () => {
+            let value = await rewards_per_epoch(
+              rpc,
+              zeroAddress,
+              gauge.rewards,
+              reward.type_x,
+              reward.type_y,
+              type,
+              ts.toString(),
+            )
+            if (type == gauge.type_x)
+              value = (Number(value) + Number(gauge.pool_bribes[0])).toString()
+            if (type == gauge.type_y)
+              value = (Number(value) + Number(gauge.pool_bribes[1])).toString()
+            return { type, value }
+          })
+        }),
+      )
+    }),
+  )
 }
 
 export function voting_entry(txb: TransactionBlock, vsdb: string) {
@@ -663,6 +678,19 @@ export function create_stake(
     target: `${vote_package}::gauge::create_stake`,
     typeArguments: [type_x, type_y],
     arguments: [txb.object(gauge_id)],
+  })
+}
+
+export function delete_stake(
+  txb: TransactionBlock,
+  stake_id: string,
+  type_x: string,
+  type_y: string,
+) {
+  return txb.moveCall({
+    target: `${vote_package}::gauge::delete_stake`,
+    typeArguments: [type_x, type_y],
+    arguments: [txb.object(stake_id)],
   })
 }
 
