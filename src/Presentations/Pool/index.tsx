@@ -139,30 +139,31 @@ const PoolPresentation = () => {
                 key={idx}
                 className={cx(
                   constantsStyles.columnContent,
+                  constantsStyles.greyText,
                   styles.coinContent,
                 )}
               >
                 <div className={constantsStyles.rowContent}>
-                  <div className={constantsStyles.boldText}>
+                  <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
                     {formatBalance(
                       _walletCoinX,
                       _poolCoinX!.decimals,
                       CoinFormat.FULL,
                     )}
                   </div>
-                  <span style={{ marginLeft: '5px' }} className={constantsStyles.greyText}>
+                  <span style={{ marginLeft: '5px', minWidth: 'auto' }}>
                     {_poolCoinX!.name}
                   </span>
                 </div>
                 <div className={constantsStyles.rowContent}>
-                  <div className={constantsStyles.boldText}>
+                  <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
                     {formatBalance(
                       _walletCoinY,
                       _poolCoinY!.decimals,
                       CoinFormat.FULL,
                     )}
                   </div>
-                  <span style={{ marginLeft: '5px' }} className={constantsStyles.greyText}>
+                  <span style={{ marginLeft: '5px', minWidth: 'auto' }}>
                     {_poolCoinY!.name}
                   </span>
                 </div>
@@ -174,30 +175,31 @@ const PoolPresentation = () => {
                 key={idx}
                 className={cx(
                   constantsStyles.columnContent,
+                  constantsStyles.greyText,
                   styles.coinContent,
                 )}
               >
                 <div className={constantsStyles.rowContent}>
-                  <div className={constantsStyles.boldText}>
+                  <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
                     {formatBalance(
                       pool.reserve_x,
                       _poolCoinX!.decimals,
                       CoinFormat.FULL,
                     )}
                   </div>
-                  <span style={{ marginLeft: '5px' }} className={constantsStyles.greyText}>
+                  <span style={{ marginLeft: '5px', minWidth: 'auto' }}>
                     {_poolCoinX!.name}
                   </span>
                 </div>
                 <div className={constantsStyles.rowContent}>
-                  <div className={constantsStyles.boldText}>
+                  <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
                     {formatBalance(
                       pool.reserve_y,
                       _poolCoinY!.decimals,
                       CoinFormat.FULL,
                     )}
                   </div>
-                  <span style={{ marginLeft: '5px' }} className={constantsStyles.greyText}>
+                  <span style={{ marginLeft: '5px', minWidth: 'auto' }}>
                     {_poolCoinY!.name}
                   </span>
                 </div>
@@ -205,7 +207,7 @@ const PoolPresentation = () => {
             )
           case 'apr':
             return (
-              <div style={{ fontWeight: 'bold', minWidth: '105px' }} key={idx}>
+              <div style={{ fontWeight: 'bold', minWidth: '105px', color: 'var(--Grey)' }} key={idx}>
                 {!isNaN(apr) ? apr.toFixed(4) : "0"} %
               </div>
             )
