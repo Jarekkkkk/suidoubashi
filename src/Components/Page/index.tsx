@@ -42,7 +42,9 @@ const PageComponent = (props: Props) => {
   if (isHiddenPage || (!walletAddress && !isDashboard)) {
     window.location.href = '/'
   }
-  currentAccount?.chains
+  if (isHiddenPage || (!walletAddress && !isDashboard)) {
+    window.location.href = '/'
+  }
   // Vsdb
   const [currentVsdbId, setCurrentVsdbId] = useState(0)
   const { data: vsdbList } = useGetVsdbIDs(walletAddress)

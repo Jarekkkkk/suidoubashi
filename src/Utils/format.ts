@@ -29,7 +29,10 @@ export function formatBalance(
   if (bn.gte(1)) {
     bn = bn.decimalPlaces(3, BigNumber.ROUND_DOWN)
   }
-  return bn.toFixed(4) + postfix
+  return (
+    (bn.isLessThan(1) && !bn.isEqualTo(0) ? bn.toFormat(3) : bn.toFormat()) +
+    postfix
+  )
 }
 
 export function formatDate(timestamp: string) {
