@@ -31,37 +31,47 @@ export const useGetAllStake = (
       })
       if (res.data.length == 0 || !gauges) return []
 
-      return Promise.all(
-        res.data.map(async (stake) => {
-          let { id, stakes, pending_sdb } = getObjectFields(stake) as any
-          const type = getObjectType(stake)
+      const stake = res.data.map((stake) => {
+        let { id, stakes } = getObjectFields(stake) as any
+        const type = getObjectType(stake)
 
-          const [X, Y] =
-            type
-              ?.slice(type.indexOf('<') + 1, type.indexOf('>'))
-              .split(',')
-              .map((t) => normalizeStructTag(t.trim())) ?? []
-          const gauge = gauges.find((g) => g.type_x == X && g.type_y == Y)
+        const [X, Y] =
+          type
+            ?.slice(type.indexOf('<') + 1, type.indexOf('>'))
+            .split(',')
+            .map((t) => normalizeStructTag(t.trim())) ?? []
+        return {
+          id: id.id,
+          type_x: X,
+          type_y: Y,
+          stakes,
+          pending_sdb: '0',
+        } as Stake
+      })
+
+      Promise.all(
+        stake.map(async (stake) => {
+          const gauge = gauges.find(
+            (g) => g.type_x == stake.type_x && g.type_y == stake.type_y,
+          )
           if (gauge) {
-            pending_sdb = await get_pending_sdb(
+            return await get_pending_sdb(
               rpc,
               address!,
               gauge.id,
-              id.id,
-              X,
-              Y,
+              stake.id,
+              stake.type_x,
+              stake.type_y,
             )
           }
-
-          return {
-            id: id.id,
-            type_x: X,
-            type_y: Y,
-            stakes,
-            pending_sdb,
-          } as Stake
+          return '0'
         }),
+      ).then((data) =>
+        data.forEach(
+          (pending_sdb, idx) => (stake[idx].pending_sdb = pending_sdb),
+        ),
       )
+      return stake
     },
     {
       enabled: !!address && !!gauges?.length && !isLoading,

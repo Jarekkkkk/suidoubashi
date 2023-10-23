@@ -34,7 +34,7 @@ export const useLock = (
       if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
-      txb.setGasBudget(Number(setting.gasBudget))
+      txb.setGasBudget(parseFloat(setting.gasBudget))
       const sdb_coins = await rpc.getCoins({
         owner: currentAccount.address,
         coinType: Coin.SDB,

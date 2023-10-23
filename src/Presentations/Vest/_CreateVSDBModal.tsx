@@ -19,6 +19,7 @@ import { Coin } from '@/Constants/coin'
 import BigNumber from 'bignumber.js'
 import { calculate_vesdb } from '@/Utils/vsdb'
 import UserModule from '@/Modules/User'
+import { usePageContext } from '@/Components/Page'
 
 type Props = {
   isShowCreateVSDBModal: boolean
@@ -27,6 +28,7 @@ type Props = {
 
 const CreateVSDBModal = (props: Props) => {
   const { isShowCreateVSDBModal, setIsShowCreateVSDBModal } = props
+  const { setting } = usePageContext()
 
   const [endDate, setEndDate] = useState<string>(
     moment().add(168, 'days').toDate().toDateString(),
@@ -43,7 +45,7 @@ const CreateVSDBModal = (props: Props) => {
     setEndDate(date)
   }
 
-  const { mutate: lock, isLoading } = useLock(setIsShowCreateVSDBModal)
+  const { mutate: lock, isLoading } = useLock(setting, setIsShowCreateVSDBModal)
 
   const handleOnInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isLoading) return
@@ -78,8 +80,8 @@ const CreateVSDBModal = (props: Props) => {
   }
 
   const minDate = () => {
-    const _today = moment().toDate();
-    const _thisWed = moment().startOf('week').add(3, 'days').toDate();
+    const _today = moment().toDate()
+    const _thisWed = moment().startOf('week').add(3, 'days').toDate()
 
     if (_thisWed >= _today) {
       return moment().startOf('week').add(4, 'days').toDate()
@@ -95,7 +97,7 @@ const CreateVSDBModal = (props: Props) => {
       titleImg={Image.pageBackground_3}
       isShow={isShowCreateVSDBModal}
       setIsShow={setIsShowCreateVSDBModal}
-      disabled = {isLoading}
+      disabled={isLoading}
     >
       <InputSection
         titleChildren={
@@ -174,11 +176,15 @@ const CreateVSDBModal = (props: Props) => {
           </div>
         </div>
       </div>
-      {error &&  <div className={styles.errorContent}><Error errorText={error} /></div>}
+      {error && (
+        <div className={styles.errorContent}>
+          <Error errorText={error} />
+        </div>
+      )}
       <div className={styles.vsdbModalbutton}>
         <Button
           disabled={!!error}
-          isloading={isLoading? 1 : 0}
+          isloading={isLoading ? 1 : 0}
           text='Lock'
           styletype='filled'
           onClick={handleLock}

@@ -96,7 +96,6 @@ const ControlBarComponent = (props: Props) => {
             const percentage = BigNumber(data.lp_balance).div(lp_supply)
             const x = percentage.multipliedBy(reserve_x)
             const y = percentage.multipliedBy(reserve_y)
-            console.log(formatBalance(x, _coinXIdx.decimals))
             return (
               <Coincard
                 key={idx}
