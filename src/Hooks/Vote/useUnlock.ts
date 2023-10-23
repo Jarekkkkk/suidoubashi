@@ -76,7 +76,7 @@ export const useUnlock = (setting: SettingInterface) => {
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['vsdb', params.vsdb])
-      queryClient.invalidateQueries(['get-vsdbs'])
+      queryClient.invalidateQueries(['get-vsdbs', currentAccount!.address])
       if (params.reset) queryClient.invalidateQueries(['gauge'])
       toast.success('Burn VSDB NFT and unlock Successfully')
     },

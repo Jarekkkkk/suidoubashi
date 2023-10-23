@@ -50,8 +50,10 @@ export const useMerge = (setting: SettingInterface) => {
       return mergedVsdb
     },
     onSuccess: (_, params) => {
-      queryClient.setQueryData(['get-vsdbs'], (vsdb_ids?: string[]) =>
-        [...(vsdb_ids ?? [])].filter((id) => id !== params.mergedVsdb),
+      queryClient.setQueryData(
+        ['get-vsdbs', currentAccount!.address],
+        (vsdb_ids?: string[]) =>
+          [...(vsdb_ids ?? [])].filter((id) => id !== params.mergedVsdb),
       )
 
       queryClient.invalidateQueries(['vsdb', params.vsdb])
