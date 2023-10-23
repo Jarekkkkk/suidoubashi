@@ -63,10 +63,12 @@ export const rewardsCard = css`
   box-shadow: 0px 0px 4px 0px var(--TransparentBlack);
 
   span {
-    width: 50%;
-    font-size: 16px;
     display: flex;
     justify-content: start;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 50%;
+    font-size: 16px;
     font-weight: bold;
   }
 
@@ -108,12 +110,12 @@ export const bridesText = css`
 `
 export const smallIcon = css`
   margin-left: 5px;
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
 
   svg {
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
   }
 `
 
