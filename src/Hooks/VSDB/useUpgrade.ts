@@ -11,12 +11,13 @@ import {
 import { upgrade } from '@/Constants/API/vsdb'
 import { queryClient } from '@/App'
 import { check_network } from '@/Utils'
+import { SettingInterface } from '@/Components/SettingModal'
 
 type MutationProps = {
   vsdb: string
 }
 
-export const useUpgrade = () => {
+export const useUpgrade = (setting: SettingInterface) => {
   const rpc = useRpc()
 
   const { signTransactionBlock, currentAccount } = useWalletKit()
@@ -27,6 +28,7 @@ export const useUpgrade = () => {
       if (!isValidSuiObjectId(vsdb)) throw new Error('invalid VSDB ID')
 
       const txb = new TransactionBlock()
+      txb.setGasBudget(Number(setting.gasBudget))
       upgrade(txb, vsdb)
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({

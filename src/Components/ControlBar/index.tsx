@@ -57,9 +57,9 @@ const ControlBarComponent = (props: Props) => {
 
             return Number(
               BigInt(next.totalBalance) *
-              BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
-              BigInt(prev.totalBalance) *
-              BigInt('10') ** BigInt((9 - _prevIdx).toString()),
+                BigInt('10') ** BigInt((9 - _nextIdx).toString()) -
+                BigInt(prev.totalBalance) *
+                  BigInt('10') ** BigInt((9 - _prevIdx).toString()),
             )
           })
           .map((balance, idx) => {
@@ -96,7 +96,7 @@ const ControlBarComponent = (props: Props) => {
             const percentage = BigNumber(data.lp_balance).div(lp_supply)
             const x = percentage.multipliedBy(reserve_x)
             const y = percentage.multipliedBy(reserve_y)
-
+            console.log(formatBalance(x, _coinXIdx.decimals))
             return (
               <Coincard
                 key={idx}
@@ -175,10 +175,10 @@ const ControlBarComponent = (props: Props) => {
         />
       )}
       {isCoinDataLoading ||
-        isLpDataLoading ||
-        isPoolDataLoading ||
-        isStakeDataLoading ||
-        isPoolDataLoading ? (
+      isLpDataLoading ||
+      isPoolDataLoading ||
+      isStakeDataLoading ||
+      isPoolDataLoading ? (
         <div className={styles.cardLoadingContent}>
           <Loading />
         </div>

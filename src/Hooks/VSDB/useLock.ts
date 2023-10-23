@@ -13,13 +13,17 @@ import { lock, vsdb_package } from '@/Constants/API/vsdb'
 import { Coin } from '@/Constants/coin'
 import { payCoin } from '@/Utils/payCoin'
 import { check_network } from '@/Utils'
+import { SettingInterface } from '@/Components/SettingModal'
 
 type MutationProps = {
   deposit_value: string
   extended_duration: string
 }
 
-export const useLock = (setIsShowCreateVSDBModal: Function) => {
+export const useLock = (
+  setting: SettingInterface,
+  setIsShowCreateVSDBModal: Function,
+) => {
   const rpc = useRpc()
   const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
@@ -30,6 +34,7 @@ export const useLock = (setIsShowCreateVSDBModal: Function) => {
       if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
+      txb.setGasBudget(Number(setting.gasBudget))
       const sdb_coins = await rpc.getCoins({
         owner: currentAccount.address,
         coinType: Coin.SDB,

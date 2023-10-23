@@ -9,6 +9,7 @@ import {
 import { toast } from 'react-hot-toast'
 import {
   claim_fees_player,
+  create_lp,
   delete_lp,
   quote_remove_liquidity,
   remove_liquidity,
@@ -22,7 +23,7 @@ type MutationArgs = {
   pool_type_x: string
   pool_type_y: string
   gauge_id: string
-  lp_id: string
+  lp_id: string | null
   stake_id: string
   withdrawl: string
 }
@@ -47,13 +48,17 @@ export const useUnStakeAndWithdraw = (setting: SettingInterface) => {
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
+
+      let lp = lp_id
+        ? txb.object(lp_id)
+        : create_lp(txb, pool_id, pool_type_x, pool_type_y)
       unstake(
         txb,
         gauge_id,
         pool_id,
         pool_type_x,
         pool_type_y,
-        lp_id,
+        lp,
         stake_id,
         withdrawl,
       )
@@ -73,15 +78,16 @@ export const useUnStakeAndWithdraw = (setting: SettingInterface) => {
         pool_id,
         pool_type_x,
         pool_type_y,
-        lp_id,
+        lp,
         withdrawl,
         quote[0],
         quote[1],
       )
-      claim_fees_player(txb, pool_id, lp_id, pool_type_x, pool_type_y)
+      if (lp_id != null)
+        claim_fees_player(txb, pool_id, lp_id, pool_type_x, pool_type_y)
 
       // LP should withdraw all the fee revenue before burn it
-      delete_lp(txb, lp_id, pool_type_x, pool_type_y)
+      delete_lp(txb, lp, pool_type_x, pool_type_y)
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({

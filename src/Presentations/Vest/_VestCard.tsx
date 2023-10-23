@@ -128,17 +128,17 @@ const VestCardComponent = (props: Props) => {
     }
   }
 
-  const { mutate: initialize_amm } = useRegisterAMMState()
+  const { mutate: initialize_amm } = useRegisterAMMState(setting)
   const handleInitializeAMM = () => {
     if (!amm_state) initialize_amm({ vsdb: nftId })
   }
 
-  const { mutate: initialize_voting_state } = useRegisterVotingState()
+  const { mutate: initialize_voting_state } = useRegisterVotingState(setting)
   const handleInitializeVotingState = () => {
     if (!voting_state) initialize_voting_state({ vsdb: nftId })
   }
 
-  const { mutate: upgrade } = useUpgrade()
+  const { mutate: upgrade } = useUpgrade(setting)
   const handleUpgrade = () => {
     upgrade({ vsdb: nftId })
   }
@@ -221,13 +221,13 @@ const VestCardComponent = (props: Props) => {
                 <>
                   {(!voting_state ||
                     round_down_week(new Date().getTime() / 1000) >=
-                    parseInt(voting_state.last_voted)) && (
-                      <Button
-                        styletype='outlined'
-                        text='Unlock'
-                        onClick={() => handleUnlock(nftId)}
-                      />
-                    )}
+                      parseInt(voting_state.last_voted)) && (
+                    <Button
+                      styletype='outlined'
+                      text='Unlock'
+                      onClick={() => handleUnlock(nftId)}
+                    />
+                  )}
                   {setIsShowWithdrawVSDBModal && (
                     <Button
                       styletype='outlined'

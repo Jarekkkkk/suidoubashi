@@ -25,6 +25,7 @@ import { useIncreaseUnlockTime } from '@/Hooks/VSDB/useIncreaseUnlockTime'
 import { useIncreaseUnlockAmount } from '@/Hooks/VSDB/useIncreaseUnlockAmount'
 import { useGetVsdb } from '@/Hooks/VSDB/useGetVSDB'
 import { handleIncreaseDurationVesdbOnchange } from '@/Utils/vsdb'
+import { usePageContext } from '@/Components/Page'
 
 type Props = {
   currentVSDBId: string
@@ -35,6 +36,7 @@ type Props = {
 const DepositVSDBModal = (props: Props) => {
   const { isShowDepositVSDBModal, setIsShowDepositVSDBModal, currentVSDBId } =
     props
+  const { setting } = usePageContext()
 
   const [endDate, setEndDate] = useState<string>(
     moment().add(168, 'days').toDate().toDateString(),
@@ -75,7 +77,7 @@ const DepositVSDBModal = (props: Props) => {
   const {
     mutate: increase_unlocked_amount,
     isLoading: incrase_amount_isLoading,
-  } = useIncreaseUnlockAmount(setIsShowDepositVSDBModal)
+  } = useIncreaseUnlockAmount(setting, setIsShowDepositVSDBModal)
   const handleIncreaseAmount = () => {
     if (!input) return null
 
@@ -88,7 +90,7 @@ const DepositVSDBModal = (props: Props) => {
   const {
     mutate: increase_unlocked_time,
     isLoading: increase_unlock_time_isLoading,
-  } = useIncreaseUnlockTime(setIsShowDepositVSDBModal)
+  } = useIncreaseUnlockTime(setting, setIsShowDepositVSDBModal)
 
   const handleIncreaseDuration = () => {
     if (increase_unlock_time_isLoading) return

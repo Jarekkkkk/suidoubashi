@@ -11,6 +11,7 @@ import { payCoin } from '@/Utils/payCoin'
 import { swap_for_x, swap_for_y } from '@/Constants/API/pool'
 import { queryClient } from '@/App'
 import { check_network } from '@/Utils'
+import { SettingInterface } from '@/Components/SettingModal'
 
 type SwapMutationArgs = {
   pool_id: string
@@ -22,7 +23,10 @@ type SwapMutationArgs = {
   vsdb: string | null
 }
 
-export const useSwap = (setCoinTypeFirst: Function) => {
+export const useSwap = (
+  setting: SettingInterface,
+  setCoinTypeFirst: Function,
+) => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
@@ -40,7 +44,7 @@ export const useSwap = (setCoinTypeFirst: Function) => {
       if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
-      txb.setGasBudget(Number('1000000'))
+      txb.setGasBudget(Number(setting.gasBudget))
       const input_type = is_type_x ? pool_type_x : pool_type_y
       // coin_x
       const coins = await rpc.getCoins({

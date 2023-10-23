@@ -250,13 +250,13 @@ const LiquidityPresentation = () => {
 
   const unstake = useUnStake(setting)
   const handleUnstake = () => {
-    if (poolData && lp && gaugeData && stake) {
+    if (poolData && gaugeData && stake) {
       unstake.mutate({
         pool_id: poolData.id,
         gauge_id: gaugeData.id,
         pool_type_x: poolData.type_x,
         pool_type_y: poolData.type_y,
-        lp_id: lp.id,
+        lp_id: lp ? lp.id : null,
         stake_id: stake.id,
         value: stake.stakes,
       })

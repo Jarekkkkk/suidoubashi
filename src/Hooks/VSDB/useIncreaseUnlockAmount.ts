@@ -12,6 +12,7 @@ import { increase_unlock_amount } from '@/Constants/API/vsdb'
 import { Coin } from '@/Constants/coin'
 import { payCoin } from '@/Utils/payCoin'
 import { check_network } from '@/Utils'
+import { SettingInterface } from '@/Components/SettingModal'
 
 type MutationProps = {
   vsdb: string
@@ -19,6 +20,7 @@ type MutationProps = {
 }
 
 export const useIncreaseUnlockAmount = (
+  setting: SettingInterface,
   setIsShowDepositVSDBModal: Function,
 ) => {
   const rpc = useRpc()
@@ -32,6 +34,7 @@ export const useIncreaseUnlockAmount = (
       if (!isValidSuiObjectId(vsdb)) throw new Error('invalid VSDB ID')
 
       const txb = new TransactionBlock()
+      txb.setGasBudget(Number(setting.gasBudget))
       const sdb_coins = await rpc.getCoins({
         owner: currentAccount.address,
         coinType: Coin.SDB,

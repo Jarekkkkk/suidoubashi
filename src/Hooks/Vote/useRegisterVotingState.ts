@@ -9,12 +9,13 @@ import { useWalletKit } from '@mysten/wallet-kit'
 import { toast } from 'react-hot-toast'
 import { initialize_voting_state } from '@/Constants/API/vote'
 import { check_network } from '@/Utils'
+import { SettingInterface } from '@/Components/SettingModal'
 
 interface MutationProps {
   vsdb: string
 }
 
-const useRegisterVotingState = () => {
+const useRegisterVotingState = (setting: SettingInterface) => {
   const rpc = useRpc()
   const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
@@ -24,6 +25,7 @@ const useRegisterVotingState = () => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       if (!check_network(currentAccount)) throw new Error('Wrong Network')
       const txb = new TransactionBlock()
+      txb.setGasBudget(Number(setting.gasBudget))
       initialize_voting_state(txb, vsdb)
       const signed_tx = await signTransactionBlock({ transactionBlock: txb })
 

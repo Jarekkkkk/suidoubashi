@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { SelectOption } from '@/Components/Select'
 import { useMerge } from '@/Hooks/VSDB/useMerge'
 import { calculate_vesdb } from '@/Utils/vsdb'
+import { usePageContext } from '@/Components/Page'
 
 type Props = {
   vsdbs: Vsdb[]
@@ -20,6 +21,7 @@ type Props = {
 
 const MergeVSDBModal = (props: Props) => {
   const { isShowMergeVSDBModal, setIsShowMergeVSDBModal, vsdbs } = props
+  const { setting } = usePageContext()
 
   const [currentVsdb, setCurrentVsdb] = useState<Vsdb>()
   const [secondVsdb, setSecondVsdb] = useState<Vsdb>()
@@ -50,7 +52,7 @@ const MergeVSDBModal = (props: Props) => {
     return _mergedVsdb
   }, [secondVsdb, currentVsdb])
 
-  const { mutate: merge, isLoading, isSuccess } = useMerge()
+  const { mutate: merge, isLoading, isSuccess } = useMerge(setting)
 
   const handleMerge = async () => {
     if (!currentVsdb || !secondVsdb) return null

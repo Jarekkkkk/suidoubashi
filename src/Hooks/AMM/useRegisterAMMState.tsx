@@ -9,12 +9,13 @@ import { initialize_amm } from '@/Constants/API/pool'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { toast } from 'react-hot-toast'
 import { check_network } from '@/Utils'
+import { SettingInterface } from '@/Components/SettingModal'
 
 interface MutationProps {
   vsdb: string
 }
 
-const useRegisterAMMState = () => {
+const useRegisterAMMState = (setting: SettingInterface) => {
   const rpc = useRpc()
   const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
@@ -25,6 +26,7 @@ const useRegisterAMMState = () => {
       if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
+      txb.setGasBudget(Number(setting.gasBudget))
       initialize_amm(txb, vsdb)
       const signed_tx = await signTransactionBlock({ transactionBlock: txb })
 

@@ -11,13 +11,14 @@ import {
 import { queryClient } from '@/App'
 import { merge } from '@/Constants/API/vsdb'
 import { check_network } from '@/Utils'
+import { SettingInterface } from '@/Components/SettingModal'
 
 type MutationProps = {
   vsdb: string
   mergedVsdb: string
 }
 
-export const useMerge = () => {
+export const useMerge = (setting: SettingInterface) => {
   const rpc = useRpc()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
@@ -29,6 +30,7 @@ export const useMerge = () => {
         throw new Error('invalid VSDB ID')
 
       const txb = new TransactionBlock()
+      txb.setGasBudget(Number(setting.gasBudget))
       merge(txb, vsdb, mergedVsdb)
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({

@@ -57,7 +57,7 @@ export const useRemoveLiquidity = (setting: SettingInterface) => {
         pool_id,
         pool_type_x,
         pool_type_y,
-        lp_id,
+        txb.object(lp_id),
         withdrawl,
         quote[0],
         quote[1],
@@ -66,7 +66,7 @@ export const useRemoveLiquidity = (setting: SettingInterface) => {
       claim_fees_player(txb, pool_id, lp_id, pool_type_x, pool_type_y)
 
       // LP should withdraw all the fee revenue before burn it
-      delete_lp(txb, lp_id, pool_type_x, pool_type_y)
+      delete_lp(txb, txb.object(lp_id), pool_type_x, pool_type_y)
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({

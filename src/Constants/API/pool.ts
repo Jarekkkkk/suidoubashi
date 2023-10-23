@@ -354,7 +354,7 @@ export function remove_liquidity(
   pool: string,
   pool_type_x: string,
   pool_type_y: string,
-  lp_id: string,
+  lp: any,
   value: bigint | number | string,
   deposit_x_min: bigint | number | string,
   deposit_y_min: bigint | number | string,
@@ -364,7 +364,7 @@ export function remove_liquidity(
     typeArguments: [pool_type_x, pool_type_y],
     arguments: [
       txb.object(pool),
-      txb.object(lp_id),
+      lp,
       txb.pure(value),
       txb.pure(deposit_x_min),
       txb.pure(deposit_y_min),
@@ -531,14 +531,14 @@ export const create_lp = (
 
 export function delete_lp(
   txb: TransactionBlock,
-  lp_id: string,
+  lp: any,
   type_x: string,
   type_y: string,
 ) {
   txb.moveCall({
     target: `${amm_package}::pool::delete_lp`,
     typeArguments: [type_x, type_y],
-    arguments: [txb.object(lp_id)],
+    arguments: [lp],
   })
 }
 

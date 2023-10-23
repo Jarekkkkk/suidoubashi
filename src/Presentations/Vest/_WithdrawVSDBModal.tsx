@@ -18,6 +18,7 @@ import { useGetVsdb } from '@/Hooks/VSDB/useGetVSDB'
 import { useRevive } from '@/Hooks/VSDB/useRevive'
 import UserModule from '@/Modules/User'
 import { handleIncreaseDurationVesdbOnchange } from '@/Utils/vsdb'
+import { usePageContext } from '@/Components/Page'
 
 type Props = {
   isShowWithdrawVSDBModal: boolean
@@ -28,6 +29,7 @@ type Props = {
 const WithdrawVSDBModal = (props: Props) => {
   const { isShowWithdrawVSDBModal, setIsShowWithdrawVSDBModal, currentVSDBId } =
     props
+  const { setting } = usePageContext()
 
   const [endDate, setEndDate] = useState<string>(
     moment().add(168, 'days').toDate().toDateString(),
@@ -39,7 +41,7 @@ const WithdrawVSDBModal = (props: Props) => {
   const walletAddress = UserModule.getUserToken()
   const { data: vsdb } = useGetVsdb(walletAddress, currentVSDBId)
 
-  const { mutate: revive, isLoading: isReviveLoading } = useRevive()
+  const { mutate: revive, isLoading: isReviveLoading } = useRevive(setting)
 
   const handleRevive = () => {
     if (isReviveLoading) return

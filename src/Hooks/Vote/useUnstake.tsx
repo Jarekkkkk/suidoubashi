@@ -10,13 +10,14 @@ import { toast } from 'react-hot-toast'
 import { claim_rewards, delete_stake, unstake } from '@/Constants/API/vote'
 import { SettingInterface } from '@/Components/SettingModal'
 import { check_network } from '@/Utils'
+import { create_lp } from '@/Constants/API/pool'
 
 type UnstakeArgs = {
   pool_id: string
   pool_type_x: string
   pool_type_y: string
   gauge_id: string
-  lp_id: string
+  lp_id: string | null
   stake_id: string
   value: string
 }
@@ -42,13 +43,16 @@ export const useUnStake = (setting: SettingInterface) => {
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
 
+      let lp = lp_id
+        ? txb.object(lp_id)
+        : create_lp(txb, pool_id, pool_type_x, pool_type_y)
       unstake(
         txb,
         gauge_id,
         pool_id,
         pool_type_x,
         pool_type_y,
-        lp_id,
+        lp,
         stake_id,
         value,
       )

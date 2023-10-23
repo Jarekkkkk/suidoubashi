@@ -65,7 +65,7 @@ export const useDepoistAndStake = (setting: SettingInterface) => {
         BigInt('10000')
       // LO
       let lp = lp_id
-        ? txb.pure(lp_id)
+        ? txb.object(lp_id)
         : create_lp(txb, pool_id, pool_type_x, pool_type_y)
 
       let stake = stake_id

@@ -515,7 +515,7 @@ export function unstake(
   pool_id: string,
   gauge_type_x: string,
   gauge_type_y: string,
-  lp: string,
+  lp: any,
   stake_id: string,
   value: string,
 ) {
@@ -525,7 +525,7 @@ export function unstake(
     arguments: [
       txb.object(gauge_id),
       txb.object(pool_id),
-      txb.object(lp),
+      lp,
       txb.object(stake_id),
       txb.pure(value),
       txb.object(SUI_CLOCK_OBJECT_ID),

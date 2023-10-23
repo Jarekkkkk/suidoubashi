@@ -10,13 +10,17 @@ import {
 import { toast } from 'react-hot-toast'
 import { increase_unlock_time } from '@/Constants/API/vsdb'
 import { check_network } from '@/Utils'
+import { SettingInterface } from '@/Components/SettingModal'
 
 type MutationProps = {
   vsdb: string
   extended_duration: string
 }
 
-export const useIncreaseUnlockTime = (setIsShowDepositVSDBModal: Function) => {
+export const useIncreaseUnlockTime = (
+  setting: SettingInterface,
+  setIsShowDepositVSDBModal: Function,
+) => {
   const rpc = useRpc()
   const queryClient = useQueryClient()
 
@@ -28,6 +32,7 @@ export const useIncreaseUnlockTime = (setIsShowDepositVSDBModal: Function) => {
       if (!isValidSuiObjectId(vsdb)) throw new Error('invalid VSDB ID')
 
       const txb = new TransactionBlock()
+      txb.setGasBudget(Number(setting.gasBudget))
       increase_unlock_time(txb, vsdb, extended_duration)
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
