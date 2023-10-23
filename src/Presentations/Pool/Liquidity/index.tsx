@@ -9,7 +9,7 @@ import {
   Button,
   Loading,
   Error,
-  Tooltip
+  Tooltip,
 } from '@/Components'
 import { LiquidityContext } from '@/Containers/Pool/Liquidity'
 import { Icon } from '@/Assets/icon'
@@ -172,9 +172,8 @@ const LiquidityPresentation = () => {
         pool_type_y: type_y,
         lp_id: lp ? lp.id : null,
         input_type: singleType.type,
-        input_value: (
-          Number(coinInputSingle) *
-          10 ** singleType.decimals
+        input_value: Math.floor(
+          Number(coinInputSingle) * 10 ** singleType.decimals,
         ).toString(),
       })
     }
@@ -215,9 +214,8 @@ const LiquidityPresentation = () => {
         lp_id: lp ? lp.id : null,
         stake_id: stake ? stake.id : null,
         input_type: singleType.type,
-        input_value: (
-          Number(coinInputSingle) *
-          10 ** singleType.decimals
+        input_value: Math.floor(
+          Number(coinInputSingle) * 10 ** singleType.decimals,
         ).toString(),
       })
     }
@@ -312,7 +310,9 @@ const LiquidityPresentation = () => {
           >
             <div className={cx(constantsStyles.boldText, styles.title)}>
               <span>Deposit</span>
-              <Tooltip content={<div>Deposit Liquidity to earn rewards.</div>} />
+              <Tooltip
+                content={<div>Deposit Liquidity to earn rewards.</div>}
+              />
             </div>
             <div className={cx(styles.ellipseTabList)}>
               <span
@@ -362,7 +362,14 @@ const LiquidityPresentation = () => {
                           styles.coinBlock,
                         )}
                       >
-                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', width: '100%' }}>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            justifyContent: 'space-between',
+                            width: '100%',
+                          }}
+                        >
                           <div
                             className={cx(
                               constantsStyles.rowContent,
@@ -584,12 +591,15 @@ const LiquidityPresentation = () => {
             <div className={cx(constantsStyles.boldText, styles.title)}>
               <Icon.PoolIcon />
               <span>Pool</span>
-              <Tooltip content={
-                <div>
-                  Your Coins in Pool enables you to earn a share of the transaction
-                  fees in proportion to the coins you've added to the pool.
-                </div>
-              } />
+              <Tooltip
+                content={
+                  <div>
+                    Your Coins in Pool enables you to earn a share of the
+                    transaction fees in proportion to the coins you've added to
+                    the pool.
+                  </div>
+                }
+              />
             </div>
             <div className={styles.coinContent}>
               <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
@@ -650,22 +660,23 @@ const LiquidityPresentation = () => {
             <div className={cx(constantsStyles.boldText, styles.title)}>
               <Icon.StakeIcon />
               <span>Stake</span>
-              <Tooltip content={
-                <div>
+              <Tooltip
+                content={
                   <div>
-                    Your Coins in Stake entitle to weekly rewards in the form of
-                    $SDB tokens.
+                    <div>
+                      Your Coins in Stake entitle to weekly rewards in the form
+                      of $SDB tokens.
+                      <br />
+                      These rewards are distributed based on the accumulated
+                      votes.
+                    </div>
                     <br />
-                    These rewards are distributed based on the
-                    accumulated votes.
+                    <div>
+                      When Unstake or Withdraw, we automatically help you
+                      acquire all the underlying emissions and transaction fees.
+                    </div>
                   </div>
-                  <br />
-                  <div>
-                    When Unstake or Withdraw, we automatically help you acquire
-                    all the underlying emissions and transaction fees.
-                  </div>
-                </div>
-              }
+                }
               />
             </div>
             <div className={styles.coinContent}>
