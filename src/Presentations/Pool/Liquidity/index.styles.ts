@@ -112,7 +112,7 @@ export const ellipseTabList = css`
   display: flex;
   flex-direction: row;
   margin: 20px 0;
-  width: 50%;
+  width: 250px;
   background-color: rgba(96, 98, 102, 0.25);
   border-radius: 12px;
   transition: 0.3s;

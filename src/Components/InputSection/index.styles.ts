@@ -26,6 +26,10 @@ export const titleBlock = css`
     width: 24px;
     height: 24px;
   }
+
+  @media screen and (max-width: 1024px) {
+   flex-wrap: wrap;
+  }
 `
 
 export const title = css`
@@ -44,3 +48,4 @@ export const balance = css`
     font-weight: bold;
   }
 `
+

@@ -150,7 +150,7 @@ const PoolPresentation = () => {
                       CoinFormat.FULL,
                     )}
                   </div>
-                  <span className={constantsStyles.greyText}>
+                  <span style={{ marginLeft: '5px' }} className={constantsStyles.greyText}>
                     {_poolCoinX!.name}
                   </span>
                 </div>
@@ -162,7 +162,7 @@ const PoolPresentation = () => {
                       CoinFormat.FULL,
                     )}
                   </div>
-                  <span className={constantsStyles.greyText}>
+                  <span style={{ marginLeft: '5px' }} className={constantsStyles.greyText}>
                     {_poolCoinY!.name}
                   </span>
                 </div>
@@ -185,7 +185,7 @@ const PoolPresentation = () => {
                       CoinFormat.FULL,
                     )}
                   </div>
-                  <span className={constantsStyles.greyText}>
+                  <span style={{ marginLeft: '5px' }} className={constantsStyles.greyText}>
                     {_poolCoinX!.name}
                   </span>
                 </div>
@@ -197,7 +197,7 @@ const PoolPresentation = () => {
                       CoinFormat.FULL,
                     )}
                   </div>
-                  <span className={constantsStyles.greyText}>
+                  <span style={{ marginLeft: '5px' }} className={constantsStyles.greyText}>
                     {_poolCoinY!.name}
                   </span>
                 </div>
@@ -205,7 +205,7 @@ const PoolPresentation = () => {
             )
           case 'apr':
             return (
-              <div style={{ fontWeight: 'bold' }} key={idx}>
+              <div style={{ fontWeight: 'bold', minWidth: '105px' }} key={idx}>
                 {!isNaN(apr) ? apr.toFixed(4) : "0"} %
               </div>
             )

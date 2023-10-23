@@ -6,6 +6,7 @@ import {
   Loading,
   Empty,
   CoinCombinImg,
+  Tooltip,
 } from '@/Components'
 import * as constantsStyles from '@/Constants/constants.styles'
 import * as styles from './index.styles'
@@ -140,9 +141,13 @@ const RewardsPresentation = () => {
           <div className={styles.title}>
             <Icon.StakeIcon />
             <span>Stake</span>
-          </div>
-          <div className={constantsStyles.lightGreyText}>
-            Provide liquidity to SuiDoBashi to earn SDB.
+            <Tooltip
+              content={
+                <div>
+                  Provide liquidity to SuiDoBashi to earn SDB.
+                </div>
+              }
+            />
           </div>
           <div
             className={cx(constantsStyles.boldText, css({ marginTop: '20px' }))}
@@ -189,14 +194,18 @@ const RewardsPresentation = () => {
           <div className={styles.title}>
             <Icon.VoteIcon />
             <span>Voting</span>
-          </div>
-          <div className={constantsStyles.lightGreyText}>
-            Votes to pools to earn fee and bribe revenues.
-            <br />
-            If you intend to stake your votes over multiple weeks, it's
-            advisable not to claim your rewards unless you plan to adjust your
-            vote distribution. If you're an active voter, claiming your rewards
-            each week after an epoch flip is perfectly fine.
+            <Tooltip
+              content={
+                <div>
+                  Votes to pools to earn fee and bribe revenues.
+                  <br />
+                  If you intend to stake your votes over multiple weeks, it's
+                  advisable not to claim your rewards unless you plan to adjust your
+                  vote distribution. If you're an active voter, claiming your rewards
+                  each week after an epoch flip is perfectly fine.
+                </div>
+              }
+            />
           </div>
           <div
             className={cx(constantsStyles.boldText, css({ marginTop: '20px' }))}

@@ -9,6 +9,7 @@ import {
   Button,
   Loading,
   Error,
+  Tooltip
 } from '@/Components'
 import { LiquidityContext } from '@/Containers/Pool/Liquidity'
 import { Icon } from '@/Assets/icon'
@@ -311,9 +312,7 @@ const LiquidityPresentation = () => {
           >
             <div className={cx(constantsStyles.boldText, styles.title)}>
               <span>Deposit</span>
-            </div>
-            <div className={constantsStyles.greyText}>
-              Deposit Liquidity to earn rewards.
+              <Tooltip content={<div>Deposit Liquidity to earn rewards.</div>} />
             </div>
             <div className={cx(styles.ellipseTabList)}>
               <span
@@ -363,7 +362,7 @@ const LiquidityPresentation = () => {
                           styles.coinBlock,
                         )}
                       >
-                        <div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', width: '100%' }}>
                           <div
                             className={cx(
                               constantsStyles.rowContent,
@@ -585,10 +584,12 @@ const LiquidityPresentation = () => {
             <div className={cx(constantsStyles.boldText, styles.title)}>
               <Icon.PoolIcon />
               <span>Pool</span>
-            </div>
-            <div className={constantsStyles.lightGreyText}>
-              Your Coins in Pool enables you to earn a share of the transaction
-              fees in proportion to the coins you've added to the pool
+              <Tooltip content={
+                <div>
+                  Your Coins in Pool enables you to earn a share of the transaction
+                  fees in proportion to the coins you've added to the pool.
+                </div>
+              } />
             </div>
             <div className={styles.coinContent}>
               <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
@@ -649,18 +650,23 @@ const LiquidityPresentation = () => {
             <div className={cx(constantsStyles.boldText, styles.title)}>
               <Icon.StakeIcon />
               <span>Stake</span>
-            </div>
-            <div className={constantsStyles.lightGreyText}>
-              Staked Liquidity.
-            </div>
-            <br />
-            <div className={constantsStyles.greyText}>
-              Your Balance
-              <div
-                className={cx(constantsStyles.boldText, styles.textMarginLeft)}
-              >
-                {formatBalance(stake?.stakes ?? '0', 9, CoinFormat.FULL)}
-              </div>
+              <Tooltip content={
+                <div>
+                  <div>
+                    Your Coins in Stake entitle to weekly rewards in the form of
+                    $SDB tokens.
+                    <br />
+                    These rewards are distributed based on the
+                    accumulated votes.
+                  </div>
+                  <br />
+                  <div>
+                    When Unstake or Withdraw, we automatically help you acquire
+                    all the underlying emissions and transaction fees.
+                  </div>
+                </div>
+              }
+              />
             </div>
             <div className={styles.coinContent}>
               <div className={cx(constantsStyles.rowContent, styles.coinBlock)}>
@@ -697,17 +703,6 @@ const LiquidityPresentation = () => {
                         coinTypeY.decimals,
                       )
                     : '0.00'}
-                </div>
-              </div>
-              <div className={styles.infoContent}>
-                <div className={constantsStyles.lightGreyText}>
-                  Your Coins in Stake entitle to weekly rewards in the form of
-                  $SDB tokens. These rewards are distributed based on the
-                  accumulated votes
-                </div>
-                <div className={constantsStyles.greyText}>
-                  When Unstake or Withdraw, we automatically help you acquire
-                  all the underlying emissions and transaction fees
                 </div>
               </div>
               <div className={styles.buttonContent}>
