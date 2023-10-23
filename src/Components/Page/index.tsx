@@ -39,7 +39,7 @@ const PageComponent = (props: Props) => {
 
   // Wallet
   const { currentAccount, isConnected } = useWalletKit()
-  const walletAddress =  UserModule.getUserToken() || currentAccount?.address
+  const walletAddress = UserModule.getUserToken() || currentAccount?.address
 
   if (isHiddenPage || (!walletAddress && !isDashboard)) {
     window.location.href = '/'
