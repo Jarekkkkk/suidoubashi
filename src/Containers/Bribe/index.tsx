@@ -1,6 +1,7 @@
 import { Rewards } from '@/Constants/API/vote'
 import { useGetAllGauge } from '@/Hooks/Vote/useGetGauge'
 import { useGetAllRewards } from '@/Hooks/Vote/useGetRewards'
+import { regexNumber } from '@/Constants/index'
 import React, {
   useState,
   useContext,
@@ -27,7 +28,7 @@ export const BribeContainer = ({ children }: PropsWithChildren) => {
   const handleInputOnchange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value
-      const isValid = /^-?\d*\.?\d*$/.test(value)
+      const isValid = regexNumber.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }

@@ -119,7 +119,7 @@ export const vsdbTimeSettingOptions = [
 
 export const regexEn = /^[A-Za-z]+$/
 
-export const regexNumber = /^[0-9]+$/
+export const regexNumber = /^-?\d*\.?\d*$/
 
 export const zeroAddress =
   '0x0000000000000000000000000000000000000000000000000000000000000000'

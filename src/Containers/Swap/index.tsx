@@ -9,6 +9,7 @@ import UserModule from '@/Modules/User'
 import { CoinIcon } from '@/Assets/icon'
 import { Coins, Coin, CoinInterface } from '@/Constants/coin'
 import { Pool } from '@/Constants/API/pool'
+import { regexNumber } from '@/Constants/index'
 import { useGetAllBalance, Balance } from '@/Hooks/Coin/useGetBalance'
 import { useGetAllPool } from '@/Hooks/AMM/useGetPool'
 
@@ -76,7 +77,7 @@ const SwapContainer = ({ children }: PropsWithChildren) => {
 
   const handleOnCoinInputFirstChange = useCallback(
     (value: string) => {
-      const isValid = /^-?\d*\.?\d*$/.test(value)
+      const isValid = regexNumber.test(value)
       if (!isValid) {
         value = value.slice(0, -1)
       }
