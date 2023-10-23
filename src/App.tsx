@@ -6,7 +6,6 @@ import { WalletKitProvider } from '@mysten/wallet-kit'
 import { generateLinks } from '@/Constants'
 import { Page, Toaster } from '@/Components'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -43,7 +42,7 @@ const App = () => {
             </Routes>
           </Page>
         </BrowserRouter>
-        <ReactQueryDevtools />
+        {/* <ReactQueryDevtools /> */}
       </WalletKitProvider>
     </QueryClientProvider>
   )

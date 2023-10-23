@@ -15,7 +15,7 @@ import { LiquidityContext } from '@/Containers/Pool/Liquidity'
 import { Icon } from '@/Assets/icon'
 import Image from '@/Assets/image'
 import useGetBalance from '@/Hooks/Coin/useGetBalance'
-import { CoinFormat, formatBalance } from '@/Utils/format'
+import { formatBalance } from '@/Utils/format'
 import { regexNumber } from '@/Constants/index'
 
 import * as styles from './index.styles'
@@ -85,9 +85,9 @@ const LiquidityPresentation = () => {
 
         if (
           parseFloat(value) * Math.pow(10, coinTypeX.decimals) >
-            Number(coinTypeXBalance?.totalBalance ?? '0') ||
+          Number(coinTypeXBalance?.totalBalance ?? '0') ||
           parseFloat(input_y || '0') * Math.pow(10, coinTypeY.decimals) >
-            Number(coinTypeYBalance?.totalBalance ?? '0')
+          Number(coinTypeYBalance?.totalBalance ?? '0')
         ) {
           setError('Insufficient Balance')
         } else {
@@ -117,9 +117,9 @@ const LiquidityPresentation = () => {
         setError('123')
         if (
           parseFloat(value) * Math.pow(10, coinTypeY.decimals) >
-            Number(coinTypeYBalance?.totalBalance ?? '0') ||
+          Number(coinTypeYBalance?.totalBalance ?? '0') ||
           parseFloat(input_x || '0') * Math.pow(10, coinTypeX.decimals) >
-            Number(coinTypeXBalance?.totalBalance ?? '0')
+          Number(coinTypeXBalance?.totalBalance ?? '0')
         ) {
           setError('Insufficient Balance')
         } else {
@@ -424,9 +424,9 @@ const LiquidityPresentation = () => {
                         balance={
                           coinTypeXBalance
                             ? formatBalance(
-                                coinTypeXBalance.totalBalance,
-                                coinTypeX.decimals,
-                              )
+                              coinTypeXBalance.totalBalance,
+                              coinTypeX.decimals,
+                            )
                             : '...'
                         }
                         titleChildren={
@@ -445,7 +445,7 @@ const LiquidityPresentation = () => {
                                 }
                               }}
                               placeholder={`${coinTypeX.name} Value`}
-                              // disabled={isLoading}
+                            // disabled={isLoading}
                             />
                           </>
                         }
@@ -454,9 +454,9 @@ const LiquidityPresentation = () => {
                         balance={
                           coinTypeYBalance
                             ? formatBalance(
-                                coinTypeYBalance.totalBalance,
-                                coinTypeY.decimals,
-                              )
+                              coinTypeYBalance.totalBalance,
+                              coinTypeY.decimals,
+                            )
                             : '...'
                         }
                         titleChildren={
@@ -475,7 +475,7 @@ const LiquidityPresentation = () => {
                                 }
                               }}
                               placeholder={`${coinTypeY.name} Value`}
-                              // disabled={isLoading}
+                            // disabled={isLoading}
                             />
                           </>
                         }
@@ -516,9 +516,9 @@ const LiquidityPresentation = () => {
                       balance={
                         singleTypeBalance
                           ? formatBalance(
-                              singleTypeBalance.totalBalance,
-                              singleType.decimals,
-                            )
+                            singleTypeBalance.totalBalance,
+                            singleType.decimals,
+                          )
                           : '...'
                       }
                       titleChildren={
@@ -545,7 +545,7 @@ const LiquidityPresentation = () => {
                                 handleOnCoinInputSingleChange(e)
                                 if (
                                   parseFloat(e.target.value) *
-                                    Math.pow(10, singleType.decimals) >
+                                  Math.pow(10, singleType.decimals) >
                                   Number(singleTypeBalance.totalBalance)
                                 ) {
                                   setError('Insufficient Balance')
@@ -555,7 +555,7 @@ const LiquidityPresentation = () => {
                               }
                             }}
                             placeholder={`${singleType.name} Value`}
-                            // disabled={isLoading}
+                          // disabled={isLoading}
                           />
                         </>
                       }
@@ -612,11 +612,11 @@ const LiquidityPresentation = () => {
                 <div className={constantsStyles.boldText}>
                   {poolData && lp
                     ? lp_position(
-                        poolData.reserve_x,
-                        poolData.lp_supply,
-                        lp.lp_balance,
-                        coinTypeX.decimals,
-                      )
+                      poolData.reserve_x,
+                      poolData.lp_supply,
+                      lp.lp_balance,
+                      coinTypeX.decimals,
+                    )
                     : '0.00'}
                 </div>
               </div>
@@ -630,11 +630,11 @@ const LiquidityPresentation = () => {
                 <div className={constantsStyles.boldText}>
                   {poolData && lp
                     ? lp_position(
-                        poolData.reserve_y,
-                        poolData.lp_supply,
-                        lp.lp_balance,
-                        coinTypeY.decimals,
-                      )
+                      poolData.reserve_y,
+                      poolData.lp_supply,
+                      lp.lp_balance,
+                      coinTypeY.decimals,
+                    )
                     : '0.00'}
                 </div>
               </div>
@@ -690,11 +690,11 @@ const LiquidityPresentation = () => {
                 <div className={constantsStyles.boldText}>
                   {poolData && stake?.stakes
                     ? lp_position(
-                        poolData.reserve_x,
-                        poolData.lp_supply,
-                        stake.stakes,
-                        coinTypeX.decimals,
-                      )
+                      poolData.reserve_x,
+                      poolData.lp_supply,
+                      stake.stakes,
+                      coinTypeX.decimals,
+                    )
                     : '0.00'}
                 </div>
               </div>
@@ -708,11 +708,11 @@ const LiquidityPresentation = () => {
                 <div className={constantsStyles.boldText}>
                   {poolData && stake?.stakes
                     ? lp_position(
-                        poolData.reserve_y,
-                        poolData.lp_supply,
-                        stake.stakes,
-                        coinTypeY.decimals,
-                      )
+                      poolData.reserve_y,
+                      poolData.lp_supply,
+                      stake.stakes,
+                      coinTypeY.decimals,
+                    )
                     : '0.00'}
                 </div>
               </div>

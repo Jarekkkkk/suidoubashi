@@ -45,7 +45,6 @@ export const useZap = (setting: SettingInterface) => {
         owner: currentAccount.address,
         coinType: input_type,
       })
-      console.log('input_value', input_value)
       const coin = payCoin(txb, coins, input_value, input_type)
 
       // LP
@@ -71,7 +70,6 @@ export const useZap = (setting: SettingInterface) => {
       if (getExecutionStatusType(res) == 'failure') {
         const err = getExecutionStatusError(res)
         if (err) {
-          console.log(err)
           if (err == 'InsufficientGas') throw new Error('InsufficientGas')
           const code = extract_err_message(err)
           if (code == '103') throw new Error('Slippage Error')

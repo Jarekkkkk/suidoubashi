@@ -39,7 +39,6 @@ const PageComponent = (props: Props) => {
 
   // Wallet
   const { currentAccount, isConnected } = useWalletKit()
-  console.log('wallet_address', currentAccount?.address)
   const walletAddress = UserModule.getUserToken() || currentAccount?.address
 
   if (isHiddenPage || (!walletAddress && !isDashboard)) {

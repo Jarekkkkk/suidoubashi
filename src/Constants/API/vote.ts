@@ -816,4 +816,5 @@ export async function distribute(
     transactionBlock: signed_tx.transactionBlockBytes,
     signature: signed_tx.signature,
   })
+  console.log('res', res)
 }

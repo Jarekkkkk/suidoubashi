@@ -118,8 +118,6 @@ const RewardsPresentation = () => {
     if (!voterRewardsIsLoading) get_vote_rewards()
   }, [currentNFTInfo.data?.voting_state?.unclaimed_rewards, rewardsData])
 
-  console.log('voterRewards', voterRewards)
-
   if (fetching)
     return (
       <PageContainer title='Rewards' titleImg={Image.pageBackground_2}>
