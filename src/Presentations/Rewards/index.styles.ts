@@ -66,7 +66,6 @@ export const rewardsCard = css`
     display: flex;
     justify-content: start;
     align-items: center;
-    margin-bottom: 10px;
     width: 50%;
     font-size: 16px;
     font-weight: bold;
@@ -78,6 +77,10 @@ export const rewardsCard = css`
 
     button {
       margin-top: 0px;
+    }
+
+    span {
+      margin-bottom: 10px;
     }
 
     > div:not(:nth-last-child(1)) {
@@ -109,7 +112,6 @@ export const bridesText = css`
   }
 `
 export const smallIcon = css`
-  margin-left: 5px;
   width: 24px;
   height: 24px;
 
