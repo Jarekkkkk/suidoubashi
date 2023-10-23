@@ -12,14 +12,22 @@ export const TableWrapper = css`
 
   table {
     padding-top: 16px;
+    background-color: var(--Brand);
+    border-spacing: 0px;
   }
 
   thead {
-    color: var(--Grey);
+    position: sticky;
+    top: 0;
+    color: var(--White);
+    background-color: var(--Brand);
     font-size: 12px;
+    line-height: 2;
+    z-index: 10;
 
     tr > th {
       position: relative;
+      padding-bottom: 5px;
 
       :after {
         content: '';
@@ -31,6 +39,10 @@ export const TableWrapper = css`
         border-bottom: 1px solid var(--LightGrey);
       }
     }
+  }
+
+  tbody {
+    background-color: var(--White);
   }
 
   td {
