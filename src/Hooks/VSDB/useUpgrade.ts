@@ -9,6 +9,7 @@ import {
 } from '@mysten/sui.js'
 import { upgrade } from '@/Constants/API/vsdb'
 import { queryClient } from '@/App'
+import { check_network } from '@/Utils'
 
 type MutationProps = {
   vsdb: string
@@ -19,10 +20,9 @@ export const useUpgrade = () => {
 
   const { signTransactionBlock, currentAccount } = useWalletKit()
   return useMutation({
-    mutationFn: async ({
-      vsdb,
-    }: MutationProps) => {
+    mutationFn: async ({ vsdb }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
       if (!isValidSuiObjectId(vsdb)) throw new Error('invalid VSDB ID')
 
       const txb = new TransactionBlock()
@@ -34,14 +34,16 @@ export const useUpgrade = () => {
       })
 
       if (getExecutionStatusType(res) == 'failure') {
-        throw new Error('Mint SDB tx fail')
+        throw new Error('Upgrade tx fail')
       }
       return 'success'
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['vsdb', params.vsdb])
-      toast.success('Revive Success!')
+      toast.success('Upgrade VSDB NFT successfully!')
     },
-    onError: (_err: Error) => toast.error('Oops! Have some error'),
+    onError: (err: Error) => {
+      toast.error(err.message)
+    },
   })
 }

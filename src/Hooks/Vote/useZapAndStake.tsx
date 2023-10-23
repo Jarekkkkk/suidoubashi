@@ -1,27 +1,22 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
+import {
+  TransactionBlock,
+  getExecutionStatusError,
+  getExecutionStatusType,
+} from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
-import {
-  create_lp,
-  //  get_output,
-  //  zap_optimized_input_,
-  zap_x,
-  zap_y,
-} from '@/Constants/API/pool'
+import { create_lp, zap_x, zap_y } from '@/Constants/API/pool'
 import { SettingInterface } from '@/Components/SettingModal'
 import { create_stake, stake_all } from '@/Constants/API/vote'
+import { check_network, extract_err_message } from '@/Utils'
 
 type MutationArgs = {
   pool_id: string
   pool_type_x: string
   pool_type_y: string
-  reserve_x: string
-  reserve_y: string
-  stable: boolean
-  fee: string
   gauge_id: string
   lp_id: string | null
   stake_id: string | null
@@ -39,10 +34,6 @@ export const useZapAndStake = (setting: SettingInterface) => {
       pool_id,
       pool_type_x,
       pool_type_y,
-      //      reserve_x,
-      //      reserve_y,
-      //      stable,
-      //      fee,
       gauge_id,
       lp_id,
       stake_id,
@@ -50,6 +41,7 @@ export const useZapAndStake = (setting: SettingInterface) => {
       input_value,
     }: MutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
       // coin_x
@@ -58,33 +50,6 @@ export const useZapAndStake = (setting: SettingInterface) => {
         coinType: input_type,
       })
       const coin = payCoin(txb, coins, input_value, input_type)
-
-      //    const swapped_x = stable
-      //      ? BigInt(input_value) / BigInt(2)
-      //      : zap_optimized_input_(
-      //          pool_type_x === input_type ? reserve_x : reserve_y,
-      //          input_value,
-      //          fee,
-      //        )
-
-      //     const output = await get_output(
-      //       rpc,
-      //       currentAccount.address,
-      //       pool_id,
-      //       pool_type_x,
-      //       pool_type_y,
-      //       input_type,
-      //       swapped_x,
-      //     )
-
-      //      const deposit_x_min =
-      //        ((BigInt('10000') - BigInt(setting.slippage)) *
-      //          (BigInt(input_value) - swapped_x)) /
-      //        BigInt('10000')
-      //
-      //      const deposit_y_min =
-      //        ((BigInt('10000') - BigInt(setting.slippage)) * BigInt(output)) /
-      //        BigInt('10000')
 
       // LP
       let lp = lp_id
@@ -116,7 +81,12 @@ export const useZapAndStake = (setting: SettingInterface) => {
       })
 
       if (getExecutionStatusType(res) == 'failure') {
-        throw new Error('Vesting Vsdb Tx fail')
+        const err = getExecutionStatusError(res)
+        if (err) {
+          const code = extract_err_message(err)
+          if (code == '103') throw new Error('Slippage Error')
+        }
+        throw new Error('Zap & Stake Tx fail')
       }
     },
     onSuccess: (_, params) => {
@@ -125,10 +95,10 @@ export const useZapAndStake = (setting: SettingInterface) => {
       queryClient.invalidateQueries(['pool', params.pool_id])
       queryClient.invalidateQueries(['gauge', params.gauge_id])
       queryClient.invalidateQueries(['Stake'])
-      toast.success('Success!')
+      toast.success('Zap liqudiity & stake successfully!')
     },
-    onError: (_err: Error) => {
-      toast.error('Oops! Have some error')
+    onError: (err: Error) => {
+      toast.error(err.message)
     },
   })
 }

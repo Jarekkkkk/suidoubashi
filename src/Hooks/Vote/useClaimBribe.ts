@@ -5,6 +5,7 @@ import { TransactionBlock, getExecutionStatus } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { SettingInterface } from '@/Components/SettingModal'
 import { claim_bribes } from '@/Constants/API/vote'
+import { check_network } from '@/Utils'
 
 type MutationArgs = {
   bribe: string
@@ -29,7 +30,8 @@ export const useClaimBribes = (setting: SettingInterface) => {
       type_y,
       input_types,
     }: MutationArgs) => {
-      if (!currentAccount) throw new Error('no Wallet Account')
+      if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
@@ -44,16 +46,15 @@ export const useClaimBribes = (setting: SettingInterface) => {
       })
 
       if (getExecutionStatus(res)?.status == 'failure')
-        throw new Error('Tx Failed')
+        throw new Error('Claim Bribe Tx Failed')
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['balance'])
       queryClient.invalidateQueries(['vsdb', params.vsdb])
       toast.success('Claim Bribes Successfully')
     },
-    onError: (err) => {
-      console.log(err)
-      toast.error('Oops! Have some error')
+    onError: (err: Error) => {
+      toast.error(err.message)
     },
   })
 }

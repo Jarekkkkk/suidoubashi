@@ -11,6 +11,7 @@ import {
 } from '@/Constants/API/pool'
 import { queryClient } from '@/App'
 import { SettingInterface } from '@/Components/SettingModal'
+import { check_network } from '@/Utils'
 
 type MutationArgs = {
   pool_id: string
@@ -33,6 +34,7 @@ export const useRemoveLiquidity = (setting: SettingInterface) => {
       withdrawl,
     }: MutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
       // should refacotr
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
@@ -69,18 +71,17 @@ export const useRemoveLiquidity = (setting: SettingInterface) => {
       })
 
       if (getExecutionStatusType(res) == 'failure') {
-        throw new Error('Vesting Vsdb Tx fail')
+        throw new Error('Remove Liquidity Tx fail')
       }
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries()
       queryClient.invalidateQueries(['LP'])
       queryClient.invalidateQueries(['pool', params.pool_id])
-      toast.success('Remove Liquidity Success!')
+      toast.success('Remove Liquidity Successfully!')
     },
     onError: (err: Error) => {
-      console.error(err)
-      toast.error('Oops! Have some error')
+      toast.error(err.message)
     },
   })
 }

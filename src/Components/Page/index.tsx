@@ -42,12 +42,13 @@ const PageComponent = (props: Props) => {
   if (isHiddenPage || (!walletAddress && !isDashboard)) {
     window.location.href = '/'
   }
+  currentAccount?.chains
   // Vsdb
   const [currentVsdbId, setCurrentVsdbId] = useState(0)
   const { data: vsdbList } = useGetVsdbIDs(walletAddress)
   const currentNFTInfo = useGetVsdb(
     walletAddress,
-    !!vsdbList?.length ? vsdbList[currentVsdbId] : null
+    !!vsdbList?.length ? vsdbList[currentVsdbId] : null,
   )
   // Balance
   const { data: bal, isLoading: isCoinDataLoading } = useGetAllBalance(
@@ -79,7 +80,6 @@ const PageComponent = (props: Props) => {
       }
     }
   }
-
 
   // setting
   const [isSettingOpen, setIsSettingOpen] = useState(false)

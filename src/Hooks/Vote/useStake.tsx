@@ -5,6 +5,7 @@ import { TransactionBlock, getExecutionStatus } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { create_stake, stake_all } from '@/Constants/API/vote'
 import { SettingInterface } from '@/Components/SettingModal'
+import { check_network } from '@/Utils'
 
 type StakeFarmMutationArgs = {
   pool_id: string
@@ -29,7 +30,8 @@ export const useStake = (setting: SettingInterface) => {
       lp_id,
       stake_id,
     }: StakeFarmMutationArgs) => {
-      if (!currentAccount) throw new Error('no Wallet Account')
+      if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
@@ -59,7 +61,7 @@ export const useStake = (setting: SettingInterface) => {
       })
 
       if (getExecutionStatus(res)?.status == 'failure')
-        throw new Error('Tx Failed')
+        throw new Error('Stake Tx Failed')
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['LP'])
@@ -67,9 +69,8 @@ export const useStake = (setting: SettingInterface) => {
       queryClient.invalidateQueries(['Stake'])
       toast.success('Stake Liquidity Successfully')
     },
-    onError: (err) => {
-      console.log(err)
-      toast.error('Oops! Have some error')
+    onError: (err: Error) => {
+      toast.error(err.message)
     },
   })
 }

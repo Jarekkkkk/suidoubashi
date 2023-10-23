@@ -9,6 +9,7 @@ import {
 } from '@mysten/sui.js'
 import { queryClient } from '@/App'
 import { merge } from '@/Constants/API/vsdb'
+import { check_network } from '@/Utils'
 
 type MutationProps = {
   vsdb: string
@@ -22,6 +23,7 @@ export const useMerge = () => {
   return useMutation({
     mutationFn: async ({ vsdb, mergedVsdb }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
       if (!isValidSuiObjectId(vsdb) || !isValidSuiObjectId(mergedVsdb))
         throw new Error('invalid VSDB ID')
 
@@ -34,7 +36,7 @@ export const useMerge = () => {
       })
 
       if (getExecutionStatusType(res) == 'failure') {
-        throw new Error('Increase Unlock Amount tx fail')
+        throw new Error('Merge tx fail')
       }
 
       return mergedVsdb
@@ -48,6 +50,8 @@ export const useMerge = () => {
       queryClient.invalidateQueries(['vsdb', params.mergedVsdb])
       toast.success('Merge VSDB Successfully!')
     },
-    onError: (_err: Error) => toast.error('Oops! Have some error'),
+    onError: (err: Error) => {
+      toast.error(err.message)
+    },
   })
 }

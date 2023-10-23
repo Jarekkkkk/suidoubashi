@@ -8,6 +8,7 @@ import {
 } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { increase_unlock_time } from '@/Constants/API/vsdb'
+import { check_network } from '@/Utils'
 
 type MutationProps = {
   vsdb: string
@@ -22,6 +23,7 @@ export const useIncreaseUnlockTime = (setIsShowDepositVSDBModal: Function) => {
   return useMutation({
     mutationFn: async ({ vsdb, extended_duration }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
       if (!isValidSuiObjectId(vsdb)) throw new Error('invalid VSDB ID')
 
       const txb = new TransactionBlock()
@@ -33,16 +35,18 @@ export const useIncreaseUnlockTime = (setIsShowDepositVSDBModal: Function) => {
       })
 
       if (getExecutionStatusType(res) == 'failure') {
-        throw new Error('Mint SDB tx fail')
+        throw new Error('Increase Unlock Time tx fail')
       }
 
       return 'success'
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['vsdb', params.vsdb])
-      toast.success('Deposit VSDB Successfully!')
+      toast.success('Increase lockup duration Successfully!')
       setIsShowDepositVSDBModal(false)
     },
-    onError: (_err: Error) => toast.error('Oops! Have some error'),
+    onError: (err: Error) => {
+      toast.error(err.message)
+    },
   })
 }

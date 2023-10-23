@@ -5,6 +5,7 @@ import { TransactionBlock, getExecutionStatus } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { SettingInterface } from '@/Components/SettingModal'
 import { claim_rewards } from '@/Constants/API/vote'
+import { check_network } from '@/Utils'
 
 type MutationArgs = {
   gauge_id: string
@@ -25,7 +26,8 @@ export const useClaimRewards = (setting: SettingInterface) => {
       gauge_type_y,
       gauge_type_x,
     }: MutationArgs) => {
-      if (!currentAccount) throw new Error('no Wallet Account')
+      if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
@@ -39,16 +41,15 @@ export const useClaimRewards = (setting: SettingInterface) => {
       })
 
       if (getExecutionStatus(res)?.status == 'failure')
-        throw new Error('Tx Failed')
+        throw new Error('Claim Rewards Tx Failed')
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['balance'])
       queryClient.invalidateQueries(['Stake'])
       toast.success('Claim SDB rewards Successfully')
     },
-    onError: (err) => {
-      console.log(err)
-      toast.error('Oops! Have some error')
+    onError: (err: Error) => {
+      toast.error(err.message)
     },
   })
 }

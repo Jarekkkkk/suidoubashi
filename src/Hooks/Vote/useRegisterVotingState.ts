@@ -1,10 +1,10 @@
-
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useRpc from '../useRpc'
-import { TransactionBlock } from '@mysten/sui.js'
+import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { toast } from 'react-hot-toast'
 import { initialize_voting_state } from '@/Constants/API/vote'
+import { check_network } from '@/Utils'
 
 interface MutationProps {
   vsdb: string
@@ -13,10 +13,12 @@ interface MutationProps {
 const useRegisterVotingState = () => {
   const rpc = useRpc()
   const queryClient = useQueryClient()
-  const { signTransactionBlock  } = useWalletKit()
+  const { signTransactionBlock, currentAccount } = useWalletKit()
 
   return useMutation({
     mutationFn: async ({ vsdb }: MutationProps) => {
+      if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
       const txb = new TransactionBlock()
       initialize_voting_state(txb, vsdb)
       const signed_tx = await signTransactionBlock({ transactionBlock: txb })
@@ -26,13 +28,17 @@ const useRegisterVotingState = () => {
         signature: signed_tx.signature,
       })
 
-      if (res.effects?.status.status == 'failure') throw Error
+      if (getExecutionStatusType(res) == 'failure') {
+        throw new Error('Register Vote State Tx fail')
+      }
     },
     onSuccess: (_, params) => {
-      queryClient.invalidateQueries(['vsdb',params.vsdb])
-      toast.success('Initiazlie successfully !')
+      queryClient.invalidateQueries(['vsdb', params.vsdb])
+      toast.success('Initiazlie vote badge successfully !')
     },
-    onError: (_: Error) => toast.error('Oops! Have some error'),
+    onError: (err: Error) => {
+      toast.error(err.message)
+    },
   })
 }
 

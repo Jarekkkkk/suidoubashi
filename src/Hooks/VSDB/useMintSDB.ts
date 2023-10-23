@@ -8,6 +8,7 @@ import {
 import { toast } from 'react-hot-toast'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { mint_sdb } from '@/Constants/API/vsdb'
+import { check_network } from '@/Utils'
 
 export const useMintSDB = () => {
   const rpc = useRpc()
@@ -20,6 +21,7 @@ export const useMintSDB = () => {
         !isValidSuiAddress(currentAccount.address)
       )
         throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
       mint_sdb(txb)
@@ -37,6 +39,8 @@ export const useMintSDB = () => {
       queryClient.invalidateQueries(['balance'])
       toast.success('Mint 100 SDB Successfully!')
     },
-    onError: (_: Error) => toast.error('Oops! Have some error'),
+    onError: (err: Error) => {
+      toast.error(err.message)
+    },
   })
 }

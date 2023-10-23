@@ -10,6 +10,7 @@ import { toast } from 'react-hot-toast'
 import { increase_unlock_amount } from '@/Constants/API/vsdb'
 import { Coin } from '@/Constants/coin'
 import { payCoin } from '@/Utils/payCoin'
+import { check_network } from '@/Utils'
 
 type MutationProps = {
   vsdb: string
@@ -26,6 +27,7 @@ export const useIncreaseUnlockAmount = (
   return useMutation({
     mutationFn: async ({ vsdb, depositValue }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
       if (!isValidSuiObjectId(vsdb)) throw new Error('invalid VSDB ID')
 
       const txb = new TransactionBlock()
@@ -50,9 +52,11 @@ export const useIncreaseUnlockAmount = (
       queryClient.invalidateQueries(['vsdb', params.vsdb])
       queryClient.invalidateQueries(['balance'])
 
-      toast.success('Deposit VSDB Successfully!')
+      toast.success('Deposit SDB to VSDB NFT Successfully!')
       setIsShowDepositVSDBModal(false)
     },
-    onError: (_err: Error) => toast.error('Oops! Have some error'),
+    onError: (err: Error) => {
+      toast.error(err.message)
+    },
   })
 }

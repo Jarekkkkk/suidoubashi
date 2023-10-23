@@ -10,16 +10,12 @@ import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
 import { create_lp, zap_x, zap_y } from '@/Constants/API/pool'
 import { SettingInterface } from '@/Components/SettingModal'
-import { extract_err_message } from '@/Utils'
+import { check_network, extract_err_message } from '@/Utils'
 
 type ZapMutationArgs = {
   pool_id: string
   pool_type_x: string
   pool_type_y: string
-  reserve_x: string
-  reserve_y: string
-  stable: boolean
-  fee: string
   lp_id: string | null
   input_type: string
   input_value: string
@@ -35,15 +31,12 @@ export const useZap = (setting: SettingInterface) => {
       pool_id,
       pool_type_x,
       pool_type_y,
-      reserve_x: _,
-      reserve_y: __,
-      stable: ___,
-      fee: ____,
       lp_id,
       input_type,
       input_value,
     }: ZapMutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
 
@@ -53,34 +46,6 @@ export const useZap = (setting: SettingInterface) => {
         coinType: input_type,
       })
       const coin = payCoin(txb, coins, input_value, input_type)
-
-      //   const swapped_x = stable
-      //     ? BigInt(input_value) / BigInt(2)
-      //     : zap_optimized_input_(
-      //         pool_type_x === input_type ? reserve_x : reserve_y,
-      //         input_value,
-      //         fee,
-      //       )
-
-      //  const output = await get_output(
-      //    rpc,
-      //    currentAccount.address,
-      //    pool_id,
-      //    pool_type_x,
-      //    pool_type_y,
-      //    input_type,
-      //    swapped_x,
-      //  )
-
-      //  const deposit_x_min =
-      //    (BigInt(Math.round(1000 - parseFloat(setting.slippage) * 10)) *
-      //      (BigInt(input_value) - swapped_x)) /
-      //    BigInt('1000')
-
-      //  const deposit_y_min =
-      //    (BigInt(Math.round(1000 - parseFloat(setting.slippage) * 10)) *
-      //      BigInt(output)) /
-      //    BigInt('1000')
 
       // LP
       let lp = lp_id
@@ -116,7 +81,7 @@ export const useZap = (setting: SettingInterface) => {
       queryClient.invalidateQueries(['LP'])
       queryClient.invalidateQueries(['balance'])
       queryClient.invalidateQueries(['pool', params.pool_id])
-      toast.success('Success!')
+      toast.success('Zap liquidity successfully!')
     },
     onError: (err: Error) => {
       toast.error(err.message)

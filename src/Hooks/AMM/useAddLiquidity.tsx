@@ -1,12 +1,17 @@
 import { useMutation } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
+import {
+  TransactionBlock,
+  getExecutionStatusError,
+  getExecutionStatusType,
+} from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
 import { add_liquidity, create_lp } from '@/Constants/API/pool'
 import { queryClient } from '@/App'
 import { SettingInterface } from '@/Components/SettingModal'
+import { check_network, extract_err_message } from '@/Utils'
 
 type AddLiquidityMutationArgs = {
   pool_id: string
@@ -31,6 +36,7 @@ export const useAddLiquidity = (setting: SettingInterface) => {
       input_y_value,
     }: AddLiquidityMutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
 
@@ -85,18 +91,22 @@ export const useAddLiquidity = (setting: SettingInterface) => {
       })
 
       if (getExecutionStatusType(res) == 'failure') {
-        throw new Error('Vesting Vsdb Tx fail')
+        const err = getExecutionStatusError(res)
+        if (err) {
+          const code = extract_err_message(err)
+          if (code == '103') throw new Error('Slippage Error')
+        }
+        throw new Error('Add Liquidity Tx fail')
       }
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['LP'])
       queryClient.invalidateQueries(['pool', params.pool_id])
       queryClient.invalidateQueries(['balance'])
-      toast.success('Add Liquidity Success!')
+      toast.success('Adding Liquidity Successfully!')
     },
-    onError: (_err: Error) => {
-      console.log(_err)
-      toast.error('Oops! Have some error')
+    onError: (err: Error) => {
+      toast.error(err.message)
     },
   })
 }

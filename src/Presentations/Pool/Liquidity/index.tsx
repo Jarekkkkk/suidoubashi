@@ -164,23 +164,11 @@ const LiquidityPresentation = () => {
   const zap = useZap(setting)
   const handleZap = () => {
     if (poolData) {
-      const {
-        id,
-        type_x,
-        type_y,
-        reserve_x,
-        reserve_y,
-        stable,
-        fee: { fee_percentage },
-      } = poolData
+      const { id, type_x, type_y } = poolData
       zap.mutate({
         pool_id: id,
         pool_type_x: type_x,
         pool_type_y: type_y,
-        reserve_x: reserve_x,
-        reserve_y: reserve_y,
-        stable,
-        fee: fee_percentage,
         lp_id: lp ? lp.id : null,
         input_type: singleType.type,
         input_value: (
@@ -217,23 +205,11 @@ const LiquidityPresentation = () => {
   const zap_and_stake = useZapAndStake(setting)
   const handleZapAndStake = () => {
     if (poolData && gaugeData) {
-      const {
-        id,
-        type_x,
-        type_y,
-        reserve_x,
-        reserve_y,
-        stable,
-        fee: { fee_percentage },
-      } = poolData
+      const { id, type_x, type_y } = poolData
       zap_and_stake.mutate({
         pool_id: id,
         pool_type_x: type_x,
         pool_type_y: type_y,
-        reserve_x: reserve_x,
-        reserve_y: reserve_y,
-        stable,
-        fee: fee_percentage,
         gauge_id: gaugeData.id,
         lp_id: lp ? lp.id : null,
         stake_id: stake ? stake.id : null,
@@ -730,7 +706,8 @@ const LiquidityPresentation = () => {
                   accumulated votes
                 </div>
                 <div className={constantsStyles.greyText}>
-                  When Unstake or Withdraw, we automatically help you acquire all the underlying emissions and transaction fees
+                  When Unstake or Withdraw, we automatically help you acquire
+                  all the underlying emissions and transaction fees
                 </div>
               </div>
               <div className={styles.buttonContent}>

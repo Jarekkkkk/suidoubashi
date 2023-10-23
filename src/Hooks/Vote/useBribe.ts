@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast'
 import { SettingInterface } from '@/Components/SettingModal'
 import { bribe } from '@/Constants/API/vote'
 import { payCoin } from '@/Utils/payCoin'
+import { check_network } from '@/Utils'
 
 type MutationArgs = {
   rewards: string
@@ -28,7 +29,8 @@ export const useBribe = (setting: SettingInterface, clearInput: Function) => {
       type_y,
       input_type,
     }: MutationArgs) => {
-      if (!currentAccount) throw new Error('no Wallet Account')
+      if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
@@ -47,7 +49,7 @@ export const useBribe = (setting: SettingInterface, clearInput: Function) => {
       })
 
       if (getExecutionStatus(res)?.status == 'failure')
-        throw new Error('Tx Failed')
+        throw new Error('Bribe Tx Failed')
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['balance'])
@@ -55,9 +57,8 @@ export const useBribe = (setting: SettingInterface, clearInput: Function) => {
       toast.success('Bribes Successfully')
       clearInput()
     },
-    onError: (err) => {
-      console.log(err)
-      toast.error('Oops! Have some error')
+    onError: (err: Error) => {
+      toast.error(err.message)
     },
   })
 }

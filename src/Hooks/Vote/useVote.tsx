@@ -1,11 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import {
-  TransactionBlock,
-  getExecutionStatus,
-  getExecutionStatusError,
-} from '@mysten/sui.js'
+import { TransactionBlock, getExecutionStatus } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { SettingInterface } from '@/Components/SettingModal'
 import {
@@ -16,6 +12,7 @@ import {
   vote_exit,
   voting_entry,
 } from '@/Constants/API/vote'
+import { check_network } from '@/Utils'
 
 type MutationArgs = {
   vsdb: string
@@ -31,7 +28,8 @@ export const useVote = (setting: SettingInterface) => {
 
   return useMutation({
     mutationFn: async ({ vsdb, reset, vote, voting_weights }: MutationArgs) => {
-      if (!currentAccount) throw new Error('no Wallet Account')
+      if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
@@ -80,7 +78,7 @@ export const useVote = (setting: SettingInterface) => {
       })
 
       if (getExecutionStatus(res)?.status == 'failure')
-        throw new Error(getExecutionStatusError(res))
+        throw new Error('Vote Tx Failed')
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['vsdb', params.vsdb])

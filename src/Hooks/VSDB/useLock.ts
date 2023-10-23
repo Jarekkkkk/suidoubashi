@@ -11,6 +11,7 @@ import {
 import { lock, vsdb_package } from '@/Constants/API/vsdb'
 import { Coin } from '@/Constants/coin'
 import { payCoin } from '@/Utils/payCoin'
+import { check_network } from '@/Utils'
 
 type MutationProps = {
   deposit_value: string
@@ -25,6 +26,7 @@ export const useLock = (setIsShowCreateVSDBModal: Function) => {
   return useMutation({
     mutationFn: async ({ deposit_value, extended_duration }: MutationProps) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
       const sdb_coins = await rpc.getCoins({
@@ -43,7 +45,7 @@ export const useLock = (setIsShowCreateVSDBModal: Function) => {
       })
 
       if (getExecutionStatusType(res) == 'failure') {
-        throw new Error('Vesting Vsdb Tx fail')
+        throw new Error('Create VSDB Tx fail')
       }
 
       return getObjectChanges(res)?.find(
@@ -61,6 +63,8 @@ export const useLock = (setIsShowCreateVSDBModal: Function) => {
       toast.success('Create VSDB Successfully!')
       setIsShowCreateVSDBModal(false)
     },
-    onError: (_: Error) => toast.error('Oops! Have some error'),
+    onError: (err: Error) => {
+      toast.error(err.message)
+    },
   })
 }

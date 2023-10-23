@@ -11,6 +11,7 @@ import {
 } from '@/Constants/API/pool'
 import { claim_rewards, delete_stake, unstake } from '@/Constants/API/vote'
 import { SettingInterface } from '@/Components/SettingModal'
+import { check_network } from '@/Utils'
 
 type MutationArgs = {
   pool_id: string
@@ -37,7 +38,8 @@ export const useUnStakeAndWithdraw = (setting: SettingInterface) => {
       stake_id,
       withdrawl,
     }: MutationArgs) => {
-      if (!currentAccount) throw new Error('no Wallet Account')
+      if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
@@ -84,17 +86,16 @@ export const useUnStakeAndWithdraw = (setting: SettingInterface) => {
       })
 
       if (getExecutionStatus(res)?.status == 'failure')
-        throw new Error('Tx Failed')
+        throw new Error('Unstake & Withdraw Tx Failed')
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['LP'])
       queryClient.invalidateQueries(['gauge', params.gauge_id])
       queryClient.invalidateQueries(['Stake'])
-      toast.success('Unstake Liquidity Successfully')
+      toast.success('Unstake Liquidity & Withdraw Successfully')
     },
-    onError: (err) => {
-      console.log(err)
-      toast.error('Oops! Have some error')
+    onError: (err: Error) => {
+      toast.error(err.message)
     },
   })
 }

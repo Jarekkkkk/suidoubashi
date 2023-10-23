@@ -191,7 +191,12 @@ const RewardsPresentation = () => {
             <span>Voting</span>
           </div>
           <div className={constantsStyles.lightGreyText}>
-            Votes to pools to earn fee and bribe revenues.<br/>If you intend to stake your votes over multiple weeks, it's advisable not to claim your rewards unless you plan to adjust your vote distribution. If you're an active voter, claiming your rewards each week after an epoch flip is perfectly fine.
+            Votes to pools to earn fee and bribe revenues.
+            <br />
+            If you intend to stake your votes over multiple weeks, it's
+            advisable not to claim your rewards unless you plan to adjust your
+            vote distribution. If you're an active voter, claiming your rewards
+            each week after an epoch flip is perfectly fine.
           </div>
           <div
             className={cx(constantsStyles.boldText, css({ marginTop: '20px' }))}

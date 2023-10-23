@@ -4,8 +4,9 @@ import { useWalletKit } from '@mysten/wallet-kit'
 import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
-import { Swap, amm_package, swap_for_x, swap_for_y } from '@/Constants/API/pool'
+import { swap_for_x, swap_for_y } from '@/Constants/API/pool'
 import { queryClient } from '@/App'
+import { check_network } from '@/Utils'
 
 type SwapMutationArgs = {
   pool_id: string
@@ -32,9 +33,10 @@ export const useSwap = (setCoinTypeFirst: Function) => {
       vsdb,
     }: SwapMutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
-      // should refacotr
       const txb = new TransactionBlock()
+      txb.setGasBudget(Number('1000000'))
       const input_type = is_type_x ? pool_type_x : pool_type_y
       // coin_x
       const coins = await rpc.getCoins({
@@ -69,18 +71,13 @@ export const useSwap = (setCoinTypeFirst: Function) => {
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
         options: {
-          showObjectChanges: true,
-          showEvents: true,
+          showEffects: true,
         },
       })
-
+      console.log('res', res)
       if (getExecutionStatusType(res) == 'failure') {
-        throw new Error('Vesting Vsdb Tx fail')
+        throw new Error('Swap Tx fail')
       }
-
-      return res.events?.find((e) =>
-        e.type.startsWith(`${amm_package}::event::Swap`),
-      )?.parsedJson as Swap
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['balance'])
@@ -88,11 +85,11 @@ export const useSwap = (setCoinTypeFirst: Function) => {
       queryClient.invalidateQueries(['gauges'])
       queryClient.invalidateQueries(['rewards'])
       if (params.vsdb) queryClient.invalidateQueries(['vsdb', params.vsdb])
-      toast.success('Swap Success!')
-      setCoinTypeFirst("")
+      toast.success('Swap Successfully!')
+      setCoinTypeFirst('')
     },
-    onError: (_err: Error) => {
-      toast.error('Oops! Have some error')
+    onError: (err: Error) => {
+      toast.error(err.message)
     },
   })
 }

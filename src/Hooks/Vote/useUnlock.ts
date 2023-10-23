@@ -12,6 +12,7 @@ import {
   voting_entry,
 } from '@/Constants/API/vote'
 import { unlock } from '@/Constants/API/vsdb'
+import { check_network } from '@/Utils'
 type MutationArgs = {
   vsdb: string
   reset?: Gauge[]
@@ -24,7 +25,8 @@ export const useUnlock = (setting: SettingInterface) => {
 
   return useMutation({
     mutationFn: async ({ vsdb, reset }: MutationArgs) => {
-      if (!currentAccount) throw new Error('no Wallet Account')
+      if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
@@ -60,17 +62,16 @@ export const useUnlock = (setting: SettingInterface) => {
       })
 
       if (getExecutionStatus(res)?.status == 'failure')
-        throw new Error('Tx Failed')
+        throw new Error('Unlock Tx Failed')
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['vsdb', params.vsdb])
       queryClient.invalidateQueries(['get-vsdbs'])
       if (params.reset) queryClient.invalidateQueries(['gauge'])
-      toast.success('reset Successfully')
+      toast.success('Burn VSDB NFT and unlock Successfully')
     },
-    onError: (err) => {
-      console.log(err)
-      toast.error('Oops! Have some error')
+    onError: (err: Error) => {
+      toast.error(err.message)
     },
   })
 }

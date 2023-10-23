@@ -5,6 +5,7 @@ import { TransactionBlock, getExecutionStatus } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { claim_rewards, delete_stake, unstake } from '@/Constants/API/vote'
 import { SettingInterface } from '@/Components/SettingModal'
+import { check_network } from '@/Utils'
 
 type UnstakeArgs = {
   pool_id: string
@@ -31,7 +32,8 @@ export const useUnStake = (setting: SettingInterface) => {
       lp_id,
       value,
     }: UnstakeArgs) => {
-      if (!currentAccount) throw new Error('no Wallet Account')
+      if (!currentAccount?.address) throw new Error('no wallet address')
+      if (!check_network(currentAccount)) throw new Error('Wrong Network')
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
@@ -56,7 +58,7 @@ export const useUnStake = (setting: SettingInterface) => {
       })
 
       if (getExecutionStatus(res)?.status == 'failure')
-        throw new Error('Tx Failed')
+        throw new Error('Unstake Tx Failed')
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['pool', params.pool_id])
@@ -64,9 +66,8 @@ export const useUnStake = (setting: SettingInterface) => {
       queryClient.invalidateQueries(['Stake'])
       toast.success('Unstake Liquidity Successfully')
     },
-    onError: (err) => {
-      console.log(err)
-      toast.error('Oops! Have some error')
+    onError: (err: Error) => {
+      toast.error(err.message)
     },
   })
 }
