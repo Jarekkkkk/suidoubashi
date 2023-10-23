@@ -7,6 +7,7 @@ import {
   getExecutionStatusType,
   getObjectChanges,
   SuiObjectChangeCreated,
+  getExecutionStatusError,
 } from '@mysten/sui.js'
 import { lock, vsdb_package } from '@/Constants/API/vsdb'
 import { Coin } from '@/Constants/coin'
@@ -41,10 +42,15 @@ export const useLock = (setIsShowCreateVSDBModal: Function) => {
         signature: signed_tx.signature,
         options: {
           showObjectChanges: true,
+          showEffects: true,
         },
       })
 
       if (getExecutionStatusType(res) == 'failure') {
+        const err = getExecutionStatusError(res)
+        if (err) {
+          if (err == 'InsufficientGas') throw new Error('InsufficientGas')
+        }
         throw new Error('Create VSDB Tx fail')
       }
 

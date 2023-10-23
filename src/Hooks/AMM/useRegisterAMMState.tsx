@@ -1,6 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useRpc from '../useRpc'
-import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
+import {
+  TransactionBlock,
+  getExecutionStatusError,
+  getExecutionStatusType,
+} from '@mysten/sui.js'
 import { initialize_amm } from '@/Constants/API/pool'
 import { useWalletKit } from '@mysten/wallet-kit'
 import { toast } from 'react-hot-toast'
@@ -27,9 +31,14 @@ const useRegisterAMMState = () => {
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
+        options: { showEffects: true },
       })
 
       if (getExecutionStatusType(res) == 'failure') {
+        const err = getExecutionStatusError(res)
+        if (err) {
+          if (err == 'InsufficientGas') throw new Error('InsufficientGas')
+        }
         throw new Error('Register AMM State Tx fail')
       }
     },

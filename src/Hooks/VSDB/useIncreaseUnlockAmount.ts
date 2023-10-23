@@ -5,6 +5,7 @@ import {
   TransactionBlock,
   isValidSuiObjectId,
   getExecutionStatusType,
+  getExecutionStatusError,
 } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { increase_unlock_amount } from '@/Constants/API/vsdb'
@@ -41,10 +42,14 @@ export const useIncreaseUnlockAmount = (
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
-        options: { showBalanceChanges: true },
+        options: { showEffects: true },
       })
 
       if (getExecutionStatusType(res) == 'failure') {
+        const err = getExecutionStatusError(res)
+        if (err) {
+          if (err == 'InsufficientGas') throw new Error('InsufficientGas')
+        }
         throw new Error('Increase Unlock Amount tx fail')
       }
     },

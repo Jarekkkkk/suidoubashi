@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import {
   TransactionBlock,
+  getExecutionStatusError,
   getExecutionStatusType,
   isValidSuiAddress,
 } from '@mysten/sui.js'
@@ -29,9 +30,14 @@ export const useMintSDB = () => {
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
+        options: { showEffects: true },
       })
 
       if (getExecutionStatusType(res) == 'failure') {
+        const err = getExecutionStatusError(res)
+        if (err) {
+          if (err == 'InsufficientGas') throw new Error('InsufficientGas')
+        }
         throw new Error('Mint SDB tx fail')
       }
     },

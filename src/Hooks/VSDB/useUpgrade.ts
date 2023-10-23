@@ -6,6 +6,7 @@ import {
   TransactionBlock,
   isValidSuiObjectId,
   getExecutionStatusType,
+  getExecutionStatusError,
 } from '@mysten/sui.js'
 import { upgrade } from '@/Constants/API/vsdb'
 import { queryClient } from '@/App'
@@ -31,9 +32,14 @@ export const useUpgrade = () => {
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
+        options: { showEffects: true },
       })
 
       if (getExecutionStatusType(res) == 'failure') {
+        const err = getExecutionStatusError(res)
+        if (err) {
+          if (err == 'InsufficientGas') throw new Error('InsufficientGas')
+        }
         throw new Error('Upgrade tx fail')
       }
       return 'success'

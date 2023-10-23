@@ -1,7 +1,11 @@
 import { useMutation } from '@tanstack/react-query'
 import useRpc from '../useRpc'
 import { useWalletKit } from '@mysten/wallet-kit'
-import { TransactionBlock, getExecutionStatusType } from '@mysten/sui.js'
+import {
+  TransactionBlock,
+  getExecutionStatusError,
+  getExecutionStatusType,
+} from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { payCoin } from '@/Utils/payCoin'
 import { swap_for_x, swap_for_y } from '@/Constants/API/pool'
@@ -74,8 +78,11 @@ export const useSwap = (setCoinTypeFirst: Function) => {
           showEffects: true,
         },
       })
-      console.log('res', res)
       if (getExecutionStatusType(res) == 'failure') {
+        const err = getExecutionStatusError(res)
+        if (err) {
+          if (err == 'InsufficientGas') throw new Error('InsufficientGas')
+        }
         throw new Error('Swap Tx fail')
       }
     },

@@ -78,12 +78,14 @@ export const useZapAndStake = (setting: SettingInterface) => {
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
+        options: { showEffects: true },
       })
 
       if (getExecutionStatusType(res) == 'failure') {
         const err = getExecutionStatusError(res)
         if (err) {
           const code = extract_err_message(err)
+          if (err == 'InsufficientGas') throw new Error('InsufficientGas')
           if (code == '103') throw new Error('Slippage Error')
         }
         throw new Error('Zap & Stake Tx fail')

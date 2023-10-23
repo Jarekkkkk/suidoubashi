@@ -71,6 +71,7 @@ export const useZap = (setting: SettingInterface) => {
       if (getExecutionStatusType(res) == 'failure') {
         const err = getExecutionStatusError(res)
         if (err) {
+          if (err == 'InsufficientGas') throw new Error('InsufficientGas')
           const code = extract_err_message(err)
           if (code == '103') throw new Error('Slippage Error')
         }

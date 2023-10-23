@@ -88,11 +88,15 @@ export const useAddLiquidity = (setting: SettingInterface) => {
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
         signature: signed_tx.signature,
+        options: {
+          showEffects: true,
+        },
       })
 
       if (getExecutionStatusType(res) == 'failure') {
         const err = getExecutionStatusError(res)
         if (err) {
+          if (err == 'InsufficientGas') throw new Error('InsufficientGas')
           const code = extract_err_message(err)
           if (code == '103') throw new Error('Slippage Error')
         }
