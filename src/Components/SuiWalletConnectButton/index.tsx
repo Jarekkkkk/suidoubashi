@@ -9,7 +9,6 @@ const SuiWalletConnectButton = () => {
   const ConnectToWallet = () => {
     const { currentAccount } = useWalletKit();
 
-
     useEffect(() => {
       if (currentAccount === null) {
         UserModule.removeUserToken();

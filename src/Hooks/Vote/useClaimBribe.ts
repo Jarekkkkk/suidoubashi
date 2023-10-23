@@ -10,6 +10,7 @@ import { toast } from 'react-hot-toast'
 import { SettingInterface } from '@/Components/SettingModal'
 import { claim_bribes } from '@/Constants/API/vote'
 import { check_network } from '@/Utils'
+import { Vsdb } from '@/Constants/API/vsdb'
 
 type MutationArgs = {
   bribe: string
@@ -20,7 +21,7 @@ type MutationArgs = {
   input_types: string[]
 }
 
-export const useClaimBribes = (setting: SettingInterface) => {
+export const useClaimBribes = (setting: SettingInterface, handleClearVoterRewards: Function) => {
   const rpc = useRpc()
   const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
@@ -60,7 +61,17 @@ export const useClaimBribes = (setting: SettingInterface) => {
     },
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['balance'])
-      queryClient.invalidateQueries(['vsdb', params.vsdb])
+      queryClient.setQueryData(
+        ['vsdb', params.vsdb],
+        (vsdb?: Vsdb) => {
+          const vsdb_ = vsdb ? { ...vsdb } : undefined
+          if (vsdb_) {
+            delete vsdb_.voting_state?.unclaimed_rewards[params.rewards]
+          }
+          return vsdb_
+        }
+      )
+      handleClearVoterRewards(params.rewards)
       toast.success('Claim Bribes Successfully')
     },
     onError: (err: Error) => {

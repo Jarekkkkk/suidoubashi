@@ -39,6 +39,7 @@ const PageComponent = (props: Props) => {
 
   // Wallet
   const { currentAccount, isConnected } = useWalletKit()
+  console.log('wallet_address', currentAccount?.address)
   const walletAddress = UserModule.getUserToken() || currentAccount?.address
 
   if (isHiddenPage || (!walletAddress && !isDashboard)) {
@@ -47,6 +48,7 @@ const PageComponent = (props: Props) => {
 
   // Vsdb
   const [currentVsdbId, setCurrentVsdbId] = useState(0)
+
   const { data: vsdbList } = useGetVsdbIDs(walletAddress)
   const currentNFTInfo = useGetVsdb(
     walletAddress,

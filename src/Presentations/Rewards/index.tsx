@@ -28,7 +28,7 @@ const RewardsPresentation = () => {
   const { rewardsData, stakeData, fetching } = useRewardsContext()
   const { setting, currentNFTInfo } = usePageContext()
 
-  const [voterRewards, setVoterRewards] = useState()
+  const [voterRewards, setVoterRewards] = useState<any>()
   const [voterRewardsIsLoading, setVoterRewardsIsLoading] = useState(false)
   const rpc = useRpc()
   const { currentAccount } = useWalletKit()
@@ -57,8 +57,10 @@ const RewardsPresentation = () => {
       }
     }
   }
-
-  const claim_bribes = useClaimBribes(setting)
+  const handleClearVoterRewards = (rewards_id: string) => {
+    delete voterRewards[rewards_id]
+  }
+  const claim_bribes = useClaimBribes(setting, handleClearVoterRewards)
   const handleClaimBribes = (
     bribe: string,
     rewards: string,
@@ -114,7 +116,9 @@ const RewardsPresentation = () => {
       }
     }
     if (!voterRewardsIsLoading) get_vote_rewards()
-  }, [currentNFTInfo, rewardsData, stakeData])
+  }, [currentNFTInfo.data?.voting_state?.unclaimed_rewards, rewardsData])
+
+  console.log('voterRewards', voterRewards)
 
   if (fetching)
     return (
@@ -199,7 +203,7 @@ const RewardsPresentation = () => {
                     />
                   </div>
                 )
-              }): <Empty content="No Stake Rewards" />
+              }) : <Empty content="No Stake Rewards" />
             }
           </div>
         </div>
@@ -237,74 +241,74 @@ const RewardsPresentation = () => {
                 <Spinner size={20} />
               </div>
             ) : (
-             (voterRewards && rewardsData) ?
-              Object.keys(voterRewards).map((rewards) => {
-                const reward = rewardsData.find((r) => r.id == rewards)
-                if (!reward) return
-                let earned_ = Object.entries(voterRewards[reward.id])
-                const coin_x = fetchCoinByType(reward.type_x)
-                const coin_y = fetchCoinByType(reward.type_y)
-                return (
-                  <div className={styles.rewardsCard}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        width: '20%',
-                      }}
-                    >
-                      <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
-                      <div className={constantsStyles.boldText}>
-                        {coin_x!.name + '/' + coin_y!.name}
+              (voterRewards && rewardsData) ?
+                Object.keys(voterRewards).map((rewards) => {
+                  const reward = rewardsData.find((r) => r.id == rewards)
+                  if (!reward) return
+                  let earned_ = Object.entries(voterRewards[reward.id])
+                  const coin_x = fetchCoinByType(reward.type_x)
+                  const coin_y = fetchCoinByType(reward.type_y)
+                  return (
+                    <div className={styles.rewardsCard}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          width: '20%',
+                        }}
+                      >
+                        <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
+                        <div className={constantsStyles.boldText}>
+                          {coin_x!.name + '/' + coin_y!.name}
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      className={cx(
-                        constantsStyles.columnContent,
-                        css({ alignItems: 'start', width: '50%' }),
-                      )}
-                    >
-                      {earned_.map((e) => {
-                        const coin = fetchCoinByType(e[0])
-                        return (
-                          <div
-                            className={cx(
-                              constantsStyles.columnContent,
-                              css({ marginLeft: '10px' }),
-                            )}
-                          >
-                            <div className={styles.bridesText}>
-                              {coin?.logo}
-                              <span>
-                                {formatBalance(
-                                  e[1] as string,
-                                  coin?.decimals ?? 0,
-                                )}
-                              </span>
+                      <div
+                        className={cx(
+                          constantsStyles.columnContent,
+                          css({ alignItems: 'start', width: '50%' }),
+                        )}
+                      >
+                        {earned_.map((e) => {
+                          const coin = fetchCoinByType(e[0])
+                          return (
+                            <div
+                              className={cx(
+                                constantsStyles.columnContent,
+                                css({ marginLeft: '10px' }),
+                              )}
+                            >
+                              <div className={styles.bridesText}>
+                                {coin?.logo}
+                                <span>
+                                  {formatBalance(
+                                    e[1] as string,
+                                    coin?.decimals ?? 0,
+                                  )}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        )
-                      })}
+                          )
+                        })}
+                      </div>
+                      <Button
+                        size='small'
+                        styletype='outlined'
+                        text='Claim'
+                        onClick={() =>
+                          handleClaimBribes(
+                            reward.bribe,
+                            reward.id,
+                            currentNFTInfo.data?.id,
+                            reward.type_x,
+                            reward.type_y,
+                            Object.keys(voterRewards[reward.id]),
+                          )
+                        }
+                      />
                     </div>
-                    <Button
-                      size='small'
-                      styletype='outlined'
-                      text='Claim'
-                      onClick={() =>
-                        handleClaimBribes(
-                          reward.bribe,
-                          reward.id,
-                          currentNFTInfo.data?.id,
-                          reward.type_x,
-                          reward.type_y,
-                          Object.keys(voterRewards[reward.id]),
-                        )
-                      }
-                    />
-                  </div>
-                )
-              }) : <Empty content="No Voting Rewards" />
+                  )
+                }) : <Empty content="No Voting Rewards" />
             )}
           </div>
           {/**

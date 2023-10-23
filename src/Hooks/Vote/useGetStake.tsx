@@ -49,7 +49,7 @@ export const useGetAllStake = (
         } as Stake
       })
 
-      Promise.all(
+      await Promise.all(
         stake.map(async (stake) => {
           const gauge = gauges.find(
             (g) => g.type_x == stake.type_x && g.type_y == stake.type_y,
