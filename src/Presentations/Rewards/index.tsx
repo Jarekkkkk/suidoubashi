@@ -150,19 +150,19 @@ const RewardsPresentation = () => {
             />
           </div>
           <div
-            className={cx(constantsStyles.boldText, css({ marginTop: '20px' }))}
+            className={cx(constantsStyles.greyText)}
           >
-            Your Position
+            Stake Position
           </div>
           <div
             style={{
               overflow: 'scroll',
               width: '100%',
               height: '100%',
-              padding: '0 10px',
+              padding: '10px',
             }}
           >
-            {stakeData
+            {stakeData ? stakeData
               .filter((r) => r.stakes !== '0')
               .map((r) => {
                 const coin_x = fetchCoinByType(r.type_x)
@@ -187,7 +187,8 @@ const RewardsPresentation = () => {
                     />
                   </div>
                 )
-              })}
+              }): <Empty content="No Stake Rewards" />
+            }
           </div>
         </div>
         <div className={styles.votingContainer}>
@@ -208,7 +209,7 @@ const RewardsPresentation = () => {
             />
           </div>
           <div
-            className={cx(constantsStyles.boldText, css({ marginTop: '20px' }))}
+            className={cx(constantsStyles.greyText)}
           >
             Bribes
           </div>
@@ -224,8 +225,7 @@ const RewardsPresentation = () => {
                 <Spinner size={20} />
               </div>
             ) : (
-              voterRewards &&
-              rewardsData &&
+             (voterRewards && rewardsData) ?
               Object.keys(voterRewards).map((rewards) => {
                 const reward = rewardsData.find((r) => r.id == rewards)
                 if (!reward) return
@@ -292,7 +292,7 @@ const RewardsPresentation = () => {
                     />
                   </div>
                 )
-              })
+              }) : <Empty content="No Voting Rewards" />
             )}
           </div>
           {/**
