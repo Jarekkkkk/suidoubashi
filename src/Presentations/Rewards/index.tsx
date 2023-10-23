@@ -169,7 +169,19 @@ const RewardsPresentation = () => {
                 const coin_y = fetchCoinByType(r.type_y)
                 return (
                   <div className={styles.rewardsCard} key={r.id}>
-                    <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        width: '35%',
+                      }}
+                    >
+                      <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
+                      <div className={constantsStyles.boldText}>
+                        {coin_x!.name + '/' + coin_y!.name}
+                      </div>
+                    </div>
                     <span>
                       <CoinIcon.SDBIcon
                         className={styles.smallIcon}

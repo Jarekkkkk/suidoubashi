@@ -66,7 +66,6 @@ export const rewardsCard = css`
     display: flex;
     justify-content: start;
     align-items: center;
-    width: 50%;
     font-size: 16px;
     font-weight: bold;
   }
