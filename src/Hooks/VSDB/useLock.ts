@@ -66,10 +66,10 @@ export const useLock = (
       ) as SuiObjectChangeCreated
     },
     onSuccess: (new_vsdb) => {
-      queryClient.setQueryData(['get-vsdbs'], (vsdb_ids?: string[]) => [
-        ...(vsdb_ids ?? []),
-        new_vsdb.objectId,
-      ])
+      queryClient.setQueryData(
+        ['get-vsdbs', currentAccount!.address],
+        (vsdb_ids?: string[]) => [...(vsdb_ids ?? []), new_vsdb.objectId],
+      )
       queryClient.invalidateQueries(['balance'])
       toast.success('Create VSDB Successfully!')
       setIsShowCreateVSDBModal(false)

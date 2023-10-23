@@ -60,7 +60,7 @@ export const useZap = (setting: SettingInterface) => {
       if (lp_id == null) {
         txb.transferObjects([lp], txb.pure(currentAccount.address))
       }
-
+      console.log('txb', txb)
       const signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
         transactionBlock: signed_tx.transactionBlockBytes,
