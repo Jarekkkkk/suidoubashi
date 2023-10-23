@@ -5,6 +5,7 @@ import { useGetVsdb, useGetVsdbIDs } from '@/Hooks/VSDB/useGetVSDB'
 import { Vsdb } from '@/Constants/API/vsdb'
 import { useGetAllLP } from '@/Hooks/AMM/useGetLP'
 import { useWalletKit } from '@mysten/wallet-kit'
+import UserModule from '@/Modules/User'
 
 import { generateSideBarLinks } from '@/Constants'
 import { Coins } from '@/Constants/coin'
@@ -38,10 +39,12 @@ const PageComponent = (props: Props) => {
 
   // Wallet
   const { currentAccount, isConnected } = useWalletKit()
-  const walletAddress = currentAccount?.address
+  const walletAddress =  UserModule.getUserToken() || currentAccount?.address
+
   if (isHiddenPage || (!walletAddress && !isDashboard)) {
     window.location.href = '/'
   }
+
   // Vsdb
   const [currentVsdbId, setCurrentVsdbId] = useState(0)
   const { data: vsdbList } = useGetVsdbIDs(walletAddress)
