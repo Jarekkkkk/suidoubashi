@@ -38,7 +38,8 @@ const PageComponent = (props: Props) => {
   )[0]?.isHidden
 
   // Wallet
-  const { currentAccount, isConnected } = useWalletKit();
+  const { currentAccount, selectAccount, accounts, isConnected } =
+    useWalletKit()
   const local_user = UserModule.getUserToken()
   const walletAddress = local_user || currentAccount?.address
 
@@ -92,6 +93,21 @@ const PageComponent = (props: Props) => {
     expiration: SettingModule.getExpirationToken() ?? defaultSetting.expiration,
     slippage: SettingModule.getSlippageToken() ?? defaultSetting.slippage,
   })
+  const [loaded, setloaded] = useState(false)
+
+  useEffect(() => {
+    if (currentAccount) {
+      if (!loaded) {
+        const active_account =
+          accounts.find((a) => a.address == local_user) ?? accounts[0]
+        selectAccount(active_account)
+        UserModule.setUserToken(active_account.address)
+        setloaded(true)
+      } else {
+        UserModule.setUserToken(currentAccount.address)
+      }
+    }
+  }, [currentAccount])
 
   if (isDashboard) {
     return (

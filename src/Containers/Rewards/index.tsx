@@ -15,6 +15,7 @@ export const useRewardsContext = () => useContext(RewardsContext)
 const RewardsContainer = ({ children }: PropsWithChildren) => {
   const gauge = useGetAllGauge()
   const { currentAccount } = useWalletKit()
+  console.log('account', currentAccount?.address)
   const stakes = useGetAllStake(
     currentAccount?.address,
     gauge.data,
