@@ -15,6 +15,7 @@ import { useGetAllGauge } from '@/Hooks/Vote/useGetGauge'
 import { usePageContext } from '@/Components/Page'
 import { useUnlock } from '@/Hooks/Vote/useUnlock'
 import { useUpgrade } from '@/Hooks/VSDB/useUpgrade'
+import { useRemoveVotingState } from '@/Hooks/Vote/useRemoveVotingState'
 
 interface Props {
   nftId: string
@@ -117,13 +118,19 @@ const VestCardComponent = (props: Props) => {
 
   const { mutate: unlock } = useUnlock(setting)
   const { data: gauges } = useGetAllGauge()
-  const handleUnlock = async (nftId: string) => {
+
+  const { mutate: remove_voting_state } = useRemoveVotingState(setting)
+  //@ts-ignore
+  const handleRemoveVotingState = () => {
     if (voting_state && gauges) {
       const reset_ = gauges.filter((g) =>
         Object.keys(voting_state.pool_votes).some((p) => p == g.pool),
       )
-      unlock({ vsdb: nftId, reset: reset_ })
-    } else {
+      remove_voting_state({ vsdb: nftId, voting_state, reset: reset_ })
+    }
+  }
+  const handleUnlock = (nftId: string) => {
+    if (!voting_state) {
       unlock({ vsdb: nftId })
     }
   }

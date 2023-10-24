@@ -8,26 +8,63 @@ import {
 } from '@mysten/sui.js'
 import { toast } from 'react-hot-toast'
 import { SettingInterface } from '@/Components/SettingModal'
-import { unlock } from '@/Constants/API/vsdb'
+import {
+  Gauge,
+  VotingState,
+  clear_voting_state,
+  reset_,
+  reset_exit,
+  voting_entry,
+} from '@/Constants/API/vote'
 import { check_network } from '@/Utils'
+import { round_down_week } from '@/Utils/vsdb'
 type MutationArgs = {
   vsdb: string
+  voting_state: VotingState
+  reset: Gauge[]
 }
 
-export const useUnlock = (setting: SettingInterface) => {
+export const useRemoveVotingState = (setting: SettingInterface) => {
   const rpc = useRpc()
   const queryClient = useQueryClient()
   const { signTransactionBlock, currentAccount } = useWalletKit()
 
   return useMutation({
-    mutationFn: async ({ vsdb }: MutationArgs) => {
+    mutationFn: async ({ vsdb, voting_state, reset }: MutationArgs) => {
       if (!currentAccount?.address) throw new Error('no wallet address')
       if (!check_network(currentAccount)) throw new Error('Wrong Network')
+      if (!!voting_state.unclaimed_rewards.length)
+        throw new Error('Unclaimed Rewards')
+      if (
+        round_down_week(Number(voting_state.last_voted)) ==
+        round_down_week(Date.now() / 1000)
+      )
+        throw new Error(
+          'Vote and reset in same epoch. Please wait for next epoch',
+        )
 
       const txb = new TransactionBlock()
       txb.setGasBudget(Number(setting.gasBudget))
 
-      unlock(txb, vsdb)
+      //main logic
+      if (reset.length > 0) {
+        let potato = voting_entry(txb, vsdb)
+        for (const gauge of reset) {
+          potato = reset_(
+            txb,
+            potato,
+            vsdb,
+            gauge.id,
+            gauge.bribe,
+            gauge.type_x,
+            gauge.type_y,
+          )
+        }
+        //revoke the votes
+        reset_exit(txb, potato, vsdb)
+      }
+      // clear the tags
+      clear_voting_state(txb, vsdb)
 
       let signed_tx = await signTransactionBlock({ transactionBlock: txb })
       const res = await rpc.executeTransactionBlock({
@@ -47,6 +84,7 @@ export const useUnlock = (setting: SettingInterface) => {
     onSuccess: (_, params) => {
       queryClient.invalidateQueries(['vsdb', params.vsdb])
       queryClient.invalidateQueries(['get-vsdbs', currentAccount!.address])
+      if (params.reset) queryClient.invalidateQueries(['gauge'])
       toast.success('Burn VSDB NFT and unlock Successfully')
     },
     onError: (err: Error) => {
