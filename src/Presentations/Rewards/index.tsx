@@ -87,6 +87,10 @@ const RewardsPresentation = () => {
         return
       }
       if (stakeData && currentAccount && rewardsData) {
+        console.log(
+          'unclaimed_rewards',
+          currentNFTInfo.data?.voting_state?.unclaimed_rewards,
+        )
         setVoterRewardsIsLoading(true)
 
         const unclaimed_rewards =
@@ -116,7 +120,11 @@ const RewardsPresentation = () => {
       }
     }
     if (!voterRewardsIsLoading) get_vote_rewards()
-  }, [currentNFTInfo.data?.voting_state?.unclaimed_rewards, rewardsData])
+  }, [
+    currentNFTInfo.data?.voting_state?.unclaimed_rewards,
+    rewardsData,
+    stakeData,
+  ])
 
   if (fetching)
     return (
@@ -144,18 +152,10 @@ const RewardsPresentation = () => {
             <Icon.StakeIcon />
             <span>Stake</span>
             <Tooltip
-              content={
-                <div>
-                  Provide liquidity to SuiDoBashi to earn SDB.
-                </div>
-              }
+              content={<div>Provide liquidity to SuiDoBashi to earn SDB.</div>}
             />
           </div>
-          <div
-            className={cx(constantsStyles.greyText)}
-          >
-            Stake Position
-          </div>
+          <div className={cx(constantsStyles.greyText)}>Stake Position</div>
           <div
             style={{
               overflow: 'scroll',
@@ -164,45 +164,48 @@ const RewardsPresentation = () => {
               padding: '10px',
             }}
           >
-            {stakeData ? stakeData
-              .filter((r) => r.stakes !== '0')
-              .map((r) => {
-                const coin_x = fetchCoinByType(r.type_x)
-                const coin_y = fetchCoinByType(r.type_y)
-                return (
-                  <div className={styles.rewardsCard} key={r.id}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        width: '35%',
-                      }}
-                    >
-                      <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
-                      <div className={constantsStyles.boldText}>
-                        {coin_x!.name + '/' + coin_y!.name}
+            {stakeData ? (
+              stakeData
+                .filter((r) => r.stakes !== '0')
+                .map((r) => {
+                  const coin_x = fetchCoinByType(r.type_x)
+                  const coin_y = fetchCoinByType(r.type_y)
+                  return (
+                    <div className={styles.rewardsCard} key={r.id}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          width: '35%',
+                        }}
+                      >
+                        <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
+                        <div className={constantsStyles.boldText}>
+                          {coin_x!.name + '/' + coin_y!.name}
+                        </div>
                       </div>
-                    </div>
-                    <span>
-                      <CoinIcon.SDBIcon
-                        className={styles.smallIcon}
-                        style={{ paddingRight: '5px' }}
+                      <span>
+                        <CoinIcon.SDBIcon
+                          className={styles.smallIcon}
+                          style={{ paddingRight: '5px' }}
+                        />
+                        {formatBalance(r.pending_sdb, 9)}
+                      </span>
+                      <Button
+                        size='small'
+                        styletype='outlined'
+                        text='Claim'
+                        onClick={() =>
+                          handleClaimRewards(r.id, r.type_x, r.type_y)
+                        }
                       />
-                      {formatBalance(r.pending_sdb, 9)}
-                    </span>
-                    <Button
-                      size='small'
-                      styletype='outlined'
-                      text='Claim'
-                      onClick={() =>
-                        handleClaimRewards(r.id, r.type_x, r.type_y)
-                      }
-                    />
-                  </div>
-                )
-              }) : <Empty content="No Stake Rewards" />
-            }
+                    </div>
+                  )
+                })
+            ) : (
+              <Empty content='No Stake Rewards' />
+            )}
           </div>
         </div>
         <div className={styles.votingContainer}>
@@ -215,18 +218,14 @@ const RewardsPresentation = () => {
                   Votes to pools to earn fee and bribe revenues.
                   <br />
                   If you intend to stake your votes over multiple weeks, it's
-                  advisable not to claim your rewards unless you plan to adjust your
-                  vote distribution. If you're an active voter, claiming your rewards
-                  each week after an epoch flip is perfectly fine.
+                  advisable not to claim your rewards unless you plan to adjust
+                  your vote distribution. If you're an active voter, claiming
+                  your rewards each week after an epoch flip is perfectly fine.
                 </div>
               }
             />
           </div>
-          <div
-            className={cx(constantsStyles.greyText)}
-          >
-            Bribes
-          </div>
+          <div className={cx(constantsStyles.greyText)}>Bribes</div>
           <div
             className={css({
               overflow: 'scroll',
@@ -238,75 +237,76 @@ const RewardsPresentation = () => {
               <div className={styles.inputAnimation}>
                 <Spinner size={20} />
               </div>
-            ) : (
-              (voterRewards && rewardsData) ?
-                Object.keys(voterRewards).map((rewards) => {
-                  const reward = rewardsData.find((r) => r.id == rewards)
-                  if (!reward) return
-                  let earned_ = Object.entries(voterRewards[reward.id])
-                  const coin_x = fetchCoinByType(reward.type_x)
-                  const coin_y = fetchCoinByType(reward.type_y)
-                  return (
-                    <div className={styles.rewardsCard}>
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          width: '20%',
-                        }}
-                      >
-                        <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
-                        <div className={constantsStyles.boldText}>
-                          {coin_x!.name + '/' + coin_y!.name}
-                        </div>
+            ) : voterRewards && rewardsData ? (
+              Object.keys(voterRewards).map((rewards) => {
+                const reward = rewardsData.find((r) => r.id == rewards)
+                if (!reward) return
+                let earned_ = Object.entries(voterRewards[reward.id])
+                const coin_x = fetchCoinByType(reward.type_x)
+                const coin_y = fetchCoinByType(reward.type_y)
+                return (
+                  <div className={styles.rewardsCard}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        width: '20%',
+                      }}
+                    >
+                      <CoinCombinImg poolCoinX={coin_x} poolCoinY={coin_y} />
+                      <div className={constantsStyles.boldText}>
+                        {coin_x!.name + '/' + coin_y!.name}
                       </div>
-                      <div
-                        className={cx(
-                          constantsStyles.columnContent,
-                          css({ alignItems: 'start', width: '50%' }),
-                        )}
-                      >
-                        {earned_.map((e) => {
-                          const coin = fetchCoinByType(e[0])
-                          return (
-                            <div
-                              className={cx(
-                                constantsStyles.columnContent,
-                                css({ marginLeft: '10px' }),
-                              )}
-                            >
-                              <div className={styles.bridesText}>
-                                {coin?.logo}
-                                <span>
-                                  {formatBalance(
-                                    e[1] as string,
-                                    coin?.decimals ?? 0,
-                                  )}
-                                </span>
-                              </div>
-                            </div>
-                          )
-                        })}
-                      </div>
-                      <Button
-                        size='small'
-                        styletype='outlined'
-                        text='Claim'
-                        onClick={() =>
-                          handleClaimBribes(
-                            reward.bribe,
-                            reward.id,
-                            currentNFTInfo.data?.id,
-                            reward.type_x,
-                            reward.type_y,
-                            Object.keys(voterRewards[reward.id]),
-                          )
-                        }
-                      />
                     </div>
-                  )
-                }) : <Empty content="No Voting Rewards" />
+                    <div
+                      className={cx(
+                        constantsStyles.columnContent,
+                        css({ alignItems: 'start', width: '50%' }),
+                      )}
+                    >
+                      {earned_.map((e) => {
+                        const coin = fetchCoinByType(e[0])
+                        return (
+                          <div
+                            className={cx(
+                              constantsStyles.columnContent,
+                              css({ marginLeft: '10px' }),
+                            )}
+                          >
+                            <div className={styles.bridesText}>
+                              {coin?.logo}
+                              <span>
+                                {formatBalance(
+                                  e[1] as string,
+                                  coin?.decimals ?? 0,
+                                )}
+                              </span>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                    <Button
+                      size='small'
+                      styletype='outlined'
+                      text='Claim'
+                      onClick={() =>
+                        handleClaimBribes(
+                          reward.bribe,
+                          reward.id,
+                          currentNFTInfo.data?.id,
+                          reward.type_x,
+                          reward.type_y,
+                          Object.keys(voterRewards[reward.id]),
+                        )
+                      }
+                    />
+                  </div>
+                )
+              })
+            ) : (
+              <Empty content='No Voting Rewards' />
             )}
           </div>
           {/**
