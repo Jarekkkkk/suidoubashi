@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from 'react'
+import { useState, createContext, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useGetAllBalance } from '@/Hooks/Coin/useGetBalance'
 import { useGetVsdb, useGetVsdbIDs } from '@/Hooks/VSDB/useGetVSDB'
@@ -38,8 +38,9 @@ const PageComponent = (props: Props) => {
   )[0]?.isHidden
 
   // Wallet
-  const { currentAccount, isConnected } = useWalletKit()
-  const walletAddress = UserModule.getUserToken() || currentAccount?.address
+  const { currentAccount, isConnected } = useWalletKit();
+  const local_user = UserModule.getUserToken()
+  const walletAddress = local_user || currentAccount?.address
 
   if (isHiddenPage || (!walletAddress && !isDashboard)) {
     window.location.href = '/'
